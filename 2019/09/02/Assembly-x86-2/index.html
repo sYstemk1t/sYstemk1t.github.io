@@ -5,14 +5,28 @@
   
   <title>Assembly-x86-2 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="X86处理器架构">
+<meta name="keywords" content="Assembly">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Assembly-x86-2">
 <meta property="og:url" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="X86处理器架构">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2019-09-02T01:38:52.146Z">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/6.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/7.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/8.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/9.png">
+<meta property="og:updated_time" content="2019-09-02T07:13:12.620Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Assembly-x86-2">
+<meta name="twitter:description" content="X86处理器架构">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/09/02/Assembly-x86-2/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -140,7 +154,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Assembly/" style="font-size: 15px;">Assembly</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 17.5px;">Windows-Kernel</a> <a href="/tags/Windows32-Assembly/" style="font-size: 12.5px;">Windows32-Assembly</a> <a href="/tags/c/" style="font-size: 20px;">c</a>
+                        <a href="/tags/Assembly/" style="font-size: 16.67px;">Assembly</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 13.33px;">Windows-Kernel</a> <a href="/tags/c/" style="font-size: 20px;">c</a>
                     </div>
                 </section>
                 
@@ -239,8 +253,16 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/汇编语言-基于x86处理器/">汇编语言-基于x86处理器</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -248,7 +270,131 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        
+        <h1 id="X86处理器架构"><a href="#X86处理器架构" class="headerlink" title="X86处理器架构"></a>X86处理器架构</h1><a id="more"></a>
+
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="基本微机设计"><a href="#基本微机设计" class="headerlink" title="基本微机设计"></a>基本微机设计</h3><p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/0.png" alt></p>
+<ul>
+<li>时钟对CPU内部操作与系统其他组件进行同步</li>
+<li>控制单元（CU）协调参与机器指令控制的步骤序列</li>
+<li>算术逻辑单元（ALU）执行算术单元</li>
+</ul>
+<p><strong>时钟</strong>与cpu和系统相关的每一个操作都是由一个恒定速率的内部时钟脉冲来进行同步。机器指令的基本时间单位是机器周期或时钟周期。一个时钟周期的时长是一个完整时钟脉冲所需的时间。</p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/1.png" alt></p>
+<p><strong>执行一条指令最少需要一个时钟周期</strong></p>
+<h3 id="执行指令周期"><a href="#执行指令周期" class="headerlink" title="执行指令周期"></a>执行指令周期</h3><p>CPU在执行一条机器指令时，需要经过一系列预先设定好的步骤，这些步骤称为指令周星周期。</p>
+<ul>
+<li>CPU从被称为指令队列的内存区域取得指令，之后立即增加指令指针的值</li>
+<li>CPU对指令的二进制位模式进行译码</li>
+<li>如果有操作数，CPU就从寄存器和内存中取得操作数</li>
+<li>使用步骤三得到的操作数，CPU执行该指令。同时更新部分标志位寄存器，如零标志、进位标志、溢出标志</li>
+<li>如果输出操作数也是该指令的一部分，则CPU还需要存放其执行结果</li>
+</ul>
+<h3 id="读取内存"><a href="#读取内存" class="headerlink" title="读取内存"></a>读取内存</h3><p>计算机从内存读取数据比从内部寄存器读取速度要慢，因为要从内存读取一个值，需要经过以下步骤：</p>
+<ul>
+<li>将想要读取的值的地址放到地址总线上</li>
+<li>设置处理器RD引脚</li>
+<li>等待一个时钟周期给存储器芯片进行相应</li>
+<li>将数据从数据总线负值到目标操作数</li>
+</ul>
+<p><strong>每一步都需要一个时钟周期，时钟周期是基于处理器内固定速度时钟节拍的一种时间测量方法</strong></p>
+<h3 id="加载并执行程序"><a href="#加载并执行程序" class="headerlink" title="加载并执行程序"></a>加载并执行程序</h3><p>在程序执行前，需要用一种工具将其加载到内存，这种工具称为<strong>程序加载器</strong>，加载后，操作系统必须将CPU只想程序的入口，即程序开始执行的地址。</p>
+<p>详细步骤：</p>
+<ul>
+<li>操作系统在当前磁盘目录下搜索程序的文件名。如果找不到，则会去环境变量（path）中，当操作系统无法检索文件名，则会报错</li>
+<li>如果找到文件，OS就会访问磁盘目录中的程序文件基本信息，包括文件大小，及其在磁盘驱动器上的物理位置</li>
+<li>OS去欸的那个内存中下一个可使用的位置，将程序文件加载到内存。在为程序分配内存块，并且将程序大小和位置信息加入表中（描述符表）。</li>
+<li>OS开始执行程序的第一条机器指令。当程序开始执行后，就成为一个进程（Process），OS为这个进程分配一个标识号（进程id），用于在执行期间对其追踪。</li>
+<li>进程自动运行。OS的工作是追踪进程的执行，并相应资源系统的请求。</li>
+<li>进程结束后，就会从内存中移除</li>
+</ul>
+<h2 id="32位x86处理器"><a href="#32位x86处理器" class="headerlink" title="32位x86处理器"></a>32位x86处理器</h2><p>x86处理器有三个主要的操作模式：保护模式、实地址模式、和系统管理模式；以及一下子模式，虚拟8086模式</p>
+<h3 id="操作模式"><a href="#操作模式" class="headerlink" title="操作模式"></a>操作模式</h3><p><strong>保护模式：</strong>保护模式是处理器的原生状态，这种模式下，所有的指令和特性都是可用的。分配给程序的独立内存区块称为段，而处理器会阻止程序自身段范围以外的内存</p>
+<p><strong>虚拟8086模式</strong>：保护模式下，处理器可以在一个安全的环境中，直接执行实地址模式软件，如MS-DOS程序。现代操作系统可以同时执行多个独立的虚拟8086会话。</p>
+<p><strong>实地址模式：</strong>实地址模式实现的是早期Intel处理器的编程环境，但是增加了一些其他的特性，如切换到其他模式的功能。</p>
+<p><strong>系统管理模式：</strong>系统管理模式是操作系统提供了实现诸如电源管理和系统安全等功能的机制。</p>
+<h3 id="基本执行环境"><a href="#基本执行环境" class="headerlink" title="基本执行环境"></a>基本执行环境</h3><p>1.地址空间</p>
+<p>在32位保护模式下，一个任务或程序最大寻址4GB线性内存空间。从P6（P6架构，外部地址总线扩展至36位，处理器的直接寻址能力64GB。采用动态执行技术。），<strong>一种称为扩展物理寻址的技术使得可以被寻址的物理内存空间增加到64GB。</strong>与之相反，实地址模式程序只能寻址1MB，如果处理器在保护模式下运行多个虚拟8086程序，那么每个程序只能拥有自己的1mb内存空间。</p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/2.png" alt></p>
+<p>2.基本程序执行寄存器</p>
+<p>寄存器是直接位于CPU内部的高速存储位置，其设置访问速度高于传统存储器。</p>
+<p><strong>32下有8个通用寄存器，6个段寄存器，1个处理器状态标志寄存器(eflag)和1个指令指针寄存器(eip)</strong></p>
+<p><strong>通用寄存器：</strong>主要用于算术运算和数据传输，一些通用寄存器的组成部分可以处理8位的值。</p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/3.png" alt></p>
+<p>可以拆分的寄存器：</p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/4.png" alt></p>
+<p>不可以拆分的寄存器：</p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/6.png" alt></p>
+<p>某些通用寄存器特殊用法：</p>
+<ul>
+<li>乘除指令默认使用EAX。它常常被称为扩展累加器寄存器。</li>
+<li>CPU默认使用ECX为循环计数器。</li>
+<li>ESP用于寻址堆栈数据。它极少用于一般算术运算和数据传输，通常被称为扩展堆栈指针寄存器。</li>
+<li>ESI和EDI用于告诉存储器传输命令，有时也称为扩展源变址寄存器和扩展目的变址寄存器。</li>
+<li>高级语言通过EBP来引用堆栈中的函数参数和局部变量。它不用于一般算术运算和数据传输。它常常被称为扩展帧指针寄存器。</li>
+</ul>
+<p><strong>段寄存器：实地址模式中，16位段寄存器表示的是预先分配的内存区域的基址，这个内存区域称为段。保护模式中，16位段寄存器表示的是段描述符表指针。一些段中存放程序指令(代码)，其他段存放变量(数据)，还有一个堆栈段存放的是局部变量和函数参数。</strong></p>
+<p><strong>指令指针：指令指针（EIP）寄存器中包含下一条要执行指令的地址。某些机器指令能控制EIP，使得程序分支转向一个新位置。</strong></p>
+<p><strong>EFLAGS寄存器：EFLAGS（或Flags）寄存器包含了独立的二进制位，用于控制CPU的控制，或是反映一些CPU操作的结果。有些指令而可以测试和控制这些单独的处理器标志位。</strong></p>
+<p><strong>控制标志位：控制标志位控制CPU的操作。例如，它们能使得CPU每执行一条指令后进入中断；在侦测到算术运算溢出时中断执行；进入虚拟8086模式，以及进入保护模式。</strong></p>
+<p><strong>状态标志位：状态标志位反映了CPU执行的算术和逻辑运算结果，其中包含：</strong></p>
+<ul>
+<li><p>进位标志位(CF)：与目标位置相比，<strong>无符号算术运算结果太大时，设置该标志位</strong></p>
+</li>
+<li><p>溢出标志位(OF): 与目标位置相比，<strong>有符号算术运算结果太大或太小时，设置该标志位</strong></p>
+</li>
+<li><p>符号标志位(SF)：算术或逻辑操作产生负结果时，设置该标志位</p>
+</li>
+<li><p>零标志位(ZF)：算术或逻辑操作产生的结果为零时，设置该标志位</p>
+</li>
+<li><p>辅助进位标志位(AC)：算术操作在8位操作数中产生了位3向位4的进位时，设置该标志位</p>
+</li>
+<li><p>奇偶校验标志位(PD): 结果的最低有效字节字节包含偶数个1时，设置该值标志位，否则，清楚该标志位。一般是，如果数据有可能被修改或损坏时，该标志位用于进行错误检测</p>
+</li>
+</ul>
+<p>MMX寄存器</p>
+<p>在实现高级多媒体和通信应用时，MMX技术提高了Intel处理器的性能。8个64位MMX寄存器支持称为SIMD(单指令，多数据)的特殊指令。</p>
+<p>MMX指令对MMX寄存器寄存器中的数据值进行并行操作。</p>
+<p>XMM寄存器</p>
+<p>x86结构还包括了8个128XMM寄存器，它们被用于SIMD流扩展指令集。</p>
+<p><strong>浮点单元：浮点单元执行告诉浮点算术运算。之前为了这个目的，需要一个独立的协处理器芯片。FPU中有8个浮点数寄存器，分别命名为ST(0),ST(1),ST(2)…..。</strong></p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/7.png" alt></p>
+<h3 id="x86内存管理"><a href="#x86内存管理" class="headerlink" title="x86内存管理"></a>x86内存管理</h3><p>在实地址模式中，只能寻址1MB内存，地址从00000H到FFFFFH。处理器一次只能运行一个程序，但是可能暂时中断程序来处理来自外围设备的请求(称为中断(intertupt))。应用程序被访问允许访问内存的任意位置，包含哪些直接与系统硬件相关的地址。</p>
+<p><strong>MS-DOS操作系统在实地址模式下运行</strong></p>
+<p>在保护模式中，处理器可以同时运行多个程序，它的每个进程（运行中的程序）分配总共4GB的内存。每个程序都有分配有自己的保留内存区域，程序之间禁止以外访问其他程序的代码和数据。</p>
+<p>在虚拟8086虚拟中，计算机运行在保护模式下，通过创建一个带有1MB地址空间的虚拟8086机器来模拟运行于实地址模式的8086计算机。</p>
+<h2 id="64位x86-64处理器"><a href="#64位x86-64处理器" class="headerlink" title="64位x86-64处理器"></a>64位x86-64处理器</h2><p>x64处理器的基本特征：</p>
+<ul>
+<li>向后兼容x86指令集</li>
+<li>地址长度为64位，虚拟地址空间2^64字节。按照目前芯片的能录，只能使用到地址的低48位</li>
+<li>可以使用64位通用寄存器，允许指令具有64位整数操作数</li>
+<li>比x86多了8个通用寄存器</li>
+<li>物理地址位48位，支持高达256TB的RAM</li>
+</ul>
+<p><strong>当本机运行于64位系统的时候，是不支持16位实模式或者虚拟8086模式的</strong></p>
+<h3 id="64位操作系统"><a href="#64位操作系统" class="headerlink" title="64位操作系统"></a>64位操作系统</h3><p>Intel 64架构引入了一个新的模式，从技术来看，它主要包含两个子模式：兼容模式和64位模式</p>
+<h4 id="兼容模式"><a href="#兼容模式" class="headerlink" title="兼容模式"></a>兼容模式</h4><p>在兼容模式下，现有的16位与32位应用程序不需要重新编译就可以运行在64位操作系统上</p>
+<h4 id="64位模式"><a href="#64位模式" class="headerlink" title="64位模式"></a>64位模式</h4><p>在64位模式下，处理器执行的是使用64位线性地址空间的应用程序</p>
+<h3 id="基本64位执行环境"><a href="#基本64位执行环境" class="headerlink" title="基本64位执行环境"></a>基本64位执行环境</h3><p>64位模式下，虽然处理器现在之恶能支持48位的地址，但是理论上，地址最大为64位，从寄存器来看，64位模式和32位模式最主要的区别如下：</p>
+<ul>
+<li>16个64位通用寄存器（32位模式只有8个通用寄存器）</li>
+<li>8个80位浮点寄存器</li>
+<li>1个64位状态标志寄存器RFLAGS（只使用低32位）</li>
+<li>1个64位指令指针寄存器RIP</li>
+<li>8个64位MMX寄存器</li>
+<li>16个128位XMM寄存器</li>
+</ul>
+<p>64位模式下，操作数的默认大小为32位，并且只有8个通用寄存器，但是给每条指令加上REX（扩展寄存器）前缀后，操作数可以达到64位</p>
+<p>通用寄存器：</p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/8.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/09/02/Assembly-x86-2/9.png" alt></p>
+<p>还有一些细节：</p>
+<ul>
+<li>64位模式下，单挑指令不能访问寄存器高字节，如AH、BH、CH、DH，以及新字节寄存器下的低字节（如DIL）</li>
+<li>64位模式下，32位EFLAGS寄存器由64位RFLAGS寄存器替代，这两个寄存器共享低32位，而RFLAGS的高32位是不适用的</li>
+<li>32位模式和64位模式具有相同的状态标志</li>
+</ul>
+<h2 id="典型x86计算机组件"><a href="#典型x86计算机组件" class="headerlink" title="典型x86计算机组件"></a>典型x86计算机组件</h2><h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><p>基于Intel的系统使用的是几种基础类型的内存：只读存储器（ROM）、可擦除可编程只读存储器（EPROM）、动态随机访问存储器（DRAM）、静态RAM（SRAM）、图像随机存储器（VRAM）和互补金属氧化物半导体（CMOS）RAM；</p>
+
       
       
         <div class="page-reward">
@@ -306,7 +452,7 @@
         <p><span>本文标题:</span><a href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2019年09月02日 - 09时38分</p>
-        <p><span>最后更新:</span>2019年09月02日 - 09时38分</p>
+        <p><span>最后更新:</span>2019年09月02日 - 15时13分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2019/09/02/Assembly-x86-2/" title="Assembly-x86-2">https://systemk1t.github.io/2019/09/02/Assembly-x86-2/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/02/Assembly-x86-2/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -335,7 +481,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#X86处理器架构"><span class="toc-number">1.</span> <span class="toc-text">X86处理器架构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本微机设计"><span class="toc-number">1.1.1.</span> <span class="toc-text">基本微机设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行指令周期"><span class="toc-number">1.1.2.</span> <span class="toc-text">执行指令周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#读取内存"><span class="toc-number">1.1.3.</span> <span class="toc-text">读取内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加载并执行程序"><span class="toc-number">1.1.4.</span> <span class="toc-text">加载并执行程序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#32位x86处理器"><span class="toc-number">1.2.</span> <span class="toc-text">32位x86处理器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#操作模式"><span class="toc-number">1.2.1.</span> <span class="toc-text">操作模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本执行环境"><span class="toc-number">1.2.2.</span> <span class="toc-text">基本执行环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#x86内存管理"><span class="toc-number">1.2.3.</span> <span class="toc-text">x86内存管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#64位x86-64处理器"><span class="toc-number">1.3.</span> <span class="toc-text">64位x86-64处理器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#64位操作系统"><span class="toc-number">1.3.1.</span> <span class="toc-text">64位操作系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#兼容模式"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">兼容模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#64位模式"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">64位模式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本64位执行环境"><span class="toc-number">1.3.2.</span> <span class="toc-text">基本64位执行环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#典型x86计算机组件"><span class="toc-number">1.4.</span> <span class="toc-text">典型x86计算机组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#内存"><span class="toc-number">1.4.1.</span> <span class="toc-text">内存</span></a></li></ol></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -410,7 +556,7 @@
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");
