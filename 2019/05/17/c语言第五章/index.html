@@ -13,15 +13,15 @@
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
 <meta property="og:description" content="指针与数组、地址算术运算、字符指针和函数、指针数据以及指向指针的指针、多维数组、指针数组的初始化、命令行参数">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="f:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C1.png">
-<meta property="og:image" content="f:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C2.png">
-<meta property="og:image" content="f:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C3.png">
-<meta property="og:image" content="f:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C4.png">
 <meta property="og:updated_time" content="2019-08-22T00:45:01.938Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="c语言第五章">
 <meta name="twitter:description" content="指针与数组、地址算术运算、字符指针和函数、指针数据以及指向指针的指针、多维数组、指针数组的初始化、命令行参数">
-<meta name="twitter:image" content="f:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C1.png">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C1.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -326,7 +326,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">"Hello Wolrd"</span>);</span><br></pre></td></tr></table></figure>
 
 <p>查看一下他的函数实现</p>
-<p><img src="F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C1.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C1.png" alt></p>
 <p>可以看到，他最后也是通过一个char指针访问字符串的。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> amessage[] = <span class="string">"nw is the time"</span>;</span><br><span class="line"><span class="keyword">char</span> *pmessage = <span class="string">"now is teh time"</span>;</span><br></pre></td></tr></table></figure>
 
@@ -363,9 +363,9 @@
 <p>指针数组的好处就是：数组的每一行长度可以不同，b的每个元素不必指向具有常量的具体个数。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> *name = &#123;<span class="string">"zhang"</span>,<span class="string">"wang"</span>,<span class="string">"li"</span>,<span class="string">"zhao"</span>&#125;;</span><br></pre></td></tr></table></figure>
 
-<p><img src="F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C2.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C2.png" alt></p>
 <p>如果使用二维数组就是这样的</p>
-<p><img src="F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C3.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C3.png" alt></p>
 <p>有没有发现，如果二维数组每一个元素都是同等大小的话，中间就不会有任何填充</p>
 <h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>main函数一般有两个参数，第一个参数argc，一个argv</p>
 <p><strong>argc用于参数计数，表示运行程序时命令行中参数数目；</strong></p>
@@ -382,7 +382,7 @@
 <p>程序echo的第一个版本将argv看成一个字符指针数组</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span> *argv[])</span>	</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//默认的默认的argc为1</span></span><br><span class="line">    <span class="keyword">int</span> i;	</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;argc;i++)	<span class="comment">//i=1；1不小于1，所以不执行，直接跳出循环	</span></span><br><span class="line">        				<span class="comment">//这个程序中的argv为D</span></span><br><span class="line">    &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%s%s"</span>,argv[i],(i&lt;argc<span class="number">-1</span>)? <span class="string">" "</span>: <span class="string">" "</span>);        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C4.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/05/17/c语言第五章/F:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C4.png" alt></p>
 <p>这样就实现了一个echo，其实这个echo我也没懂，正常的逻辑应该进入程序，不满足条件，只打印一个换行</p>
 <p>因为argv是一个指向指针的数组，所以可以通过指针而非数组下标的方式处理命令行参数。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">/* echo command-line arguments; 2nd version */</span></span><br><span class="line">main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">while</span> (--argc &gt; <span class="number">0</span>)</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%s%s"</span>, *++argv, (argc &gt; <span class="number">1</span>) ? <span class="string">" "</span> : <span class="string">""</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -464,18 +464,18 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/08/22/c与指针-第七章/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/05/17/c语言第二章/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          c与指针-第七章
+          c语言第二章
         
       </div>
     </a>
   
   
-    <a href="/2019/05/17/c语言第二章/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">c语言第二章</div>
+    <a href="/2019/05/16/c语言第四章/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">C语言第四章</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -552,18 +552,18 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/08/22/c与指针-第七章/" title="上一篇: c与指针-第七章">
+            <a href="/2019/05/17/c语言第二章/" title="上一篇: c语言第二章">
                 <i class="fa fa-angle-left"></i>
             </a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/05/17/c语言第二章/" title="下一篇: c语言第二章">
+            <a href="/2019/05/16/c语言第四章/" title="下一篇: C语言第四章">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");

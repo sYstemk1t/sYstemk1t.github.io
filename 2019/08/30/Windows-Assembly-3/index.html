@@ -11,13 +11,13 @@
 <meta property="og:url" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/Windows-Assembly-3/0.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/Windows-Assembly-3/1.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/Windows-Assembly-3/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/2.png">
 <meta property="og:updated_time" content="2019-08-30T23:44:55.288Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Windows-Assembly-3">
-<meta name="twitter:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/Windows-Assembly-3/0.png">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -285,7 +285,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.model 内存模式,[语言模式],[其他模式]</span><br></pre></td></tr></table></figure>
 
 <p>内存模式的定义影响最后生成的可执行文件，可执行文件有多种类型，编写不同的类型的可执行文件要用到.model语句定义不同的参数。</p>
-<p><img src="Windows-Assembly-3/0.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/08/30/Windows-Assembly-3/0.png" alt></p>
 <p>Windows程序运行在保护模式下，系统把每一个Win32应用程序分开放到虚拟地址空间去运行，也就是说，每一个应用程序都有其相互独立的4GB空间，<strong>对Win32来说，只有一种内存模式，即flat（平坦）模式，</strong>意思是内存“平坦”的从0延伸到4GB，没有64KB段大小限制。</p>
 <p><strong>如果定义了.model flat,masm自动为各种段寄存器做了如下操作：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assume cs:FLAT,ds:FLAT,ss:FLAT,es:FLAT,fs:ERROR,gs:ERROR</span><br></pre></td></tr></table></figure>
@@ -384,7 +384,7 @@
 <h3 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h3><h4 id="全局变量的定义"><a href="#全局变量的定义" class="headerlink" title="全局变量的定义"></a>全局变量的定义</h4><p>全局变量的作用域是整个程序，Win32汇编的全局变量定义在.data或者.data?段中，可以同时定义变量的类型和长度，格式是：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">变量名		类型		初始值1，初始值2,...</span><br><span class="line">变量名		类型		重复数据 dup (初始值1，初始值2,....)</span><br></pre></td></tr></table></figure>
 
-<p><img src="Windows-Assembly-3/1.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/08/30/Windows-Assembly-3/1.png" alt></p>
 <p>例子：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.data</span><br><span class="line">wHour	dw	?	;未初始化的word，名称为wHour</span><br><span class="line">wMinute	dw	10	;初始化为10的word类型数据，名称为wMinute</span><br><span class="line">_hWnd	dd	?	;未初始化的双字型数据</span><br><span class="line">word_Buffer	dw	100 dup (1,2);定义了一组字，以0001，0002，0001，0002的顺序在内存中重复100次，一共是200字</span><br><span class="line">szBuffer	byte	1024 dup (?);定义了1024个字节的缓冲区</span><br><span class="line">szText	db	&apos;Hello,World!&apos;;定义了十二个字节，两头的单引号是定界的符号，并不属于字符串中的内容</span><br></pre></td></tr></table></figure>
 
@@ -409,7 +409,7 @@
 <p>反汇编后的代码：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">00401000 &gt; $  55            push ebp		;将原来的ebp保存起来</span><br><span class="line">00401001   .  8BEC          mov ebp,esp		;esp的值存入ebp</span><br><span class="line">00401003   .  83C4 F8       add esp,-0x8	;由于堆空间是向下生长的，所以增加一个负值（-8）</span><br><span class="line">00401006   .  8B45 FC       mov eax,dword ptr ss:[ebp-0x4];第一个局部变量</span><br><span class="line">00401009   .  66:8B45 FA    mov ax,word ptr ss:[ebp-0x6];第二个局部变量</span><br><span class="line">0040100D   .  8A45 F9       mov al,byte ptr ss:[ebp-0x7];第三局部变量</span><br><span class="line">00401010   .  C9			leave</span><br><span class="line">0040100D   .  C3			ret</span><br></pre></td></tr></table></figure>
 
-<p><img src="Windows-Assembly-3/2.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/08/30/Windows-Assembly-3/2.png" alt></p>
 <p>在80386的指令集中有一条指令可以一句实现mov esp,ebp和pop ebp的功能，就是level指令，所以编译器在ret指令之前使用了一句level指令。</p>
 <h4 id="局部变量的初始化值"><a href="#局部变量的初始化值" class="headerlink" title="局部变量的初始化值"></a>局部变量的初始化值</h4><p>局部变量无法在定义的给出初始值，因为local只是简单的把空间留出来。</p>
 
@@ -585,7 +585,7 @@
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");

@@ -13,15 +13,15 @@
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
 <meta property="og:description" content="数组、指针效率、数组和指针、作为函数参数的数组名、声明数组参数、初始化、不完整的初始化、自动计算数组长度、字符数组初始化、二维数组、数组名、下标、指向数组的指针、作为函数参数的多维数组、总结">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="d:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C12.png">
-<meta property="og:image" content="d:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C13.png">
-<meta property="og:image" content="d:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C14.png">
-<meta property="og:image" content="d:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C15.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C12.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C13.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C14.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C15.png">
 <meta property="og:updated_time" content="2019-08-22T00:44:03.509Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="c与指针-第八章">
 <meta name="twitter:description" content="数组、指针效率、数组和指针、作为函数参数的数组名、声明数组参数、初始化、不完整的初始化、自动计算数组长度、字符数组初始化、二维数组、数组名、下标、指向数组的指针、作为函数参数的多维数组、总结">
-<meta name="twitter:image" content="d:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C12.png">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C12.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -328,11 +328,11 @@
 <p>这个代码最后打印的时候值并不是1，但是前面说了，数据名相当于第一个元素，但是这里打印出来的是一个数组，这里就有一个问题就是，如果以整形的方式的打印数组，就会出问题，格式化输出的形式是整形，但是我们的类型是一个数组。</p>
 <h2 id="不完整的初始化"><a href="#不完整的初始化" class="headerlink" title="不完整的初始化"></a>不完整的初始化</h2><p>int array[10] = {1,2,3,4,5,6};</p>
 <p>如果我们这么些，也是初始化，只是没有将元素和个数对应上，对于这种赋值，编译器会帮我们把后面的参数都填充为0</p>
-<p><img src="D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C12.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C12.png" alt></p>
 <p>只要对数据中的第一个值进行了初始化，后面的部分都会填充为0</p>
 <h2 id="自动计算数组长度"><a href="#自动计算数组长度" class="headerlink" title="自动计算数组长度"></a>自动计算数组长度</h2><p>int array[] = {1,2,3};</p>
 <p>这个时候，其实编译器就会帮我们填充这个数组有多大</p>
-<p><img src="D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C13.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C13.png" alt></p>
 <p>比较直观的看出来，这个数组有几个元素</p>
 <p>我们中间使用了一个比较投机的办法，</p>
 <p>sizeof(array)    //求这个数组有多大，因为是int型数组，所以每个元素占4字节，然后再处以int</p>
@@ -343,9 +343,9 @@
 <p>如果数组的维度不止一个，那么就称为多维数组</p>
 <p>int max[6][10];</p>
 <h3 id="存储顺序"><a href="#存储顺序" class="headerlink" title="存储顺序"></a>存储顺序</h3><p>int array[3];    </p>
-<p><img src="D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C14.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C14.png" alt></p>
 <p>可以看到数组在内存中是顺序存储的，那么二维数组是怎么存储的呢</p>
-<p><img src="D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C15.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/08/22/c与指针-第八章/D:%5CLearn%5C3Week%5CC%5C5%5Cimg%5C15.png" alt></p>
 <p>可以看到，在内存中是4字节对齐的数据，每一个元素中都有自己的存储单元。</p>
 <h2 id="数组名"><a href="#数组名" class="headerlink" title="数组名"></a>数组名</h2><p>一维数组名的值是一个指针常量，它的类型是“指向元素类型的指针”，它指向数组的第一个元素，多维数组也是一样的，唯一的区别是多维数组的第一维的元素实际上是另一个数组</p>
 <p>int array[10];    首元素是array[0]</p>
@@ -547,7 +547,7 @@
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");
