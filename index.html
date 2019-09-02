@@ -142,7 +142,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 16.67px;">Windows-Kernel</a> <a href="/tags/Windows32-Assembly/" style="font-size: 13.33px;">Windows32-Assembly</a> <a href="/tags/c/" style="font-size: 20px;">c</a>
+                        <a href="/tags/Assembly/" style="font-size: 15px;">Assembly</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 17.5px;">Windows-Kernel</a> <a href="/tags/Windows32-Assembly/" style="font-size: 12.5px;">Windows32-Assembly</a> <a href="/tags/c/" style="font-size: 20px;">c</a>
                     </div>
                 </section>
                 
@@ -218,6 +218,60 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Assembly-x86-2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/09/02/Assembly-x86-2/" class="article-date">
+      <time datetime="2019-09-02T01:38:52.000Z" itemprop="datePublished">2019-09-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Assembly-x86-1" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -245,7 +299,51 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        
+        <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="虚拟机概念"><a href="#虚拟机概念" class="headerlink" title="虚拟机概念"></a>虚拟机概念</h2><p>计算机通常可以执行用其原生机器语言编程的程序，这种语言中的每一条指令都见到到可以用相对少量的电子电路来执行。这种语言为L0，L0只由数字组成；</p>
+<p>那么假设现在有程序L1，它的实现方法：</p>
+<ul>
+<li>解释：运行L1的时候，每一条指令都由一个用L0语言编写的程序进行译码和执行。</li>
+<li>翻译：由一个专门设计的L0程序将整个L1程序转换为L0程序。</li>
+</ul>
+<h3 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h3><p>每一个虚拟机既可以用硬件构成也可以由软件构成。</p>
+<p><img src="//systemk1t.github.io/2019/09/01/Assembly-x86-1/0.png" alt></p>
+<h3 id="特定的机器"><a href="#特定的机器" class="headerlink" title="特定的机器"></a>特定的机器</h3><p><img src="//systemk1t.github.io/2019/09/01/Assembly-x86-1/1.png" alt></p>
+<p>分层：</p>
+<ul>
+<li>指令集架构（Level2）：芯片厂商在内部设计指令集来实现基本操作。也被称为机器语言。</li>
+<li>汇编语言（Level3）：在ias曾，编程语言提供了一个翻译层，汇编语言出现在第三层，使用助记符。汇编语言程序在执行前要全部翻译（汇编）为机器语言。</li>
+<li>高级语言（Level4）：高级语言，这些语言程序所包含功能强大， 并且可以翻译为多条汇编指令。</li>
+</ul>
+<h2 id="数据表示"><a href="#数据表示" class="headerlink" title="数据表示"></a>数据表示</h2><p>二进制数被用于描述计算机内存的内容，也可以使用八进制和十六进制；</p>
+<h3 id="二进制整数"><a href="#二进制整数" class="headerlink" title="二进制整数"></a>二进制整数</h3><p>二进制整数是有分为有符号整数和无符号整数，有符号整数分为正整数和负整数，无符号整数默认为整数，零也可以被看做正数。</p>
+<h3 id="整数存储大小"><a href="#整数存储大小" class="headerlink" title="整数存储大小"></a>整数存储大小</h3><ul>
+<li>1k：2^10，1024个字节</li>
+<li>1MB：2^20，或1048576个字节</li>
+<li>1GB：2^30，或1024^3</li>
+</ul>
+<p><img src="//systemk1t.github.io/2019/09/01/Assembly-x86-1/2.png" alt></p>
+<h3 id="有符号的二进制整数"><a href="#有符号的二进制整数" class="headerlink" title="有符号的二进制整数"></a>有符号的二进制整数</h3><p>最低位表示符号位：0表示整数，1表示复数</p>
+<p><img src="//systemk1t.github.io/2019/09/01/Assembly-x86-1/3.png" alt></p>
+<ol>
+<li>补码表示：</li>
+</ol>
+<p>一个二进制整数按位取反在加1，就得到了它的补码。</p>
+<p><img src="//systemk1t.github.io/2019/09/01/Assembly-x86-1/4.png" alt></p>
+<h3 id="有符号十进制数到二进制的转换"><a href="#有符号十进制数到二进制的转换" class="headerlink" title="有符号十进制数到二进制的转换"></a>有符号十进制数到二进制的转换</h3><ul>
+<li>把十进制整数的绝对值转换为二进制</li>
+<li>如果初始十进制数是负数，在第一步的进出上，求该二进制数的补码</li>
+</ul>
+<ul>
+<li>无符号数43的二进制表示位00101011</li>
+<li>由于初始数值是负数，因此求出00101011的补码是11010101。</li>
+</ul>
+<h3 id="字节存储"><a href="#字节存储" class="headerlink" title="字节存储"></a>字节存储</h3><ul>
+<li>UTF-8：用于HTML，与ASCII有相同的字节数值。</li>
+<li>UTF-16：用于介于使用内存与搞笑访问字节互相平衡的环境中。</li>
+<li>UTF-32:用于不考虑空间，但需要固定宽度字节的环境中</li>
+<li>ASCII字符串：有一个或多个字节的序列被称为字符串</li>
+</ul>
+
       
       
     </div>
@@ -253,8 +351,16 @@
     <div class="article-info article-info-index">
       
       
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/汇编语言-基于x86处理器/">汇编语言-基于x86处理器</a>
+    </div>
+
 
       
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
+    </div>
+
       
       <div class="clearfix"></div>
     </div>
@@ -793,74 +899,6 @@
       
         <p class="article-more-link">
           <a  href="/2019/08/22/Assembly-2/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Assembly-1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/08/22/Assembly-1/" class="article-date">
-      <time datetime="2019-08-21T22:40:42.000Z" itemprop="datePublished">2019-08-22</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/22/Assembly-1/">Assembly-1</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <hr>
-<h2 id="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间"><a href="#机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间" class="headerlink" title="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间"></a>机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间</h2>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/汇编语言/">汇编语言</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/08/22/Assembly-1/#more">sYstemk1t >></a>
         </p>
       
       <div class="clearfix"></div>
