@@ -5,23 +5,23 @@
   
   <title>Windows-Kernel-9 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="线程与内核对象的同步用户模式下的线程同步高性能，但是存在一些局限。例如无法进行进程间线程的同步，Iterlocked系函数不会把线程切换到等待状态， 进入临界区无法设置最长等待时间等。 内核对象来进行线程同步，功能强大许多。但是唯一的缺点就是性能。 对于线程内核对象可能处于触发（signaled）和未触发（nosignaled） 进程内核对象，在创建时其内部有一个BOOL变量是FALSE， 单">
+  <meta name="description" content="线程与内核对象的同步">
 <meta name="keywords" content="Windows-Kernel">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Kernel-9">
 <meta property="og:url" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="线程与内核对象的同步用户模式下的线程同步高性能，但是存在一些局限。例如无法进行进程间线程的同步，Iterlocked系函数不会把线程切换到等待状态， 进入临界区无法设置最长等待时间等。 内核对象来进行线程同步，功能强大许多。但是唯一的缺点就是性能。 对于线程内核对象可能处于触发（signaled）和未触发（nosignaled） 进程内核对象，在创建时其内部有一个BOOL变量是FALSE， 单">
+<meta property="og:description" content="线程与内核对象的同步">
 <meta property="og:locale" content="cn">
 <meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/0.png">
 <meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/1.png">
 <meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/2.png">
 <meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/3.png">
 <meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/4.png">
-<meta property="og:updated_time" content="2019-09-03T09:52:53.170Z">
+<meta property="og:updated_time" content="2019-09-03T09:56:05.154Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Windows-Kernel-9">
-<meta name="twitter:description" content="线程与内核对象的同步用户模式下的线程同步高性能，但是存在一些局限。例如无法进行进程间线程的同步，Iterlocked系函数不会把线程切换到等待状态， 进入临界区无法设置最长等待时间等。 内核对象来进行线程同步，功能强大许多。但是唯一的缺点就是性能。 对于线程内核对象可能处于触发（signaled）和未触发（nosignaled） 进程内核对象，在创建时其内部有一个BOOL变量是FALSE， 单">
+<meta name="twitter:description" content="线程与内核对象的同步">
 <meta name="twitter:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
@@ -266,9 +266,9 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <a id="more"></a>
+        <h1 id="线程与内核对象的同步"><a href="#线程与内核对象的同步" class="headerlink" title="线程与内核对象的同步"></a>线程与内核对象的同步</h1><a id="more"></a>
 
-<h1 id="线程与内核对象的同步"><a href="#线程与内核对象的同步" class="headerlink" title="线程与内核对象的同步"></a>线程与内核对象的同步</h1><p>用户模式下的线程同步高性能，但是存在一些局限。例如无法进行进程间线程的同步，Iterlocked系函数不会把线程切换到等待状态，</p>
+<p>用户模式下的线程同步高性能，但是存在一些局限。例如无法进行进程间线程的同步，Iterlocked系函数不会把线程切换到等待状态，</p>
 <p>进入临界区无法设置最长等待时间等。</p>
 <p>内核对象来进行线程同步，功能强大许多。但是唯一的缺点就是性能。</p>
 <p>对于线程内核对象可能处于触发（signaled）和未触发（nosignaled）</p>
@@ -538,7 +538,7 @@
         <p><span>本文标题:</span><a href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2019年09月03日 - 14时12分</p>
-        <p><span>最后更新:</span>2019年09月03日 - 17时52分</p>
+        <p><span>最后更新:</span>2019年09月03日 - 17时56分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2019/09/03/Windows-Kernel-9/" title="Windows-Kernel-9">https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
