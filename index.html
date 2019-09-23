@@ -142,7 +142,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Assembly/" style="font-size: 16px;">Assembly</a> <a href="/tags/CrackMe/" style="font-size: 12px;">CrackMe</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 20px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 14px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 18px;">c</a>
+                        <a href="/tags/Assembly/" style="font-size: 15px;">Assembly</a> <a href="/tags/CrackMe/" style="font-size: 12.5px;">CrackMe</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 20px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 12.5px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 17.5px;">c</a>
                     </div>
                 </section>
                 
@@ -217,6 +217,86 @@
     </div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-CrackMe003" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/09/23/CrackMe003/" class="article-date">
+      <time datetime="2019-09-23T11:28:29.000Z" itemprop="datePublished">2019-09-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/23/CrackMe003/">CrackMe003</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<p>CrackMe003</p>
+<ul>
+<li>屏蔽显示输入框(未完成)</li>
+<li>爆破账号密码成功登陆</li>
+</ul>
+<h2 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h2><p>使用PEiD查壳</p>
+<p><img src="//systemk1t.github.io/2019/09/23/CrackMe003/0.png" alt></p>
+<h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h2><p>### </p>
+<p>这个和第二个CrackMe非常相似</p>
+<p>在程序入口点让他断下来</p>
+<p><img src="//systemk1t.github.io/2019/09/23/CrackMe003/1.png" alt></p>
+<p>在这个Try Argin处下断点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">00408625   .  74 07         je short AfKayAs_.0040862E</span><br><span class="line">00408627   .  BE 01000000   mov esi,0x1</span><br><span class="line">0040862C   .  EB 02         jmp short AfKayAs_.00408630</span><br><span class="line">0040862E   &gt;  33F6          xor esi,esi                              ;  msvbvm50.__vbaStrCat</span><br><span class="line">00408630   &gt;  8D55 E4       lea edx,dword ptr ss:[ebp-0x1C]</span><br><span class="line">00408633   .  8D45 E8       lea eax,dword ptr ss:[ebp-0x18]</span><br><span class="line">00408636   .  52            push edx</span><br><span class="line">00408637   .  50            push eax</span><br><span class="line">00408638   .  6A 02         push 0x2</span><br><span class="line">0040863A   .  FF15 80B14000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaFreeS&gt;;  msvbvm50.__vbaFreeStrList</span><br><span class="line">00408640   .  83C4 0C       add esp,0xC</span><br><span class="line">00408643   .  8D4D D8       lea ecx,dword ptr ss:[ebp-0x28]</span><br><span class="line">00408646   .  8D55 DC       lea edx,dword ptr ss:[ebp-0x24]</span><br><span class="line">00408649   .  51            push ecx</span><br><span class="line">0040864A   .  52            push edx</span><br><span class="line">0040864B   .  6A 02         push 0x2</span><br><span class="line">0040864D   .  FF15 08B14000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaFreeO&gt;;  msvbvm50.__vbaFreeObjList</span><br><span class="line">00408653   .  F7DE          neg esi                                  ;  msvbvm50.__vbaStrCat</span><br><span class="line">00408655   .  83C4 0C       add esp,0xC</span><br><span class="line">00408658   .  B9 04000280   mov ecx,0x80020004</span><br><span class="line">0040865D   .  B8 0A000000   mov eax,0xA</span><br><span class="line">00408662   .  894D 9C       mov dword ptr ss:[ebp-0x64],ecx</span><br><span class="line">00408665   .  66:85F6       test si,si</span><br><span class="line">00408668   .  8945 94       mov dword ptr ss:[ebp-0x6C],eax</span><br><span class="line">0040866B   .  894D AC       mov dword ptr ss:[ebp-0x54],ecx</span><br><span class="line">0040866E   .  8945 A4       mov dword ptr ss:[ebp-0x5C],eax</span><br><span class="line">00408671   .  894D BC       mov dword ptr ss:[ebp-0x44],ecx</span><br><span class="line">00408674   .  8945 B4       mov dword ptr ss:[ebp-0x4C],eax</span><br><span class="line">00408677   .  74 62         je short AfKayAs_.004086DB</span><br><span class="line">00408679   .  8B35 14B14000 mov esi,dword ptr ds:[&lt;&amp;MSVBVM50.__vbaSt&gt;;  msvbvm50.__vbaStrCat</span><br><span class="line">0040867F   .  68 C06F4000   push AfKayAs_.00406FC0                   ;  You Get It</span><br><span class="line">00408684   .  68 DC6F4000   push AfKayAs_.00406FDC                   ; /\r\n</span><br><span class="line">00408689   .  FFD6          call esi                                 ; \__vbaStrCat</span><br><span class="line">0040868B   .  8BD0          mov edx,eax</span><br><span class="line">0040868D   .  8D4D E8       lea ecx,dword ptr ss:[ebp-0x18]</span><br><span class="line">00408690   .  FF15 94B14000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaStrMo&gt;;  msvbvm50.__vbaStrMove</span><br><span class="line">00408696   .  50            push eax</span><br><span class="line">00408697   .  68 E86F4000   push AfKayAs_.00406FE8                   ;  KeyGen It Now</span><br><span class="line">0040869C   .  FFD6          call esi                                 ;  msvbvm50.__vbaStrCat</span><br><span class="line">0040869E   .  8945 CC       mov dword ptr ss:[ebp-0x34],eax</span><br><span class="line">004086A1   .  8D45 94       lea eax,dword ptr ss:[ebp-0x6C]</span><br><span class="line">004086A4   .  8D4D A4       lea ecx,dword ptr ss:[ebp-0x5C]</span><br><span class="line">004086A7   .  50            push eax</span><br><span class="line">004086A8   .  8D55 B4       lea edx,dword ptr ss:[ebp-0x4C]</span><br><span class="line">004086AB   .  51            push ecx</span><br><span class="line">004086AC   .  52            push edx</span><br><span class="line">004086AD   .  8D45 C4       lea eax,dword ptr ss:[ebp-0x3C]</span><br><span class="line">004086B0   .  6A 00         push 0x0</span><br><span class="line">004086B2   .  50            push eax</span><br><span class="line">004086B3   .  C745 C4 08000&gt;mov dword ptr ss:[ebp-0x3C],0x8</span><br><span class="line">004086BA   .  FF15 24B14000 call dword ptr ds:[&lt;&amp;MSVBVM50.#595&gt;]     ;  msvbvm50.rtcMsgBox</span><br><span class="line">004086C0   .  8D4D E8       lea ecx,dword ptr ss:[ebp-0x18]</span><br><span class="line">004086C3   .  FF15 A8B14000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaFreeS&gt;;  msvbvm50.__vbaFreeStr</span><br><span class="line">004086C9   .  8D4D 94       lea ecx,dword ptr ss:[ebp-0x6C]</span><br><span class="line">004086CC   .  8D55 A4       lea edx,dword ptr ss:[ebp-0x5C]</span><br><span class="line">004086CF   .  51            push ecx</span><br><span class="line">004086D0   .  8D45 B4       lea eax,dword ptr ss:[ebp-0x4C]</span><br><span class="line">004086D3   .  52            push edx</span><br><span class="line">004086D4   .  8D4D C4       lea ecx,dword ptr ss:[ebp-0x3C]</span><br><span class="line">004086D7   .  50            push eax</span><br><span class="line">004086D8   .  51            push ecx</span><br><span class="line">004086D9   .  EB 60         jmp short AfKayAs_.0040873B</span><br><span class="line">004086DB   &gt;  8B35 14B14000 mov esi,dword ptr ds:[&lt;&amp;MSVBVM50.__vbaSt&gt;;  msvbvm50.__vbaStrCat</span><br><span class="line">004086E1   .  68 08704000   push AfKayAs_.00407008                   ;  You Get Wrong</span><br><span class="line">004086E6   .  68 DC6F4000   push AfKayAs_.00406FDC                   ; /\r\n</span><br><span class="line">004086EB   .  FFD6          call esi                                 ; \__vbaStrCat</span><br><span class="line">004086ED   .  8BD0          mov edx,eax</span><br><span class="line">004086EF   .  8D4D E8       lea ecx,dword ptr ss:[ebp-0x18]</span><br><span class="line">004086F2   .  FF15 94B14000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaStrMo&gt;;  msvbvm50.__vbaStrMove</span><br><span class="line">004086F8   .  50            push eax</span><br><span class="line">004086F9   .  68 28704000   push AfKayAs_.00407028                   ;  Try Again</span><br><span class="line">004086FE   .  FFD6          call esi                                 ;  msvbvm50.__vbaStrCat</span><br><span class="line">00408700   .  8945 CC       mov dword ptr ss:[ebp-0x34],eax</span><br><span class="line">00408703   .  8D55 94       lea edx,dword ptr ss:[ebp-0x6C]</span><br><span class="line">00408706   .  8D45 A4       lea eax,dword ptr ss:[ebp-0x5C]</span><br><span class="line">00408709   .  52            push edx</span><br></pre></td></tr></table></figure>
+
+<p>修改JE处得跳转</p>
+<p><img src="//systemk1t.github.io/2019/09/23/CrackMe003/2.png" alt></p>
+<h2 id="修改程序使之不休眠进入程序"><a href="#修改程序使之不休眠进入程序" class="headerlink" title="修改程序使之不休眠进入程序"></a>修改程序使之不休眠进入程序</h2><p>实现多次未果，尝试在MessageBox下断点，然后没分析出来</p>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/160个CrackMe/">160个CrackMe</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-CrackMe002" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -813,74 +893,6 @@
       
         <p class="article-more-link">
           <a  href="/2019/09/04/Windows-Kernel-14/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Windows-Kernel-13" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/09/04/Windows-Kernel-13/" class="article-date">
-      <time datetime="2019-09-03T19:07:49.000Z" itemprop="datePublished">2019-09-04</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <hr>
-<h1 id="Windows的内存结构"><a href="#Windows的内存结构" class="headerlink" title="Windows的内存结构"></a>Windows的内存结构</h1>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/09/04/Windows-Kernel-13/#more">sYstemk1t >></a>
         </p>
       
       <div class="clearfix"></div>
