@@ -3,17 +3,28 @@
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
-  <title>Windows-Assembly-3 | sYstemk1t&#39;s Blog</title>
+  <title>CrackMe009 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="Assembly">
+  <meta name="description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
+<meta name="keywords" content="CrackMe">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Windows-Assembly-3">
-<meta property="og:url" content="https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/index.html">
+<meta property="og:title" content="CrackMe009">
+<meta property="og:url" content="https://systemk1t.github.io/2019/09/26/CrackMe009/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2019-09-21T10:50:06.896Z">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/5.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/6.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/7.png">
+<meta property="og:updated_time" content="2019-09-26T04:45:15.987Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Windows-Assembly-3">
+<meta name="twitter:title" content="CrackMe009">
+<meta name="twitter:description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -215,11 +226,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-Windows-Assembly-3" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-CrackMe009" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2019/08/30/Windows-Assembly-3/" class="article-date">
-      <time datetime="2019-08-29T17:16:01.000Z" itemprop="datePublished">2019-08-30</time>
+      <a href="/2019/09/26/CrackMe009/" class="article-date">
+      <time datetime="2019-09-26T04:22:28.000Z" itemprop="datePublished">2019-09-26</time>
 </a>
     </div>
   
@@ -232,7 +243,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Windows-Assembly-3
+      CrackMe009
     </h1>
   
 
@@ -241,13 +252,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Windows32汇编语言设计/">Windows32汇编语言设计</a>
+    <a class="article-category-link" href="/categories/160个CrackMe/">160个CrackMe</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -258,8 +269,31 @@
       
           
         <hr>
+<p>CrackMe009</p>
+<ul>
+<li>爆破程序以登陆</li>
+<li>追踪正确账号密码</li>
+</ul>
 <a id="more"></a>
 
+
+
+<h2 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h2><p>使用PEiD查壳</p>
+<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/0.png" alt></p>
+<h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h2><p>查找字符串，然后确定关键跳转点</p>
+<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/1.png" alt></p>
+<p>然后往上翻，发现其实和CrackMe008相似，修改je的方法我们不用，我们用一个其他方法来修改</p>
+<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/3.png" alt></p>
+<p>然后我们单步向下走，这个时候我设置的账号密码都是1</p>
+<p>上一次EAX寄存器的值都为0，那么这次我们都给它改为FFFFFFFF</p>
+<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/4.png" alt></p>
+<p>修改：</p>
+<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/5.png" alt></p>
+<p>然后继续单步向下走：</p>
+<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/6.png" alt></p>
+<h2 id="追码"><a href="#追码" class="headerlink" title="追码"></a>追码</h2><p>继续上面的，我们可以看到，我们输入了两个1的时候，看变量</p>
+<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/7.png" alt></p>
+<p>但是这里没有直接显示，然后网上看了一下别人的解释，VB的变量类似于一个结构体。变量的前八个字节，存放该变量的数据类型，第九个字节开始存放的是该变量的地址。</p>
 
       
       
@@ -315,13 +349,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></p>
+        <p><span>本文标题:</span><a href="/2019/09/26/CrackMe009/">CrackMe009</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
-        <p><span>发布时间:</span>2019年08月30日 - 01时16分</p>
-        <p><span>最后更新:</span>2019年09月21日 - 18时50分</p>
+        <p><span>发布时间:</span>2019年09月26日 - 12时22分</p>
+        <p><span>最后更新:</span>2019年09月26日 - 12时45分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/30/Windows-Assembly-3/" title="Windows-Assembly-3">https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/08/30/Windows-Assembly-3/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/26/CrackMe009/" title="CrackMe009">https://systemk1t.github.io/2019/09/26/CrackMe009/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/26/CrackMe009/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -334,18 +368,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/08/30/Windows-Kernel-7/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Windows-Kernel-7
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/08/29/Windows-Assembly-1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Windows-Assembly-1</div>
+    <a href="/2019/09/26/CrackMe008/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">CrackMe008</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -356,7 +381,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#查壳"><span class="toc-number">1.</span> <span class="toc-text">查壳</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#爆破"><span class="toc-number">2.</span> <span class="toc-text">爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#追码"><span class="toc-number">3.</span> <span class="toc-text">追码</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -422,13 +447,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/08/30/Windows-Kernel-7/" title="上一篇: Windows-Kernel-7">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/08/29/Windows-Assembly-1/" title="下一篇: Windows-Assembly-1">
+            <a href="/2019/09/26/CrackMe008/" title="下一篇: CrackMe008">
                 <i class="fa fa-angle-right"></i>
             </a>
         
