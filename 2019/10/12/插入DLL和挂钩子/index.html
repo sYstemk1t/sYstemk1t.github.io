@@ -5,14 +5,20 @@
   
   <title>插入DLL和挂钩子 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="在Windows操作系统中，每个进程都有它自己的私有地址空间。当使用指针来引用内存时，指针的值将引用你自己进程的地址空间中的一个内存地址。你的进程不能创建一个其引用属于另一个进程的内存指针。 Windows在运行的各个进程共享2GB的地址空间，该地址空间从0x80000000至0xFFFFFFFF。只有内存映像文件和系统组件才能映射到这个区域。 有些情况下，必须打破进程的界限，访问另一个进程的">
+<meta name="keywords" content="Windows-Kernel">
+<meta property="og:type" content="article">
 <meta property="og:title" content="插入DLL和挂钩子">
 <meta property="og:url" content="https://systemk1t.github.io/2019/10/12/插入DLL和挂钩子/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="在Windows操作系统中，每个进程都有它自己的私有地址空间。当使用指针来引用内存时，指针的值将引用你自己进程的地址空间中的一个内存地址。你的进程不能创建一个其引用属于另一个进程的内存指针。 Windows在运行的各个进程共享2GB的地址空间，该地址空间从0x80000000至0xFFFFFFFF。只有内存映像文件和系统组件才能映射到这个区域。 有些情况下，必须打破进程的界限，访问另一个进程的">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2019-10-12T07:15:42.175Z">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/12/插入DLL和挂钩子/0.png">
+<meta property="og:updated_time" content="2019-10-12T15:53:41.357Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="插入DLL和挂钩子">
+<meta name="twitter:description" content="在Windows操作系统中，每个进程都有它自己的私有地址空间。当使用指针来引用内存时，指针的值将引用你自己进程的地址空间中的一个内存地址。你的进程不能创建一个其引用属于另一个进程的内存指针。 Windows在运行的各个进程共享2GB的地址空间，该地址空间从0x80000000至0xFFFFFFFF。只有内存映像文件和系统组件才能映射到这个区域。 有些情况下，必须打破进程的界限，访问另一个进程的">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/10/12/插入DLL和挂钩子/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -239,8 +245,16 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -248,7 +262,177 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        
+        <hr>
+<hr>
+<p>在Windows操作系统中，每个进程都有它自己的私有地址空间。当使用指针来引用内存时，指针的值将引用你自己进程的地址空间中的一个内存地址。你的进程不能创建一个其引用属于另一个进程的内存指针。</p>
+<p>Windows在运行的各个进程共享2GB的地址空间，该地址空间从0x80000000至0xFFFFFFFF。只有内存映像文件和系统组件才能映射到这个区域。</p>
+<p>有些情况下，必须打破进程的界限，访问另一个进程的地址空间，这些情况包括：</p>
+<ul>
+<li>当你想要为另一个进程创建的窗口建立子类时</li>
+<li>当你需要调试帮助时(例如，当你需要确定另一个进程正在使用那个DLL时)</li>
+<li>当你想要挂接其他进程时</li>
+</ul>
+<p><strong>当你的DLL进入另一个进程的地址空间，就可以对另一个进程为所欲为</strong></p>
+<a id="more"></a>
+
+
+
+<h2 id="插入DLL：一个例子"><a href="#插入DLL：一个例子" class="headerlink" title="插入DLL：一个例子"></a>插入DLL：一个例子</h2><p>建立子类就能够改变窗口的行为特性。若要建立子类，只需要调用SetWindowLongPtr函数，改变窗口的内存块中的窗口进程地址，指向一个新的WndProc。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SetWindowLongPtr(hwnd,GWLP_WNDPROC,MySunclassProc);</span><br></pre></td></tr></table></figure>
+
+<p>当系统需要将消息发送到指定窗口的WndProc时，要查看它的地址，然后直接调用WndProc。</p>
+<p>参数说明：</p>
+<p>hWnd：<a href="http://baike.baidu.com/view/1452762.htm" target="_blank" rel="noopener">窗口句柄</a>，间接给出窗口所属的类。</p>
+<p>nlndex：指定将设定的大于等于0的偏移值。有效值的范围从0到额外类的存储空间的字节数减去一个整型的大小(-sizeof(int))。要设置其他任何值，可以指定下面值之一：[1]</p>
+<table>
+<thead>
+<tr>
+<th>nlndex</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GWL_EXSTYLE</td>
+<td>设定一个新的扩展风格。更多信息，请见<a href="http://baike.baidu.com/view/1080304.htm" target="_blank" rel="noopener">CreateWindowEx</a>。</td>
+</tr>
+<tr>
+<td>GWL_STYLE</td>
+<td>设定一个新的窗口风格。</td>
+</tr>
+<tr>
+<td>GWL_WNDPROC</td>
+<td>为窗口过程设置一个新的地址。</td>
+</tr>
+<tr>
+<td>GWL_HINSTANCE</td>
+<td>设置一个新的应用程序实例句柄。</td>
+</tr>
+<tr>
+<td>GWL_ID</td>
+<td>设置一个新的窗口标识符。</td>
+</tr>
+<tr>
+<td>GWL_USERDATA</td>
+<td>设置与该窗口相关的用户数据。这些用户数据可以在程序创建该窗口时被使用。用户数据的初始值为0。</td>
+</tr>
+<tr>
+<td>当hWnd参数标识了一个对话框时，也可使用下列值：</td>
+<td></td>
+</tr>
+<tr>
+<td>DWL_DLGPROC</td>
+<td>设置对话框过程的新地址。</td>
+</tr>
+<tr>
+<td>DWL_MSGRESULT</td>
+<td>设置对话框中的消息处理程序的返回值。</td>
+</tr>
+<tr>
+<td>DWL_USER</td>
+<td>设置的应用程序所私有的新的额外信息，例如句柄或指针。</td>
+</tr>
+</tbody></table>
+<p>dwNewLong：指定的替换值。</p>
+<h2 id="使用注册表来插入DLL"><a href="#使用注册表来插入DLL" class="headerlink" title="使用注册表来插入DLL"></a>使用注册表来插入DLL</h2><p>如果你曾经多少使用过Windows操作系统，你肯定熟悉注册表的情况。整个系统的配置都是在注册表中维护的，可以通过调整它的设置来改变系统的行为特性。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows</span><br></pre></td></tr></table></figure>
+
+<p><img src="//systemk1t.github.io/2019/10/12/插入DLL和挂钩子/0.png" alt></p>
+<p>该关键字的值包含了一个DLL文件名或者一组DLL文件名。由于空格用来将文件名分割，因此避免使用包含空格的文件名。列出的第一个DLL文件名可以包含一个路径，但是包含路径的其他DLL将会被忽悠。由于这个原因，最好将你的DLL放入WIndows的系统目录，这样就不必设定路径。</p>
+<p>当操作系统重新启动及Windows初始化的实话，系统将保留这个值。</p>
+<p>所以在我们做插入DLL插入的实话，可以将自己的DLL存放到Windows系统目录下，然后修改这个关键字的值，这样不管操作系统怎么初始化，我们的DLL总可以发挥效果。</p>
+<p>DLL在注册表中的操作：</p>
+<ul>
+<li>user32.dll库被映射到进程中，它会收到一个DLL_PROCEE_ATTACH的通知，当这个通知被处理的实话，user32.dll便检索保存这个关键字的值，并i企鹅字符串中指定每个DLL调用LoadLibrary函数</li>
+<li>当每个库被加载的实话，便可以调用DllMain函数，其fdwReason的值就是DLL_PROCESS_ATTACH，这样每个库就可以自己初始化</li>
+<li>由于插入的DLL在进程中很早就加载了，调用Kernel32.dll中的函数并不会有问题，<strong>user32.dll并不会检查每个库是否加载成功，或者初始化成功</strong></li>
+</ul>
+<h2 id="使用Windows函数挂钩来插入DLL"><a href="#使用Windows函数挂钩来插入DLL" class="headerlink" title="使用Windows函数挂钩来插入DLL"></a>使用Windows函数挂钩来插入DLL</h2><p>可以使用挂钩将DLL插入进程的地址空间。DLL能够插入另一个进程的地址空间中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HHOOK hHook = SetWindowsHookEx(</span><br><span class="line">    						WH_GETMESSAGE,	<span class="comment">//指定安装的挂钩的类型</span></span><br><span class="line">                               GetMsgProc,	<span class="comment">//指明窗口处理一个消息时系统应该调用的函数地址</span></span><br><span class="line">                               hinstDll,	<span class="comment">//用于标识DLL被映射到的进程的地址空间中的虚拟内存地址</span></span><br><span class="line">                               <span class="number">0</span>		<span class="comment">//指明要挂接的线程</span></span><br><span class="line">                              );</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>进程B中的一个线程准备将一个消息发送到一个窗口</p>
+</li>
+<li><p>系统查看该线程是否安装了WH_GETMESSAGE挂钩</p>
+</li>
+<li><p>系统查看包含GetMsgProc函数的DLL是否已经被映射到进程B的地址空间中</p>
+</li>
+<li><p>如果该DLL尚未被映射，系统将强制该DLL映射到进程B的地址空间，并且将进程B中的DLL映像的自动追踪计数递增1</p>
+</li>
+<li><p>当DLL的hinstDll用于进程B时，系统查看该函数，并检查该DLL的hinstDll是否与它用于进程A时所处的位置相同</p>
+</li>
+<li><p>系统将进程B中的DLL映像的自动追踪计数递增1</p>
+</li>
+<li><p>系统调用进程B的地址空间中的GetMsgProc函数</p>
+</li>
+<li><p>当GetMsgProc函数返回时，系统将进程B中的DLL映像的自动追踪计数递减1</p>
+</li>
+</ul>
+<p>如果当你需要卸载这个钩子的实话，使用下面的函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">UnhookWindowsHookEx</span><span class="params">(HHOOk hhook)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>当一个线程调用UnhookWindowsHookEx函数时，系统将遍历它必须将DLL插入到各个进程的内部列表，并且对DLL的自动追踪计数进行递减。当自动追踪递减为0的时候，DLL就自动从进程的地址空间中被删除</p>
+<p>这说明撤销窗口的子类并不能立即撤销挂钩,钩子必须在该子类的寿命期内保持有效.</p>
+<p>使用该函数可以获取到窗口控件的句柄</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hwndLV = GetFirstChild(GetFirstChild(FindWindow(__TEXT(<span class="string">"ProgMan"</span>),<span class="literal">NULL</span>)));</span><br></pre></td></tr></table></figure>
+
+<p>如果拥有了窗口句柄,那么可以调用GetWindowThreadProcessId函数,就可以确定创建窗口的线程ID.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GetWindowThreadProcessId(HWND hWnd,	<span class="comment">//被查找的窗口句柄</span></span><br><span class="line">                         LPDWORD lpdwProcessId	<span class="comment">//进程号的存放地址)</span></span><br></pre></td></tr></table></figure>
+
+<p>强制Windows Explorer线程醒来:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PostThreadMessage(dwThreadId,WM_NULL,<span class="number">0</span>,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>查看它是否被初次调用:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GetMessage(&amp;msg,null,<span class="number">0</span>,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用远程线程来插入DLL"><a href="#使用远程线程来插入DLL" class="headerlink" title="使用远程线程来插入DLL"></a>使用远程线程来插入DLL</h2><p>DLL的插入方法还有远程线程,Windows大多数函数允许进程只对自己进行操作,它可以防止一个进程破坏另外一个进程.但是有些函数却允许一个进程对另一个进程进行操作.任何函数都可以调用这些函数</p>
+<p>这个插入方法基本要求目标中进程的线程调用LoadLibrary函数来加载必要的DLL，除了自己进程中的线程以外，我们无法方法的控制其他进程中的线程，<strong>所以我们需要CreateRemoteThread函数在另一个进程中创建线程。</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HANDLE CreateRemoteThread&#123;</span><br><span class="line">    HANDLE hProcess,	<span class="comment">//线程所属进程的进程句柄</span></span><br><span class="line">    PSECURITY_ATTRIBUTES psa,	<span class="comment">//该结构制定了线程的安全属性</span></span><br><span class="line">    DWORD dwSackSize,	<span class="comment">//线程栈大小，字节为单位，如果该值为0，使用默认大小</span></span><br><span class="line">    PTHREAD_START_ROUTINE pfnStartAddress, <span class="comment">//一个LPTHREAD_START_ROUTINE类型的指针，指向在远程进程中执行的函数地址</span></span><br><span class="line">    PVOID pvParam,	<span class="comment">//传入参数</span></span><br><span class="line">    DWORD fdwCreate,	<span class="comment">//创建线程的其他标志</span></span><br><span class="line">    PWORD pdwThreadId	<span class="comment">//线程的身份标志，如果为null，则不返回</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>LoadLibrayA和LoadLibraryW的区别：</p>
+<ul>
+<li>LoadLibrayA传递的是ANSI字符存储的</li>
+<li>LoadLibrayW传递的是Unicode字符串存储的</li>
+</ul>
+<p>代码区别：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LoadLibraryA</span><br><span class="line">HANDLE hThread = CreateRemoteThread(hProcessRomote,<span class="literal">NULL</span>,<span class="number">0</span>,LoadLibraryA ,<span class="string">"C:\\MyLib.dll"</span>,<span class="number">0</span>,null)</span><br><span class="line">LoadLibraryW</span><br><span class="line">HANDLE hThread = CreateRemoteThread(hProcessRomote,<span class="literal">NULL</span>,<span class="number">0</span>,LoadLibraryW ,<span class="string">"C:\\MyLib.dll"</span>,<span class="number">0</span>,null)</span><br></pre></td></tr></table></figure>
+
+<p>我们放置该字符串的地址传递给CreateRemoteTHread函数，必须使用VirtualAllocEx，使得一个进程能够分配另一个进程的地址空间中的内存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">分配：</span><br><span class="line"><span class="function">PVOID <span class="title">VirtualAllocEx</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	HANDLE hProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">    PVOID pvAddress,</span></span></span><br><span class="line"><span class="function"><span class="params">    SIZE_T dwSize,</span></span></span><br><span class="line"><span class="function"><span class="params">    DWORD flAllocationType,</span></span></span><br><span class="line"><span class="function"><span class="params">    DWORD flProtect</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"></span><br><span class="line">释放：</span><br><span class="line"><span class="function">BOOL <span class="title">VirtualFreeEx</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	HANDLE hProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">    PVOID pvAddress,</span></span></span><br><span class="line"><span class="function"><span class="params">    SIZE_T dwSize,</span></span></span><br><span class="line"><span class="function"><span class="params">    DWORD dwFreeType</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>一旦为该字符串分配了内存，我们还需要一种方法将该字符串从我们的进程的地址空间拷贝到远程的地址空间中，Windows提供了两个函数给我们这么做：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">ReadProcessMemory</span><span class="params">(HANDLE hProcess,	<span class="comment">//远程地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">                      PVOID pvAddressRemote,	<span class="comment">//远程进程中的地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">                       PVOID pvBufferLocal,	<span class="comment">//本地进程中的内存地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">                       DOWRD dwSize,		<span class="comment">//传送的字节数</span></span></span></span><br><span class="line"><span class="function"><span class="params">                       PDWORD pdwNumBytesRead	<span class="comment">//实际传送的字节数</span></span></span></span><br><span class="line"><span class="function"><span class="params">                      )</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">BOOL <span class="title">WriteProcessMemory</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    				HANDLE hProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                      PVOID pvAddressRemote,</span></span></span><br><span class="line"><span class="function"><span class="params">                       PVOID pvBufferLocal,</span></span></span><br><span class="line"><span class="function"><span class="params">                       DOWRD dwSize,</span></span></span><br><span class="line"><span class="function"><span class="params">    				PDWORD pdwNumBytesWritten</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>使用VirtualAllocEx函数，分配远程进程的地址空间中的内存</p>
+</li>
+<li><p>使用WriteProcessMemory函数，将DLL的路径名拷贝到第一个步骤中已经分配的内存中</p>
+</li>
+<li><p>使用GetProcAddress函数，获取LoadLibraryA或者LoadLibraryW函数的实地址</p>
+</li>
+<li><p>使用CreateRemoteThread函数，在远程进程中创建一个线程，它调用正确的LoadLibrary函数，为它传递第一个步骤中分配的内存的地址</p>
+</li>
+<li><p>使用VirtualFreeEx函数，释放第一个步骤中分配的内存</p>
+</li>
+<li><p>使用GetProcAddress函数，获得FreeLibrary函数的实地址</p>
+</li>
+<li><p>使用CreateRemoteThread函数，在远程进程中创建一个线程，它调用FreeLibrary函数，传递远程DLL的HINSTANCE</p>
+</li>
+</ul>
+<h2 id="使用特洛伊DLL来插入DLL"><a href="#使用特洛伊DLL来插入DLL" class="headerlink" title="使用特洛伊DLL来插入DLL"></a>使用特洛伊DLL来插入DLL</h2><p>插入DLL的另一种方法是取代你已经知道进程将要加载的DLL。直接覆盖掉它原来的位置同名的DLL</p>
+<p>如果只是在单个程序中使用这个办法，那么可以为自己的DLL创建一个独一无二的名字，并改变应用程序中的输入节，更重要的是，输入节只包含模块需要的DLL名字，你可以仔细搜索文件中的这个节，并且改变它，使用加载程序加载自己的DLL</p>
+<h2 id="将DLL作为调试程序插入"><a href="#将DLL作为调试程序插入" class="headerlink" title="将DLL作为调试程序插入"></a>将DLL作为调试程序插入</h2><p>调试程序能够对被调试的进程执行特殊的操作，当被调试进程加载时，在北条氏进程的地址空间已经准备号，但是被调试进程的主线程尚未执行代码之前，系统将自动通知调试程序，这时候，调试程序可以强制将某些代码插入被调试进程的地址空间中，然后使北条氏进程的主线程执行该代码</p>
+<h2 id="Windows-98上的内存映射文件插入代码"><a href="#Windows-98上的内存映射文件插入代码" class="headerlink" title="Windows 98上的内存映射文件插入代码"></a>Windows 98上的内存映射文件插入代码</h2><h2 id="CreateProcess插入代码"><a href="#CreateProcess插入代码" class="headerlink" title="CreateProcess插入代码"></a>CreateProcess插入代码</h2><p>如果你的进程生成了你想插入代码的新进程，你的进程(父进程)能够创建暂停运行的新进程，这就使得你可以修改子进程的状态，而不映像运行，因为它未运行，但是父进程也能得到子进程的主线程句柄，使用该句柄，可以修改线程执行的代码；</p>
+<p>下面介绍一种方法，可以使你的进程能够控制紫禁城的主线程执行什么代码</p>
+<ul>
+<li>使你的进程生成暂停运行的子线程</li>
+<li>从exe模块的头文件中检索主线程的起始内存地址</li>
+<li>将机器指令保存在该内存地址中</li>
+<li>将某些硬编码的机器指令强制放入该地址中，这些指令回调用LoadLibrary</li>
+<li>继续运行子进程的主线程，使得代码得以执行</li>
+<li>将原始执行重新放入起始地址</li>
+<li>让进程继续从开始地址开始执行</li>
+</ul>
+
       
       
         <div class="page-reward">
@@ -306,7 +490,7 @@
         <p><span>本文标题:</span><a href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2019年10月12日 - 15时15分</p>
-        <p><span>最后更新:</span>2019年10月12日 - 15时15分</p>
+        <p><span>最后更新:</span>2019年10月12日 - 23时53分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2019/10/12/插入DLL和挂钩子/" title="插入DLL和挂钩子">https://systemk1t.github.io/2019/10/12/插入DLL和挂钩子/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/10/12/插入DLL和挂钩子/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -335,7 +519,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#插入DLL：一个例子"><span class="toc-number">1.</span> <span class="toc-text">插入DLL：一个例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用注册表来插入DLL"><span class="toc-number">2.</span> <span class="toc-text">使用注册表来插入DLL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Windows函数挂钩来插入DLL"><span class="toc-number">3.</span> <span class="toc-text">使用Windows函数挂钩来插入DLL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用远程线程来插入DLL"><span class="toc-number">4.</span> <span class="toc-text">使用远程线程来插入DLL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用特洛伊DLL来插入DLL"><span class="toc-number">5.</span> <span class="toc-text">使用特洛伊DLL来插入DLL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将DLL作为调试程序插入"><span class="toc-number">6.</span> <span class="toc-text">将DLL作为调试程序插入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows-98上的内存映射文件插入代码"><span class="toc-number">7.</span> <span class="toc-text">Windows 98上的内存映射文件插入代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CreateProcess插入代码"><span class="toc-number">8.</span> <span class="toc-text">CreateProcess插入代码</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 

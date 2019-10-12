@@ -5,19 +5,19 @@
   
   <title>线程本地存储器 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。 TLS动态TLS如需要使用动态TLS，应用程序可以调用一组4个函数。这些函数实际上是DLL用的最多的函数。 Windows用来管理TLS的内部数据结构：  每个标志均可设置为FREE或者INUSE，表示TLS时隙(slot)是否正在使用。微软保证至">
+  <meta name="description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
 <meta name="keywords" content="Windows-Kernel">
 <meta property="og:type" content="article">
 <meta property="og:title" content="线程本地存储器">
 <meta property="og:url" content="https://systemk1t.github.io/2019/10/12/线程本地存储器/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。 TLS动态TLS如需要使用动态TLS，应用程序可以调用一组4个函数。这些函数实际上是DLL用的最多的函数。 Windows用来管理TLS的内部数据结构：  每个标志均可设置为FREE或者INUSE，表示TLS时隙(slot)是否正在使用。微软保证至">
+<meta property="og:description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
 <meta property="og:locale" content="cn">
 <meta property="og:image" content="https://systemk1t.github.io/2019/10/12/线程本地存储器/0.png">
-<meta property="og:updated_time" content="2019-10-12T07:12:07.436Z">
+<meta property="og:updated_time" content="2019-10-12T11:41:44.352Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="线程本地存储器">
-<meta name="twitter:description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。 TLS动态TLS如需要使用动态TLS，应用程序可以调用一组4个函数。这些函数实际上是DLL用的最多的函数。 Windows用来管理TLS的内部数据结构：  每个标志均可设置为FREE或者INUSE，表示TLS时隙(slot)是否正在使用。微软保证至">
+<meta name="twitter:description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
 <meta name="twitter:image" content="https://systemk1t.github.io/2019/10/12/线程本地存储器/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
@@ -264,6 +264,8 @@
           
         <hr>
 <p>C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。</p>
+<a id="more"></a>
+
 <h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><h3 id="动态TLS"><a href="#动态TLS" class="headerlink" title="动态TLS"></a>动态TLS</h3><p>如需要使用动态TLS，应用程序可以调用一组4个函数。这些函数实际上是DLL用的最多的函数。</p>
 <p>Windows用来管理TLS的内部数据结构：</p>
 <p><img src="//systemk1t.github.io/2019/10/12/线程本地存储器/0.png" alt></p>
@@ -354,7 +356,7 @@
         <p><span>本文标题:</span><a href="/2019/10/12/线程本地存储器/">线程本地存储器</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2019年10月12日 - 14时39分</p>
-        <p><span>最后更新:</span>2019年10月12日 - 15时12分</p>
+        <p><span>最后更新:</span>2019年10月12日 - 19时41分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2019/10/12/线程本地存储器/" title="线程本地存储器">https://systemk1t.github.io/2019/10/12/线程本地存储器/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/10/12/线程本地存储器/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
