@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Windows-Kernel-8 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="用户方式中线程的同步">
+<meta name="keywords" content="Windows-Kernel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows-Kernel-8">
+<meta property="og:url" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-8/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="用户方式中线程的同步">
+<meta property="og:locale" content="cn">
+<meta property="og:updated_time" content="2019-09-03T05:54:58.412Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows-Kernel-8">
+<meta name="twitter:description" content="用户方式中线程的同步">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Windows-Kernel-8" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/09/03/Windows-Kernel-8/" class="article-date">
+      <time datetime="2019-09-03T02:02:55.000Z" itemprop="datePublished">2019-09-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows-Kernel-8
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="用户方式中线程的同步"><a href="#用户方式中线程的同步" class="headerlink" title="用户方式中线程的同步"></a>用户方式中线程的同步</h1><a id="more"></a>
+
+<p>线程很少能够在所有的时间都独立地进行操作，所以需要生成一些线程来处理某些任务。</p>
+<p>系统中的线程必须拥有对各个系统资源的访问，这些资源包括堆栈、串口、文件，窗口和其他资源。</p>
+<p>线程需要在下面两种情况下进行通信：</p>
+<ul>
+<li>当有多个线程访问共享资源而不使资源被破坏时</li>
+<li>当以恶搞线程需要将某个任务也已经完成的情况通知另外一个或多个线程时</li>
+</ul>
+<h2 id="原子访问：互锁的函数家族"><a href="#原子访问：互锁的函数家族" class="headerlink" title="原子访问：互锁的函数家族"></a>原子访问：互锁的函数家族</h2><p>线程同步问题在很多程序上与原子访问有关，所谓的原子访问，是指线程在访问资源时能确保所有其他线程都不在同一时间内访问相同的资源。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> g_x = <span class="number">0</span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadFuncl</span><span class="params">(PVOID pvParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    g_x++;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DOWRD WINAPI <span class="title">ThreadFunc2</span><span class="params">(PVOID pvParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    g_x++;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设ThreadFuncl和ThreadFunc2是两个线程，并且两个线程都处于运行中，当两个线程停止运行，结果并不会是2；</p>
+<p>Windows是抢占式操作系统，你根本无法预料在这个线程执行的过程中，中断在哪里或者同时有多少个线程在执行，所以在上面两个函数都退出以后，它的结果很有可能是1；</p>
+<p>为了解决上面的问题，Windows给出了一个函数：InterlockedExchangeAdd</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">InterlockedExchangeAdd</span> <span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	PLONG plAddend,</span></span></span><br><span class="line"><span class="function"><span class="params">    LONG lIncrement</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数的参数调用：传递一个长变量地址，并指明将这个值传递多少即可，将上面的代码重用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> g_x = <span class="number">0</span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadFuncl</span><span class="params">(PVOID pvParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    InterlockedExchangeAdd(&amp;g_x,<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DOWRD WINAPI <span class="title">ThreadFunc2</span><span class="params">(PVOID pvParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    InterlockedExchangeAdd(&amp;g_x,<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>所有的线程都应该设法通过调用这些函数来修改共享的变常量，任何线程都不应该通过调用简单的c语言来修改共享的变量</strong></p>
+<p>互锁函数的运行方式：取决于运行的是何种CPU平台。</p>
+<p>x86家族：</p>
+<ul>
+<li>互相函数发出硬件信号，防止另一个CPU访问同一个内存地址</li>
+</ul>
+<p>Alpha平台：</p>
+<ul>
+<li>打开CPU中的一个特殊的位标志，并注明被访问的内存地址。</li>
+<li>将内存的值读入一个寄存器</li>
+<li>修改该寄存器</li>
+<li>如果CPU中的特殊位标志是关闭的，则转入第二步，否则，特殊位标志仍然是打开的，寄存器的值重新载入内存。</li>
+</ul>
+<p>Interlocked函数是如何工作的？ 这取决于代码运行的CPU平台。如果是x86系列cpu，Interlocked函数会在总线上维持一个硬件信号，该信号会阻止其他CPU访问一个内存地址。另外传递给该函数的变量 必须是经过地址对齐的，否则可能会失败。</p>
+<p><strong>如果需要使用InterlockedExchangeAdd加一个负数值就可以</strong></p>
+<p>当需要实现一个循环的时候，InterlockedExchange是非常有用的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">BOOL g_fResourceInuser = FALSE;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Func1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(InterlockedExchange(&amp;g_fResourceInuser,TRUE) == TRUE)</span><br><span class="line">        Sleep(<span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    InterlockedExchanged(&amp;g_fResourceInuser,FALSE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>循环锁在多处理器计算机使用，因为当一个线程循环运行的时候，另外一个线程在另一个CPU上运行</strong></p>
+<p>互锁函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PVOID <span class="title">InterlockedCompareExchange</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	PLONG plDestination,</span></span></span><br><span class="line"><span class="function"><span class="params">    LONG lExchange,</span></span></span><br><span class="line"><span class="function"><span class="params">    LONG lComparand</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">PVOID <span class="title">InterlockedCompareExchangePointer</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	PVOID* ppvDestination,</span></span></span><br><span class="line"><span class="function"><span class="params">    PVOID pvExchange,</span></span></span><br><span class="line"><span class="function"><span class="params">    PVOID pvComparand</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这两个函数负责执行一个原子测试和设置操作。如果是32位应用程序，那么两个函数都在32位值上运行，但是，如果是64位应用程序，InterlockedCompareExchange函数在32位值上运行，而InterlockedCompareExchangePointer函数的值则在64位上运行。</p>
+<p>伪代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LONG <span class="title">InterlockedCompareExchange</span><span class="params">(PLONG plDestination,</span></span></span><br><span class="line"><span class="function"><span class="params">                                LONG lExchange,LONG lComparand)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LONG lRet = *plDestination;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(*plDestination == lComparand)</span><br><span class="line">    &#123;</span><br><span class="line">        *plDestination = lExchange;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (lRet);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数将Destination的值和Comparand比较。如果相同，则将Destination修改exchange。</p>
+<p>如果Destination的值不等于Comparand，则值不变。函数返回原来的pDestination值。所有这些操作都是以原子方式进行的。</p>
+<p>还有64位版本，用来处理已对齐的64位值。</p>
+<p>另外多个进程需要读一个共享内存段，也可以使用Interlocked函数。<br>LONG InterlockedIncrement(PLONG plAddend);</p>
+<p>LONG InterlockedDecrement(PLONG plAddend);</p>
+<p>还有一些列基于InterlockedCompareExchange64的OR， AND和XOR函数</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>InitializeSListHead</td>
+<td>创建一个空栈</td>
+</tr>
+<tr>
+<td>InterlockedPushEntrySList</td>
+<td>在栈顶添加一个元素</td>
+</tr>
+<tr>
+<td>InterlockedPopentrySList</td>
+<td>移除位于栈顶的元素并将它返回</td>
+</tr>
+<tr>
+<td>InterlockedFlushSlist</td>
+<td>清空栈</td>
+</tr>
+<tr>
+<td>QueryDepthSlist</td>
+<td>返回栈中元素的数量</td>
+</tr>
+</tbody></table>
+<h2 id="高速缓存行"><a href="#高速缓存行" class="headerlink" title="高速缓存行"></a>高速缓存行</h2><p>当一个CPU从内存读取一个字节时，它不只是去处一个字节，它要取出组后的字节来填入高速缓存行。告诉缓存行由32或64字节组成，并且始终在第32或64字节的边界上对齐。</p>
+<p>如果想为装配有多个处理器的机器构建高性能的应用程序，应该注意高速缓存行。</p>
+<ol>
+<li>CPU读取数据的时候并不是直接从内存中取回，而是取回一个高速缓存行。（根据CPU不同可能是32字节，64甚至128字节）</li>
+</ol>
+<p>​     2 .他们始终都对齐到32字节的边界（也可能是64,128字节）其目的是为了提高性能。</p>
+<ol start="3">
+<li>一般程序会对一组相邻的字节操作。如果所有字节都在高速缓存行中，那么CPU不会访问内存总线（后者消耗的时间高于前者）。</li>
+</ol>
+<p>在多处理器环境中，高速缓存行使得内存更新困难：</p>
+<ul>
+<li>CPU1读取一个字节，使该字节和它的相邻字节读入CPU1的高速缓存行</li>
+<li>CPU2读取同一个字节，使得第一步中的相同的各个字节读入CPU2的高速缓存行</li>
+<li>CPU1修改内存中的该字节，使得该字节被写入CPU1的高速缓存行，但是信息尚未写入RAM（内存）</li>
+<li>CPU2再次读取同一个字节。由于该字节已经放入CPU2的高速缓存行，因此它不必访问内存。但是CPU2将看不到内存中该字节的新值。</li>
+</ul>
+<p>为了解决这个问题，芯片设计者制定了一个规则。当一个 CPU 修改高速缓存行中的字节时，计算机中的其它 CPU 会被通知，它们的高速缓存将视为无效。于是，在上面的情况下， CPU2 发现自己的高速缓存中数据已无效， CPU1 将立即把自己的数据写回 RAM ，然后 CPU2 重新读取该数据。 可以看出，高速缓存行在多处理器上会导致一些不利。</p>
+<p>设计很差的数据结构的例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">CUSTINFO</span> &#123;</span></span><br><span class="line">	DWORD	dwCustomerID;	<span class="comment">// Mostly read-only</span></span><br><span class="line">	<span class="keyword">int</span>		nBalanceDue;	<span class="comment">// REad-write</span></span><br><span class="line">	<span class="keyword">wchar_t</span>	szName[<span class="number">100</span>];	<span class="comment">// Mostly read-only</span></span><br><span class="line">	FILETIME	ftLastOrderDate;	<span class="comment">// Read-write</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>改进版：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _X86_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CACHE_ALIGN 32</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _ALPHA_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CACHE_ALIGN 64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IA64_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CACHE_ALIGN ??</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CACHE_PAD(Name,ByteSoFar) BYTE Name[CACHE_ALIGN - ((BytesSoFar) % CACHE_ALIGN)]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">CUSTINFO</span>&#123;</span></span><br><span class="line">    DWORD dwCustomerID;</span><br><span class="line">    <span class="keyword">char</span> szName[<span class="number">100</span>];</span><br><span class="line">    </span><br><span class="line">    CACHE_PAD(bPadl,szieof(DWORD)+<span class="number">100</span>);</span><br><span class="line">    <span class="keyword">int</span> nBalanceDue;</span><br><span class="line">    FILETIME stLastOrderDate;</span><br><span class="line">    </span><br><span class="line">    CACHE_PAD(bPad2,<span class="keyword">sizeof</span>(<span class="keyword">int</span>)+<span class="keyword">sizeof</span>(FILETIME));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>要确定CPU的高速缓存行的大小，可以调用Win32的GetLogicalProcessorInformation</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">GetLogicalProcessorInformation(</span><br><span class="line">    _Out_writes_bytes_to_opt_(*ReturnedLength, *ReturnedLength) PSYSTEM_LOGICAL_PROCESSOR_INFORMATION Buffer,</span><br><span class="line">    _Inout_ PDWORD ReturnedLength</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>该函数会返回一个SYSTEM_LOGICAL_PROCESSOR_INFORMATION结构数组。<br>检查其Cache字段，该成员是一个CACHE_DESCRIPTOR的结构。其中的LineSize就是CPU高速缓存的大小。</p>
+<p>有了该信息可以使用C/C++编译器的__declspec(align(#))来只是对字段对其加以控制。以下是经过对其以后的数据额结构定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CACHE_ALIGN 64</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// Force each structure to be in a different cache line.</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">declspec</span>(<span class="title">align</span>(<span class="title">CACHE_ALIGN</span>)) <span class="title">CUSTINFO</span> &#123;</span></span><br><span class="line">	DWORD dwCustomerID;		<span class="comment">// Mostly read-only</span></span><br><span class="line">	<span class="keyword">wchar_t</span> szName[<span class="number">100</span>];	<span class="comment">// Mostly read-only</span></span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Force the following members to be in a different cache line.</span></span><br><span class="line">	__declspec(align(CACHE_ALIGN))</span><br><span class="line">	<span class="keyword">int</span> nBalanceDue;			<span class="comment">// Read-write</span></span><br><span class="line">	FILETIME ftLastOrderDate;	<span class="comment">// read-write</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>最好是只让一个线程访问数据（函数参数和局部变量是最简单的方法）</p>
+<p>或者只让一个CPU访问数据</p>
+<h2 id="高级线程同步"><a href="#高级线程同步" class="headerlink" title="高级线程同步"></a>高级线程同步</h2><p>旋转锁虽然对执行效率高，但是浪费cpu时间。尤其在单cpu上应该避免使用旋转锁。</p>
+<p>需要一种机制能让线程等待共享资源的访问权，又不会浪费cpu时间。</p>
+<p>调用一种操作系统函数将线程需要访问的资源或者需要等待的某种事件，传递给操作系统。线程自身将挂起。</p>
+<p>操作系统代理线程去检测目标资源是否可以使用，或者特殊事件是否已经发生了。（在这个过程中线程本身不会被调度，一直处于等待状态）。</p>
+<p><strong>需要避免使用的一种方法</strong></p>
+<p>如果没有同步对象，并且操作系统不能发现各种特殊事件，那么线程就不得不使用下面要<br>介绍的一种方法使自己与特殊事件保持同步。</p>
+<p>运用这种方法时，一个线程能够自己与另一个线程中的任务的完成实现同步，方法是不断<br>查询多个线程共享或可以访问的变量的状态。下面的代码段说明了这个情况：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> BOOL g_fFnishedCalculation = FALSE;</span><br><span class="line"> </span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">RecalcFunc</span><span class="params">(PVOID pvParam)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// Perform the recalculation.</span></span><br><span class="line">	<span class="comment">//..</span></span><br><span class="line">	g_fFnishedCalculation = TRUE;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc, TCHAR* argv[], TCHAR * env[])</span><br><span class="line">&#123;</span><br><span class="line">	CreateThread(..., RecalcFunc, ...);			<span class="comment">//创建线程</span></span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">	<span class="comment">// Wait for the recalculation to complete.</span></span><br><span class="line">	<span class="keyword">while</span> (!g_fFnishedCalculation)				<span class="comment">//非假即真</span></span><br><span class="line">		;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> BOOL变量g_f FinishedCalculation从来没有被设置为TRUE。当主线程的优先级高于执行 RecalcFunc函数的线程时，就会发生这种情况。在这种情况下，系统决不会将任何时间片分配给 RecalcFunc线程。</p>
+<h2 id="关键代码段"><a href="#关键代码段" class="headerlink" title="关键代码段"></a>关键代码段</h2><p>关键代码段指的是一个小代码段，在代码能够执行前，它必须独占对某些共享资源的访问权</p>
+<p>在当前线程离开临界区之前，系统是不会去调度任何想要访问同一资源的其他线程的。当前系统仍然可以暂停当前线程去调度其他线程。</p>
+<p><strong>当拥有一项可供多个线程访问的资源时，应该创建一个CRITICAL_SECTION结构</strong></p>
+<p>编写的需要使用共享资源的任何代码都必须封装在E n t e r C r i t i c a l S e c t i o n和L e a v e C r i t i c a l S e c t i o n函数中。如果忘记将代码封装在一个位置，共享资源就可能遭到破坏。例如，如果我删除了F r i s t T h r e a d线程对E n t e r C r i t i c a l S e c t i o n和L e a v e C r i t i c a l S e c t i o n的调用， g _ n I n d e x和g _ d w Ti m e s变量就会遭到破坏。即使S e c o n d T h r e a d线程仍然正确地调用E n t e r C r i t i c a l S e c ti o n和L e a v e C r i t i c a l S e c t i o n，也会出现这种情况。<br>忘记调用E n t e r C r i t i c a l S e c t i o n和L e a v e C r i t i c a l S e c t i o n函数就像是不请求允许进入厕<br>所。线程只是想努力挤入厕所并对资源进行操作。可以想象，只要有一个线程表现出<br>这种相当粗暴的行为，资源就会遭到破坏。</p>
+<p>临界区内部也使用了Interlock系的旋转锁，执行速度非常快。临界区的缺点在于无法在多个进程之间的线程进行同步。</p>
+<h3 id="关键代码段准确的描述"><a href="#关键代码段准确的描述" class="headerlink" title="关键代码段准确的描述"></a>关键代码段准确的描述</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">RTL_CRITICAL_SECTION</span> &#123;</span></span><br><span class="line">    PRTL_CRITICAL_SECTION_DEBUG DebugInfo;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">//  The following three fields control entering and exiting the critical</span></span><br><span class="line">    <span class="comment">//  section for the resource</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"> </span><br><span class="line">    LONG LockCount;</span><br><span class="line">    LONG RecursionCount;</span><br><span class="line">    HANDLE OwningThread;        <span class="comment">// from the thread's ClientId-&gt;UniqueThread</span></span><br><span class="line">    HANDLE LockSemaphore;</span><br><span class="line">    ULONG_PTR SpinCount;        <span class="comment">// force size on 64-bit systems when packed</span></span><br><span class="line">&#125; RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;</span><br></pre></td></tr></table></figure>
+
+<p>使用CRITICAL_SECTION 应该用WindowsAPI来操作其成员，不要私自修改。<br>1）所有访问资源的线程需要知道CRITICAL_SECTION结构的地址</p>
+<p>2）任何试图访问CRITICAL_SECTION的线程，需要将CRITICAL_SECTION的内部成员初始化。</p>
+<p>VOID InitializeCriticalSection(PCRITICAL_SECTION pcs);</p>
+<p>当线程不再需要临界区对象来保护共享资源时，</p>
+<p>VOID DeleteCriticalSection(PCRITICAL_SECTION pcs);</p>
+<p>EnterCriticalSection 会检查结构中的成员变量，这些变量表示是否有线程正在访问资源，以及哪个线程正在访问资源。</p>
+<p>1 )如果没有线程正在访问资源，EnterCriticalSection会更新成员变量，以表示调用线程已经获准对资源的访问，并立即返回。</p>
+<p>2）如果成员变量表示调用线程已经获准访问资源，那么EnterCriticalSection会更新变量，以表示线程被获准访问的次数，并立即放回。这样线程可以继续执行。（多次进入）</p>
+<p>3）如果成员变量表示有其他线程正在访问资源，那么EnterCriticalSection会使用一个事件内核对象把调用线程切换到等待状态。（调用线程被挂起，不会浪费CPU时间）</p>
+<p>操作系统会记住这个线程想要访问的资源，一旦当前正在访问的资源线程调用了LeaveCriticalSection，系统会自动更新CRITICAL_SECTION的成员变量并将等待中的线程切换回可调度状态。</p>
+<p>BOOL TryEnterCriticalSection（PCRITICAL_SECTION pcs）;（非阻塞）</p>
+<p>测试当前线程是否可以访问此资源，可以返回TRUE 否则FALSE 不会被挂起等待。</p>
+<p>若返回TRUE表示当前线程已经对次临界区对象有访问权，需要配一个LeaveCriticalSection</p>
+<p>VOID LeaveCriticalSection(PCRITICAL_SECTION pcs);</p>
+<p>该成员会递减CRITICAL_SECTION内部成员的线程引用计数器，如果计数器递减后为0.会更新成员变量，表示没有任何线程正在访问被保护的资源。</p>
+<p>同时会检测有没有其他线程由于调用了EnterCriticalSection而处于等待状态。</p>
+<p>如果有一个线程处于等待，则函数会更新成员变量，把其中一个处于等待的线程切换回可调度状态。</p>
+<h3 id="关键代码段与循环锁"><a href="#关键代码段与循环锁" class="headerlink" title="关键代码段与循环锁"></a>关键代码段与循环锁</h3><p>Microsoft为了提高关键段的性能（因为切换到内核模式等待需要1000个CPU周期），将旋转锁也合并入关键段。</p>
+<p>在一段时间内不断循环尝试获得自由的访问权，只有尝试失败的时候，线程才会切换到内核模式并进入等待状态。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Must_inspect_result_</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">InitializeCriticalSectionAndSpinCount(</span><br><span class="line">    _Out_ LPCRITICAL_SECTION lpCriticalSection,</span><br><span class="line">    _In_ DWORD dwSpinCount</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>第一个参数是关键段的地址，</p>
+<p>第二个参数是希望旋转锁循环的次数。在单处理器上设置循环次数毫无用处因此会被忽略dwSpinCount。</p>
+<p>调用以下函数改变关键段的旋转次数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">DWORD</span><br><span class="line">WINAPI</span><br><span class="line">SetCriticalSectionSpinCount(</span><br><span class="line">    _Inout_ LPCRITICAL_SECTION lpCriticalSection,</span><br><span class="line">    _In_ DWORD dwSpinCount</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>同样如果主机只有一个处理器，函数会忽略dwSpinCount参数。</p>
+<p>为了提高关键段的性能，应该同时使用旋转锁。通常保护进程堆关键段所使用的选中次数是4000.</p>
+<h3 id="关键代码段与错误处理"><a href="#关键代码段与错误处理" class="headerlink" title="关键代码段与错误处理"></a>关键代码段与错误处理</h3><p>在使用InitializeCriticalSection函数会分配一些内存，如果失败会抛出STATUS_NO_MEMORY异常。</p>
+<p>使用结构化异常可以捕获这个异常。</p>
+<p>InitializeCriticalSectionAndSpinCount也能发生这个问题，如果内存分配不成功其返回FALSE</p>
+<p>在多个线程抢占关键段资源的时候，系统会为其创建事件内核对象（挂起等待线程），所以在不使用某一个关键段时需要调用DeleteCriticalSection系统才会释放这个事件内核对象。</p>
+<p>在WinXP之前，内存不足的时候，EnterCriticalSection（创建事件内核对象）可能会抛出EXCEPTION_INVALID_HANDLE异常。</p>
+<p>使用InitializeCriticalSectionAndSpinCoun（dwSpinCount的参数最高位设为1）在初始化关键段时，同时初始化事件内核对象。如果无法创建事件内核对象， 那么函数会返回FALSE。</p>
+<p>但是总是创建事件内核对象可能会耗费系统资源。只有在以下3种情况下才必须这样</p>
+<p>1）不允许EnterCriticalSection失败</p>
+<p>2）线程抢占资源的情况一定会发生</p>
+<p>3）预计进程运行会在内存不足的环境下进行。</p>
+<h3 id="Slim-读-写锁"><a href="#Slim-读-写锁" class="headerlink" title="Slim 读/写锁"></a>Slim 读/写锁</h3><p>SRWLOCK. 区分那些想要读取资源的线程和更新资源的线程。</p>
+<p>允许同时读取资源，但是对写入资源加以保护。</p>
+<p>若资源被独占写入，任何其他线程，无论是读取还是写入都不允许访问资源。</p>
+<p>SRWLOCK srwLock;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">RTL_SRWLOCK</span> &#123;</span>                            </span><br><span class="line">        PVOID Ptr;                                       </span><br><span class="line">&#125; RTL_SRWLOCK, *PRTL_SRWLOCK;</span><br></pre></td></tr></table></figure>
+
+<p>因为其指向的地址是完全未公开的。不能编写代码来访问他。</p>
+<p>VOID InitalizeSRWLock(PSRWLOCK SRWLock); 初始化读写锁。</p>
+<p>对于需要写入资源的线程可以调用</p>
+<p>VOID AcquireSRWLockExclusive(PSRWLOCK SRWLock); 独占被保护资源</p>
+<p>VOID ReleaseSRWLockExclusive(PSRWLOCK SRWLock); 释放资源的锁定</p>
+<p>对于读取线程来说可以调用</p>
+<p>VOID AcquireSRWLockShared(PSRWLOCK SRWLock);</p>
+<p>VOID ReleaseSRWLockShared(PSRWLOCK SRWLock);</p>
+<p>不存在对SRWLOCK删除或销毁的函数，系统会自动进行清理工作。</p>
+<p>和CRITICAL_SECTION比较，读写锁有几个缺点<br>1）不存在TryEnter(Shared/Exclusive)SRWLock之类的函数，如果锁被占用，那么调用AcquireSRWLOCK（Shared/Exclusive)的线程会被阻塞。</p>
+<p>2）不能递归获得SRWLOCK ，也就是一个线程不能为了多次写入资源而多次锁定资源。然后再多次调用ReleaseSRWLock*来释放资源的锁定。</p>
+<p>对比不同的UserMode下的线程同步机制性能对比。</p>
+<p>对比</p>
+<p>Volatile</p>
+<p>Interlocked</p>
+<p>CRITICAL_SECTION</p>
+<p>SRWLock(Shared)</p>
+<p>SRWLock(Exclusive)</p>
+<p>Mutex</p>
+<p>分别使用以上的线程同步机制在多线程的情况下对全局变量（资源）进行读写操作。</p>
+<h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><p>有的时候需要让线程以原子方式把锁释放并将自己阻塞，直到某一个条件成立为止。可以使用条件变量</p>
+<p>SleepConditionVariableCS</p>
+<p>SleepConditionVariableSRW</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">SleepConditionVariableCS(</span><br><span class="line">    _Inout_ PCONDITION_VARIABLE ConditionVariable,</span><br><span class="line">    _Inout_ PCRITICAL_SECTION CriticalSection,</span><br><span class="line">    _In_ DWORD dwMilliseconds</span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">SleepConditionVariableSRW(</span><br><span class="line">    _Inout_ PCONDITION_VARIABLE ConditionVariable,</span><br><span class="line">    _Inout_ PSRWLOCK SRWLock,</span><br><span class="line">    _In_ DWORD dwMilliseconds,</span><br><span class="line">    _In_ ULONG Flags</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>参数ConditionVariable 指向一个已经初始化的条件变量，调用线程正在等待该条件变量。<br>第二个参数是执行临界区或者SRWLock的指针，传入的锁会被释放</p>
+<p>dwMilliseconds 用来等待的时间（也可以设定为INFINITE）</p>
+<p>第二个函数的Flag指定一旦条件变量被触发，我们希望线程以何种方式来得到锁。对于写入线程传入0（独占资源），对于读取线程传入CONDITION_VARIABLE_LOCKMODE_SHARED</p>
+<p>注意如果指定的时间用完，条件变量尚未触发，函数会返回FALSE，否则返回TRUE。 当返回FALSE时，线程显然并没有获得锁或临界区。</p>
+<p>当另一个线程想要触发条件以用于唤醒等待条件的线程可以调用一下函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">VOID</span><br><span class="line">WINAPI</span><br><span class="line">WakeConditionVariable(</span><br><span class="line">    _Inout_ PCONDITION_VARIABLE ConditionVariable</span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">WINBASEAPI</span><br><span class="line">VOID</span><br><span class="line">WINAPI</span><br><span class="line">WakeAllConditionVariable(</span><br><span class="line">    _Inout_ PCONDITION_VARIABLE ConditionVariable</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>这样被SleepConditonVariable*的线程会被唤醒。</p>
+<p>第一个函数只唤醒一个线程</p>
+<p>第二个可以唤醒多个线程</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年09月03日 - 10时02分</p>
+        <p><span>最后更新:</span>2019年09月03日 - 13时54分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/03/Windows-Kernel-8/" title="Windows-Kernel-8">https://systemk1t.github.io/2019/09/03/Windows-Kernel-8/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/03/Windows-Kernel-8/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2019/09/03/Windows-Kernel-9/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Windows-Kernel-9
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/02/Assembly-x86-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Assembly-x86-2</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#用户方式中线程的同步"><span class="toc-number">1.</span> <span class="toc-text">用户方式中线程的同步</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#原子访问：互锁的函数家族"><span class="toc-number">1.1.</span> <span class="toc-text">原子访问：互锁的函数家族</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高速缓存行"><span class="toc-number">1.2.</span> <span class="toc-text">高速缓存行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高级线程同步"><span class="toc-number">1.3.</span> <span class="toc-text">高级线程同步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关键代码段"><span class="toc-number">1.4.</span> <span class="toc-text">关键代码段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关键代码段准确的描述"><span class="toc-number">1.4.1.</span> <span class="toc-text">关键代码段准确的描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键代码段与循环锁"><span class="toc-number">1.4.2.</span> <span class="toc-text">关键代码段与循环锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键代码段与错误处理"><span class="toc-number">1.4.3.</span> <span class="toc-text">关键代码段与错误处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Slim-读-写锁"><span class="toc-number">1.4.4.</span> <span class="toc-text">Slim 读/写锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#条件变量"><span class="toc-number">1.4.5.</span> <span class="toc-text">条件变量</span></a></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/09/03/Windows-Kernel-9/" title="上一篇: Windows-Kernel-9">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/09/02/Assembly-x86-2/" title="下一篇: Assembly-x86-2">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>

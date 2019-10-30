@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Assembly-1 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间">
+<meta name="keywords" content="Assembly">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Assembly-1">
+<meta property="og:url" content="https://systemk1t.github.io/2019/08/22/Assembly-1/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-1/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-1/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-1/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-1/4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-1/5.png">
+<meta property="og:updated_time" content="2019-08-22T00:32:52.488Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Assembly-1">
+<meta name="twitter:description" content="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/08/22/Assembly-1/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Assembly-1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/08/22/Assembly-1/" class="article-date">
+      <time datetime="2019-08-21T22:40:42.000Z" itemprop="datePublished">2019-08-22</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Assembly-1
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/汇编语言/">汇编语言</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<h2 id="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间"><a href="#机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间" class="headerlink" title="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间"></a>机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间</h2><a id="more"></a>
+
+
+
+<h1 id="机器指令"><a href="#机器指令" class="headerlink" title="机器指令"></a>机器指令</h1><p>机器指令就是一串二进制数字，计算机在内部帮助我们做了什么事情呢，计算机会将这些二进制数字转换成高低点评，然后驱动计算机部件运行</p>
+<p>CPU中央处理器</p>
+<p>B4H                        40H</p>
+<p>1011 0100              0100 0000        –&gt;    机器指令        mov ah,40H （汇编指令）</p>
+<p>CDH                        21H</p>
+<p>1100 1101               0010 0001        –&gt;    机器指令        int 21H    （汇编指令）</p>
+<p>机器指令的弱点：万一写错一位数字，改起来是灾难</p>
+<p>汇编指令更加贴近人类的思维。</p>
+<p>mov    移动指令</p>
+<p>将40H移动到 一个叫AH的寄存器中</p>
+<p>将汇编指令翻译为机器指令的软件称为编译器</p>
+<p>汇编指令  –&gt;    翻译器    –&gt;010101010101</p>
+<p>伪指令    –&gt;    告诉翻译器，这里如何进行翻译，下一步如何进行翻译     没有对应的机器指令</p>
+<p>符号体系    –&gt;    +、-、*、/  没有对应的机器指令，由翻译器执行</p>
+<h1 id="指令和数据"><a href="#指令和数据" class="headerlink" title="指令和数据"></a>指令和数据</h1><p>CPU通过指令来控制整个计算机</p>
+<p>计算机内部有很多部件，它们都是有不同的分工的</p>
+<p>引入内存的概念：</p>
+<p>CPU在工作时需要对指令和数据进行区分</p>
+<p>指令和数据以什么形式存放在内存中：</p>
+<p>二进制方式存放在内存中，但是展示的时候，以十六进制进行展示</p>
+<p>内存的最小存储单元：字节（byte） =  2个十六进制数字   =  8个二进制数字   bit  比特</p>
+<p>1字节 =  8比特</p>
+<p>对存储单元进行编号方式：从0开始计数</p>
+<p>1byte = 8bit</p>
+<p>1kb = 1024byte</p>
+<p>1mb = 1024kb</p>
+<p>1gb = 1024mb</p>
+<p>1tb = 1024gb</p>
+<p>cpu通过内存的读写控制计算机</p>
+<p>问题：</p>
+<p>​    机器指令&lt;汇编指令&gt;和数据存放在哪里？    内存    （存储器）</p>
+<p>​    机器指令&lt;汇编指令&gt;和数据是以什么形式存在的？    二进制方式，展示的时候以十六进制方式</p>
+<p>​    内存（存储器编号）是怎么计算的？    由低到高，从0开始</p>
+<p>​    内存的计量单位？    byte</p>
+<p>在cpu中，用16位来存储一个字，高8位存放高字节，低8位存放低位字节。</p>
+<h1 id="二进制和内存编号"><a href="#二进制和内存编号" class="headerlink" title="二进制和内存编号"></a>二进制和内存编号</h1><p>存储器被划分成若干个存储单元，，每个存储单元从0开始排号</p>
+<p>计算机中的最小单位信息的bit(比特),也就是一个二进制位</p>
+<p>一个存储单元能存储一个Byte，即八个二进制位</p>
+<p>一个存储器中有128个存储单元，可以存储128个Byte</p>
+<h1 id="cpu对存储器的读写"><a href="#cpu对存储器的读写" class="headerlink" title="cpu对存储器的读写"></a>cpu对存储器的读写</h1><p>存储单元的地址（地址信息）</p>
+<p>器件的选择，独活写的命令(控制信息)</p>
+<p>独活写的数据(数据信息)</p>
+<h1 id="地址总线"><a href="#地址总线" class="headerlink" title="地址总线"></a>地址总线</h1><p>10根地址线的CPU向内存发出地址信息11时10根线上传递的二进制信息</p>
+<p>访问地址为12：</p>
+<p>0000001100</p>
+<p>访问地址为13：</p>
+<p>0000001101</p>
+<p>访问地址为14：</p>
+<p>0000001110</p>
+<h1 id="数据总线"><a href="#数据总线" class="headerlink" title="数据总线"></a>数据总线</h1><p>8088CPU的数据总线宽度为8，8086CPU的数据总线宽度为16.</p>
+<p>例如传递数据为89D8H的时候，他就会把数据分开传输。</p>
+<p>8088CPU分两次传输，第一次传输D8，第二次传输89.</p>
+<p><img src="//systemk1t.github.io/2019/08/22/Assembly-1/0.png" alt></p>
+<p>8086CPU传输，他有16根数据线，可一次传输16位数据，所以可以一次性传输</p>
+<p><img src="//systemk1t.github.io/2019/08/22/Assembly-1/1.png" alt></p>
+<h1 id="控制总线"><a href="#控制总线" class="headerlink" title="控制总线"></a>控制总线</h1><p>CPU对外部器件的控制是通过控制总线来进行的</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>1.汇编指令是机器指令的助记符，同机器指令–对应</p>
+<p>2.每一种CPU都有自己的汇编指令集 比如intel amd arm</p>
+<p>3.CPU可以直接使用的信息在存储器中存放</p>
+<p>4.在存储器中指令和数据没有任何区别，都是二进制信息</p>
+<p>5.存储单元从零开始排序</p>
+<p>6.一个存储单元存储8个bit，即8个二进制数，也称8个二进制位</p>
+<p>7.1Byte = 8bit   1kb = 1024B   1MB  = 1024KB    1GB = 1024MB     1TB   = 1024 MB   转换</p>
+<p>8.每一个CPU芯片都有许多管脚，这些管教和总线相连。也可以说，这些管脚引出总线，一个CPU可以引出三种总线的宽度标志了这个CPU的不同方面的性能</p>
+<p>​    地址总线的宽度决定了CPU的寻址能力</p>
+<p>​    数据总线的宽度决定了CPU与其他器件进行数据传送时一次数据传送量</p>
+<p>​    控制总线的宽度决定了CPU对系统中其他器件的控制能力</p>
+<h1 id="内存地址空间"><a href="#内存地址空间" class="headerlink" title="内存地址空间"></a>内存地址空间</h1><p>一个CPU的地址总线宽度为10，那么可以寻址1024个内存单元，这1024个可寻到的内存单元构成了这个CPU的内存地址空间</p>
+<h1 id="主板"><a href="#主板" class="headerlink" title="主板"></a>主板</h1><p>每一个PC机器中，都有一个主板，主板上有核心几千和一些主要器件，这些器件通过三条总线（地址总线、数据总线、控制总线）相连。</p>
+<h1 id="接口卡"><a href="#接口卡" class="headerlink" title="接口卡"></a>接口卡</h1><p>CPU对外部设备不能直接控制，如显示器、音响等，直接控制这些设备工作的是插在扩展插槽上的接口卡。</p>
+<p>扩展插槽通过总线和CPU相连，所以接口卡也通过总线同CPU相连。</p>
+<h1 id="各类存储器芯片"><a href="#各类存储器芯片" class="headerlink" title="各类存储器芯片"></a>各类存储器芯片</h1><p>随机存储器：主随机存储器一般由两个位置上的RAM组成，装在主板上的RAM和插在扩展槽上的RAM。</p>
+<p>装有BIOS的ROM：例如主板上的ROM中存储着主板的BIOS（俗称BIOS芯片）</p>
+<p>接口卡上RAM：最典型的就是显卡上的RAM，一般称为显存，显卡的显存越大，一般来说，打游戏越流畅。</p>
+<p><img src="//systemk1t.github.io/2019/08/22/Assembly-1/3.png" alt></p>
+<h1 id="内存地址空间-1"><a href="#内存地址空间-1" class="headerlink" title="内存地址空间"></a>内存地址空间</h1><p>上述的存储器都是在物理上独立的器件。</p>
+<p><strong>都和cpu总线相连</strong></p>
+<p><strong>cpu对他们进行读写的时候通过控制线发出内存读写命令</strong></p>
+<p>这也就是说，cpu在操纵他们的时候，都是把他们当作内存来处理的，把他们看成一个由多个存储单元组成的逻辑存储器，这个逻辑存储器就是我们所属的内存地址空间。</p>
+<p><img src="//systemk1t.github.io/2019/08/22/Assembly-1/4.png" alt></p>
+<p>所有的物理存储器都被看做一个或多个存储单元组成的逻辑存储器，每个物理存储器在这个逻辑存储器中占有一个地址段，即一段地址空间。</p>
+<p>cpu在这段地址空间中读写数据，实际上就是在相对应的物理存储器中读写数据。</p>
+<p>8086PC机内存地址分配表</p>
+<p><img src="//systemk1t.github.io/2019/08/22/Assembly-1/5.png" alt="8086pc机内存地址分配表"></p>
+<p><strong>最终运行程序的是CPU，对CPU来说，系统中所有存储器中的存储单元都处于一个统计的逻辑存储器中，它的容量受CPU寻址能力的限制，这个逻辑存储器就是我们通常说的内存地址空间</strong></p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/08/22/Assembly-1/">Assembly-1</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年08月22日 - 06时40分</p>
+        <p><span>最后更新:</span>2019年08月22日 - 08时32分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/22/Assembly-1/" title="Assembly-1">https://systemk1t.github.io/2019/08/22/Assembly-1/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/08/22/Assembly-1/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2019/08/22/Assembly-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Assembly-2
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/22/c语言第六章/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">c语言第六章</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间"><span class="toc-number">1.</span> <span class="toc-text">机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#机器指令"><span class="toc-number"></span> <span class="toc-text">机器指令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#指令和数据"><span class="toc-number"></span> <span class="toc-text">指令和数据</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二进制和内存编号"><span class="toc-number"></span> <span class="toc-text">二进制和内存编号</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cpu对存储器的读写"><span class="toc-number"></span> <span class="toc-text">cpu对存储器的读写</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#地址总线"><span class="toc-number"></span> <span class="toc-text">地址总线</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#数据总线"><span class="toc-number"></span> <span class="toc-text">数据总线</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#控制总线"><span class="toc-number"></span> <span class="toc-text">控制总线</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number"></span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内存地址空间"><span class="toc-number"></span> <span class="toc-text">内存地址空间</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#主板"><span class="toc-number"></span> <span class="toc-text">主板</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#接口卡"><span class="toc-number"></span> <span class="toc-text">接口卡</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#各类存储器芯片"><span class="toc-number"></span> <span class="toc-text">各类存储器芯片</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内存地址空间-1"><span class="toc-number"></span> <span class="toc-text">内存地址空间</span></a>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/08/22/Assembly-2/" title="上一篇: Assembly-2">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/08/22/c语言第六章/" title="下一篇: c语言第六章">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>

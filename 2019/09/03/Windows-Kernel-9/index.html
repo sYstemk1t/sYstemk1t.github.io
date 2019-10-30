@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Windows-Kernel-9 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="线程与内核对象的同步">
+<meta name="keywords" content="Windows-Kernel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows-Kernel-9">
+<meta property="og:url" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="线程与内核对象的同步">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/4.png">
+<meta property="og:updated_time" content="2019-09-03T09:56:05.154Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows-Kernel-9">
+<meta name="twitter:description" content="线程与内核对象的同步">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Windows-Kernel-9" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/09/03/Windows-Kernel-9/" class="article-date">
+      <time datetime="2019-09-03T06:12:32.000Z" itemprop="datePublished">2019-09-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows-Kernel-9
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="线程与内核对象的同步"><a href="#线程与内核对象的同步" class="headerlink" title="线程与内核对象的同步"></a>线程与内核对象的同步</h1><a id="more"></a>
+
+<p>用户模式下的线程同步高性能，但是存在一些局限。例如无法进行进程间线程的同步，Iterlocked系函数不会把线程切换到等待状态，</p>
+<p>进入临界区无法设置最长等待时间等。</p>
+<p>内核对象来进行线程同步，功能强大许多。但是唯一的缺点就是性能。</p>
+<p>对于线程内核对象可能处于触发（signaled）和未触发（nosignaled）</p>
+<p>进程内核对象，在创建时其内部有一个BOOL变量是FALSE， 单进程终止时该内核对象会变成TRUE 表示已经触发</p>
+<p>但是这个过程是不可逆的。</p>
+<p>以下列出可能处于未触发也可以处于触发状态的内核对象：</p>
+<p>进程，线程，作业，文件以及控制台的标准输入流/输出流/错误流</p>
+<p>事件，可等待的计时器， 信号量，互斥量</p>
+<h2 id="等待函数"><a href="#等待函数" class="headerlink" title="等待函数"></a>等待函数</h2><p>等待函数可使线程自愿进入等待状态，直到一个特定的内核对象变为已通知状态。</p>
+<p>WaitForSingleObject:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DWORD WaitForSingleObject&#123;</span><br><span class="line">    HANDLE hObject,</span><br><span class="line">    DWORD dwMilliseconds</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>当线程调用该函数时，第一个参数hObject标识一个能够支持被通告/未通告的内核对象。</p>
+<p>第二个参数dwMilliseconds允许该线程指明，为了等待该对象变为已通知状态，它将等待多久。</p>
+<p>INFINITE是作为第二个参数传递给WaitForSingleObject，直到该进程终止运行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DWORD dw = WaitForSingleObject(hProcess,<span class="number">5000</span>);</span><br><span class="line"><span class="keyword">switch</span>(dw)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">case</span> WAIT_OBJECT_0:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> WAIT_TIMEOUT:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> WAIT_FAILED:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>WaitForSingleObject的返回值表示为什么调用线程又能继续执行了。</p>
+<p>WaitForMultipleObjects与WaitForSingleObject函数相似，区别于允许调用线程的同时查看若干个内核对象的已通知状态：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">WaitForMultipleObjects</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	DWORD dwCount,</span></span></span><br><span class="line"><span class="function"><span class="params">    CONST HANDLE* phObjects,</span></span></span><br><span class="line"><span class="function"><span class="params">    BOOL fWaitAll,</span></span></span><br><span class="line"><span class="function"><span class="params">    DWORD dwMilliseconds</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>dwCount参数在用于指明要让函数查看的内核对象的数量。这个值介于1-64；</p>
+<p>phObjects参数是指向内核对象句柄的数组的指针；</p>
+<p>fWaitAll参数高速该函数，你想以何种方式调用，如果传递未TRUE，那么在所有对象变为已通知之前，该函数不允许调用线程运行；</p>
+<p>dwMilliseconds函数的作用是如果在等待的时候规定的时间到了，那么该函数无论如何都返回。</p>
+<p>WaitForMultipleObjects的返回值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">HANDLE h[<span class="number">3</span>];</span><br><span class="line">h[<span class="number">0</span>] = hProcess1;</span><br><span class="line">h[<span class="number">1</span>] = hProcess2;</span><br><span class="line">h[<span class="number">2</span>] = hProcess3;</span><br><span class="line">DWORD dw = WaitForMultipleObjects(<span class="number">3</span>, h, FALSE, <span class="number">5000</span>);</span><br><span class="line"><span class="keyword">switch</span> (dw) &#123;</span><br><span class="line"><span class="keyword">case</span> WAIT_FAILED:</span><br><span class="line">	<span class="comment">// Bad call to function (invalid handle?)</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> WAIT_TIMEOUT:</span><br><span class="line">	<span class="comment">// None of the objects became signaled within 5000 milliseconds.</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> WAIT_OBJECT_0 + <span class="number">0</span>:</span><br><span class="line">	<span class="comment">// The process identified by h[0] (hProcess1) terminated.</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> WAIT_OBJECT_0 + <span class="number">1</span>:</span><br><span class="line">	<span class="comment">// The process identified by h[1] (hProcess1) terminated.</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> WAIT_OBJECT_0 + <span class="number">2</span>:</span><br><span class="line">	<span class="comment">// The process identified by h[2] (hProcess1) terminated.</span></span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果给bWaitAll传递TRUE那么所有内核对象都触发了以后返回值WAIT_OBJECT_0</p>
+<h2 id="成功等待的副作用"><a href="#成功等待的副作用" class="headerlink" title="成功等待的副作用"></a>成功等待的副作用</h2><p>成功的调用WaitForMultipleObjects和WaitForSingleObject，实际上会改变对象的状态。成功的调用是指函数发现对象已经得到通知并且返回一个相对于WAIT_OBJECT_0的值，如果返回WAIT_TIMEOUT或WAIT_FAILED,那么调用就没有成功，没有成功的调用，内核状态也不会有任何改变。</p>
+<p>当一个线程调度WaitForMultipleObjects的时候，该函数能测试所有对象的通知状态，并且能够将所有必要的副作用作为一项操作来执行。</p>
+<p>两个线程相同的方式调用WaitForMultipleObjects:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HANDLE h[<span class="number">2</span>];</span><br><span class="line">h[<span class="number">0</span>] = hAutoResetEvent1;</span><br><span class="line">h[<span class="number">1</span>] = hAutoResetEvent2;</span><br><span class="line">WaitForMultipleObjects(<span class="number">2</span>,h,TRUE,INFINITE);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>两个线程相同的代码</li>
+<li>其中一个线程的状态被修改为已通知状态，两个线程都发现，该时间已经变成了已通知，但无法唤醒，所以线程继续等待</li>
+<li>另外一个线程的状态也已经被触发，其中一个线程检测到两个事件都触发以后，将两个线程又重新设置为非触发状态并返回</li>
+<li>另一个线程会继续等待直到两个事件同时触发为止</li>
+</ul>
+<p>WaitForMultipleObjects是以原子操做的方式工作的，当他检查内核对象的状态时，任何其他线程都不能在背后修改对象的状态。这就防止了死锁的发生。</p>
+<h2 id="事件内核对象"><a href="#事件内核对象" class="headerlink" title="事件内核对象"></a>事件内核对象</h2><p>事件包含一个使用计数器，一个用来标识事件是自动重置还是手动重置的布尔值，以及另一个布尔值用来表示事件有没有被触发。</p>
+<p>当一个手动重置事件被触发的时候，正在等待该事件的所有线程都变成可调度状态。</p>
+<p>当一个自动重置事件被触发时，只有一个正在等待该事件的线程会变成可调度状态。</p>
+<p>事件常用于让一个线程执行初始化工作，然后再触发另一个线程，让它执行剩余的工作。</p>
+<p>下面是CreateEvent函数，用于创建内核事件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateEvent</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	PSECURITY_ATTRIBUTES psa,</span></span></span><br><span class="line"><span class="function"><span class="params">    BOOL fManmulReset,</span></span></span><br><span class="line"><span class="function"><span class="params">    BOOL fInitalState,</span></span></span><br><span class="line"><span class="function"><span class="params">    PCTSTR pszName</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>fManmulReset的参数是个布尔值，它高速系统创建一个人工重置（TRUE）的事件还是自动重置（FALSE）的事件。</p>
+<p>fInitalState参数用于指明该事件是要初始化为已通知（TRUE）或未通知（FALSE）。</p>
+<p>CreateEvent就将与进程相关的句柄返回给事件对象。</p>
+<p><strong>其他进程中的线程可以获得该对象的访问权，方法是使用pszName参数中传递相同的值，使用继承性</strong></p>
+<p>还有一个CreateEventEx函数用于创建事件。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">CreateEventExW(</span><br><span class="line">    _In_opt_ LPSECURITY_ATTRIBUTES lpEventAttributes,</span><br><span class="line">    _In_opt_ LPCWSTR lpName,</span><br><span class="line">    _In_ DWORD dwFlags,</span><br><span class="line">    _In_ DWORD dwDesiredAccess</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>dwFlags参数可以接受两个位的掩码</p>
+<p><img src="//systemk1t.github.io/2019/09/03/Windows-Kernel-9/0.png" alt></p>
+<p>打开这个内核对象：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">OpenEvent</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	DWORD fdwAccess,</span></span></span><br><span class="line"><span class="function"><span class="params">    BOOL fInherit,</span></span></span><br><span class="line"><span class="function"><span class="params">    PCTSTR pszName</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>打开一定要记得关闭，CloseHandle函数</strong></p>
+<p>一旦我们不需要事件内核对象的时候调用closehandlel来关闭。通过调用SetEvent可以直接控制它的状态，变成触发状态，使用ResetEvent使得事件变成未触发状态。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BOOL SetEvent（HANDLE hEvent）；  <span class="comment">//已通知</span></span><br><span class="line"><span class="function">BOOL <span class="title">ResetEvent</span><span class="params">(HANDLE hEvent)</span></span>;    <span class="comment">//未通知</span></span><br></pre></td></tr></table></figure>
+
+<p>自动事件由于等待成功所引起的副作用的影响，当事件被线程等待以后会自动设置为非触发，因此不需要ResetEvent。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">HANDLE g_hEvent;</span><br><span class="line"> </span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">WordCount</span><span class="params">(PVOID pvParam)</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Wait until the file's data is in memory.</span></span><br><span class="line">	WaitForSingleObject(g_hEvent, INFINITE);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Access the memory block.</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SpellCheck</span><span class="params">(PVOID pvParam)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Wait until the file's data is in memory.</span></span><br><span class="line">	WaitForSingleObject(g_hEvent, INFINITE);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Access the memory block.</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">GrammarCheck</span><span class="params">(PVOID pvParam)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Wait until the file's data is in memory.</span></span><br><span class="line">	WaitForSingleObject(g_hEvent, INFINITE);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Access the memory block.</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc, TCHAR* argv[], TCHAR * env[])</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// Crate the manual-reset, nosignaled event.</span></span><br><span class="line">	g_hEvent = CreateEvent(<span class="literal">NULL</span>, TRUE, FALSE, <span class="literal">NULL</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Spawn 3 new threads.</span></span><br><span class="line">	HANDLE hThread[<span class="number">3</span>];</span><br><span class="line">	DWORD dwThreadID;</span><br><span class="line">	hThread[<span class="number">0</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, WordCount, <span class="literal">NULL</span>, <span class="number">0</span>, &amp;dwThreadID);</span><br><span class="line">	hThread[<span class="number">1</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, SpellCheck, <span class="literal">NULL</span>, <span class="number">0</span>, &amp;dwThreadID);</span><br><span class="line">	hThread[<span class="number">2</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, GrammarCheck, <span class="literal">NULL</span>, <span class="number">0</span>, &amp;dwThreadID);</span><br><span class="line"> </span><br><span class="line">	OpenFileAndReadContentsIntoMemory(...);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Allow all 3 threads to access the memory.</span></span><br><span class="line">	SetEvent(g_hEvent);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为这里使用了手动重置事件，所以当主线程准备好数据以后3个子线程都能同时运行。</p>
+<p>如果使用自动重置事件，那么3个子线程只会有一个能继续运行。为了让3个子线程都能执行代码，修改了一下3个子线程的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD WINAPI <span class="title">WordCount</span><span class="params">(PVOID pvParam)</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Wait until the file's data is in memory.</span></span><br><span class="line">	WaitForSingleObject(g_hEvent, INFINITE);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Access the memory block.</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	SetEvent(g_hEvent);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SpellCheck</span><span class="params">(PVOID pvParam)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Wait until the file's data is in memory.</span></span><br><span class="line">	WaitForSingleObject(g_hEvent, INFINITE);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Access the memory block.</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	SetEvent(g_hEvent);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">GrammarCheck</span><span class="params">(PVOID pvParam)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Wait until the file's data is in memory.</span></span><br><span class="line">	WaitForSingleObject(g_hEvent, INFINITE);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Access the memory block.</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	SetEvent(g_hEvent);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个3个线程都会被系统调用，而且每个线程都能独占的读写资源。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">PulseEvent</span><span class="params">(HANDLE hEvent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>将一个事件变成触发状态以后立即恢复到未触发状态。</p>
+<p><a href="https://blog.csdn.net/zhou191954/article/details/13614903" target="_blank" rel="noopener">Handshake</a></p>
+<h2 id="等待定时器内核对象"><a href="#等待定时器内核对象" class="headerlink" title="等待定时器内核对象"></a>等待定时器内核对象</h2><p>可等待的计时器是这样一种内核对象：他们会在某个指定的时间触发，或每间隔一段时间触发。</p>
+<p>创建一个可等待的计时器使用CreateWaitableTimerW</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">CreateWaitableTimerW(</span><br><span class="line">    _In_opt_ LPSECURITY_ATTRIBUTES lpTimerAttributes,</span><br><span class="line">    _In_     BOOL bManualReset,</span><br><span class="line">    _In_opt_ LPCWSTR lpTimerName</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>打开一个可等待的计数器</p>
+<p>OpenWaitableTimerW</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenWaitableTimerW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpTimerName</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>bManualReset表示要创建的是手动重置还是自动重置的计时器。</p>
+<p>手动重置，等待该计时器的所有线程都变成可调度状态</p>
+<p>自动重置，只有一个等待该计时器的线程会变成可调度状态</p>
+<p>调用SetWaitableTimer设置计时器，能让其触发</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">SetWaitableTimer(</span><br><span class="line">    _In_ HANDLE hTimer,</span><br><span class="line">    _In_ <span class="keyword">const</span> LARGE_INTEGER * lpDueTime,</span><br><span class="line">    _In_ LONG lPeriod,</span><br><span class="line">    _In_opt_ PTIMERAPCROUTINE pfnCompletionRoutine,</span><br><span class="line">    _In_opt_ LPVOID lpArgToCompletionRoutine,</span><br><span class="line">    _In_ BOOL fResume</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>Timer ：计时器内核对象句柄</p>
+<p>pDueTime ： 计时器第一次触发的时间应该在什么时候</p>
+<p>lPeriod：计时器在第一次触发以后应该以怎样的频度触发。</p>
+<p>例如以下代码把计时器第一次触发时间设为2019年9月3日下午6:00，以后每间隔6小时触发一次：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Declare our local variables.</span></span><br><span class="line">HANDLE				hTimer;</span><br><span class="line">SYSTEMTIME			st;</span><br><span class="line">FILETIME			ftLocal, ftUTC;</span><br><span class="line">LARGE_INTEGER		liUTC;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create an auto-reset timer.</span></span><br><span class="line">hTimer = CreateWaitableTimer(<span class="literal">NULL</span>, FALSE, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// First signaling is a January 1, 2018, at 1:00 P.M. (local time).</span></span><br><span class="line">st.wYear			= <span class="number">2019</span>;	<span class="comment">// Year</span></span><br><span class="line">st.wMonth			= <span class="number">9</span>;	<span class="comment">// January</span></span><br><span class="line">st.wDayOfWeek		= <span class="number">3</span>;	<span class="comment">// Ignored</span></span><br><span class="line">st.wDay				= <span class="number">6</span>;	<span class="comment">// The first of the month</span></span><br><span class="line">st.wHour			= <span class="number">13</span>;	<span class="comment">// 1PM</span></span><br><span class="line">st.wMinute			= <span class="number">0</span>;	<span class="comment">// 0 minutes into the hour</span></span><br><span class="line">st.wSecond			= <span class="number">0</span>;	<span class="comment">// 0 seconds into the minute</span></span><br><span class="line">st.wMilliseconds	= <span class="number">0</span>;	<span class="comment">// 0 milliseconds into the second</span></span><br><span class="line"></span><br><span class="line">SystemTimeToFileTime(&amp;st, &amp;ftLocal);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Convet local time to UTC time.</span></span><br><span class="line">LocalFileTimeToFileTime(&amp;ftLocal, &amp;ftUTC);</span><br><span class="line"><span class="comment">// Convert FILETIME to LARGE_INTEGER because of different alignment.</span></span><br><span class="line">liUTC.LowPart = ftUTC.dwLowDateTime;</span><br><span class="line">liUTC.HighPart = ftUTC.dwHighDateTime;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set the timer.</span></span><br><span class="line">SetWaitableTimer(hTimer, &amp;liUTC, <span class="number">6</span> * <span class="number">60</span> * <span class="number">60</span> * <span class="number">1000</span>,</span><br><span class="line">	<span class="literal">NULL</span>, <span class="literal">NULL</span>, FALSE);</span><br></pre></td></tr></table></figure>
+
+<p>注意这里有一个FILETIME 和LARGE_INTEGER结构转换的问题</p>
+<p>因为前者是32位对齐，后者是64位对齐。如果直接传递可能会导致对齐错误抛出一个（EXCEPTION_DATATYPE_MISALIGNMENT异常）</p>
+<p>还可以给pDueTime传入一个相对时间，给其传入负值。（100纳秒的整数倍）</p>
+<p>1秒 = 1000 毫秒 = 1000 000 微妙 = 10 000 000 （个 100 纳秒）</p>
+<p>以下例子把计时器第一次触发时间设置为SetWaitableTimer调用结束的5秒钟后；</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Declare our local variables.</span></span><br><span class="line">HANDLE				hTimer;</span><br><span class="line">LARGE_INTEGER		li;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create an auto-reset timer.</span></span><br><span class="line">hTimer = CreateWaitableTimer(<span class="literal">NULL</span>, FALSE, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set the timer to go off 5 seconds after calling SetWaitableTimer.</span></span><br><span class="line"><span class="comment">// Timer unit is 100 nanoseconds.</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> nTimerUnitsPerSecond = <span class="number">10000000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Negate the time so that SetWaitableTimer knows we</span></span><br><span class="line"><span class="comment">// want relative time instead of absolute time.</span></span><br><span class="line">li.QuadPart = -(<span class="number">5</span> * nTimerUnitsPerSecond);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set the timer.</span></span><br><span class="line">SetWaitableTimer(hTimer, &amp;li, <span class="number">6</span> * <span class="number">60</span> * <span class="number">60</span> * <span class="number">1000</span>,</span><br><span class="line">	<span class="literal">NULL</span>, <span class="literal">NULL</span>, FALSE);</span><br></pre></td></tr></table></figure>
+
+<p>对于一次性计时器，只要给lPeriod 传递0 。然后调用CloseHandle关闭计时器即可。 或者调用SetWaitableTimer来重置计时器。</p>
+<p>bResume（TRUE） 会使的计算机结束挂起模式（如果机器处于挂起模式下）并唤醒等待该计时器的线程。</p>
+<p>FALSE 计时器会被触发，但是在机器继续执行前（挂起状态），被唤醒的线程都得不到CPU时间。</p>
+<p>取消计时器内核对象句柄所对应的计时器：CancelWaitableTimer</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">CancelWaitableTimer(</span><br><span class="line">    _In_ HANDLE hTimer</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>另外每次调用SetWaitableTimer都会重置计时器。</p>
+<p>一个倒计时的例子。从9倒计时到0</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Shlobj.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;strsafe.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;malloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;process.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;winnt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// Declare our local variables.</span></span><br><span class="line">HANDLE				hTimer;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">unsigned</span> __<span class="function">stdcall <span class="title">OnTimer</span><span class="params">(<span class="keyword">void</span> * param)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> nCount = <span class="number">10</span>;</span><br><span class="line">	<span class="keyword">while</span> (nCount--) &#123;</span><br><span class="line">		WaitForSingleObject(hTimer, INFINITE);</span><br><span class="line">		_tprintf(TEXT(<span class="string">"count:\t%d\n"</span>), nCount);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc, TCHAR* argv[], TCHAR * env[])</span><br><span class="line">&#123;</span><br><span class="line"> </span><br><span class="line">	LARGE_INTEGER		li;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Create an auto-reset timer.</span></span><br><span class="line">	hTimer = CreateWaitableTimer(<span class="literal">NULL</span>, FALSE, <span class="literal">NULL</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Set the timer to go off 5 seconds after calling SetWaitableTimer.</span></span><br><span class="line">	<span class="comment">// Timer unit is 100 nanoseconds.</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> nTimerUnitsPerSecond = <span class="number">10000000</span>;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Negate the time so that SetWaitableTimer knows we</span></span><br><span class="line">	<span class="comment">// want relative time instead of absolute time.</span></span><br><span class="line">	li.QuadPart = -(<span class="number">5</span> * nTimerUnitsPerSecond);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Set the timer.</span></span><br><span class="line">	SetWaitableTimer(hTimer, &amp;li, <span class="number">1000</span>,</span><br><span class="line">		<span class="literal">NULL</span>, <span class="literal">NULL</span>, FALSE);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// Create the OnTimer Thread</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> ThreadID;</span><br><span class="line">	HANDLE hThread = (HANDLE)_beginthreadex(<span class="literal">NULL</span>, <span class="number">0</span>, OnTimer, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;ThreadID);</span><br><span class="line"> </span><br><span class="line">	WaitForSingleObject(hThread, INFINITE);</span><br><span class="line">	</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="//systemk1t.github.io/2019/09/03/Windows-Kernel-9/1.png" alt></p>
+<h3 id="让可等待的计时器添加APC调用"><a href="#让可等待的计时器添加APC调用" class="headerlink" title="让可等待的计时器添加APC调用"></a>让可等待的计时器添加APC调用</h3><p>APC异步过程调用（asynchronous procedure call）</p>
+<p>SetWaitableTimer允许传入一个APC过程，触发了计时器会调用该过程。</p>
+<p>当计时器触发时，当且仅当SetWaitableTimer调用的线程处于可提醒状态（Alertable stabe）（SleepEx, WaitForSingleObjectEx, WaitForMultipleObjectEx, MsgWaitForMultipleObjectEx,SignalObjectAndWait而进入的状态）</p>
+<p>如果非处于可提醒状态，系统不会把计时器的APC函数添加到队列中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TimerAPCRoutine.cpp : 定义控制台应用程序的入口点。</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GetSystemTime</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">VOID CALLBACK <span class="title">TimerAPCRoutinue</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	_In_opt_ LPVOID lpArgToCompletionRoutine,</span></span></span><br><span class="line"><span class="function"><span class="params">	_In_     DWORD  dwTimerLowValue,</span></span></span><br><span class="line"><span class="function"><span class="params">	_In_     DWORD  dwTimerHighValue</span></span></span><br><span class="line"><span class="function"><span class="params">	)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LARGE_INTEGER DueTime;</span><br><span class="line">	DueTime.QuadPart = <span class="number">-30</span>;</span><br><span class="line"></span><br><span class="line">	HANDLE TimeHandle = <span class="literal">NULL</span>;</span><br><span class="line">	TimeHandle =</span><br><span class="line">		CreateWaitableTimer(</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		<span class="comment">//TRUE, //BOOL  bManualReset</span></span><br><span class="line">		FALSE,</span><br><span class="line">		<span class="literal">NULL</span></span><br><span class="line">		);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!SetWaitableTimer(</span><br><span class="line">		TimeHandle,</span><br><span class="line">		&amp;DueTime, <span class="comment">//第一次，The time after which the state of the timer is to be set to signaled</span></span><br><span class="line">		<span class="number">1000</span>, <span class="comment">//第二次执行与第一次执行的间隔   周期 1秒       The period of the timer</span></span><br><span class="line">		TimerAPCRoutinue,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		<span class="number">0</span></span><br><span class="line">		)</span><br><span class="line">		)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"SetWaitableTimer FAIL: %d  \r\n"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//进入可提醒状态  可提醒IO </span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	while (1)</span></span><br><span class="line"><span class="comment">	&#123;</span></span><br><span class="line"><span class="comment">	WaitForSingleObjectEx(TimeHandle, INFINITE,TRUE);</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">	<span class="comment">//这里的话只能走2次，应该是等待时间的问题</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	指针放到APC中，还没有执行，后面一次就来了。要使用SleepEx</span></span><br><span class="line"><span class="comment">	感觉这里WaitFoeSingleObjectEx 不同的地方</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//WaitForSingleObjectEx(TimeHandle, INFINITE,TRUE); //阻塞不住</span></span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		windows核心编程 p250</span></span><br><span class="line"><span class="comment">		线程不应该在等待一个计时器句柄的同时以可提醒的方式等待同一个计时器。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">		HANDLE hTimer = CreateWaitableTimer(NULL,FALSE,NULL);</span></span><br><span class="line"><span class="comment">		SetWaitableTimer(hTimer,...,TimerAPCRoutinyr,...);</span></span><br><span class="line"><span class="comment">		WaitForSingleObjectEx(hTimer,INFINTE,TRUE);</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">		我们不应该编写此类代码，因为对WaitForSingleObjectEx的调用</span></span><br><span class="line"><span class="comment">		实际上会等待计时器两次：一次是可提醒的，另一次是内核对象句柄。</span></span><br><span class="line"><span class="comment">		当计时器被触发的时候，等待成功，线程被唤醒，这使线程退出可提醒状态</span></span><br><span class="line"><span class="comment">		APC函数没有被调用。我们一般很少有理由要在使用可等待计时器的同时使用APC函数，</span></span><br><span class="line"><span class="comment">		因为我们总是可以先等待计时器被触发，然后在执行我们想要的操作。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">		*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		SleepEx(</span><br><span class="line">			INFINITE,     <span class="comment">// Wait forever</span></span><br><span class="line">			TRUE);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"input any key to exit\r\n"</span>);</span><br><span class="line">	getchar();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">VOID CALLBACK <span class="title">TimerAPCRoutinue</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	_In_opt_ LPVOID lpArgToCompletionRoutine,</span></span></span><br><span class="line"><span class="function"><span class="params">	_In_     DWORD  dwTimerLowValue,</span></span></span><br><span class="line"><span class="function"><span class="params">	_In_     DWORD  dwTimerHighValue</span></span></span><br><span class="line"><span class="function"><span class="params">	)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	GetSystemTime();</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GetSystemTime</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">time_t</span> t = time(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">char</span> tmp[<span class="number">64</span>];</span><br><span class="line">	strftime(tmp, <span class="keyword">sizeof</span>(tmp), <span class="string">"%Y/%m/%d %X %A 本年第%j天 %z"</span>, localtime(&amp;t));</span><br><span class="line">	<span class="built_in">puts</span>(tmp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="//systemk1t.github.io/2019/09/03/Windows-Kernel-9/2.png" alt></p>
+<p>不应该同时使用等待函数又同时以可提醒的方式等待一个计时器。</p>
+<p>例如</p>
+<p>SetWaitableTimer(hTimer,…, TimerAPCRountine,…);</p>
+<p>WaitForSingleObjectEx(hTimer, INFINITE, TRUE);</p>
+<h3 id="计时器的剩余问题"><a href="#计时器的剩余问题" class="headerlink" title="计时器的剩余问题"></a>计时器的剩余问题</h3><p>在通信协议中会大量用到计时器，但是通常为每个请求创建计时器内核对象，将严重影响系统性能。</p>
+<p>有一个CreateThreadpoolTimer可以创建线程池函数对应的计时器。</p>
+<p>大多数应用程序不使用APC， 而是使用IO完成端口</p>
+<p>用户计时器SetTimer ：在应用程序中使用大量的用户界面基础设置，从而消费更多的资源。而且通过消息机制触发，只有一个线程能得到通知</p>
+<p>（WM_TIMER不一定准时，因为其具有最低的优先级）</p>
+<p>可等待计时器是内核对象，可以在多个线程间共享。多个线程可以得到通知。</p>
+<h2 id="信号内核对象"><a href="#信号内核对象" class="headerlink" title="信号内核对象"></a>信号内核对象</h2><p>信号量内核对象用来对资源进行计数，除了使用计数器。还包含（32bit值）一个最大资源计数和当前资源计数。</p>
+<p>如果当前资源计数大于0，信号量处于触发状态。</p>
+<p>如果当前资源计数等于0，信号量处于未触发状态。</p>
+<p>  创建信号量的函数CreateSemaphoreW</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">CreateSemaphoreW(</span><br><span class="line">    _In_opt_ LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,</span><br><span class="line">    _In_     LONG lInitialCount,</span><br><span class="line">    _In_     LONG lMaximumCount,</span><br><span class="line">    _In_opt_ LPCWSTR lpName</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>psa pszName 参阅第三章</p>
+<p>dwFlags是系统保留的设为0.</p>
+<p>参数lMaximumCount 系统能够处理的资源的最大数量lInitialCoun</p>
+<p>初始化有多少资源可用。例如给服务器进程初始化，没有客户端请求，因此使用一下代码来调用CreateSemaphore</p>
+<p>HANDLE hSemaphore = CreateSemaphore(NULL, 0, 5, NULL);</p>
+<p>打开一个信号量openSemaphore</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenSemaphoreW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpName</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>dwDesiredAccess参数指定访问权限</p>
+<p>线程通过调用ReleaseSemahore来递增信号量的当前资源计数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">ReleaseSemaphore(</span><br><span class="line">    _In_ HANDLE hSemaphore,</span><br><span class="line">    _In_ LONG lReleaseCount,</span><br><span class="line">    _Out_opt_ LPLONG lpPreviousCount</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>lReleaseCount 的值会加到信号量当前资源计数上。</p>
+<h2 id="互斥量内核对象"><a href="#互斥量内核对象" class="headerlink" title="互斥量内核对象"></a>互斥量内核对象</h2><p>互斥量（mutex）内核对象用来确保一个线程独占一个资源的访问。</p>
+<p>互斥量与临界区的行为完全相同。（内部保护递归计数）</p>
+<p>互斥量的规则：</p>
+<ul>
+<li>如果线程ID为0，那么互斥量不为任何线程所占用，它处于触发状态</li>
+<li>如果线程ID为非零值，那么一个线程已经占用了该互斥量，它处与未触发状态。</li>
+<li>与所有其他内核对象不同，操作系统对互斥量进行了特殊处理，允许它们违反一些常规的规则。（递归计数器的存在，运行同一个线程ID多次进入）</li>
+</ul>
+<p>创建互斥量的函数CreateMutexW：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">CreateMutexW(</span><br><span class="line">    _In_opt_ LPSECURITY_ATTRIBUTES lpMutexAttributes,</span><br><span class="line">    _In_ BOOL bInitialOwner,</span><br><span class="line">    _In_opt_ LPCWSTR lpName</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>bInitialOwner控制互斥量的初始状态。FALSE， 互斥量的线程ID和递归计数都被设为0.处于触发状态。</p>
+<p>给bInitialOwner穿TRUE，那么对象的线程ID被设为调用线程的ID，递归计数器被设为1.（未触发状态）</p>
+<p>或者使用CreateMutexEx:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">CreateMutexExW(</span><br><span class="line">    _In_opt_ LPSECURITY_ATTRIBUTES lpMutexAttributes,</span><br><span class="line">    _In_opt_ LPCWSTR lpName,</span><br><span class="line">    _In_ DWORD dwFlags,</span><br><span class="line">    _In_ DWORD dwDesiredAccess</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>dwDesiredAccess指定访问权限</p>
+<p>dwFlags（代替bInitialOwned） 0表示FALSE，  CREATE_MUTEX_INITIAL_OWNER等价于TRUE</p>
+<p>另一个进程可以调用OpenMutex来得到一个已经存在的互斥量句柄。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenMutexW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpName</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>BOOL ReleaseMutex(HANDLE hMutex); </p>
+<p>使互斥量对象的递归计数器减1， 当递归计数器为0时，还会设置线程ID为0，这就触发了对象。</p>
+<h3 id="释放问题"><a href="#释放问题" class="headerlink" title="释放问题"></a>释放问题</h3><p>互斥量具有线程所有权的功能，即使未触发也能多次进入。</p>
+<p>如果占用互斥量的线程在释放互斥量之前终止（ExitThread ，TerminateThread ，ExitProcess 或TerminateProcess）</p>
+<p>系统认为互斥量被遗弃（abandoned） 此时会自动将互斥量线程ID设为0，递归计数器设为0，并检查有没有正在等待该互斥量的线程。</p>
+<p>等待函数返回WAIT_ABANDONED(只适用互斥量）</p>
+<h3 id="互斥对象与关键代码段的比较"><a href="#互斥对象与关键代码段的比较" class="headerlink" title="互斥对象与关键代码段的比较"></a>互斥对象与关键代码段的比较</h3><p><img src="//systemk1t.github.io/2019/09/03/Windows-Kernel-9/3.png" alt></p>
+<p>互斥量的任意时间长度等待修正为： WaitForSingleObject(hmtx, dwMilliseconds);</p>
+<h2 id="线程同步对象速查表"><a href="#线程同步对象速查表" class="headerlink" title="线程同步对象速查表"></a>线程同步对象速查表</h2><p><img src="//systemk1t.github.io/2019/09/03/Windows-Kernel-9/4.png" alt></p>
+<h2 id="其他的线程同步函数"><a href="#其他的线程同步函数" class="headerlink" title="其他的线程同步函数"></a>其他的线程同步函数</h2><p>Wa i t F o r S i n g l e O b j e c t和Wa i t F o r M u l t i p l e O b j e c t s是进行线程同步时使用得最多的函数。但是，Wi n d o w s还提供了另外几个稍有不同的函数。</p>
+<h3 id="异步设备I-O"><a href="#异步设备I-O" class="headerlink" title="异步设备I/O"></a>异步设备I/O</h3><p>步设备IO（asynchronous device I/O）允许线程开始读取操作或写入操作，但不必等待读取操作或写入操作完成。</p>
+<p>设备对象是是可同步的内核对象，可以调用WaitForSingleObject并传入句柄，套接字，通信端口等。</p>
+<h3 id="WaitForInputIdle"><a href="#WaitForInputIdle" class="headerlink" title="WaitForInputIdle"></a>WaitForInputIdle</h3><p>线程可以调用此函数将自己挂起</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WINUSERAPI</span><br><span class="line">DWORD</span><br><span class="line">WINAPI</span><br><span class="line">WaitForInputIdle(</span><br><span class="line">    _In_ HANDLE hProcess,</span><br><span class="line">    _In_ DWORD dwMilliseconds);</span><br></pre></td></tr></table></figure>
+
+<p>常用于等待子进程，父进程知道子进程已经初始化完毕的唯一方法，就是等待子进程，直到它不再处理任何输入为止。</p>
+<p>当我们要强制在应用程序中输入一些按键的时候，也可以使用WaitForInputIdle。</p>
+<p>当向目标进程发送一系列按键消息以后，调用WaitForInputIdle等待其处理完按键消息，然后再发送后续的按键消息。</p>
+<h3 id="MsgWaitForMultipleObjects-Ex"><a href="#MsgWaitForMultipleObjects-Ex" class="headerlink" title="MsgWaitForMultipleObjects(Ex)"></a>MsgWaitForMultipleObjects(Ex)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">WINUSERAPI</span><br><span class="line">DWORD</span><br><span class="line">WINAPI</span><br><span class="line">MsgWaitForMultipleObjects(</span><br><span class="line">    _In_ DWORD nCount,</span><br><span class="line">    _In_reads_opt_(nCount) CONST HANDLE *pHandles,</span><br><span class="line">    _In_ BOOL fWaitAll,</span><br><span class="line">    _In_ DWORD dwMilliseconds,</span><br><span class="line">    _In_ DWORD dwWakeMask);</span><br><span class="line"> </span><br><span class="line">WINUSERAPI</span><br><span class="line">DWORD</span><br><span class="line">WINAPI</span><br><span class="line">MsgWaitForMultipleObjectsEx(</span><br><span class="line">    _In_ DWORD nCount,</span><br><span class="line">    _In_reads_opt_(nCount) CONST HANDLE *pHandles,</span><br><span class="line">    _In_ DWORD dwMilliseconds,</span><br><span class="line">    _In_ DWORD dwWakeMask,</span><br><span class="line">    _In_ DWORD dwFlags);</span><br></pre></td></tr></table></figure>
+
+<p>函数功能:阻塞时仍可以响应消息</p>
+<p>MsgWaitForMultipleObjects()函数类似WaitForMultipleObjects()，</p>
+<p>但它会在“对象被激发”或“消息到达队列”时被唤醒而返回。</p>
+<p>MsgWaitForMultipleObjects()多接收一个参数，允许指定哪些消息是观察对象。<br>一个应用的例子 该函数同时等待对象，若有消息到底也返回。运行主线程处理消息后继续等待。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">DWORD dwRet = <span class="number">0</span>;</span><br><span class="line">MSG msg;</span><br><span class="line">DWORD dwStartTime = GetTickCount();</span><br><span class="line"><span class="keyword">while</span> (TRUE)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//超时判断  5s  </span></span><br><span class="line">	dwRet = GetTickCount() - dwStartTime;</span><br><span class="line">	<span class="keyword">if</span> ((GetTickCount() - dwStartTime) &gt; <span class="number">10000</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		AfxMessageBox(_T(<span class="string">"获取数据超时，请检测设备网络连接!"</span>), MB_OK | MB_ICONERROR);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//wait for m_hThread to be over，and wait for    </span></span><br><span class="line">	<span class="comment">//QS_ALLINPUT（Any message is in the queue）   </span></span><br><span class="line">	<span class="comment">//dwRet = WaitForSingleObject(g_hRetEvent, INFINITE);  </span></span><br><span class="line">	dwRet = MsgWaitForMultipleObjects(<span class="number">1</span>, &amp;g_hRetEvent, FALSE, <span class="number">100</span>, QS_ALLINPUT);</span><br><span class="line">	<span class="keyword">switch</span> (dwRet)</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">case</span> WAIT_OBJECT_0: <span class="comment">//返回数据达到  </span></span><br><span class="line">		<span class="keyword">break</span>; <span class="comment">//break the loop    </span></span><br><span class="line">	<span class="keyword">case</span> WAIT_OBJECT_0 + <span class="number">1</span>: <span class="comment">//界面消息  </span></span><br><span class="line">		<span class="comment">//get the message from Queue    </span></span><br><span class="line">		<span class="comment">//and dispatch it to specific window    </span></span><br><span class="line">		<span class="keyword">if</span> (PeekMessage(&amp;msg, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">0</span>, PM_REMOVE))</span><br><span class="line">		&#123;</span><br><span class="line">			TranslateMessage(&amp;msg);</span><br><span class="line">			DispatchMessage(&amp;msg);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">continue</span>;</span><br><span class="line">	<span class="keyword">case</span> WAIT_TIMEOUT: <span class="comment">//超时  </span></span><br><span class="line">		<span class="keyword">continue</span>;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		AfxMessageBox(_T(<span class="string">"数据获取失败，未知错误!"</span>), MB_OK | MB_ICONERROR);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">		<span class="keyword">break</span>; <span class="comment">// unexpected failure    </span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="WaitForDebugEvent"><a href="#WaitForDebugEvent" class="headerlink" title="WaitForDebugEvent"></a>WaitForDebugEvent</h3><p>调试器Attach到被调试程序以后，调用WaitForDebugEvent来等待调试事件。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">APIENTRY</span><br><span class="line">WaitForDebugEvent(</span><br><span class="line">    _Out_ LPDEBUG_EVENT lpDebugEvent,</span><br><span class="line">    _In_ DWORD dwMilliseconds</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<h3 id="SignalObjectAndWait函数"><a href="#SignalObjectAndWait函数" class="headerlink" title="SignalObjectAndWait函数"></a>SignalObjectAndWait函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">DWORD</span><br><span class="line">WINAPI</span><br><span class="line">SignalObjectAndWait(</span><br><span class="line">    _In_ HANDLE hObjectToSignal,</span><br><span class="line">    _In_ HANDLE hObjectToWaitOn,</span><br><span class="line">    _In_ DWORD dwMilliseconds,</span><br><span class="line">    _In_ BOOL bAlertable</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>使用一个原子操作来触发一个内核对象，并等待另一个内核对象。<br>hObjectToSignal必须是一个互斥量，信号量或事件。（其他任何对象将导致函数返回WAIT_FAILD）调用GetLastError返回ERROR_INVALID_HANDLE.</p>
+<p>hObjectToWaitOn可以是互斥量，信号量，事件，进程，线程，作业，控制台输入变更通知，作业。等等</p>
+<p>dwMilliseconds 函数最多花多长时间来等待。</p>
+<p>bAlertable表示当线程处于等待状态的时候，是否能够堆添加到队列中的异步过程调用进行处理。</p>
+<p>返回值：WAIT_OBJECT_0, WAIT_TIMEOUT, WAIT_FAILED, WAIT)ABANDONED, WAIT_IO_COMPLETION</p>
+<p>配合PulseEvent使用。</p>
+<p>SignalObjectAndWait释放一个对象，同时立即等待（原子方式）</p>
+<p>能确保其100%能看见别的线程调用的PulseEvent。</p>
+<h3 id="使用等待链遍历API来检测死锁"><a href="#使用等待链遍历API来检测死锁" class="headerlink" title="使用等待链遍历API来检测死锁"></a>使用等待链遍历API来检测死锁</h3><p>Vista系统以上提供了等待链遍历（Wait Chain Traversal， WCT）API，这些函数可以让我们列出所有的锁，并检测进程内部，甚至是进程之间的死锁。</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年09月03日 - 14时12分</p>
+        <p><span>最后更新:</span>2019年09月03日 - 17时56分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/03/Windows-Kernel-9/" title="Windows-Kernel-9">https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/03/Windows-Kernel-9/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2019/09/04/Windows-Kernel-13/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Windows-Kernel-13
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/03/Windows-Kernel-8/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Windows-Kernel-8</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#线程与内核对象的同步"><span class="toc-number">1.</span> <span class="toc-text">线程与内核对象的同步</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#等待函数"><span class="toc-number">1.1.</span> <span class="toc-text">等待函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#成功等待的副作用"><span class="toc-number">1.2.</span> <span class="toc-text">成功等待的副作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件内核对象"><span class="toc-number">1.3.</span> <span class="toc-text">事件内核对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#等待定时器内核对象"><span class="toc-number">1.4.</span> <span class="toc-text">等待定时器内核对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#让可等待的计时器添加APC调用"><span class="toc-number">1.4.1.</span> <span class="toc-text">让可等待的计时器添加APC调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#计时器的剩余问题"><span class="toc-number">1.4.2.</span> <span class="toc-text">计时器的剩余问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#信号内核对象"><span class="toc-number">1.5.</span> <span class="toc-text">信号内核对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#互斥量内核对象"><span class="toc-number">1.6.</span> <span class="toc-text">互斥量内核对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#释放问题"><span class="toc-number">1.6.1.</span> <span class="toc-text">释放问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#互斥对象与关键代码段的比较"><span class="toc-number">1.6.2.</span> <span class="toc-text">互斥对象与关键代码段的比较</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程同步对象速查表"><span class="toc-number">1.7.</span> <span class="toc-text">线程同步对象速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他的线程同步函数"><span class="toc-number">1.8.</span> <span class="toc-text">其他的线程同步函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#异步设备I-O"><span class="toc-number">1.8.1.</span> <span class="toc-text">异步设备I/O</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitForInputIdle"><span class="toc-number">1.8.2.</span> <span class="toc-text">WaitForInputIdle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MsgWaitForMultipleObjects-Ex"><span class="toc-number">1.8.3.</span> <span class="toc-text">MsgWaitForMultipleObjects(Ex)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitForDebugEvent"><span class="toc-number">1.8.4.</span> <span class="toc-text">WaitForDebugEvent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SignalObjectAndWait函数"><span class="toc-number">1.8.5.</span> <span class="toc-text">SignalObjectAndWait函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用等待链遍历API来检测死锁"><span class="toc-number">1.8.6.</span> <span class="toc-text">使用等待链遍历API来检测死锁</span></a></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/09/04/Windows-Kernel-13/" title="上一篇: Windows-Kernel-13">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/09/03/Windows-Kernel-8/" title="下一篇: Windows-Kernel-8">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>

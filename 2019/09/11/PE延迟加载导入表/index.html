@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>PE延迟加载导入表 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Delay Load Import Table（延迟加载导入表）是PE中引入的专门用来描述与动态链接库延迟加载相关的数据，延迟加载导入表和导入表是相互分离的。与导入表不同的是，它记录的这些动态链接库并不会被操作系统的PE加载器加载。只有等到它登记的相关函数被应用程序调用时，PE中注册的延迟加载函数才会根据延迟加载导入表中对该函数的描述，动态加载相关链接并修正函数的AV地址，实现对函数调用">
+<meta name="keywords" content="Windows-PE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PE延迟加载导入表">
+<meta property="og:url" content="https://systemk1t.github.io/2019/09/11/PE延迟加载导入表/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="Delay Load Import Table（延迟加载导入表）是PE中引入的专门用来描述与动态链接库延迟加载相关的数据，延迟加载导入表和导入表是相互分离的。与导入表不同的是，它记录的这些动态链接库并不会被操作系统的PE加载器加载。只有等到它登记的相关函数被应用程序调用时，PE中注册的延迟加载函数才会根据延迟加载导入表中对该函数的描述，动态加载相关链接并修正函数的AV地址，实现对函数调用">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/09/11/PE延迟加载导入表/0.png">
+<meta property="og:updated_time" content="2019-09-11T13:11:13.058Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PE延迟加载导入表">
+<meta name="twitter:description" content="Delay Load Import Table（延迟加载导入表）是PE中引入的专门用来描述与动态链接库延迟加载相关的数据，延迟加载导入表和导入表是相互分离的。与导入表不同的是，它记录的这些动态链接库并不会被操作系统的PE加载器加载。只有等到它登记的相关函数被应用程序调用时，PE中注册的延迟加载函数才会根据延迟加载导入表中对该函数的描述，动态加载相关链接并修正函数的AV地址，实现对函数调用">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/09/11/PE延迟加载导入表/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-PE延迟加载导入表" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/09/11/PE延迟加载导入表/" class="article-date">
+      <time datetime="2019-09-11T03:53:21.000Z" itemprop="datePublished">2019-09-11</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      PE延迟加载导入表
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows-PE权威指南/">Windows PE权威指南</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-PE/">Windows-PE</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<p>Delay Load Import Table（延迟加载导入表）是PE中引入的专门用来描述与动态链接库延迟加载相关的数据，延迟加载导入表和导入表是相互分离的。与导入表不同的是，它记录的这些动态链接库并不会被操作系统的PE加载器加载。只有等到它登记的相关函数被应用程序调用时，PE中注册的延迟加载函数才会根据延迟加载导入表中对该函数的描述，动态加载相关链接并修正函数的AV地址，实现对函数调用</p>
+<a id="more"></a>
+
+
+
+<h2 id="延迟加载导入的概念及其作用"><a href="#延迟加载导入的概念及其作用" class="headerlink" title="延迟加载导入的概念及其作用"></a>延迟加载导入的概念及其作用</h2><p>延迟加载导入是一种合理利用进程加载机制提高进程加载效率的技术，使用延迟加载导入能跳过加载前对引入函数的检测及加载后对IAT的修正。</p>
+<p>延迟加载导入的使用场景：</p>
+<ul>
+<li>提高应用程序加速速度</li>
+<li>提供应用程序兼容性</li>
+<li>提供应用程序可整合性</li>
+</ul>
+<h3 id="提高应用程序加载速度"><a href="#提高应用程序加载速度" class="headerlink" title="提高应用程序加载速度"></a>提高应用程序加载速度</h3><p>如果一个应用程序使用了很多的DLL，PE加载器在将程序映像加载到虚拟地址空间的时候，同时也会把所有的DLL一起提前加载到进程空间，而且在加载每个DLL时还会调用DLL的入口函数，对DLL进行初始化，这个时候并没有开始调用这些引入函数的动态链接库的函数。但是这些操作的存在使得进程加载的时候会耗费一些时间。</p>
+<h3 id="提高应用程序兼容性"><a href="#提高应用程序兼容性" class="headerlink" title="提高应用程序兼容性"></a>提高应用程序兼容性</h3><p>同一个DLL在不同的时候有不同的版本，新的DLL除了对原有函数继承和优化以外，通常还会增加一些新的函数。如果我们在应用程序中调用了一个DLL的新韩淑，运行时环境却存在的是老的DLL，那么加载时系统就会提示错误，然后拒绝执行应用程序。</p>
+<h3 id="提高应用程序可整合性"><a href="#提高应用程序可整合性" class="headerlink" title="提高应用程序可整合性"></a>提高应用程序可整合性</h3><p>在一个文件中与文件有关的配置信息、数据库、链接库等都放在一个文件里，这里的可整合性就是这样</p>
+<h2 id="PE中的延迟加载导入表"><a href="#PE中的延迟加载导入表" class="headerlink" title="PE中的延迟加载导入表"></a>PE中的延迟加载导入表</h2><p>在Windows XP SP3的大部分系统PE中，都存在延迟加载导入表函数。延迟加载导入表也vu你在双桥结构。</p>
+<h3 id="延迟加载导入表数据定位"><a href="#延迟加载导入表数据定位" class="headerlink" title="延迟加载导入表数据定位"></a>延迟加载导入表数据定位</h3><p>延迟加载导入数据为数据目录中注册的数据类型之一，其描述信息处于数据目录的第14个目录项中。</p>
+<h3 id="延迟加载导入描述符IMAGE-DELAY-IMPORT-DESCRIPOR"><a href="#延迟加载导入描述符IMAGE-DELAY-IMPORT-DESCRIPOR" class="headerlink" title="延迟加载导入描述符IMAGE_DELAY_IMPORT_DESCRIPOR"></a>延迟加载导入描述符IMAGE_DELAY_IMPORT_DESCRIPOR</h3><p>详细描述如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IMAGE_DELAY_IMPORT_DESCRIPOR <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    Attributes	dword	?	;<span class="comment">//0000h,属性</span></span><br><span class="line">    Name dword	?	;<span class="comment">//0004指向DLL名称的RVA</span></span><br><span class="line">    ModuleHandle	dowrd	?;<span class="comment">//0008h DLL模块句柄的RVA</span></span><br><span class="line">    DelayIAT	dword	?	;<span class="comment">//000ch 延迟加载导入IAT的RVA</span></span><br><span class="line">    DelayINT	dword	?	;<span class="comment">//0010h 延迟加载导入INT的RVA</span></span><br><span class="line">    BoundDelayIT	dword	?	;<span class="comment">//0014h 绑定延迟加载导入地址表的RVA</span></span><br><span class="line">    UnloadDelayIT	dword	?	;<span class="comment">//0018h 卸载延迟加载导入地址表的RVA</span></span><br><span class="line">    TimeStamp	dword	?	;<span class="comment">//	此映像绑定到DLL的时间戳</span></span><br><span class="line">&#125;IMAGE_DELAY_IMPORT_DESCRIPOR ENDS</span><br></pre></td></tr></table></figure>
+
+<h4 id="Attributes"><a href="#Attributes" class="headerlink" title="Attributes"></a>Attributes</h4><p>属性未用，暂时未用，连接器在生成映像文件时将此字段设置为0.用户可以在将来扩展这个结构时用它指明添加了新字段，或者用它来指明延迟加载导入或卸载辅助函数</p>
+<h4 id="Name"><a href="#Name" class="headerlink" title="Name"></a>Name</h4><p>指向延迟加载导入的动态链接库名字字符串的地址，该地址是一个RVA。</p>
+<h4 id="ModuleHandle"><a href="#ModuleHandle" class="headerlink" title="ModuleHandle"></a>ModuleHandle</h4><p>被延迟加载的DLL模块句柄的RVA。该RVA位于PE映像的数据节中，延迟加载辅助函数使用这个位置存储要被延迟加载的DLL的模块句柄</p>
+<h4 id="DelayIAT"><a href="#DelayIAT" class="headerlink" title="DelayIAT"></a>DelayIAT</h4><p>延迟加载导入地址表的RVA。延迟加载辅助函数用导入符号的实际地址来更新这些指针，以便起转换作用的这部分代码不会陷入循环调用之中。</p>
+<h4 id="DelayINT"><a href="#DelayINT" class="headerlink" title="DelayINT"></a>DelayINT</h4><p>延迟加载导入名称表包含了可能需要被加载的导入符号的名称。它们的排列方式与IAT的函数指针一样，它们的结构与标准INT一样。</p>
+<h4 id="BoundDelayIT"><a href="#BoundDelayIT" class="headerlink" title="BoundDelayIT"></a>BoundDelayIT</h4><p>延迟绑定导入地址表（BIAT）是由IMAGE_THUNK_DATA结构组成的数组，它是可选的。</p>
+<h4 id="UnloadDelayIT"><a href="#UnloadDelayIT" class="headerlink" title="UnloadDelayIT"></a>UnloadDelayIT</h4><p>延迟卸载导入地址表（UIAT）是由IMAGE_THUNK_DATA结构组成的数组，它是可选的。卸载代码用它来处理明确的</p>
+<h4 id="TimeStamp"><a href="#TimeStamp" class="headerlink" title="TimeStamp"></a>TimeStamp</h4><p>表示应用程序绑定到DLL的时间戳</p>
+<h4 id="延迟加载导入表实例分析"><a href="#延迟加载导入表实例分析" class="headerlink" title="延迟加载导入表实例分析"></a>延迟加载导入表实例分析</h4><p>源代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">    .386</span><br><span class="line">    .model flat,stdcall</span><br><span class="line">    option casemap:none</span><br><span class="line"></span><br><span class="line">include    windows.inc</span><br><span class="line">include    user32.inc</span><br><span class="line">includelib user32.lib</span><br><span class="line">include    kernel32.inc</span><br><span class="line">includelib kernel32.lib</span><br><span class="line">include    MyDll.inc</span><br><span class="line">includelib MyDll.lib</span><br><span class="line"></span><br><span class="line">;数据段</span><br><span class="line">    .data</span><br><span class="line">dwFlag     dd  1</span><br><span class="line">szText     db  &apos;HelloWorldPE&apos;,0</span><br><span class="line"></span><br><span class="line">;代码段</span><br><span class="line">    .code</span><br><span class="line">start:</span><br><span class="line">    mov eax,dwFlag</span><br><span class="line">    .if eax==0</span><br><span class="line">      invoke sayHello</span><br><span class="line">    .endif</span><br><span class="line">    invoke MessageBox,NULL,offset szText,NULL,MB_OK</span><br><span class="line">    invoke ExitProcess,NULL</span><br><span class="line">    end start</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">00000800:  56 21 00 00 9c 21 00 00  1a 21 00 00 36 21 00 00  |V!...!...!..6!..|</span><br><span class="line">00000810:  48 21 00 00 64 21 00 00  7a 21 00 00 8c 21 00 00  |H!..d!..z!...!..|</span><br><span class="line">00000820:  00 00 00 00 00 21 00 00  00 00 00 00 00 00 00 00  |.....!..........|</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">00000830:  4d 79 44 6c 6c 2e 64 6c  6c 00 00 00 00 00 00 00  |MyDll.dll.......|</span><br><span class="line">00000840:  30 20 40 00 1c 30 40 00  14 30 40 00 7c 20 40 00  |0 @..0@..0@.| @.|</span><br><span class="line">00000850:  90 20 40 00 00 00 00 00  00 00 00 00 00 00 00 00  |. @.............|</span><br><span class="line">00000860:  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|</span><br><span class="line">00000870:  00 00 00 00 00 00 00 00  00 00 00 00 84 20 40 00  |............. @.|</span><br><span class="line">00000880:  00 00 00 00 00 00 73 61  79 48 65 6c 6c 6f 00 00  |......sayHello..|</span><br><span class="line">00000890:  00 00 00 00 00 00 00 00  f8 20 00 00 00 00 00 00  |......... ......|</span><br><span class="line">000008a0:  00 00 00 00 0e 21 00 00  24 20 00 00 d4 20 00 00  |.....!..$ ... ..|</span><br><span class="line">000008b0:  00 00 00 00 00 00 00 00  28 21 00 00 00 20 00 00  |........(!... ..|</span><br><span class="line">000008c0:  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">000008d0:  00 00 00 00 56 21 00 00  9c 21 00 00 1a 21 00 00  |....V!...!...!..|</span><br><span class="line">000008e0:  36 21 00 00 48 21 00 00  64 21 00 00 7a 21 00 00  |6!..H!..d!..z!..|</span><br><span class="line">000008f0:  8c 21 00 00 00 00 00 00  00 21 00 00 00 00 00 00  |.!.......!......|</span><br></pre></td></tr></table></figure>
+
+<p>30 20 40 00</p>
+<p>IMAGE_DELAY_IMPORT_DESCRIPOR.name指向文件便宜0x00000830开始的字符串“MyDll.dll”</p>
+<p>1C 30 40 00</p>
+<p>IMAGE_DELAY_IMPORT_DESCRIPOR.ModuleHandle指向.data段，文件偏移0x00000a1c处，此处存放MyDll.dll的模块句柄</p>
+<p>14 30 40 00</p>
+<p>IMAGE_DELAY_IMPORT_DESCRIPOR.DelayIAT指向延迟加载导入的IAT，位于文件偏移的0x00000a14位置处。处于.data段，引号处运行时存放MyDll.dll的句柄</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00000a00:  01 00 00 00 48 65 6c 6c  6f 57 6f 72 6c 64 50 45  |....HelloWorldPE|</span><br><span class="line">00000a10:  00 00 00 00 32 10 40 00  00 00 00 00 "00 00 00 00"  |....2.@.........|</span><br></pre></td></tr></table></figure>
+
+<p>7C 20 40 00</p>
+<p>IMAGE_DELAY_IMPORT_DESCRIPOR.DelayINT指向了延迟加载导入的INT，位于文件偏移0x0000087c位置处，该段位于.rdata段。</p>
+<p><img src="//systemk1t.github.io/2019/09/11/PE延迟加载导入表/0.png" alt></p>
+<p>90 20 40 00</p>
+<p>IMAGE_DELAY_IMPORT_DESCRIPOR.BoundDelatIT指向了绑定延迟架子啊导入表，位于文件的偏移0x00000890位置处。该位置位于.rdata段</p>
+<h2 id="延迟加载导入机制详解"><a href="#延迟加载导入机制详解" class="headerlink" title="延迟加载导入机制详解"></a>延迟加载导入机制详解</h2><p>系统开始运行程序时指定的延迟加载的DLL是不被载入的，只有等到程序调用了该动态链接库的函数时，系统才将该链接库载入内存空间，并执行相关函数代码。</p>
+<h2 id="延迟加载导入编程"><a href="#延迟加载导入编程" class="headerlink" title="延迟加载导入编程"></a>延迟加载导入编程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br></pre></td><td class="code"><pre><span class="line">.386</span><br><span class="line">.model flat,stdcall</span><br><span class="line">option casemap:none</span><br><span class="line"></span><br><span class="line">include    windows.inc</span><br><span class="line">include    user32.inc</span><br><span class="line">includelib user32.lib</span><br><span class="line">include    kernel32.inc</span><br><span class="line">includelib kernel32.lib</span><br><span class="line">include    comdlg32.inc</span><br><span class="line">includelib comdlg32.lib</span><br><span class="line"></span><br><span class="line">include    winResult.inc</span><br><span class="line">includelib winResult.lib</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ICO_MAIN equ 1000</span><br><span class="line">DLG_MAIN equ 1000</span><br><span class="line">IDC_INFO equ 1001</span><br><span class="line">IDM_MAIN equ 2000</span><br><span class="line">IDM_OPEN equ 2001</span><br><span class="line">IDM_EXIT equ 2002</span><br><span class="line">IDM_1    equ 4000</span><br><span class="line">IDM_2    equ 4001</span><br><span class="line">IDM_3    equ 4002</span><br><span class="line">IDB_WINRESULT equ 5000</span><br><span class="line">DLLTYPE       equ 6000</span><br><span class="line"></span><br><span class="line">.data</span><br><span class="line">hInstance   dd ?</span><br><span class="line">hRichEdit   dd ?</span><br><span class="line">hWinMain    dd ?</span><br><span class="line">hWinEdit    dd ?</span><br><span class="line">szFileName  db MAX_PATH dup(?)</span><br><span class="line"></span><br><span class="line">hRes        dd ?</span><br><span class="line">hFile       dd ?</span><br><span class="line">dwResSize   dd ?</span><br><span class="line">lpRes       dd ?</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">.const</span><br><span class="line">szDllEdit   db &apos;RichEd20.dll&apos;,0</span><br><span class="line">szDllName   db &apos;winResult.dll&apos;,0</span><br><span class="line">szClassEdit db &apos;RichEdit20A&apos;,0</span><br><span class="line">szFont      db &apos;宋体&apos;,0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">.code</span><br><span class="line"></span><br><span class="line">;----------------</span><br><span class="line">;初始化窗口程序</span><br><span class="line">;----------------</span><br><span class="line">_init proc</span><br><span class="line">  local @stCf:CHARFORMAT</span><br><span class="line">  </span><br><span class="line">  invoke GetDlgItem,hWinMain,IDC_INFO</span><br><span class="line">  mov hWinEdit,eax</span><br><span class="line">  invoke LoadIcon,hInstance,ICO_MAIN</span><br><span class="line">  invoke SendMessage,hWinMain,WM_SETICON,ICON_BIG,eax       ;为窗口设置图标</span><br><span class="line">  invoke SendMessage,hWinEdit,EM_SETTEXTMODE,TM_PLAINTEXT,0 ;设置编辑控件</span><br><span class="line">  invoke RtlZeroMemory,addr @stCf,sizeof @stCf</span><br><span class="line">  mov @stCf.cbSize,sizeof @stCf</span><br><span class="line">  mov @stCf.yHeight,9*20</span><br><span class="line">  mov @stCf.dwMask,CFM_FACE or CFM_SIZE or CFM_BOLD</span><br><span class="line">  invoke lstrcpy,addr @stCf.szFaceName,addr szFont</span><br><span class="line">  invoke SendMessage,hWinEdit,EM_SETCHARFORMAT,0,addr @stCf</span><br><span class="line">  invoke SendMessage,hWinEdit,EM_EXLIMITTEXT,0,-1</span><br><span class="line">  ret</span><br><span class="line">_init endp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">;-------------------</span><br><span class="line">; 窗口程序</span><br><span class="line">;-------------------</span><br><span class="line">_ProcDlgMain proc uses ebx edi esi hWnd,wMsg,wParam,lParam</span><br><span class="line">  mov eax,wMsg</span><br><span class="line">  .if eax==WM_CLOSE</span><br><span class="line">    invoke EndDialog,hWnd,NULL</span><br><span class="line">  .elseif eax==WM_INITDIALOG  ;初始化</span><br><span class="line">    push hWnd</span><br><span class="line">    pop hWinMain</span><br><span class="line">    invoke FadeInOpen,hWinMain</span><br><span class="line">    call _init</span><br><span class="line">  .elseif eax==WM_COMMAND  ;菜单</span><br><span class="line">    mov eax,wParam</span><br><span class="line">    .if eax==IDM_EXIT       ;退出</span><br><span class="line">      invoke EndDialog,hWnd,NULL </span><br><span class="line">    .elseif eax==IDM_OPEN   ;打开文件</span><br><span class="line">    .elseif eax==IDM_1  </span><br><span class="line">    .elseif eax==IDM_2</span><br><span class="line">    .elseif eax==IDM_3</span><br><span class="line">    .endif</span><br><span class="line">  .else</span><br><span class="line">    mov eax,FALSE</span><br><span class="line">    ret</span><br><span class="line">  .endif</span><br><span class="line">  mov eax,TRUE</span><br><span class="line">  ret</span><br><span class="line">_ProcDlgMain endp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">;--------------------------</span><br><span class="line">; 动态创建winResult.dll</span><br><span class="line">;--------------------------</span><br><span class="line">_createDll proc _hInstance</span><br><span class="line">  local @dwWritten</span><br><span class="line"></span><br><span class="line">  pushad</span><br><span class="line"></span><br><span class="line">  ;寻找资源</span><br><span class="line">  invoke FindResource,_hInstance,IDB_WINRESULT,DLLTYPE</span><br><span class="line">  .if eax</span><br><span class="line">    mov hRes,eax</span><br><span class="line">    invoke SizeofResource,_hInstance,eax ;获取资源尺寸</span><br><span class="line">    mov dwResSize,eax</span><br><span class="line">    invoke LoadResource,_hInstance,hRes ;装入资源</span><br><span class="line">    .if eax</span><br><span class="line">         invoke LockResource,eax ;锁定资源</span><br><span class="line">         .if eax</span><br><span class="line">             mov lpRes,eax  ;将资源内存地址给lpRes</span><br><span class="line"></span><br><span class="line">             ;打开文件写入</span><br><span class="line">             invoke CreateFile,addr szDllName,GENERIC_WRITE,\</span><br><span class="line">                                            FILE_SHARE_READ,\</span><br><span class="line">                          0,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,0</span><br><span class="line">             mov hFile,eax</span><br><span class="line">             invoke WriteFile,hFile,lpRes,dwResSize,\</span><br><span class="line">                                        addr @dwWritten,NULL</span><br><span class="line">             invoke CloseHandle,hFile      </span><br><span class="line">         .endif</span><br><span class="line">    .endif</span><br><span class="line">  .endif</span><br><span class="line">  popad</span><br><span class="line">  ret</span><br><span class="line">_createDll endp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">  invoke LoadLibrary,offset szDllEdit</span><br><span class="line">  mov hRichEdit,eax</span><br><span class="line">  invoke GetModuleHandle,NULL</span><br><span class="line">  mov hInstance,eax</span><br><span class="line"></span><br><span class="line">  invoke _createDll,hInstance  ;在未调用DLL函数前先释放该DLL文件</span><br><span class="line"></span><br><span class="line">  invoke DialogBoxParam,hInstance,\</span><br><span class="line">         DLG_MAIN,NULL,offset _ProcDlgMain,NULL</span><br><span class="line">  invoke FreeLibrary,hRichEdit</span><br><span class="line">  invoke ExitProcess,NULL</span><br><span class="line">  end start</span><br></pre></td></tr></table></figure>
+
+<h2 id="关于延迟加载导入的两个问题"><a href="#关于延迟加载导入的两个问题" class="headerlink" title="关于延迟加载导入的两个问题"></a>关于延迟加载导入的两个问题</h2><h3 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h3><p>通常情况下，当操作系统的加载程序加载可执行模块时，它都会设法加载必要的DLL。如果一个DLL无法加载（比如不存在），那么加载程序就会显示一条错误消息。如果该DLL是通过延迟加载的DLL，在进行初始化时操作系统并不负责检查是否存在该DLL。如果调用延迟加载的函数无法找到该DLL，函数_delayLoadHelper就会引发一个异常。该异常可以使用结构化异常处理(SEH)方法捕获。</p>
+<p>当函数_delayLoadHelper确实找到了DLL，但是要调用的函数却不在DLL中，就会出现另外的问题，也会抛出异常。</p>
+<h3 id="DLL的卸载"><a href="#DLL的卸载" class="headerlink" title="DLL的卸载"></a>DLL的卸载</h3><p>如果程序调用完通过_delayLoadHelper加载的DLL文件的函数后，很长一段时间不需要该动态链接库，那么就释放该DLL，这要求程序开发者首先要在链接器的参数中假如-delayunload开关来设置允许对DLL的释放操作，该开关负责将另外一段代码FUnloadDelayLoadedDLL加入PE文件中，然后在需要释放DLL的代码位置调用该函数。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-delayload		;在连接器中定义加载和卸载DLL的行为</span><br><span class="line">-delay:unload	</span><br><span class="line"></span><br><span class="line">_delayLoadHelper();	当用到延迟加载导入函数的时候，由_delayLoadHelper调用</span><br><span class="line">---LoadLibrary()	;</span><br><span class="line"></span><br><span class="line">_FUnloadDelayLoadedDLL()	;当需要卸载延迟导入的DLL时</span><br><span class="line">---FreeLibrary</span><br></pre></td></tr></table></figure>
+
+<p>千万不能自己调用FreeLibrary来卸载DLL，否则函数的地址将不会被清除，下次调用DLL的时候，就会产生违规操作。</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年09月11日 - 11时53分</p>
+        <p><span>最后更新:</span>2019年09月11日 - 21时11分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/11/PE延迟加载导入表/" title="PE延迟加载导入表">https://systemk1t.github.io/2019/09/11/PE延迟加载导入表/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/11/PE延迟加载导入表/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2019/09/12/CrackMe001/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          CrackMe001
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/09/PE导出表/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">PE导出表</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#延迟加载导入的概念及其作用"><span class="toc-number">1.</span> <span class="toc-text">延迟加载导入的概念及其作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#提高应用程序加载速度"><span class="toc-number">1.1.</span> <span class="toc-text">提高应用程序加载速度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提高应用程序兼容性"><span class="toc-number">1.2.</span> <span class="toc-text">提高应用程序兼容性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提高应用程序可整合性"><span class="toc-number">1.3.</span> <span class="toc-text">提高应用程序可整合性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PE中的延迟加载导入表"><span class="toc-number">2.</span> <span class="toc-text">PE中的延迟加载导入表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#延迟加载导入表数据定位"><span class="toc-number">2.1.</span> <span class="toc-text">延迟加载导入表数据定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#延迟加载导入描述符IMAGE-DELAY-IMPORT-DESCRIPOR"><span class="toc-number">2.2.</span> <span class="toc-text">延迟加载导入描述符IMAGE_DELAY_IMPORT_DESCRIPOR</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Attributes"><span class="toc-number">2.2.1.</span> <span class="toc-text">Attributes</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Name"><span class="toc-number">2.2.2.</span> <span class="toc-text">Name</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ModuleHandle"><span class="toc-number">2.2.3.</span> <span class="toc-text">ModuleHandle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DelayIAT"><span class="toc-number">2.2.4.</span> <span class="toc-text">DelayIAT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DelayINT"><span class="toc-number">2.2.5.</span> <span class="toc-text">DelayINT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BoundDelayIT"><span class="toc-number">2.2.6.</span> <span class="toc-text">BoundDelayIT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UnloadDelayIT"><span class="toc-number">2.2.7.</span> <span class="toc-text">UnloadDelayIT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TimeStamp"><span class="toc-number">2.2.8.</span> <span class="toc-text">TimeStamp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#延迟加载导入表实例分析"><span class="toc-number">2.2.9.</span> <span class="toc-text">延迟加载导入表实例分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#延迟加载导入机制详解"><span class="toc-number">3.</span> <span class="toc-text">延迟加载导入机制详解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#延迟加载导入编程"><span class="toc-number">4.</span> <span class="toc-text">延迟加载导入编程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于延迟加载导入的两个问题"><span class="toc-number">5.</span> <span class="toc-text">关于延迟加载导入的两个问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#异常处理"><span class="toc-number">5.1.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DLL的卸载"><span class="toc-number">5.2.</span> <span class="toc-text">DLL的卸载</span></a></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/09/12/CrackMe001/" title="上一篇: CrackMe001">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/09/09/PE导出表/" title="下一篇: PE导出表">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
