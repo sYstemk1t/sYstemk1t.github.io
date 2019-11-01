@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>逆向工程权威指南-数组 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="数组就是同类型的数据在内存中依此排序相同类型的一组数据">
+<meta name="keywords" content="Reverse">
+<meta property="og:type" content="article">
+<meta property="og:title" content="逆向工程权威指南-数组">
+<meta property="og:url" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="数组就是同类型的数据在内存中依此排序相同类型的一组数据">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/5.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/6.png">
+<meta property="og:updated_time" content="2019-11-01T08:02:04.495Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="逆向工程权威指南-数组">
+<meta name="twitter:description" content="数组就是同类型的数据在内存中依此排序相同类型的一组数据">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-逆向工程权威指南-数组" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/10/31/逆向工程权威指南-数组/" class="article-date">
+      <time datetime="2019-10-31T13:42:37.000Z" itemprop="datePublished">2019-10-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      逆向工程权威指南-数组
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/逆向工程权威指南/">逆向工程权威指南</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reverse/">Reverse</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>数组就是同类型的数据在内存中依此排序相同类型的一组数据</p>
+<a id="more"></a>
+
+<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><h2 id="数组-1"><a href="#数组-1" class="headerlink" title="数组"></a>数组</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">20</span>];</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        a[i] = i * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">20</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"a[%d] = %d\r\n"</span>,i,a[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="X86"><a href="#X86" class="headerlink" title="X86"></a>X86</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">_a$ = -80</span><br><span class="line">_i$ = -84</span><br><span class="line">_main	PROC NEAR</span><br><span class="line">; File array.c</span><br><span class="line">; Line 4</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">	sub	esp, 84					; 00000054H</span><br><span class="line">; Line 7</span><br><span class="line">	mov	DWORD PTR _i$[ebp], 0</span><br><span class="line">	jmp	SHORT $L338</span><br><span class="line">$L339:</span><br><span class="line">	mov	eax, DWORD PTR _i$[ebp]</span><br><span class="line">	add	eax, 1</span><br><span class="line">	mov	DWORD PTR _i$[ebp], eax</span><br><span class="line">$L338:</span><br><span class="line">	cmp	DWORD PTR _i$[ebp], 10			; 0000000aH</span><br><span class="line">	jge	SHORT $L340</span><br><span class="line">; Line 9</span><br><span class="line">	mov	ecx, DWORD PTR _i$[ebp]</span><br><span class="line">	shl	ecx, 1</span><br><span class="line">	mov	edx, DWORD PTR _i$[ebp]</span><br><span class="line">	mov	DWORD PTR _a$[ebp+edx*4], ecx</span><br><span class="line">; Line 10</span><br><span class="line">	jmp	SHORT $L339</span><br><span class="line">$L340:</span><br><span class="line">; Line 11</span><br><span class="line">	mov	DWORD PTR _i$[ebp], 0</span><br><span class="line">	jmp	SHORT $L341</span><br><span class="line">$L342:</span><br><span class="line">	mov	eax, DWORD PTR _i$[ebp]</span><br><span class="line">	add	eax, 1</span><br><span class="line">	mov	DWORD PTR _i$[ebp], eax</span><br><span class="line">$L341:</span><br><span class="line">	cmp	DWORD PTR _i$[ebp], 20			; 00000014H</span><br><span class="line">	jge	SHORT $L343</span><br><span class="line">; Line 13</span><br><span class="line">	mov	ecx, DWORD PTR _i$[ebp]</span><br><span class="line">	mov	edx, DWORD PTR _a$[ebp+ecx*4]</span><br><span class="line">	push	edx</span><br><span class="line">	mov	eax, DWORD PTR _i$[ebp]</span><br><span class="line">	push	eax</span><br><span class="line">	push	OFFSET FLAT:$SG344</span><br><span class="line">	call	_printf</span><br><span class="line">	add	esp, 12					; 0000000cH</span><br><span class="line">; Line 14</span><br><span class="line">	jmp	SHORT $L342</span><br><span class="line">$L343:</span><br><span class="line">; Line 15</span><br><span class="line">	xor	eax, eax</span><br><span class="line">; Line 16</span><br><span class="line">	mov	esp, ebp</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_main	ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+
+<p>这个除去两个循环之外没什么特别的地方，第一个循环填充数据，第二个循环打印数据；</p>
+<p>“shl ecx,1”执行所有的运算是ecx = ecx * 2;</p>
+<h3 id="OllyDbg"><a href="#OllyDbg" class="headerlink" title="OllyDbg"></a>OllyDbg</h3><p>程序为数组申请了80个字节的空间，一个int类型占用4个字节空间；</p>
+<p><img src="//systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/0.png" alt></p>
+<p>因为数组全部存储于栈中，所以我们可以在数据窗口中看到整个数组</p>
+<h3 id="GCC"><a href="#GCC" class="headerlink" title="GCC"></a>GCC</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">public main</span><br><span class="line">main proc near ; DATA XREF: _start+</span><br><span class="line">17</span><br><span class="line">var_70 = dword ptr -70h</span><br><span class="line">var_6C = dword ptr -6Ch</span><br><span class="line">var_68 = dword ptr -68h</span><br><span class="line">i_2 = dword ptr -54h</span><br><span class="line">i = dword ptr -4</span><br><span class="line">    push ebp</span><br><span class="line">    mov ebp, esp</span><br><span class="line">    and esp, 0FFFFFFF0h</span><br><span class="line">    sub esp, 70h</span><br><span class="line">    mov [esp+70h+i], 0 ; i=0</span><br><span class="line">    jmp short loc_804840A</span><br><span class="line">loc_80483F7:</span><br><span class="line">    mov eax, [esp+70h+i]</span><br><span class="line">    mov edx, [esp+70h+i]</span><br><span class="line">    add edx, edx ; edx=i*2</span><br><span class="line">    mov [esp+eax*4+70h+i_2], edx</span><br><span class="line">    add [esp+70h+i], 1 ; i++</span><br><span class="line">loc_804840A:</span><br><span class="line">    cmp [esp+70h+i], 13h</span><br><span class="line">    jle short loc_80483F7</span><br><span class="line">    mov [esp+70h+i], 0</span><br><span class="line">    jmp short loc_8048441</span><br><span class="line">loc_804841B:</span><br><span class="line">    mov eax, [esp+70h+i]</span><br><span class="line">    mov edx, [esp+eax*4+70h+i_2]</span><br><span class="line">    mov eax, offset aADD ; &quot;a[%d]=%d</span><br><span class="line">    &quot;</span><br><span class="line">    mov [esp+70h+var_68], edx</span><br><span class="line">    mov edx, [esp+70h+i]</span><br><span class="line">    mov [esp+70h+var_6C], edx</span><br><span class="line">    mov [esp+70h+var_70], eax</span><br><span class="line">    call _printf</span><br><span class="line">    add [esp+70h+i], 1</span><br><span class="line">loc_8048441:</span><br><span class="line">    cmp [esp+70h+i], 13h</span><br><span class="line">    jle short loc_804841B</span><br><span class="line">    mov eax, 0</span><br><span class="line">    leave</span><br><span class="line">    retn</span><br><span class="line">main endp</span><br></pre></td></tr></table></figure>
+
+<p><strong>一个int类型(指向int的指针)的变量，可以使改变量指向数组并将改数组传递给另一个函数，更准确的说，传递的指针指向数组的第一个元素。</strong></p>
+<h2 id="缓冲区溢出"><a href="#缓冲区溢出" class="headerlink" title="缓冲区溢出"></a>缓冲区溢出</h2><h3 id="读取数组边界以外的内容"><a href="#读取数组边界以外的内容" class="headerlink" title="读取数组边界以外的内容"></a>读取数组边界以外的内容</h3><p>编译器借助index、以array[index]的形式表示数组，如果仔细的观察二进制代码，那么可以看到程序并没有对数组的边界进行检查，如果访问超过下标最大值，会出现什么？</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a[<span class="number">20</span>];</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">20</span>;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		a[i] = i * <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"a[120]=%d"</span>,a[<span class="number">20</span>]);	<span class="comment">//访问超过下标</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">_a$ = -80</span><br><span class="line">_i$ = -84</span><br><span class="line">_main	PROC NEAR</span><br><span class="line">; File array_index.c</span><br><span class="line">; Line 4</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">	sub	esp, 84					; 00000054H</span><br><span class="line">; Line 7</span><br><span class="line">	mov	DWORD PTR _i$[ebp], 0</span><br><span class="line">	jmp	SHORT $L338</span><br><span class="line">$L339:</span><br><span class="line">	mov	eax, DWORD PTR _i$[ebp]</span><br><span class="line">	add	eax, 1</span><br><span class="line">	mov	DWORD PTR _i$[ebp], eax</span><br><span class="line">$L338:</span><br><span class="line">	cmp	DWORD PTR _i$[ebp], 20			; 00000014H</span><br><span class="line">	jge	SHORT $L340</span><br><span class="line">; Line 9</span><br><span class="line">	mov	ecx, DWORD PTR _i$[ebp]</span><br><span class="line">	shl	ecx, 1</span><br><span class="line">	mov	edx, DWORD PTR _i$[ebp]</span><br><span class="line">	mov	DWORD PTR _a$[ebp+edx*4], ecx</span><br><span class="line">; Line 10</span><br><span class="line">	jmp	SHORT $L339</span><br><span class="line">$L340:</span><br><span class="line">; Line 11</span><br><span class="line">	mov	eax, DWORD PTR _a$[ebp+80]</span><br><span class="line">	push	eax</span><br><span class="line">	push	OFFSET FLAT:$SG341</span><br><span class="line">	call	_printf</span><br><span class="line">	add	esp, 8</span><br><span class="line">; Line 12</span><br><span class="line">	xor	eax, eax</span><br><span class="line">; Line 13</span><br><span class="line">	mov	esp, ebp</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_main	ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+
+<p>我们先尝试运行这个程序，发现程序并没有报错，而且显示了一个接近栈内数组的数据的值；</p>
+<p><img src="//systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/1.png" alt></p>
+<p>我们通过OD查看这个数据是从那里来的。</p>
+<p><img src="//systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/2.png" alt></p>
+<h3 id="向数组边界之外的地址赋值"><a href="#向数组边界之外的地址赋值" class="headerlink" title="向数组边界之外的地址赋值"></a>向数组边界之外的地址赋值</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">20</span>];</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">30</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">		a[i] = i;        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>MSVC编译后的汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">_a$ = -80</span><br><span class="line">_i$ = -84</span><br><span class="line">_main	PROC NEAR</span><br><span class="line">; File array_30.c</span><br><span class="line">; Line 3</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">	sub	esp, 84					; 00000054H</span><br><span class="line">; Line 6</span><br><span class="line">	mov	DWORD PTR _i$[ebp], 0</span><br><span class="line">	jmp	SHORT $L338</span><br><span class="line">$L339:</span><br><span class="line">	mov	eax, DWORD PTR _i$[ebp]</span><br><span class="line">	add	eax, 1</span><br><span class="line">	mov	DWORD PTR _i$[ebp], eax</span><br><span class="line">$L338:</span><br><span class="line">	cmp	DWORD PTR _i$[ebp], 30			; 0000001eH</span><br><span class="line">	jge	SHORT $L340</span><br><span class="line">; Line 8</span><br><span class="line">	mov	ecx, DWORD PTR _i$[ebp]</span><br><span class="line">	mov	edx, DWORD PTR _i$[ebp]</span><br><span class="line">	mov	DWORD PTR _a$[ebp+ecx*4], edx</span><br><span class="line">; Line 9</span><br><span class="line">	jmp	SHORT $L339</span><br><span class="line">$L340:</span><br><span class="line">; Line 10</span><br><span class="line">	xor	eax, eax</span><br><span class="line">; Line 11</span><br><span class="line">	mov	esp, ebp</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_main	ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+
+<p>我们尝试对这个程序进行运行，发现这个程序奔溃了</p>
+<p><img src="//systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/3.png" alt></p>
+<p>我们单步调试这个程序，首先进入循环体，让循环把这个数组写满</p>
+<p><img src="//systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/4.png" alt></p>
+<p>然后单步执行，让函数结束，继续分析寄存器的状态</p>
+<p><img src="//systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/5.png" alt></p>
+<p>现在EIP的值是不合法的(0x15)，这个地址起码对于Win32来说不是一个合法的地址，程序在此刻发生问题，这时EBP的值是0x14，ECX和EDX的值是0x1D</p>
+<p>这张图说明，EIP进行出栈操作的时候，OllyDbg找不到0x15处的程序代码；</p>
+<p>回复一下栈结构，程序进入main函数的时候，使用EBP寄存器来保存栈的值，然后分配了84个字节的空间来保存数组和变量i，计算方法是”(20+1)*sizeof(int)”。栈顶指针ESP现在指向栈内的变量i，在执行push入栈后它会指向i的下一个地址；</p>
+<p>main函数的栈结构如下：</p>
+<p>ESP            i所占用的4字节</p>
+<p>ESP+4        a[20]占用的80字节</p>
+<p>ESP+84        保存过的EBP</p>
+<p>ESP+88         返回地址</p>
+<p>当我们赋值给a[19]的时候，数组a已经赋值完毕，当我们赋值给a[20]的时候，其实是修改了栈空间中保存的EBP的值；</p>
+<p>观察程序奔溃时寄存器的状态，本例将20个数字赋值给a[19]，在函数退出前，CPU通过栈回复EBP的初始值。本例会收到的值是20(0x14)，最后执行RET指令，相当于pop EIP指令</p>
+<p>RET指令将程序的控制权传递给栈里的返回地址，不过这个RA的地址被修改为了0x15，CPU就会去寻找0x15处的代码，继续执行，但是那里并没有可执行代码，所以程序崩溃了。</p>
+<h2 id="缓冲区溢出的保护"><a href="#缓冲区溢出的保护" class="headerlink" title="缓冲区溢出的保护"></a>缓冲区溢出的保护</h2><p>下面是一些方法防止缓冲区溢出；msvc使用以下选项编译：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/RTCs Stack Frame runtime checking</span><br><span class="line">/<span class="function">GZ Enable <span class="built_in">stack</span> <span class="title">checks</span> <span class="params">(/RTCs)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>一种方法是在函数局部变量和序言之间写入随机值，在函数退出之前检查该值，如果该值不一致则挂起而不执行RET。进程被挂起；该随机值有时被称为”探测值”；</p>
+<h3 id="GCC的保护措施"><a href="#GCC的保护措施" class="headerlink" title="GCC的保护措施"></a>GCC的保护措施</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;malloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">char</span> *buf=(<span class="keyword">char</span>*)alloca (<span class="number">600</span>);</span><br><span class="line">_snprintf (buf, <span class="number">600</span>, <span class="string">"hi! %d, %d, %d"</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="built_in">puts</span> (buf);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>不适用任何的附加编译选项，只使用默认选项，GCC将会插入”探测”检测代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">.LC0:</span><br><span class="line">.string &quot;hi! %d, %d, %d</span><br><span class="line">&quot;</span><br><span class="line">f:</span><br><span class="line">    push ebp</span><br><span class="line">    mov ebp, esp</span><br><span class="line">    push ebx</span><br><span class="line">    sub esp, 676</span><br><span class="line">    lea ebx, [esp+39]</span><br><span class="line">    and ebx, -16</span><br><span class="line">    mov DWORD PTR [esp+20], 3</span><br><span class="line">    mov DWORD PTR [esp+16], 2</span><br><span class="line">    mov DWORD PTR [esp+12], 1</span><br><span class="line">    mov DWORD PTR [esp+8], OFFSET FLAT:.LC0 ; &quot;hi! %d, %</span><br><span class="line">    d, %d</span><br><span class="line">    &quot;</span><br><span class="line">    mov DWORD PTR [esp+4], 600</span><br><span class="line">    mov DWORD PTR [esp], ebx</span><br><span class="line">    mov eax, DWORD PTR gs:20 ; canary	//随机值</span><br><span class="line">    mov DWORD PTR [ebp-12], eax</span><br><span class="line">    xor eax, eax</span><br><span class="line">    call _snprintf</span><br><span class="line">    mov DWORD PTR [esp], ebx</span><br><span class="line">    call puts</span><br><span class="line">    mov eax, DWORD PTR [ebp-12]</span><br><span class="line">    xor eax, DWORD PTR gs:20 ; canary</span><br><span class="line">    jne .L5</span><br><span class="line">    mov ebx, DWORD PTR [ebp-4]</span><br><span class="line">    leave</span><br><span class="line">    ret</span><br><span class="line">.L5:</span><br><span class="line">call __stack_chk_fail</span><br></pre></td></tr></table></figure>
+
+<p>随机值被写入堆栈，在函数尾部与gs:20的探测值进行比较，如果不一致，_stack_chk_fali函数被调用；</p>
+<h2 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h2><p>多维数组和线性数组在本质是相同的，因为计算机的内存是现象的，它是一维数组，但是一维数组可以很容易用来表示多维数组。比如a[3][4]就可以用a[12]来代替；</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line">[<span class="number">0</span>][<span class="number">1</span>]</span><br><span class="line">[<span class="number">0</span>][<span class="number">2</span>]</span><br><span class="line">[<span class="number">0</span>][<span class="number">3</span>]</span><br><span class="line">[<span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">[<span class="number">1</span>][<span class="number">4</span>]</span><br><span class="line">[<span class="number">1</span>][<span class="number">5</span>]</span><br><span class="line">[<span class="number">1</span>][<span class="number">6</span>]</span><br><span class="line">[<span class="number">2</span>][<span class="number">0</span>]</span><br><span class="line">[<span class="number">2</span>][<span class="number">7</span>]</span><br><span class="line">[<span class="number">2</span>][<span class="number">8</span>]</span><br><span class="line">[<span class="number">2</span>][<span class="number">9</span>]</span><br></pre></td></tr></table></figure>
+
+<p>该二维数组在一维数组索引表示为：</p>
+<p>​        1     2     3<br>4     5     6     7<br>8     9     10     11</p>
+<h3 id="二维数组举例"><a href="#二维数组举例" class="headerlink" title="二维数组举例"></a>二维数组举例</h3><p><img src="//systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/6.png" alt></p>
+<h3 id="以一维数组的方式访问二维数组"><a href="#以一维数组的方式访问二维数组" class="headerlink" title="以一维数组的方式访问二维数组"></a>以一维数组的方式访问二维数组</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> a[<span class="number">3</span>][<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">get_by_coordinates1</span><span class="params">(<span class="keyword">char</span> <span class="built_in">array</span>[<span class="number">3</span>][<span class="number">4</span>], <span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">array</span>[a][b];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">get_by_coordinates2</span><span class="params">(<span class="keyword">char</span> *<span class="built_in">array</span>, <span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">array</span>[a*<span class="number">4</span>+b];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">get_by_coordinates3</span><span class="params">(<span class="keyword">char</span> *<span class="built_in">array</span>, <span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> *(<span class="built_in">array</span> + a * <span class="number">4</span> + b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	a[<span class="number">2</span>][<span class="number">3</span>] = <span class="number">123</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>, get_by_coordinates1(a, <span class="number">2</span>, <span class="number">3</span>));</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>, get_by_coordinates2(a, <span class="number">2</span>, <span class="number">3</span>));</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>, get_by_coordinates3(a, <span class="number">2</span>, <span class="number">3</span>));</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用MSVC编译</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">_array$ = 8</span><br><span class="line">_a$ = 12</span><br><span class="line">_b$ = 16</span><br><span class="line">_get_by_coordinates3 PROC NEAR</span><br><span class="line">; Line 19</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">; Line 20</span><br><span class="line">	mov	eax, DWORD PTR _a$[ebp]</span><br><span class="line">	mov	ecx, DWORD PTR _array$[ebp]</span><br><span class="line">	lea	edx, DWORD PTR [ecx+eax*4]</span><br><span class="line">	mov	eax, DWORD PTR _b$[ebp]</span><br><span class="line">	mov	al, BYTE PTR [edx+eax]</span><br><span class="line">; Line 21</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_get_by_coordinates3 ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">PUBLIC	_main</span><br><span class="line">EXTRN	_printf:NEAR</span><br><span class="line">EXTRN	_system:NEAR</span><br><span class="line">_DATA	SEGMENT</span><br><span class="line">$SG361	DB	&apos;%d&apos;, 0dH, 0aH, 00H</span><br><span class="line">	ORG $+3</span><br><span class="line">$SG362	DB	&apos;%d&apos;, 0dH, 0aH, 00H</span><br><span class="line">	ORG $+3</span><br><span class="line">$SG363	DB	&apos;%d&apos;, 0dH, 0aH, 00H</span><br><span class="line">	ORG $+3</span><br><span class="line">$SG365	DB	&apos;pause&apos;, 00H</span><br><span class="line">_DATA	ENDS</span><br><span class="line">_TEXT	SEGMENT</span><br><span class="line">_main	PROC NEAR</span><br><span class="line">; Line 24</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">; Line 25</span><br><span class="line">	mov	BYTE PTR _a+11, 123			; 0000007bH</span><br><span class="line">; Line 26</span><br><span class="line">	push	3</span><br><span class="line">	push	2</span><br><span class="line">	push	OFFSET FLAT:_a</span><br><span class="line">	call	_get_by_coordinates1</span><br><span class="line">	add	esp, 12					; 0000000cH</span><br><span class="line">	movsx	eax, al</span><br><span class="line">	push	eax</span><br><span class="line">	push	OFFSET FLAT:$SG361</span><br><span class="line">	call	_printf</span><br><span class="line">	add	esp, 8</span><br><span class="line">; Line 28</span><br><span class="line">	push	3</span><br><span class="line">	push	2</span><br><span class="line">	push	OFFSET FLAT:_a</span><br><span class="line">	call	_get_by_coordinates2</span><br><span class="line">	add	esp, 12					; 0000000cH</span><br><span class="line">	movsx	ecx, al</span><br><span class="line">	push	ecx</span><br><span class="line">	push	OFFSET FLAT:$SG362</span><br><span class="line">	call	_printf</span><br><span class="line">	add	esp, 8</span><br><span class="line">; Line 29</span><br><span class="line">	push	3</span><br><span class="line">	push	2</span><br><span class="line">	push	OFFSET FLAT:_a</span><br><span class="line">	call	_get_by_coordinates3</span><br><span class="line">	add	esp, 12					; 0000000cH</span><br><span class="line">	movsx	edx, al</span><br><span class="line">	push	edx</span><br><span class="line">	push	OFFSET FLAT:$SG363</span><br><span class="line">	call	_printf</span><br><span class="line">	add	esp, 8</span><br><span class="line">; Line 30</span><br><span class="line">	push	OFFSET FLAT:$SG365</span><br><span class="line">	call	_system</span><br><span class="line">	add	esp, 4</span><br><span class="line">; Line 31</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_main	ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+
+<h2 id="多维数组-1"><a href="#多维数组-1" class="headerlink" title="多维数组"></a>多维数组</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">10</span>][<span class="number">20</span>][<span class="number">30</span>];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> z, <span class="keyword">int</span> value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	a[x][y][z]=value;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MSVC-x86"><a href="#MSVC-x86" class="headerlink" title="MSVC :x86"></a>MSVC :x86</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">_x$ = 8</span><br><span class="line">_y$ = 12</span><br><span class="line">_z$ = 16</span><br><span class="line">_value$ = 20</span><br><span class="line">_insert	PROC NEAR</span><br><span class="line">; File array3.c</span><br><span class="line">; Line 4</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">; Line 5</span><br><span class="line">	mov	eax, DWORD PTR _x$[ebp]</span><br><span class="line">	imul	eax, 2400				; 00000960H</span><br><span class="line">	mov	ecx, DWORD PTR _y$[ebp]</span><br><span class="line">	imul	ecx, 120				; 00000078H</span><br><span class="line">	lea	edx, DWORD PTR _a[eax+ecx]</span><br><span class="line">	mov	eax, DWORD PTR _z$[ebp]</span><br><span class="line">	mov	ecx, DWORD PTR _value$[ebp]</span><br><span class="line">	mov	DWORD PTR [edx+eax*4], ecx</span><br><span class="line">; Line 6</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_insert	ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+
+<p>多维数组计算索引公式：address = 6004x+304y+4z，因为int类型为32bit(4字节)，所以需要*4</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年10月31日 - 21时42分</p>
+        <p><span>最后更新:</span>2019年11月01日 - 16时02分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/10/31/逆向工程权威指南-数组/" title="逆向工程权威指南-数组">https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/10/31/逆向工程权威指南-数组/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2019/11/01/逆向工程核心原理-DLL卸载/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          逆向工程核心原理-DLL卸载
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/31/逆向工程核心原理-DLL注入/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">逆向工程核心原理-DLL注入</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#数组"><span class="toc-number">1.</span> <span class="toc-text">数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#数组-1"><span class="toc-number">1.1.</span> <span class="toc-text">数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#X86"><span class="toc-number">1.1.1.</span> <span class="toc-text">X86</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OllyDbg"><span class="toc-number">1.1.2.</span> <span class="toc-text">OllyDbg</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCC"><span class="toc-number">1.1.3.</span> <span class="toc-text">GCC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓冲区溢出"><span class="toc-number">1.2.</span> <span class="toc-text">缓冲区溢出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#读取数组边界以外的内容"><span class="toc-number">1.2.1.</span> <span class="toc-text">读取数组边界以外的内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向数组边界之外的地址赋值"><span class="toc-number">1.2.2.</span> <span class="toc-text">向数组边界之外的地址赋值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓冲区溢出的保护"><span class="toc-number">1.3.</span> <span class="toc-text">缓冲区溢出的保护</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GCC的保护措施"><span class="toc-number">1.3.1.</span> <span class="toc-text">GCC的保护措施</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多维数组"><span class="toc-number">1.4.</span> <span class="toc-text">多维数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#二维数组举例"><span class="toc-number">1.4.1.</span> <span class="toc-text">二维数组举例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#以一维数组的方式访问二维数组"><span class="toc-number">1.4.2.</span> <span class="toc-text">以一维数组的方式访问二维数组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多维数组-1"><span class="toc-number">1.5.</span> <span class="toc-text">多维数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MSVC-x86"><span class="toc-number">1.5.1.</span> <span class="toc-text">MSVC :x86</span></a></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/11/01/逆向工程核心原理-DLL卸载/" title="上一篇: 逆向工程核心原理-DLL卸载">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/10/31/逆向工程核心原理-DLL注入/" title="下一篇: 逆向工程核心原理-DLL注入">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
