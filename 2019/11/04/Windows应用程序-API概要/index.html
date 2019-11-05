@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Windows应用程序-API概要 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Windows程序设计的一些基本概念，包括在WIndows程序设计中所使用到的一些特有数据类型；还有将Windows众多的API进行了分类，初步介绍Windows API与动态链接的原理，以及Windows应用程序所使用的字符集等;">
+<meta name="keywords" content="Windows-Kernel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows应用程序-API概要">
+<meta property="og:url" content="https://systemk1t.github.io/2019/11/04/Windows应用程序-API概要/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="Windows程序设计的一些基本概念，包括在WIndows程序设计中所使用到的一些特有数据类型；还有将Windows众多的API进行了分类，初步介绍Windows API与动态链接的原理，以及Windows应用程序所使用的字符集等;">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/04/Windows应用程序-API概要/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/04/Windows应用程序-API概要/1.png">
+<meta property="og:updated_time" content="2019-11-04T13:19:27.682Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows应用程序-API概要">
+<meta name="twitter:description" content="Windows程序设计的一些基本概念，包括在WIndows程序设计中所使用到的一些特有数据类型；还有将Windows众多的API进行了分类，初步介绍Windows API与动态链接的原理，以及Windows应用程序所使用的字符集等;">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/11/04/Windows应用程序-API概要/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Windows应用程序-API概要" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/11/04/Windows应用程序-API概要/" class="article-date">
+      <time datetime="2019-11-04T10:43:14.000Z" itemprop="datePublished">2019-11-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows应用程序-API概要
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows-API开发详解/">Windows-API开发详解</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>Windows程序设计的一些基本概念，包括在WIndows程序设计中所使用到的一些特有数据类型；还有将Windows众多的API进行了分类，初步介绍Windows API与动态链接的原理，以及Windows应用程序所使用的字符集等;</p>
+<a id="more"></a>
+
+<h2 id="Windows数据类型"><a href="#Windows数据类型" class="headerlink" title="Windows数据类型"></a>Windows数据类型</h2><p>Windows API使用很多Windows自定义的数据类型，但是必须熟悉Windows的数据类型；</p>
+<p>在众多的Windows数据类型中，最常用的有DWORD、HANDLE、LPSTSTR、WORD、BYTE、CHAR等。</p>
+<p><strong>在Windows系统中，DWORD用于表示无符号整形数据，32位，在一般情况下BYTE是8位，而WORD是16位，DWORD是32位</strong></p>
+<p>Windows系统中特殊的数据类型—-HANDLE，通常HANDLE类型的变量用于唯一标识一个“对象”，如窗口、控件、文件等</p>
+<h3 id="Windows数据类型示例"><a href="#Windows数据类型示例" class="headerlink" title="Windows数据类型示例"></a>Windows数据类型示例</h3><h4 id="常用数据类型演示"><a href="#常用数据类型演示" class="headerlink" title="常用数据类型演示"></a>常用数据类型演示</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">WinMain</span><span class="params">(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,<span class="keyword">int</span> nCmdShow)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LPSTR szString = <span class="string">"Windows data type ,string"</span>;</span><br><span class="line">	<span class="keyword">char</span> lpString[<span class="number">120</span>];</span><br><span class="line">	DWORD dwMax = <span class="number">0XFFFFFFFF</span>;</span><br><span class="line">	DWORD dwOne = <span class="number">0X1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> iMax = <span class="number">0XFFFFFFFF</span>;</span><br><span class="line">	<span class="keyword">int</span> iOne = <span class="number">011</span>;</span><br><span class="line"></span><br><span class="line">	MessageBoxA(<span class="literal">NULL</span>, szString, <span class="string">"LPSTR"</span>, MB_OK);</span><br><span class="line"></span><br><span class="line">	CopyMemory(lpString, szString, lstrlen(szString) + <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//赋值内存，将字符串复制到数据中，+1是为了\0</span></span><br><span class="line"></span><br><span class="line">	MessageBoxA(<span class="literal">NULL</span>, lpString, <span class="string">"char[]"</span>, MB_OK);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dwMax &gt; dwOne)</span><br><span class="line">	&#123;</span><br><span class="line">		MessageBoxA(<span class="literal">NULL</span>, <span class="string">"DWORD类型的数据0xFFFFFFFF &gt; 0x1"</span>, <span class="string">"DWORD"</span>, MB_OK);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (iMax &lt; iOne)</span><br><span class="line">	&#123;</span><br><span class="line">		MessageBoxA(<span class="literal">NULL</span>, <span class="string">"Int类型的数据 0xFFFFFFFF &lt; 0x1"</span>, <span class="string">"INT"</span>, MB_OK);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>LPSTR类型的数据是字符串，也就是字符数组，相当于C语言中的char</strong></p>
+<h4 id="为什么要使用WIndows数据类型"><a href="#为什么要使用WIndows数据类型" class="headerlink" title="为什么要使用WIndows数据类型"></a>为什么要使用WIndows数据类型</h4><p>Windows API函数、数据结构等都是采用Windows数据类型</p>
+<h4 id="查看Windows数据类型的定义"><a href="#查看Windows数据类型的定义" class="headerlink" title="查看Windows数据类型的定义"></a>查看Windows数据类型的定义</h4><p><img src="//systemk1t.github.io/2019/11/04/Windows应用程序-API概要/0.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/11/04/Windows应用程序-API概要/1.png" alt></p>
+<h4 id="Windows数据类型命名的规律"><a href="#Windows数据类型命名的规律" class="headerlink" title="Windows数据类型命名的规律"></a>Windows数据类型命名的规律</h4><p><strong>指针类型的命名方式一般是在其指向的数据类型前加“LP”或“p”</strong></p>
+<p><strong>各种句柄类型的命名方式一般都是在其对象名前加“H”</strong></p>
+<p><strong>无符号类型一般以“U”开头</strong></p>
+<h4 id="Windows中数据结构"><a href="#Windows中数据结构" class="headerlink" title="Windows中数据结构"></a>Windows中数据结构</h4><p>Windows系统中数据结构类型的定义非常多，也有很多API函数使用到了这些数据结构类型。</p>
+<h2 id="Windows-API功能分类"><a href="#Windows-API功能分类" class="headerlink" title="Windows API功能分类"></a>Windows API功能分类</h2><h3 id="系统基本服务"><a href="#系统基本服务" class="headerlink" title="系统基本服务"></a>系统基本服务</h3><ul>
+<li>文件系统<ul>
+<li>对文件的基本操作包括文件的黄健、打开、关闭、删除，文件属性的设置与获取，目录操作，以及磁盘分卷的操作，包括镜像文件、加密文件系统等</li>
+</ul>
+</li>
+<li>内存管理<ul>
+<li>主要是内存的配、共享、释放等，包括虚拟内存管理、分页机制、堆管理</li>
+</ul>
+</li>
+<li>进程、线程和模块<ul>
+<li>包括进程主程序(exe)、模块、动态链接库(dll)等；线程的基本概念，线程创建、遍历、同步等操作；进程与权限；线程与纤程等内容</li>
+</ul>
+</li>
+<li>设备I/O、驱动程序控制<ul>
+<li>包括设备对象等基本概念。加载与卸载驱动程序，控制驱动程序，与驱动程序通信等</li>
+</ul>
+</li>
+<li>调试与错误处理<ul>
+<li>如何开发调试器，程序运行错误的处理，日志的记录、Windows可执行文件的结构等</li>
+</ul>
+</li>
+<li>Windows系统信息<ul>
+<li>注册表的操作，打开注册表、读取、写入键值、创建、删除键；还包括系统基本信息的获取和设置，</li>
+</ul>
+</li>
+<li>进程间通信<ul>
+<li>使用共享文件进行进程间通信的方法，使用消息进程进程见通信的方法，使用邮槽、管道等进程进程间通信的方法，使用网络共享进行进程间通信的方法</li>
+</ul>
+</li>
+<li>定时器与消息机制<ul>
+<li>消息机制是Windows系统中很重要的一种机制，几乎所有的Windows应用程序都在和消息打交道，而Windows的消息机制是依赖于定时器的。</li>
+</ul>
+</li>
+<li>其他<ul>
+<li>Windows系统基本服务还包括性能监视、电源管理、索引与数据存储等</li>
+</ul>
+</li>
+</ul>
+<p>将系统目录信息写入systemroot.txt</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hFile;		<span class="comment">//文件句柄</span></span><br><span class="line">	DWORD dwWritten;	<span class="comment">//</span></span><br><span class="line"></span><br><span class="line">	TCHAR szSystemDir[MAX_PATH];	<span class="comment">//字符数组</span></span><br><span class="line">	GetSystemDirectory(szSystemDir, MAX_PATH);	<span class="comment">//获取系统目录</span></span><br><span class="line"></span><br><span class="line">	hFile = CreateFile(<span class="string">"systemroot.txt"</span>, GENERIC_WRITE, <span class="number">0</span>, <span class="literal">NULL</span>, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, <span class="literal">NULL</span>);	<span class="comment">//使用Create创建文件</span></span><br><span class="line">	<span class="comment">//判断文件是否创建成功</span></span><br><span class="line">	<span class="keyword">if</span> (hFile != INVALID_HANDLE_VALUE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//将系统目录信息写入文件</span></span><br><span class="line">		<span class="keyword">if</span> (!WriteFile(hFile, szSystemDir, lstrlen(szSystemDir), &amp;dwWritten, <span class="literal">NULL</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> GetLastError();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	CloseHandle(hFile);	<span class="comment">//关闭文件句柄</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h3><p>系统管理是Windows系统中很重要的内容。Windows系统提供一下方面的API供应用程序开发使用，包括：<strong>管理控制台接口、程序安装、系统恢复、任务调度、Windows远程管理</strong></p>
+<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><p>用户利用Windows API可以开发基于各种网络协议的应用程序，例如TCP、UDP、HTTP、DHCP、RPC等；</p>
+<p>网络API还可以进行网络管理，包括网络的基本信息，使用IP Hlper库可以获取网络配置和网络信息、进行网络监控等</p>
+<p>### </p>
+<h2 id="Windows-API-核心-DLL"><a href="#Windows-API-核心-DLL" class="headerlink" title="Windows API 核心 DLL"></a>Windows API 核心 DLL</h2><p>在Windows操作系统中，存在着很多动态链接文件(DLL文件)。这些DLL文件中包含了Windows API函数可执行程序。<strong>DLL将各函数“导出”，这样应用程序就可以找到DLL中的函数地址，当程序调用API的时候，程序会运行到DLL</strong></p>
+<p><strong>API函数主要存在于几个核心的动态链接文件中。Kernel32.dll、User32.dll、GDI32.dll</strong></p>
+<h3 id="Kernel32"><a href="#Kernel32" class="headerlink" title="Kernel32"></a>Kernel32</h3><p>kernel32中包含了系统基本服务中的API函数，如文件系统、进程与线程、内存管理等。Windows Xp SP2中，Kernel32有949个导出函数；</p>
+<h3 id="user32"><a href="#user32" class="headerlink" title="user32"></a>user32</h3><p>user32是Windows图形用户界面的主要支持</p>
+<h3 id="Gdi32"><a href="#Gdi32" class="headerlink" title="Gdi32"></a>Gdi32</h3><p>Windows GDI应用程序设计接口，Gdi32到处了于此相关的若干函数</p>
+<h3 id="标准c函数及Crtdll-dll"><a href="#标准c函数及Crtdll-dll" class="headerlink" title="标准c函数及Crtdll_dll"></a>标准c函数及Crtdll_dll</h3><p>在系统环境下使用标准C进行程序开发时，用户所使用的库函数是由操作系统提供的。正是由于各个主流操作系统都提供了一套标准C库所定义的函数接口，标准C函数库才会由如此广泛的跨越操作系统平台。</p>
+<p>Windows系统的C标准库函数接口主要由crtdll.dll导出。实际上，C标准库函数必须由操作系统为其提供接口，否则使用标准C开发的程序无法在特定的操作系统上运行；</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年11月04日 - 18时43分</p>
+        <p><span>最后更新:</span>2019年11月04日 - 21时19分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/04/Windows应用程序-API概要/" title="Windows应用程序-API概要">https://systemk1t.github.io/2019/11/04/Windows应用程序-API概要/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/11/04/Windows应用程序-API概要/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2019/11/05/黑客编程-网络/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          黑客编程-网络
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/04/Windows应用程序-入门/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Windows应用程序-入门</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows数据类型"><span class="toc-number">1.</span> <span class="toc-text">Windows数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows数据类型示例"><span class="toc-number">1.1.</span> <span class="toc-text">Windows数据类型示例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#常用数据类型演示"><span class="toc-number">1.1.1.</span> <span class="toc-text">常用数据类型演示</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#为什么要使用WIndows数据类型"><span class="toc-number">1.1.2.</span> <span class="toc-text">为什么要使用WIndows数据类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看Windows数据类型的定义"><span class="toc-number">1.1.3.</span> <span class="toc-text">查看Windows数据类型的定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Windows数据类型命名的规律"><span class="toc-number">1.1.4.</span> <span class="toc-text">Windows数据类型命名的规律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Windows中数据结构"><span class="toc-number">1.1.5.</span> <span class="toc-text">Windows中数据结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows-API功能分类"><span class="toc-number">2.</span> <span class="toc-text">Windows API功能分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#系统基本服务"><span class="toc-number">2.1.</span> <span class="toc-text">系统基本服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统管理"><span class="toc-number">2.2.</span> <span class="toc-text">系统管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网络"><span class="toc-number">2.3.</span> <span class="toc-text">网络</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows-API-核心-DLL"><span class="toc-number">3.</span> <span class="toc-text">Windows API 核心 DLL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kernel32"><span class="toc-number">3.1.</span> <span class="toc-text">Kernel32</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user32"><span class="toc-number">3.2.</span> <span class="toc-text">user32</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gdi32"><span class="toc-number">3.3.</span> <span class="toc-text">Gdi32</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#标准c函数及Crtdll-dll"><span class="toc-number">3.4.</span> <span class="toc-text">标准c函数及Crtdll_dll</span></a></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/11/05/黑客编程-网络/" title="上一篇: 黑客编程-网络">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/11/04/Windows应用程序-入门/" title="下一篇: Windows应用程序-入门">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/黑客编程-网络/">黑客编程-网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-入门/">Windows应用程序-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
