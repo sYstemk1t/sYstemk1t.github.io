@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>WinSock网络编程经络-IP | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="互联网中的IP是一个主机到主机的协议，TCP、UDP、ICMP和IGMP都封装在IP数据报中传输，它是整个TCP/IP协议的核心部分，是所有互联网通信的基础">
+<meta name="keywords" content="Scoket">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WinSock网络编程经络-IP">
+<meta property="og:url" content="https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="互联网中的IP是一个主机到主机的协议，TCP、UDP、ICMP和IGMP都封装在IP数据报中传输，它是整个TCP/IP协议的核心部分，是所有互联网通信的基础">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/4.png">
+<meta property="og:updated_time" content="2019-11-08T11:39:52.313Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WinSock网络编程经络-IP">
+<meta name="twitter:description" content="互联网中的IP是一个主机到主机的协议，TCP、UDP、ICMP和IGMP都封装在IP数据报中传输，它是整个TCP/IP协议的核心部分，是所有互联网通信的基础">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 14.29px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15.71px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 11.43px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 12.86px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.57px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 12.86px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 17.14px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-WinSock网络编程经络-IP" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/11/08/WinSock网络编程经络-IP/" class="article-date">
+      <time datetime="2019-11-07T20:20:57.000Z" itemprop="datePublished">2019-11-08</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WinSock网络编程经络-IP
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/网络编程/">网络编程</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scoket/">Scoket</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>互联网中的IP是一个主机到主机的协议，TCP、UDP、ICMP和IGMP都封装在IP数据报中传输，它是整个TCP/IP协议的核心部分，是所有互联网通信的基础</p>
+<a id="more"></a>
+
+<h2 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h2><p>选择IP协议主要有以下几点原因：</p>
+<ul>
+<li>IP协议对底层网络提供的服务做了最少的假设，不要求网络具有一些通常再主机到主机的协议中使用的一些机制</li>
+<li>虚电路通常只能使用一种固定类型的服务，而IP协议使用数据报作为它的信息单元，只提供了最基本的功能：把数据从源主机传送到目的主机。</li>
+<li>IP协议不要求中间结点，如路由器保存状态信息，一旦中间链路或节点出现了故障，数据报可以选择其他的路径，而仍然可以保持上层协议的正常通信。</li>
+</ul>
+<h2 id="操作模型"><a href="#操作模型" class="headerlink" title="操作模型"></a>操作模型</h2><p>上层协议有数据发送时，调用IP模块的接口函数，把数据、目的地址及其他参数传递给IP层。IP协议再消息的前面增加数据报首部，然后查找本地路由表，确定把数据报发送到哪个物理地址。<strong>如果目的主机与源主机位于同一网络，目的网络地址就算目的主机的物理地址；否则，找到通往目的主机的路由器，并把路由器的地址作为目的物理地址</strong></p>
+<p><img src="//systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/0.png" alt></p>
+<h2 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h2><p>IP协议的功能和目的就是在互相连接的网络间传输数据报，为了完成这个功能，它把数据报从一个IP模块传送到另一个IP模块，一直到目的主机。</p>
+<p><strong>中间节点使用IP首部中的目的地址为数据报选择路由，路由过程中，数据报可能会通过MTU小于数据报大小的网络，为了客服这个困难，IP协议提供了分片机制</strong></p>
+<ul>
+<li>寻址和选路：名字、地址和路由的区别是：名字表明我们所看到的，地址指明它在哪里，路由则指示如何到达那里，IP协议主要处理地址和路由</li>
+<li>封装和解析：接受其他协议的数据，发送之前把它们按照协议的要求封装在IP数据报中。接受数据时根据IP数据报首部中的信息把其他协议的数据解析出来并交给不同的协议去处理</li>
+<li>分片和重组：TCP/IP设计的一个主要思想是硬件无关性，要能够在不同的屋里网络上运行。如果IP数据报的长度超过MTU时，对数据进行分片，把数据报分配成与MTU相近大小的片再由物理网络传输。数据报分片后，每片都作为独立的数据传输，当到达目的主机后，需要执行相反的过程，即把这些数据报重组成原来的内容</li>
+</ul>
+<h2 id="数据报格式"><a href="#数据报格式" class="headerlink" title="数据报格式"></a>数据报格式</h2><p>IP数据报类似于数据链路上传输的帧，但帧只能用于同一个物理网络的数据传输，而IP数据报的设计是为了跨越互联网传输数据，由软件来处理，格式和内容都与硬件无关。和所有的网络协议报文一样，IP数据报由特定的格式，概念上可以分为两种：首部和负载。<strong>首部包含了地址、服务类型及控制信息；而负载承担了要在网络上发送或接受数据</strong></p>
+<p><img src="//systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/1.png" alt></p>
+<h4 id="版本号-Version"><a href="#版本号-Version" class="headerlink" title="版本号(Version)"></a>版本号(Version)</h4><p>目前光放使用的版本是4，版本定义了数据报的格式。发送方、中间的路由器和接收方都要按照版本定义的标准来处理数据报。<strong>如果数据报的版本与它预期不一致，就要抛弃该数据报，以避免使用错误的格式来解释数据报内容</strong></p>
+<h4 id="首部长度-Hander-Length"><a href="#首部长度-Hander-Length" class="headerlink" title="首部长度(Hander Length)"></a>首部长度(Hander Length)</h4><p>首部长度是IP首部占32位字的长度，包括任何选项，它指向了数据的开始。</p>
+<h4 id="服务类型"><a href="#服务类型" class="headerlink" title="服务类型"></a>服务类型</h4><p>服务类型用于指明程序需要的服务质量。比如数据报通过一个特定的网络时，这些参数能够辅助路由器做出路由决策。RFC1349对服务类型做了标准化，<strong>把一个字节的TOS划分位许多个子字段</strong></p>
+<p><img src="//systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/2.png" alt></p>
+<p>延迟、吞吐量、可靠性、成本每个占1位，4位中只能设置其中一位，不能同时设置。</p>
+<p><img src="//systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/3.png" alt></p>
+<h4 id="总长度"><a href="#总长度" class="headerlink" title="总长度"></a>总长度</h4><p>以字节为长度的数据报长度，包括首部和数据。总长度字段为16Bit，能标识65535个字节。</p>
+<h4 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h4><p>表示了主机发送的每一个数据报，辅助接收方对数据的重组，发送主机必须为每一个发送的数据报生成唯一的值；</p>
+<h4 id="标志"><a href="#标志" class="headerlink" title="标志"></a>标志</h4><p>分片控制标志，3Bit，每个bit的意义如下：</p>
+<p><img src="//systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/4.png" alt></p>
+<h4 id="片偏移"><a href="#片偏移" class="headerlink" title="片偏移"></a>片偏移</h4><p>13bit，是指该片距离原始数据报数据部分开始的位置，以8字节的倍数计量，除最后一片外，分片的大小必须是8字节的倍数</p>
+<h4 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h4><p>设置了数据报能够再互联网系统中存在的最长时间，以秒为单位。入宫数据报的生存时间为0，则必须被销毁，每个处理数据报的模块都要把TTL至少减去1，即使它处理数据报的时间小于1.</p>
+<h4 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h4><p>指明数据报数据部分属于哪个协议，长度是8bit，最多而可以有255个协议，每个协议用一个数值表示，它们之间的映射由IANA统一管理</p>
+<h4 id="首部校验和"><a href="#首部校验和" class="headerlink" title="首部校验和"></a>首部校验和</h4><p>IP数据报首部校验和，用于校验首部的有效性和完整性。校验和的计算是首部校验和字段设置0，首部堪称是16bit的整数序列，计算每个16位整数的反码，再求它们的和。</p>
+<h4 id="地址"><a href="#地址" class="headerlink" title="地址"></a>地址</h4><p>源IP地址和目的IP地址字段包含了发送主机和接受主机的IP地址，经过中间的路由器时，都是用目的地址进行选路的</p>
+<h4 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h4><p>用于控制、度量和调试，在每个数据报中它是可选的，数据报可以有，也可以没有，依赖于用户的设置，但IP鞋洗必须实现对选项的处理；</p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/11/08/WinSock网络编程经络-IP/">WinSock网络编程经络-IP</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年11月08日 - 04时20分</p>
+        <p><span>最后更新:</span>2019年11月08日 - 19时39分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/08/WinSock网络编程经络-IP/" title="WinSock网络编程经络-IP">https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/11/08/WinSock网络编程经络-IP/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">WinSock网络编程经络-TCP/IP体系结构</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#设计思想"><span class="toc-number">1.</span> <span class="toc-text">设计思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作模型"><span class="toc-number">2.</span> <span class="toc-text">操作模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要功能"><span class="toc-number">3.</span> <span class="toc-text">主要功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据报格式"><span class="toc-number">4.</span> <span class="toc-text">数据报格式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#版本号-Version"><span class="toc-number">4.0.1.</span> <span class="toc-text">版本号(Version)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#首部长度-Hander-Length"><span class="toc-number">4.0.2.</span> <span class="toc-text">首部长度(Hander Length)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务类型"><span class="toc-number">4.0.3.</span> <span class="toc-text">服务类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总长度"><span class="toc-number">4.0.4.</span> <span class="toc-text">总长度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#标识符"><span class="toc-number">4.0.5.</span> <span class="toc-text">标识符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#标志"><span class="toc-number">4.0.6.</span> <span class="toc-text">标志</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#片偏移"><span class="toc-number">4.0.7.</span> <span class="toc-text">片偏移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#生存时间"><span class="toc-number">4.0.8.</span> <span class="toc-text">生存时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#协议"><span class="toc-number">4.0.9.</span> <span class="toc-text">协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#首部校验和"><span class="toc-number">4.0.10.</span> <span class="toc-text">首部校验和</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#地址"><span class="toc-number">4.0.11.</span> <span class="toc-text">地址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#选项"><span class="toc-number">4.0.12.</span> <span class="toc-text">选项</span></a></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/" title="下一篇: WinSock网络编程经络-TCP/IP体系结构">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/08/WinSock网络编程经络-IP/">WinSock网络编程经络-IP</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/">WinSock网络编程经络-TCP/IP体系结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-Echo客户-服务端程序/">WinSock网络编程经络-Echo客户/服务端程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/黑客编程-网络/">黑客编程-网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-入门/">Windows应用程序-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/黑客编程-入门/">黑客编程-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>

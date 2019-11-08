@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>黑客编程-入门 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="我们一直在使用别人开发得工具尝试“入侵”，俗称脚本小子，但是WIndows是一个庞大而复杂得操作系统，它提供了强大而丰富得功能，不但操作灵活方便，而且有众多软件支持，我们需要了解Windows下得开发工具、辅助工具、调试工具">
+<meta name="keywords" content="Hacker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="黑客编程-入门">
+<meta property="og:url" content="https://systemk1t.github.io/2019/11/04/黑客编程-入门/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="我们一直在使用别人开发得工具尝试“入侵”，俗称脚本小子，但是WIndows是一个庞大而复杂得操作系统，它提供了强大而丰富得功能，不但操作灵活方便，而且有众多软件支持，我们需要了解Windows下得开发工具、辅助工具、调试工具">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/04/黑客编程-入门/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/04/黑客编程-入门/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/11/04/黑客编程-入门/2.png">
+<meta property="og:updated_time" content="2019-11-08T11:40:06.455Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="黑客编程-入门">
+<meta name="twitter:description" content="我们一直在使用别人开发得工具尝试“入侵”，俗称脚本小子，但是WIndows是一个庞大而复杂得操作系统，它提供了强大而丰富得功能，不但操作灵活方便，而且有众多软件支持，我们需要了解Windows下得开发工具、辅助工具、调试工具">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/11/04/黑客编程-入门/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 14.29px;">Assembly</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15.71px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 11.43px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 12.86px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.57px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 12.86px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 17.14px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-黑客编程-入门" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/11/04/黑客编程-入门/" class="article-date">
+      <time datetime="2019-11-04T07:07:57.000Z" itemprop="datePublished">2019-11-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      黑客编程-入门
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/黑客编程/">黑客编程</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hacker/">Hacker</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>我们一直在使用别人开发得工具尝试“入侵”，俗称脚本小子，但是WIndows是一个庞大而复杂得操作系统，它提供了强大而丰富得功能，不但操作灵活方便，而且有众多软件支持，我们需要了解Windows下得开发工具、辅助工具、调试工具</p>
+<a id="more"></a>
+
+
+
+<h2 id="Windows消息"><a href="#Windows消息" class="headerlink" title="Windows消息"></a>Windows消息</h2><p>大部分Windows应用程序基于消息机制得(命令行下得程序不急于消息机制)，熟悉Windows操作系统得消息机制掌握Windows操作系统下编程得基础；</p>
+<h3 id="消息的演示测试"><a href="#消息的演示测试" class="headerlink" title="消息的演示测试"></a>消息的演示测试</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> CMsgTestDlg::OnClose()</span><br><span class="line">&#123;</span><br><span class="line">    HWND hWnd = ::FindWindow(<span class="string">"notepad"</span>,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span>(hWnd == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        AfxMessageBox(<span class="string">"没有找到记事本"</span>);</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    ::SendMessage(hWnd,WN_CLOSE,<span class="literal">NULL</span>,<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> CMsgTestDlg::OnExec()</span><br><span class="line">&#123;</span><br><span class="line">    WinExec(<span class="string">"notepad.exe"</span>,SW_SHOW);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> CMsgTestDlg::OnEditWnd()</span><br><span class="line">&#123;</span><br><span class="line">    HWND hWnd = ::FindWindow(<span class="literal">NULL</span>,<span class="string">"无标题-记事本"</span>);</span><br><span class="line">    <span class="keyword">if</span>(hWnd == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        AfxMessageBox(<span class="string">"没有找到记事本"</span>);</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span> *pCaptionText = <span class="string">"消息测试"</span>;</span><br><span class="line">    ::SendMessage(hWnd,WM_SETTEXT,(WPARAM)<span class="number">0</span>,(LPARAM),pCaptionText);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> CMsgTestDlg::OnGetWNd()</span><br><span class="line">&#123;</span><br><span class="line">    HNWD hWnd = ::FindWindow(<span class="string">"notepad"</span>,<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(hWnd == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        AfxMessageBox(<span class="string">"没有找到记事本"</span>);</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span> *pCaptionText = <span class="string">"消息测试"</span>;</span><br><span class="line">    ::SendMessage(hWnd,WM_SETTEXT,(WPARAM)MAXBYTE,(LPARAM),pCaptionText);</span><br><span class="line">    AfxMessageBox(pCaptionText);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="对MsgTest代码解释"><a href="#对MsgTest代码解释" class="headerlink" title="对MsgTest代码解释"></a>对MsgTest代码解释</h3><p>两个主要API函数，FindWindow、SendMessage函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HWND <span class="title">FindWindow</span><span class="params">( 	</span></span></span><br><span class="line"><span class="function"><span class="params">  LPCTSTR lpClassName, 	<span class="comment">//窗口类名（标题）</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPCTSTR lpWindowName 	<span class="comment">//窗口名称</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LRESULT <span class="title">SendMessage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HWND   hWnd,	<span class="comment">//窗口句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">  UINT   Msg,	<span class="comment">//消息类型</span></span></span></span><br><span class="line"><span class="function"><span class="params">  WPARAM wParam,	<span class="comment">//附加参数</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPARAM lParam		<span class="comment">//附加参数</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取窗口的类名称"><a href="#获取窗口的类名称" class="headerlink" title="获取窗口的类名称"></a>获取窗口的类名称</h3><p>使用SPY++来获取窗口的类名称</p>
+<h2 id="Windows消息机制的处理"><a href="#Windows消息机制的处理" class="headerlink" title="Windows消息机制的处理"></a>Windows消息机制的处理</h2><p>SengMessage将指定的消息发送给指定的窗口，窗口接受到消息也又相应的新给产生</p>
+<h3 id="DOS程序与Windows程序执行流对比"><a href="#DOS程序与Windows程序执行流对比" class="headerlink" title="DOS程序与Windows程序执行流对比"></a>DOS程序与Windows程序执行流对比</h3><p>Windows下的窗口应用程序都是基于消息机制的，操作系统与应用程序之间、应用程序与应用程序之间，大部分都是通过消息机制进行通信、交互的。</p>
+<h4 id="DOS程序执行流"><a href="#DOS程序执行流" class="headerlink" title="DOS程序执行流"></a>DOS程序执行流</h4><p><img src="//systemk1t.github.io/2019/11/04/黑客编程-入门/0.png" alt></p>
+<p>DOS程序的流程是按照代码的顺序和流程依此执行。</p>
+<h4 id="Windows程序执行流程"><a href="#Windows程序执行流程" class="headerlink" title="Windows程序执行流程"></a>Windows程序执行流程</h4><p>Windows开发的过程，需要关注的部分是“主程序”和“窗口过程”两部分。</p>
+<p><img src="//systemk1t.github.io/2019/11/04/黑客编程-入门/1.png" alt></p>
+<h2 id="简单Windows应用程序"><a href="#简单Windows应用程序" class="headerlink" title="简单Windows应用程序"></a>简单Windows应用程序</h2><h3 id="WinMain"><a href="#WinMain" class="headerlink" title="WinMain"></a>WinMain</h3><p>在DOS的年代，Windows下的命令行程序，要使用C语言编写代码的时候都是从main函数开始的。而在Win32下编程的时候，程序则是从WinMain中开始；</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HINSTANCE hInstance, 	<span class="comment">//应用程序实例句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">  HINSTANCE hPrevInstance, 	<span class="comment">//上一个实例的实例句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPWSTR lpCmdLine, 	<span class="comment">//主函数参数，用于在程序启动时给进程传递参数</span></span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> nShowCmd 			<span class="comment">//进程显示方式</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="WinMain函数中的流程"><a href="#WinMain函数中的流程" class="headerlink" title="WinMain函数中的流程"></a>WinMain函数中的流程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HINSTANCE hInstance, </span></span></span><br><span class="line"><span class="function"><span class="params">  HINSTANCE hPrevInstance, </span></span></span><br><span class="line"><span class="function"><span class="params">  LPWSTR lpCmdLine, </span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> nShowCmd </span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    MSG msg;</span><br><span class="line">    BOOL bGet;</span><br><span class="line">    </span><br><span class="line">    MyRegisterClass(hInstance);</span><br><span class="line">    <span class="keyword">if</span>(!InitInstance(hInstance,SW_SHOWNORMAL))</span><br><span class="line">    &#123;</span><br><span class="line">		<span class="keyword">return</span> FALSE;        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>((bRet = GetMessage(&amp;Msg,<span class="literal">NULL</span>,<span class="number">0</span>,<span class="number">0</span>))!= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(bRet == <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            TranslateMessage(&amp;Msg);</span><br><span class="line">            DispatchMessage(&amp;Msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Msg.wParam;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所用到的API函数包括：GetMessage()、TranslateMessage()、DispatchMessage()。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">GetMessage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPMSG lpMsg, </span></span></span><br><span class="line"><span class="function"><span class="params">  HWND hWnd, </span></span></span><br><span class="line"><span class="function"><span class="params">  UINT wMsgFilterMin, </span></span></span><br><span class="line"><span class="function"><span class="params">  UINT wMsgFilterMax </span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>该函数用来获取属于自己的消息，并填充MSG结构体。有一个类似于GetMessage()的函数是PeekMessage();</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">PeekMessage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPMSG lpMsg, </span></span></span><br><span class="line"><span class="function"><span class="params">  HWND hWnd, </span></span></span><br><span class="line"><span class="function"><span class="params">  UINT wMsgFilterMin, </span></span></span><br><span class="line"><span class="function"><span class="params">  UINT wMsgFilterMax, </span></span></span><br><span class="line"><span class="function"><span class="params">  UINT wRemoveMsg </span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>该函数主要用于判断队列中是否有消息，如果没有消息，可以主动让出CPU时间给其他进程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">TranslateMessage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">const</span> MSG* lpMsg </span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>该函数是用来处理键盘消息的，它将虚拟码消息转换为字符消息，也就是将WM_KEYDOWN消息和WM_KEYUP消息转换为WM_CHAR消息，将WM_SYSKEYDOWN消息和WM_SYSKEYUP消息转换为WM_SYSCHAR消息。</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LONG  <span class="title">DispatchMessage</span><span class="params">( </span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">const</span> MSG* lpmsg </span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="模拟鼠标键盘按键的操作"><a href="#模拟鼠标键盘按键的操作" class="headerlink" title="模拟鼠标键盘按键的操作"></a>模拟鼠标键盘按键的操作</h2><h3 id="基于发送消息的模拟"><a href="#基于发送消息的模拟" class="headerlink" title="基于发送消息的模拟"></a>基于发送消息的模拟</h3><p>无论是鼠标指针的移动、点击，还是键盘的按键，通常在Windows应用程序中都会转换为相对应的消息。</p>
+<p>关于鼠标的动作如下：</p>
+<p><img src="//systemk1t.github.io/2019/11/04/黑客编程-入门/2.png" alt></p>
+<p><a href="https://docs.microsoft.com/zh-cn/windows/win32/inputdev/mouse-input" target="_blank" rel="noopener">鼠标操作详解</a></p>
+<p>同样的，系统也定义了键盘的按下与抬起的消息。键盘按下的消息是WM_KEYDOWN，与之对应的是键盘抬起的消息WM_KEYUP。</p>
+<h3 id="PostMessage函数堆键盘按键的模拟"><a href="#PostMessage函数堆键盘按键的模拟" class="headerlink" title="PostMessage函数堆键盘按键的模拟"></a>PostMessage函数堆键盘按键的模拟</h3><p>SengMessage和PostMessage这两个函数可以对指定的窗口发送消息，既然鼠标和键盘的操作可以被系统转换为相应的消息，那么就可以使用PostMessage来模拟操作；</p>
+<h2 id="通过消息实现进程间的通信"><a href="#通过消息实现进程间的通信" class="headerlink" title="通过消息实现进程间的通信"></a>通过消息实现进程间的通信</h2>
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/11/04/黑客编程-入门/">黑客编程-入门</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年11月04日 - 15时07分</p>
+        <p><span>最后更新:</span>2019年11月08日 - 19时40分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/04/黑客编程-入门/" title="黑客编程-入门">https://systemk1t.github.io/2019/11/04/黑客编程-入门/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/11/04/黑客编程-入门/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2019/11/04/Windows应用程序-入门/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Windows应用程序-入门
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/01/逆向工程核心原理-DLL卸载/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">逆向工程核心原理-DLL卸载</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows消息"><span class="toc-number">1.</span> <span class="toc-text">Windows消息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#消息的演示测试"><span class="toc-number">1.1.</span> <span class="toc-text">消息的演示测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对MsgTest代码解释"><span class="toc-number">1.2.</span> <span class="toc-text">对MsgTest代码解释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取窗口的类名称"><span class="toc-number">1.3.</span> <span class="toc-text">获取窗口的类名称</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows消息机制的处理"><span class="toc-number">2.</span> <span class="toc-text">Windows消息机制的处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DOS程序与Windows程序执行流对比"><span class="toc-number">2.1.</span> <span class="toc-text">DOS程序与Windows程序执行流对比</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DOS程序执行流"><span class="toc-number">2.1.1.</span> <span class="toc-text">DOS程序执行流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Windows程序执行流程"><span class="toc-number">2.1.2.</span> <span class="toc-text">Windows程序执行流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#简单Windows应用程序"><span class="toc-number">3.</span> <span class="toc-text">简单Windows应用程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WinMain"><span class="toc-number">3.1.</span> <span class="toc-text">WinMain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WinMain函数中的流程"><span class="toc-number">3.2.</span> <span class="toc-text">WinMain函数中的流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模拟鼠标键盘按键的操作"><span class="toc-number">4.</span> <span class="toc-text">模拟鼠标键盘按键的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基于发送消息的模拟"><span class="toc-number">4.1.</span> <span class="toc-text">基于发送消息的模拟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PostMessage函数堆键盘按键的模拟"><span class="toc-number">4.2.</span> <span class="toc-text">PostMessage函数堆键盘按键的模拟</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过消息实现进程间的通信"><span class="toc-number">5.</span> <span class="toc-text">通过消息实现进程间的通信</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2019/11/04/Windows应用程序-入门/" title="上一篇: Windows应用程序-入门">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/11/01/逆向工程核心原理-DLL卸载/" title="下一篇: 逆向工程核心原理-DLL卸载">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/08/WinSock网络编程经络-IP/">WinSock网络编程经络-IP</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/">WinSock网络编程经络-TCP/IP体系结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-Echo客户-服务端程序/">WinSock网络编程经络-Echo客户/服务端程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/黑客编程-网络/">黑客编程-网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-入门/">Windows应用程序-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/黑客编程-入门/">黑客编程-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
