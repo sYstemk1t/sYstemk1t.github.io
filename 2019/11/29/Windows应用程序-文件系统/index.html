@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Windows应用程序-文件系统 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="文件系统是操作系统的重要组成部分。支持操作系统运行的系统可执行文件本身也位于文件系统中。几乎所有的应用程序都要靠操作文件，文件系统应用程序开发接口是系统提供的最重要、最基本的API集合之一，也是Windows开发应用程序最常用到的接口">
+<meta name="keywords" content="Windows-Kernel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows应用程序-文件系统">
+<meta property="og:url" content="https://systemk1t.github.io/2019/11/29/Windows应用程序-文件系统/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="文件系统是操作系统的重要组成部分。支持操作系统运行的系统可执行文件本身也位于文件系统中。几乎所有的应用程序都要靠操作文件，文件系统应用程序开发接口是系统提供的最重要、最基本的API集合之一，也是Windows开发应用程序最常用到的接口">
+<meta property="og:locale" content="cn">
+<meta property="og:updated_time" content="2019-11-29T09:58:48.496Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows应用程序-文件系统">
+<meta name="twitter:description" content="文件系统是操作系统的重要组成部分。支持操作系统运行的系统可执行文件本身也位于文件系统中。几乎所有的应用程序都要靠操作文件，文件系统应用程序开发接口是系统提供的最重要、最基本的API集合之一，也是Windows开发应用程序最常用到的接口">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/CTF/" style="font-size: 11.67px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.33px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 11.67px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Windows应用程序-文件系统" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/11/29/Windows应用程序-文件系统/" class="article-date">
+      <time datetime="2019-11-29T07:32:07.000Z" itemprop="datePublished">2019-11-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows应用程序-文件系统
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows-API开发详解/">Windows-API开发详解</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>文件系统是操作系统的重要组成部分。支持操作系统运行的系统可执行文件本身也位于文件系统中。几乎所有的应用程序都要靠操作文件，文件系统应用程序开发接口是系统提供的最重要、最基本的API集合之一，也是Windows开发应用程序最常用到的接口</p>
+<a id="more"></a>
+
+
+
+<h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><p>从Windows诞生到现在，文件系统也在不停的升级，从最早的FAT16到FAT32再到现在的NTFS文件系统。</p>
+<p>要熟练使用文件系统API必须先了解Windows文件系统中的一些基本概念。这些概念包括”驱动器”、”卷”、”目录”、”文件对象”、”文件流”、”文件句柄”、”文件指针”、”文件映射”等。</p>
+<h3 id="文件系统基本概念"><a href="#文件系统基本概念" class="headerlink" title="文件系统基本概念"></a>文件系统基本概念</h3><h4 id="磁盘分区"><a href="#磁盘分区" class="headerlink" title="磁盘分区"></a>磁盘分区</h4><p>磁盘是装载计算机上的存储设备，比如常见的硬盘。一个物理硬盘上可以划分可以独自工作的一些逻辑磁盘。</p>
+<h4 id="卷"><a href="#卷" class="headerlink" title="卷"></a>卷</h4><p>卷，也被称为逻辑驱动器，是NTFS、FAT32文件系统组织结构的最高层。卷是存储设备上由文件系统管理的一块区域，是在逻辑上相互隔离的存储单元。</p>
+<h4 id="Windows系统中文件命名的标准"><a href="#Windows系统中文件命名的标准" class="headerlink" title="Windows系统中文件命名的标准"></a>Windows系统中文件命名的标准</h4><p>Windows系统中，文件格式命名以”主文件名+扩展名”，中间以.隔开。</p>
+<h5 id="长度规则"><a href="#长度规则" class="headerlink" title="长度规则"></a>长度规则</h5><p>Windows系统中，不对单个文件的长度作限制，但是文件路径的长度被限制在了260个字符。</p>
+<h5 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h5><p>不允许出现特殊字符，特殊字符在系统或者命令行下代表一些特殊的含义。</p>
+<h3 id="文件系统主要API"><a href="#文件系统主要API" class="headerlink" title="文件系统主要API"></a>文件系统主要API</h3><p>GetLogicalDrives获取主机中所有逻辑驱动器,以 Bit Map 的形式返回</p>
+<p>GetLogicalDrivesStrings获取主机中所有逻辑驱动器,以驱动器根路径字符串返回</p>
+<p>FindFirstVolume查找主机中的第一个驱动器,返回查找句柄</p>
+<p>FindNextVolume根据FindFirstVolume返回的句柄,查找主机中后续的逻辑驱动器</p>
+<p>FindVolumeClose关闭驱动器查找句柄</p>
+<p>GetDriveType获取驱动器类型</p>
+<p>GetVolumeInformation获取逻辑驱动器信息</p>
+<p>FindFirstVolumeMountPoint查找指定卷的第一个挂载点,返回查找句柄</p>
+<p>FindNextVolumeMountPoint根据FindFirstVolumeMountPoint返回的句柄,查找卷的后续挂载点</p>
+<p>FindVolumeMountPointClose关闭挂载点查找句柄</p>
+<p>GetVolumeNameForVolumeMountPoint根据指定挂载点获取相应的卷设备名</p>
+<p>SetVolumeMountPoint将指定卷挂载到指定挂载点</p>
+<p>GetDiskFreeSpace获取磁盘空间信息,包括每簇的扇区数,每扇区的字节数,簇数量,空闲的簇数量</p>
+<p>GetDiskFreeSpaceEx获取用户可用的空闲空间的字节数,磁盘总容量的字节数</p>
+<p>文件和目录管理</p>
+<p>API说明</p>
+<p>DeleteFile才删除参数所指定文件</p>
+<p>CopyFile复制指定文件为一个新文件</p>
+<p>MoveFile将指定文件或目录移动到指定位置</p>
+<p>CreateFile新建或打开一个文件,获取文件句柄</p>
+<p>ReadFile读取由文件句柄指定的文件的内容</p>
+<p>WriteFile向由文件句柄指定的文件中写入内容</p>
+<p>GetFileSize获取文件大小,返回DWORD,大小超过DWORD最大值时可指定高32位DWORD联合存储</p>
+<p>GetFileSizeEx获取文件大小,存储到一个64位的大整数联合体中</p>
+<p>CreateDirectory创建一个目录</p>
+<p>GetCurrentDirectory获取当前程序所在目录</p>
+<p>SetCurrentDirectory设置当前程序所在目录</p>
+<p>GetModuleFileName获取当前模块全路径</p>
+<p>FindFirstFile查找指定目录下第一个文件或目录,获得查找句柄</p>
+<p>FindNextFile根据FindFirstFile获得的句柄,循环查找文件和目录</p>
+<p>GetFileAttributes获取指定文件或目录的属性,返回DWORD</p>
+<p>GetFileAttributesEx获取指定文件或目录属性,存储在WIN32_FILE_ATTRIBUTE_DATA结构体中</p>
+<p>SetFileAttributes将文件属性设置为指定值</p>
+<p>FileTimeToLocalFileTime将文件时间转换为本地时间</p>
+<p>FileTimeToSystemTime将文件时间转换为系统时间,SYSTEMTIME格式,便于显示</p>
+<p>高级文件系统操作</p>
+<p>API说明</p>
+<p>CreateFileMapping创建文件映射对象</p>
+<p>MapViewOfFile创建视图,将创建的文件映射对象映射到当前进程的地址空间中</p>
+<p>FlushViewOfFile将视图中数据写入磁盘,对视图的操作都会反映到磁盘上的文件中</p>
+<p>OpenFileMapping打开已经存在的命名的文件映射对象</p>
+<p>UnmapViewOfFile取消文件映射</p>
+<p>GetMappedFileName从映射对象获取被映射文件的文件设备名</p>
+<p>QueryDosDevice获取MS-DOS设备名</p>
+<h2 id="键盘和驱动器管理"><a href="#键盘和驱动器管理" class="headerlink" title="键盘和驱动器管理"></a>键盘和驱动器管理</h2><p>Windows API是提供给用户态程序使用的。一些对磁盘的高级操作，如磁盘分区、格式化驱动器、改变驱动器的文件系统、读取磁盘扇区等操作需要在内核态完成。</p>
+<h3 id="便利卷并获取属性"><a href="#便利卷并获取属性" class="headerlink" title="便利卷并获取属性"></a>便利卷并获取属性</h3><p>获取主机上的所有驱动器列表的方法有两种，一种是使用<strong>GetLogicalDrives</strong>或<strong>GetLogicalDriveStrings</strong>，另一种方式是使用<strong>FindFirstVolume</strong>和<strong>FindNextVolume</strong>组成。</p>
+<p>第一种方法获取主机上逻辑驱动器，也就是所有分配的卷标和驱动器，返回结果是驱动器的根路径。第二种方法返回的是”\?\Volume{GUID}”形式的启动器设备名</p>
+<p>使用GetDriveTypeAPI可以获取驱动器的类型，使用GetVolumeInfomation可以获取驱动器属性。</p>
+<h4 id="关键API"><a href="#关键API" class="headerlink" title="关键API"></a>关键API</h4><h5 id="GetLogicalDrives"><a href="#GetLogicalDrives" class="headerlink" title="GetLogicalDrives"></a>GetLogicalDrives</h5><p>获取主机中所有逻辑驱动器，以BitMap的形式返回，函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">GetLogicalDrives</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>GetLogicalDrives函数返回一个DWORD类型的值，第一位表示所对应驱动器是否存在。一般情况下DWORD的数据长度是32位，再这个DWORD中，每一位对应了一个逻辑驱动器是否存在。</p>
+<h5 id="GetLogicalDrivesStrings"><a href="#GetLogicalDrivesStrings" class="headerlink" title="GetLogicalDrivesStrings"></a>GetLogicalDrivesStrings</h5><p>获取主机中所有的逻辑驱动器，以启动器根路径字符串返回，函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">GetLogicalDrivesStrings</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	DWORD nBufferLength,		<span class="comment">//所指向的内存空间的大小，字节单位</span></span></span></span><br><span class="line"><span class="function"><span class="params">    LPTSTR lpBuffer				<span class="comment">//指向存储返回结果字符串的内存大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>写一个Demo：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFSIZE 1024</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	CHAR szLogicalDriveStrings[BUFSIZE];</span><br><span class="line">	ZeroMemory(szLogicalDriveStrings, BUFSIZE);<span class="comment">//这也是一个API函数， 清空这个字符串</span></span><br><span class="line">	GetLogicalDriveStrings(BUFSIZE - <span class="number">1</span>, szLogicalDriveStrings);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//printf("%s\n", szLogicalDriveStrings);</span></span><br><span class="line"></span><br><span class="line">	PCHAR psz;</span><br><span class="line"></span><br><span class="line">	psz = (PCHAR)szLogicalDriveStrings;</span><br><span class="line">	<span class="keyword">do</span>&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%s\n"</span>, psz);</span><br><span class="line">		psz += (<span class="built_in">strlen</span>(psz) + <span class="number">1</span>);</span><br><span class="line">	&#125; <span class="keyword">while</span> ((*psz) != <span class="string">'\0'</span>);</span><br><span class="line"></span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="FindFirstVolume"><a href="#FindFirstVolume" class="headerlink" title="FindFirstVolume"></a>FindFirstVolume</h5><p>查找主机中的第一个驱动器，返回驱动器设备名，函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">FindFirstVolume</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	LPTSTR lpszVolumeName,		<span class="comment">//驱动名的缓冲区大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">    DWORD cchBufferLength		<span class="comment">//指向驱动名函数的大小，以字节为单位</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>驱动器查找句柄，可作为FindNextVolume和FindVolumeClose的参数，如果执行失败，返回NULL</p>
+<p>一个小Demo：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	CHAR szVolume[MAX_PATH] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line">	HANDLE hVolume = FindFirstVolumeA(szVolume, MAX_PATH);</span><br><span class="line">	<span class="keyword">if</span> (INVALID_HANDLE_VALUE == hVolume)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//string strVolume = szVolume;</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%s \n"</span>, szVolume);</span><br><span class="line">	<span class="keyword">while</span> (FindNextVolumeA(hVolume, szVolume, MAX_PATH))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%s \n"</span>, szVolume);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	FindVolumeClose(hVolume);<span class="comment">//别忘了关闭句柄</span></span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="FindNextVolume"><a href="#FindNextVolume" class="headerlink" title="FindNextVolume"></a>FindNextVolume</h5><p>查找主机中后续的逻辑驱动器，其函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL WINAPI <span class="title">FindNextVolume</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">                           _In_  HANDLE hFindVolume,	<span class="comment">//FindFirstVolume返回的驱动器查找句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">                           _Out_ LPTSTR lpszVolumeName,	<span class="comment">//指向保存驱动器名的内存缓冲区</span></span></span></span><br><span class="line"><span class="function"><span class="params">                           _In_  DWORD  cchBufferLength	<span class="comment">//指向LpszVolumeName所指向的驱动的大小，字节单位</span></span></span></span><br><span class="line"><span class="function"><span class="params">                           )</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>返回BOOL表示是否成功，如果失败说明已经查找完毕所有的逻辑驱动器</p>
+<h5 id="FindVolumeClose"><a href="#FindVolumeClose" class="headerlink" title="FindVolumeClose"></a>FindVolumeClose</h5><p>关闭FindVolumeClose打开的卷遍历句柄，函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL WINAPI <span class="title">FindVolumeClose</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	HANDLE hFileVolume			<span class="comment">//要关闭的驱动器的查找句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>返回BOOL值表示是否成功关闭句柄</p>
+<h5 id="GetDriveType"><a href="#GetDriveType" class="headerlink" title="GetDriveType"></a>GetDriveType</h5><p>获取驱动器类型，函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">UINT <span class="title">GetDriveType</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	LPCTSTR lpRootPathName		<span class="comment">//驱动器根目录，如"c:\"</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>驱动器类型，如果DEIVE_FIXED表示硬盘，DEIVE_CDROM表示光盘</p>
+<h5 id="GetVolumeInformation"><a href="#GetVolumeInformation" class="headerlink" title="GetVolumeInformation"></a>GetVolumeInformation</h5><p>获取逻辑驱动器信息，函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">GetVolumeInformation</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  lpRootPathName: PChar;               &#123;磁盘驱动器代码字符串&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  lpVolumeNameBuffer: PChar;           &#123;磁盘驱动器卷标名称&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  nVolumeNameSize: DWORD;              &#123;磁盘驱动器卷标名称长度&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  lpVolumeSerialNumber: PDWORD;        &#123;磁盘驱动器卷标序列号&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  var lpMaximumComponentLength: DWORD; &#123;系统允许的最大文件名长度&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  var lpFileSystemFlags: DWORD;        &#123;文件系统标识&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  lpFileSystemNameBuffer: PChar;       &#123;文件操作系统名称&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  nFileSystemNameSize: DWORD           &#123;文件操作系统名称长度&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>返回BOOL，表示信息是否获取成功。</p>
+<h5 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 头文件　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">/* 预定义　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFSIZE 1024</span></span><br><span class="line"><span class="comment">/* 函数申明　*/</span></span><br><span class="line"><span class="function">BOOL <span class="title">GetDirverInfo</span><span class="params">(LPSTR szDrive)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ************************************</span></span><br><span class="line"><span class="comment">* 功能	应用程序主函数，遍历驱动器并调用</span></span><br><span class="line"><span class="comment">*			GetDirverInfo 获取驱动器属性</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	CHAR szLogicalDriveStrings[BUFSIZE];</span><br><span class="line">	PCHAR szDrive;</span><br><span class="line"></span><br><span class="line">	ZeroMemory(szLogicalDriveStrings, BUFSIZE);</span><br><span class="line">	<span class="comment">// 获取逻辑驱动器卷标名</span></span><br><span class="line">	GetLogicalDriveStrings(BUFSIZE - <span class="number">1</span>, szLogicalDriveStrings);</span><br><span class="line">	szDrive = (PCHAR)szLogicalDriveStrings;</span><br><span class="line">	<span class="comment">// 循环处理每个卷</span></span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (!GetDirverInfo(szDrive))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\nGet Volume Information Error: %d"</span>, GetLastError());</span><br><span class="line">		&#125;</span><br><span class="line">		szDrive += (lstrlen(szDrive) + <span class="number">1</span>);</span><br><span class="line">	&#125; while (*szDrive != '\x00');</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ************************************</span></span><br><span class="line"><span class="comment">* BOOL GetDirverInfo(LPSTR szDrive)</span></span><br><span class="line"><span class="comment">* 功能	获取驱动器的属性</span></span><br><span class="line"><span class="comment">* 参数	LPSTR szDrive</span></span><br><span class="line"><span class="comment">* 	指明要获取属性的驱动器的根路径 如 C:\</span></span><br><span class="line"><span class="comment">* 返回值 BOOL 是否成功</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">BOOL <span class="title">GetDirverInfo</span><span class="params">(LPSTR szDrive)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	UINT uDriveType;</span><br><span class="line">	DWORD dwVolumeSerialNumber;</span><br><span class="line">	DWORD dwMaximumComponentLength;</span><br><span class="line">	DWORD dwFileSystemFlags;</span><br><span class="line">	TCHAR szFileSystemNameBuffer[BUFSIZE];</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n%s\n"</span>, szDrive);</span><br><span class="line">	uDriveType = GetDriveType(szDrive);</span><br><span class="line">	<span class="comment">// 判断类型</span></span><br><span class="line">	<span class="keyword">switch</span> (uDriveType)</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">case</span> DRIVE_UNKNOWN:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The drive type cannot be determined. "</span>);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> DRIVE_NO_ROOT_DIR:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The root path is invalid, for example, no volume is mounted at the path. "</span>);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> DRIVE_REMOVABLE:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The drive is a type that has removable media, for example, a floppy drive or removable hard disk. "</span>);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> DRIVE_FIXED:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The drive is a type that cannot be removed, for example, a fixed hard drive. "</span>);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> DRIVE_REMOTE:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The drive is a remote (network) drive. "</span>);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> DRIVE_CDROM:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The drive is a CD-ROM drive. "</span>);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> DRIVE_RAMDISK:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The drive is a RAM disk. "</span>);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!GetVolumeInformation(</span><br><span class="line">		szDrive, <span class="literal">NULL</span>, <span class="number">0</span>,</span><br><span class="line">		&amp;dwVolumeSerialNumber,</span><br><span class="line">		&amp;dwMaximumComponentLength,</span><br><span class="line">		&amp;dwFileSystemFlags,</span><br><span class="line">		szFileSystemNameBuffer,</span><br><span class="line">		BUFSIZE</span><br><span class="line">		))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\nVolume Serial Number is %u"</span>, dwVolumeSerialNumber);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\nMaximum Component Length is %u"</span>, dwMaximumComponentLength);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\nSystem Type is %s\n"</span>, szFileSystemNameBuffer);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dwFileSystemFlags &amp; FILE_SUPPORTS_REPARSE_POINTS)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The file system does not support volume mount points.\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (dwFileSystemFlags &amp; FILE_VOLUME_QUOTAS)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The file system supports disk quotas.\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (dwFileSystemFlags &amp; FILE_CASE_SENSITIVE_SEARCH)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"The file system supports case-sensitive file names.\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//you can use these value to get more informaion</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">//FILE_CASE_PRESERVED_NAMES</span></span><br><span class="line">	<span class="comment">//FILE_CASE_SENSITIVE_SEARCH</span></span><br><span class="line">	<span class="comment">//FILE_FILE_COMPRESSION</span></span><br><span class="line">	<span class="comment">//FILE_NAMED_STREAMS</span></span><br><span class="line">	<span class="comment">//FILE_PERSISTENT_ACLS</span></span><br><span class="line">	<span class="comment">//FILE_READ_ONLY_VOLUME</span></span><br><span class="line">	<span class="comment">//FILE_SUPPORTS_ENCRYPTION</span></span><br><span class="line">	<span class="comment">//FILE_SUPPORTS_OBJECT_IDS</span></span><br><span class="line">	<span class="comment">//FILE_SUPPORTS_REPARSE_POINTS</span></span><br><span class="line">	<span class="comment">//FILE_SUPPORTS_SPARSE_FILES</span></span><br><span class="line">	<span class="comment">//FILE_UNICODE_ON_DISK</span></span><br><span class="line">	<span class="comment">//FILE_VOLUME_IS_COMPRESSED</span></span><br><span class="line">	<span class="comment">//FILE_VOLUME_QUOTAS</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"...\n"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/11/29/Windows应用程序-文件系统/">Windows应用程序-文件系统</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年11月29日 - 15时32分</p>
+        <p><span>最后更新:</span>2019年11月29日 - 17时58分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/29/Windows应用程序-文件系统/" title="Windows应用程序-文件系统">https://systemk1t.github.io/2019/11/29/Windows应用程序-文件系统/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/11/29/Windows应用程序-文件系统/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/25/加密与解密-逆向分析技术/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">加密与解密-逆向分析技术</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概括"><span class="toc-number">1.</span> <span class="toc-text">概括</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文件系统基本概念"><span class="toc-number">1.1.</span> <span class="toc-text">文件系统基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#磁盘分区"><span class="toc-number">1.1.1.</span> <span class="toc-text">磁盘分区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#卷"><span class="toc-number">1.1.2.</span> <span class="toc-text">卷</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Windows系统中文件命名的标准"><span class="toc-number">1.1.3.</span> <span class="toc-text">Windows系统中文件命名的标准</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#长度规则"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">长度规则</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#特殊字符"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">特殊字符</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件系统主要API"><span class="toc-number">1.2.</span> <span class="toc-text">文件系统主要API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#键盘和驱动器管理"><span class="toc-number">2.</span> <span class="toc-text">键盘和驱动器管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#便利卷并获取属性"><span class="toc-number">2.1.</span> <span class="toc-text">便利卷并获取属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#关键API"><span class="toc-number">2.1.1.</span> <span class="toc-text">关键API</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#GetLogicalDrives"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">GetLogicalDrives</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#GetLogicalDrivesStrings"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">GetLogicalDrivesStrings</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#FindFirstVolume"><span class="toc-number">2.1.1.3.</span> <span class="toc-text">FindFirstVolume</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#FindNextVolume"><span class="toc-number">2.1.1.4.</span> <span class="toc-text">FindNextVolume</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#FindVolumeClose"><span class="toc-number">2.1.1.5.</span> <span class="toc-text">FindVolumeClose</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#GetDriveType"><span class="toc-number">2.1.1.6.</span> <span class="toc-text">GetDriveType</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#GetVolumeInformation"><span class="toc-number">2.1.1.7.</span> <span class="toc-text">GetVolumeInformation</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo"><span class="toc-number">2.1.1.8.</span> <span class="toc-text">Demo</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/11/25/加密与解密-逆向分析技术/" title="下一篇: 加密与解密-逆向分析技术">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/29/Windows应用程序-文件系统/">Windows应用程序-文件系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/25/加密与解密-逆向分析技术/">加密与解密-逆向分析技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/22/加密与解密-静态分析/">加密与解密-静态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-3/">Reverse-Bugku-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-2/">Reverse-Bugku-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-1/">Reverse-Bugku-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-动态分析/">加密与解密-动态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-基础知识/">加密与解密-基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-联合体/">逆向工程权威指南-联合体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-结构体/">逆向工程权威指南-结构体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-伪随机函数/">逆向工程权威指南-伪随机函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/08/WinSock网络编程经络-IP/">WinSock网络编程经络-IP</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/">WinSock网络编程经络-TCP/IP体系结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-Echo客户-服务端程序/">WinSock网络编程经络-Echo客户/服务端程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/黑客编程-网络/">黑客编程-网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-入门/">Windows应用程序-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/黑客编程-入门/">黑客编程-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
