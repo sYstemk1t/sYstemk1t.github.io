@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Windows应用程序-内存管理 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="内存主要存储程序运行时所需的机器代码、数据等内容。内存是计算机运行的必要条件。">
+<meta name="keywords" content="Windows-Kernel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows应用程序-内存管理">
+<meta property="og:url" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="内存主要存储程序运行时所需的机器代码、数据等内容。内存是计算机运行的必要条件。">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/5.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/6.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/7.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/8.png">
+<meta property="og:updated_time" content="2019-12-11T07:35:08.506Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows应用程序-内存管理">
+<meta name="twitter:description" content="内存主要存储程序运行时所需的机器代码、数据等内容。内存是计算机运行的必要条件。">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/CTF/" style="font-size: 11.67px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 15px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.33px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 11.67px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 16.67px;">c</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Windows应用程序-内存管理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/12/10/Windows应用程序-内存管理/" class="article-date">
+      <time datetime="2019-12-10T00:29:24.000Z" itemprop="datePublished">2019-12-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows应用程序-内存管理
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows-API开发详解/">Windows-API开发详解</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>内存主要存储程序运行时所需的机器代码、数据等内容。内存是计算机运行的必要条件。</p>
+<a id="more"></a>
+
+<h2 id="Windows内存管理"><a href="#Windows内存管理" class="headerlink" title="Windows内存管理"></a>Windows内存管理</h2><p>数据是存储在内存中的，为了能够找到存在于内存中的数据，我们需要知道哪些数据的内存地址。内存的最小单元是字节，内存中的每一个字节都有一个地址。</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="地址空间"><a href="#地址空间" class="headerlink" title="地址空间"></a>地址空间</h4><p>系统中所有可用的内存地址的集合称为地址空间。</p>
+<h4 id="物理内存"><a href="#物理内存" class="headerlink" title="物理内存"></a>物理内存</h4><p>硬件系统中真实存在的存储空间称为物理内存，物理内存的访问通过硬件系统总线进行的。</p>
+<h4 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h4><p>为了访问内存的统一和方便，操作系统允许其上运行的程序访问所有的4GB内存空间中的地址。因此操作系统必须进行一些必要的地址转换工作，将程序访问的地址转换为物理内存中的真实物理地址，然后进行数据的存取。操作系统进行转换后，供程序使用的地址空间称为虚拟地址空间。</p>
+<h4 id="进程的内存空间"><a href="#进程的内存空间" class="headerlink" title="进程的内存空间"></a>进程的内存空间</h4><p>Windows操作系统中每个进程都有自己的虚拟地址空间。32位的操作系统将4GB的虚拟内存划分为两个部分，进程使用2TB，称为用户进程空间；内核使用2GB，称为系统地址空间。<strong>虚拟地址在进程上是封闭的，进程只能访问自己的地址空间，如果要访问其他进程的地址空间需要特殊的机制</strong></p>
+<p>Windows内存管理知识：</p>
+<ul>
+<li>分段与分页内存管理</li>
+<li>物理地址与虚拟地址、虚拟地址空间</li>
+<li>虚拟内存布局，内存的分工，堆与栈</li>
+<li>内存的存取权限</li>
+<li>标准C内存管理函数与Windows内存管理API的关系</li>
+</ul>
+<h3 id="分页与分段内存管理"><a href="#分页与分段内存管理" class="headerlink" title="分页与分段内存管理"></a>分页与分段内存管理</h3><p>在Intel x86体系结构CPU中，有若干个段寄存器，可以通过段”选择器+偏移”的形式来表示内存地址。使用这种方式表示的逻辑称为”逻辑地址”，这种机制称为”分段”。系统会将逻辑地址转换为线性地址。</p>
+<p><strong>线性地址与物理内存地址类似，是平坦的(未分段)，使用32位数表示，地址是连续的。</strong></p>
+<p>分页机制：</p>
+<p>32位地址的高10位移为目录索引(Directory)、次10位称为页表索引(Table)，余下的12位为偏移(Offset)。如果只取前两部分的20位，末位补0，那么其指向的地址都是4KB对其的，也就是页的基地址。所以前32位中的前20位定位了页的基地址(PFN)，而最后12位是地址在页内的偏移。</p>
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/0.png" alt></p>
+<p>地址转换如下：</p>
+<ul>
+<li>从CR3寄存器的12~32位中取出地址，末尾补0，构成一个32位的地址，此地址是页目录所在物理内存的基地址（4KB对其）。</li>
+<li>以线性地址中的高10位的页目录索引中数据为偏移，加上上一步得到的页目录所在物理内存的基地址，在页目录中找到相对应的页目录项。</li>
+<li>页目录项包括了页表的基地址，线性地址中的页表索引(Table)是也表中的偏移，找到页表项。</li>
+</ul>
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/1.png" alt></p>
+<ul>
+<li>页表项中存储的是物理地址中页面的地址，如果页面地址指向的页面是无效的，那么会在系统内核中引起页错误，系统内核会进行页面调度，将物理内存中暂不适用的页面交换到硬盘中。</li>
+<li>现在已经找到了线性地址所对应的物理地址所在的页的基址</li>
+<li>在物理页地址的基础上，加上线性地址末12位的偏移，可得到线性地址与物理地址的对应。</li>
+</ul>
+<h3 id="进程的内存空间-1"><a href="#进程的内存空间-1" class="headerlink" title="进程的内存空间"></a>进程的内存空间</h3><h4 id="进程虚拟地址空间的实现"><a href="#进程虚拟地址空间的实现" class="headerlink" title="进程虚拟地址空间的实现"></a>进程虚拟地址空间的实现</h4><p>Windows系统中每个进程都有一个私有的虚拟地址空间，系统将每个进程的虚拟地址都映射到屋里内存地址上，为了实现系统中每个进程都有一个私有的虚拟地址空间，系统为每个进程都创建一个页目录和一组页表。每个进程的页表是独立的，而内核空间的页表是所有进程共享的。</p>
+<p><strong>CR3寄存器标识了页目录所在的物理地址</strong>。Windows系统上的第一个进程都有独立的页目录，因此系统运行时，CR3寄存器中保存的页目录地址是会变化的，其值为当前运行的进程的页目录地址。</p>
+<h4 id="数据共享与保护"><a href="#数据共享与保护" class="headerlink" title="数据共享与保护"></a>数据共享与保护</h4><p>在一些进程间共享的数据、系统的可执行代码(DLL)等，在各个进程间是一致的，因此没有必要在物理内存中为这些数据保存多分，不同进程的虚拟内存分页可以映射为同样的物理内存分页。</p>
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/2.png" alt></p>
+<h4 id="需要了解内容"><a href="#需要了解内容" class="headerlink" title="需要了解内容"></a>需要了解内容</h4><ul>
+<li>虚拟地址空间中的数据是分页管理的</li>
+<li>应用程序不用考虑系统中其他程序的内存使用情况</li>
+<li>虚拟地址并不是物理地址空间中的地址，不是数据在内存中真实存在的地址，操作系统会将进程的虚拟地址映射到真实的物理内存的地址</li>
+<li>进程不需要考虑真是内存多大，只需要了解使用2GB的内存，操作系统负责转换</li>
+<li>如果系统中没有足够的物理内存使用，那么操作系统会把当前没有使用的内存分页”调度”到硬盘上保存起来。</li>
+</ul>
+<h4 id="虚拟内存布局、内存的分工、堆栈"><a href="#虚拟内存布局、内存的分工、堆栈" class="headerlink" title="虚拟内存布局、内存的分工、堆栈"></a>虚拟内存布局、内存的分工、堆栈</h4><p>进程的虚拟内存空间分为两部分，低2GB由用户程序使用，高2GB由系统内核使用。</p>
+<p>系统内核的空间包括驱动程序，系统内核可执行文件，用于内存管理的数据结构，用于进程管理、线程调度的数据结构、各种中断处理程序，系统缓存等。</p>
+<p>栈和堆是两种重要的内存管理形式</p>
+<p>进程都有自己的栈，栈与函数调用、执行和返回及己不变量的保存相关，一般情况下，栈中保存着函数的参数、返回地址和局部变量，调用函数之前先将参数入栈，调用指令将函数返回地址入栈，被调用函数负责保存调用函数相关栈指针，为局部变量分配空间等。</p>
+<p>堆是一种可以动态分配是释放的内存，由堆管理器进行管理。</p>
+<h4 id="内存的保护属性和存取权限"><a href="#内存的保护属性和存取权限" class="headerlink" title="内存的保护属性和存取权限"></a>内存的保护属性和存取权限</h4><p>系统为每个内存分页提供保护权限和存取权限，内存的保护属性和存取权限的最小单位是分页，也就是说同一个分页中的内存必然具有相同的保护属性和存取权限。</p>
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/3.png" alt></p>
+<h4 id="主要API"><a href="#主要API" class="headerlink" title="主要API"></a>主要API</h4><p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/4.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/5.png" alt></p>
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/6.png" alt></p>
+<h3 id="堆管理"><a href="#堆管理" class="headerlink" title="堆管理"></a>堆管理</h3><p>用户使用内存分配函数分配的内存都位于堆中，所以使用堆管理函数对内存进行分配、释放等方式是最为直接的。</p>
+<p><strong>Windows中，每个进程都有自己的堆，每个进程的堆的数量也有所不同。Windows中的堆并不是内存块，而是一种用于内存管理的对象，也是一种内存组织的形式。进程可以从属于自己的堆上分配内存和释放内存。</strong></p>
+<h4 id="获取堆句柄、分配与再分配堆"><a href="#获取堆句柄、分配与再分配堆" class="headerlink" title="获取堆句柄、分配与再分配堆"></a>获取堆句柄、分配与再分配堆</h4><p>堆是一种内存管理的对象，一个进程有若干个堆，在分配内存前需要指定从哪个堆上进行分配。堆的句柄唯一标识了一个堆。在堆上分配之前，需要获取进行分配的堆的句柄，获取句柄的方式有两种：<strong>一种是获取在进程中时已经创建好的堆，二是进程自己再创建堆</strong></p>
+<h5 id="HeapCreate"><a href="#HeapCreate" class="headerlink" title="HeapCreate"></a>HeapCreate</h5><p>为进程创建新堆，请求分配虚拟内存分页</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">HeapCreate</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD  flOptions,		<span class="comment">//创建堆的选项</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwInitialSize,	<span class="comment">//堆的初始值大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwMaximumSize	<span class="comment">//堆大小的最大值</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>创建堆的选项：</p>
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/7.png" alt></p>
+<h5 id="GetProcessHeap"><a href="#GetProcessHeap" class="headerlink" title="GetProcessHeap"></a>GetProcessHeap</h5><p>获取进程当前的一个堆，返回堆的句柄。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">GetProcessHeap</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="GetProcessHeaps"><a href="#GetProcessHeaps" class="headerlink" title="GetProcessHeaps"></a>GetProcessHeaps</h5><p>获取进程中所有堆，包括堆数量和各个堆的句柄</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">GetProcessHeaps</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD   NumberOfHeaps,		<span class="comment">//缓冲区ProcessHeaps所能存储的句柄值得个数</span></span></span></span><br><span class="line"><span class="function"><span class="params">  PHANDLE ProcessHeaps			<span class="comment">//指向用于保存进程中所有堆得句柄得内存块，函数返回地句柄值会在其中依此保存</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="HeapAlloc"><a href="#HeapAlloc" class="headerlink" title="HeapAlloc"></a>HeapAlloc</h5><p>从指定得堆上分配内存块</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DECLSPEC_ALLOCATOR LPVOID <span class="title">HeapAlloc</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE hHeap,	<span class="comment">//此参数指定得堆上进行内存分配</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD  dwFlags,	<span class="comment">//需要分配得标志</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwBytes	<span class="comment">//需要分配得内存区域大小，字节单位</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="//systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/8.png" alt></p>
+<p>LPVOID类型得数据，如果成功，指向新分配得内存得指针，如果失败，则为NULL</p>
+<h5 id="HeapReAlloc"><a href="#HeapReAlloc" class="headerlink" title="HeapReAlloc"></a>HeapReAlloc</h5><p>重新分配内存，改变已经分配好的堆内存块得大小</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DECLSPEC_ALLOCATOR LPVOID <span class="title">HeapReAlloc</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE                 hHeap,	<span class="comment">//此参数指定得堆上进行内存分配</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD                  dwFlags,	<span class="comment">//内存分配标志</span></span></span></span><br><span class="line"><span class="function"><span class="params">  _Frees_ptr_opt_ LPVOID lpMem,		<span class="comment">//原内存得地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T                 dwBytes	<span class="comment">//内存块调整后得值</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="GetSystemInfo"><a href="#GetSystemInfo" class="headerlink" title="GetSystemInfo"></a>GetSystemInfo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GetSystemInfo</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPSYSTEM_INFO lpSystemInfo		<span class="comment">//指向SYSTEM_INFO结构体，保存获取得信息</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 头文件　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* DWORD PrintHeapSize(HANDLE hHeap,LPVOID lpMem)</span></span><br><span class="line"><span class="comment">* 功能	获取堆的大小并打印出来</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	HANDLE hHeap，堆句柄</span></span><br><span class="line"><span class="comment">*		LPVOID lpMem，内存地址指针</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 返回值	0代表执行完成，1代码发生错误。</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">DWORD <span class="title">PrintHeapSize</span><span class="params">(HANDLE hHeap, LPVOID lpMem)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	SIZE_T dwHeapSize;</span><br><span class="line">	dwHeapSize = HeapSize(hHeap, HEAP_NO_SERIALIZE, lpMem);</span><br><span class="line">	<span class="keyword">if</span> (dwHeapSize == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Get HeapSize error :%d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"内存块大小为:0x%x\n"</span>, dwHeapSize);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(int argc, PCHAR argv[])</span></span><br><span class="line"><span class="comment">* 功能	演示堆的使用</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	argv[1]如果为“-s”那么使用进程堆</span></span><br><span class="line"><span class="comment">*		argv[1]如果为“-a”那么创建一个可变大小的堆</span></span><br><span class="line"><span class="comment">*		argv[1]如果为其他，那么创建有最大大小的堆。</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, PCHAR argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	SYSTEM_INFO si;	<span class="comment">//系统信息</span></span><br><span class="line">	HANDLE hHeap;	<span class="comment">//堆句柄</span></span><br><span class="line">	LPVOID lpMem;	<span class="comment">//内存块指针</span></span><br><span class="line">	LPVOID lpReAlloc;	<span class="comment">//内存块大小调整后的指针</span></span><br><span class="line">	DWORD dwHeapSize;	<span class="comment">//堆内存埠大小</span></span><br><span class="line">	HANDLE hHeaps[<span class="number">24</span>];	<span class="comment">//用于保存进程中所有的堆句柄</span></span><br><span class="line">	DWORD dwHeapNum;	<span class="comment">//进程中堆的数量\</span></span><br><span class="line">		<span class="comment">//获取系统信息</span></span><br><span class="line">	GetSystemInfo(&amp;si);</span><br><span class="line">	<span class="comment">//将系统内存分页大小，与内存分配粒度打印出来。</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"系统内存页大小: 0x%x\n系统内存分配粒度:0x%x\n"</span>,</span><br><span class="line">		si.dwPageSize, si.dwAllocationGranularity);</span><br><span class="line">	<span class="comment">//分析输入参数，如果是“-a”创建一个最大为10个分页大小的堆</span></span><br><span class="line">	<span class="keyword">if</span> (argc == <span class="number">2</span> &amp;&amp; <span class="number">0</span> == lstrcmp(argv[<span class="number">1</span>], <span class="string">"-a"</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		hHeap = HeapCreate(HEAP_NO_SERIALIZE,</span><br><span class="line">			si.dwPageSize, si.dwPageSize * <span class="number">10</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"创建堆,初始化大小为1页,最大为10页\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//如果输入参数为“-s”使用进程初始化时已经存在的堆</span></span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (argc == <span class="number">2</span> &amp;&amp; <span class="number">0</span> == lstrcmp(argv[<span class="number">1</span>], <span class="string">"-s"</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		hHeap = GetProcessHeap();</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"获取系统已经存在的堆\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//如果输入其他，创建一个可增长的堆</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		hHeap = HeapCreate(HEAP_NO_SERIALIZE, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"创建堆,初始化大小为1页,大小可变\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//判断堆是否创建/获取成功</span></span><br><span class="line">	<span class="keyword">if</span> (hHeap == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"创建或获取进程堆错误: %d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//获取将打印当前进程中一共有多少个堆，有没有新建堆，值会不同</span></span><br><span class="line">	dwHeapNum = GetProcessHeaps(<span class="number">24</span>, hHeaps);</span><br><span class="line">	<span class="keyword">if</span> (dwHeapNum == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"GetProcessHeaps error: %d"</span>, GetLastError());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"当前进程一共有%d个堆\n"</span>, dwHeapNum);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//在堆上分析内存，3个页面大小</span></span><br><span class="line">	lpMem = HeapAlloc(hHeap, HEAP_ZERO_MEMORY, si.dwPageSize * <span class="number">3</span>);</span><br><span class="line">	<span class="keyword">if</span> (lpMem == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"HeapAlloc error: %d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"在堆上成功分配内存,起始地址为:0x%x\n"</span>, lpMem);</span><br><span class="line">	<span class="comment">//打印当前堆内存块的大小</span></span><br><span class="line">	PrintHeapSize(hHeap, lpMem);</span><br><span class="line">	<span class="comment">//再分配内存，调整内存的大小为11个分页大小，</span></span><br><span class="line">	<span class="comment">//如果使用第一种方法创建堆，这里会出错</span></span><br><span class="line">	lpReAlloc = HeapReAlloc(hHeap, HEAP_ZERO_MEMORY, lpMem, si.dwPageSize * <span class="number">11</span>);</span><br><span class="line">	<span class="keyword">if</span> (lpReAlloc == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"HeapReAlloc error: %d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"在堆上再分配内存,地址为:0x%x,原地址:0x%x\n"</span>, lpReAlloc, lpMem);</span><br><span class="line">	<span class="comment">//打印调整大小后的堆内存块大小</span></span><br><span class="line">	PrintHeapSize(hHeap, lpReAlloc);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//释放内存</span></span><br><span class="line">	<span class="keyword">if</span> (!HeapFree(hHeap, HEAP_NO_SERIALIZE, lpReAlloc))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"HeapFree error: %d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"释放内存成功\n"</span>);</span><br><span class="line">	<span class="comment">//如果新建了堆，销毁堆。</span></span><br><span class="line">	<span class="keyword">if</span> (argc != <span class="number">2</span> || <span class="number">0</span> != lstrcmp(argv[<span class="number">1</span>], <span class="string">"-s"</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"销毁HeapCreate创建的堆\n"</span>);</span><br><span class="line">		<span class="keyword">if</span> (!HeapDestroy(hHeap))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"HeapDestroy error: %d"</span>, GetLastError());</span><br><span class="line">			<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"销毁堆成功\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取堆中内存块大小信息"><a href="#获取堆中内存块大小信息" class="headerlink" title="获取堆中内存块大小信息"></a>获取堆中内存块大小信息</h4><p>API函数HeapSize得作用是获取堆中内存块大小得信息</p>
+<h5 id="HeapSize"><a href="#HeapSize" class="headerlink" title="HeapSize"></a>HeapSize</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">SIZE_T <span class="title">HeapSize</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE  hHeap,	<span class="comment">//需要获得大小得内存块所在堆得句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD   dwFlags,	<span class="comment">//内存块得标志</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPCVOID lpMem		<span class="comment">//所需要获取大小得内存块得指针</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Demo-1"><a href="#Demo-1" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">PrintHeapSize</span><span class="params">(HANDLE hHeap, LPVOID lpMem)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	SIZE_T dwHeapSize;</span><br><span class="line">	dwHeapSize = HeapSize(hHeap, HEAP_NO_SERIALIZE, lpMem);</span><br><span class="line">	<span class="keyword">if</span> (dwHeapSize == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Get HeapSize error :%d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"内存块大小为:0x%x\n"</span>, dwHeapSize);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="释放内存、销毁堆"><a href="#释放内存、销毁堆" class="headerlink" title="释放内存、销毁堆"></a>释放内存、销毁堆</h4><p>分配得内存在使用完成后需要释放，否则内存将不能再次使用，造成内存泄漏</p>
+<h5 id="HepFree"><a href="#HepFree" class="headerlink" title="HepFree"></a>HepFree</h5><p>释放HeapAlloc和HeapReAlloc所分配得内存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">HeapFree</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE                 hHeap,	<span class="comment">//内存块所在得堆，需要使用HeapAlloc和HeapReAlloc分配内存时候同样得堆</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD                  dwFlags,	<span class="comment">//内存块标志</span></span></span></span><br><span class="line"><span class="function"><span class="params">  _Frees_ptr_opt_ LPVOID lpMem		<span class="comment">//所需要释放得内存块得指针</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="HeapDestroy"><a href="#HeapDestroy" class="headerlink" title="HeapDestroy"></a>HeapDestroy</h5><p>销毁由HeapCreate创建得堆</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">HeapDestroy</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE hHeap		<span class="comment">//销毁堆得句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Demo-2"><a href="#Demo-2" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!HeapFree(hHeap, HEAP_NO_SERIALIZE, lpReAlloc))</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"HeapFree error: %d"</span>, GetLastError());</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"释放内存成功\n"</span>);</span><br><span class="line"><span class="comment">//如果新建了堆，销毁堆。</span></span><br><span class="line"><span class="keyword">if</span> (argc != <span class="number">2</span> || <span class="number">0</span> != lstrcmp(argv[<span class="number">1</span>], <span class="string">"-s"</span>))</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"销毁HeapCreate创建的堆\n"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!HeapDestroy(hHeap))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"HeapDestroy error: %d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"销毁堆成功\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="全局和局部内存管理"><a href="#全局和局部内存管理" class="headerlink" title="全局和局部内存管理"></a>全局和局部内存管理</h3><p>32位Windows系统中并没有区分全局堆和局部堆，Windows系统中之所以留着是为了兼容16位。</p>
+<h5 id="Demo-3"><a href="#Demo-3" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	演示Global*函数的使用</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	无</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;	</span><br><span class="line">	LPVOID lpMem;	<span class="comment">//内存地址</span></span><br><span class="line">	HGLOBAL hMem;	<span class="comment">//内存句柄</span></span><br><span class="line">	SIZE_T sizeMem;	<span class="comment">//内存大小</span></span><br><span class="line">	UINT uFlags;	<span class="comment">//属性</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//分配内存</span></span><br><span class="line">	lpMem = (LPVOID)GlobalAlloc(GPTR,<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">//将数据复制到内存中</span></span><br><span class="line">	lstrcpy(lpMem,<span class="string">"this is a string"</span>);	</span><br><span class="line">	<span class="comment">//获得内存属性，打印</span></span><br><span class="line">	uFlags = GlobalFlags(lpMem);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"内存中的内容：\"%s\"，内存地址：0x%.8x，内存属性：%u\n"</span>,</span><br><span class="line">		lpMem,lpMem,uFlags);</span><br><span class="line">	<span class="comment">//释放</span></span><br><span class="line">	GlobalFree(lpMem);</span><br><span class="line">	<span class="comment">//分配内存，获取信息</span></span><br><span class="line">	hMem = GlobalAlloc(GMEM_MOVEABLE,<span class="number">1000</span>);</span><br><span class="line">	sizeMem = GlobalSize(hMem);</span><br><span class="line">	uFlags = GlobalFlags(hMem);</span><br><span class="line">	<span class="comment">//打印信息</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"内存大小：%d，内存句柄：0x%.8x，内存属性：%u\n"</span>,</span><br><span class="line">		sizeMem,hMem,uFlags);</span><br><span class="line">	<span class="comment">//锁定</span></span><br><span class="line">	lpMem = GlobalLock(hMem);</span><br><span class="line">	<span class="comment">//释放</span></span><br><span class="line">	GlobalFree(hMem);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="虚拟内存管理"><a href="#虚拟内存管理" class="headerlink" title="虚拟内存管理"></a>虚拟内存管理</h3><h4 id="虚拟地址空间与内存分页"><a href="#虚拟地址空间与内存分页" class="headerlink" title="虚拟地址空间与内存分页"></a>虚拟地址空间与内存分页</h4><p>内存管理得原理都由系统得内存管理器实现，应用程序只能管理属于自己得虚拟地址空间。</p>
+<p>进程得虚拟地址空间内存页面存在3种状态，分别为空闲得(Free)、保留(Reserved)、提交(Committed)，一般一页得大小是4KB</p>
+<p>状态                            状态</p>
+<p>空间(free)                进程不能访问这种页面，因此这次页面还没有被分配，任何属于这种自己得虚拟                                    内存进行访问都将引用访问以尝    </p>
+<p>保留(Reserved)    页面被保留以备将来只用，这些页面已经被分配，但是还没有被使用，物理地址空                                间中得内存不存在与其对应得物理内存分页，处理保留状态得内存分页不能被访问</p>
+<p>提交(Committed) 内存已经被分配，并且已经被使用，且有与之对应得物理地址空间中得内存分页</p>
+<h4 id="分配和释放可读可写得虚拟内存页面"><a href="#分配和释放可读可写得虚拟内存页面" class="headerlink" title="分配和释放可读可写得虚拟内存页面"></a>分配和释放可读可写得虚拟内存页面</h4><p>在使用VirtualAlloc和VirtualAllocEx分配虚拟内存时，可以自定分配得内存页面是保留得还是提交得。</p>
+<h5 id="VirtualAlloc"><a href="#VirtualAlloc" class="headerlink" title="VirtualAlloc"></a>VirtualAlloc</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LPVOID <span class="title">VirtualAlloc</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpAddress,			<span class="comment">//分配得起始位置，如果是要保留一段内存区域，那么函数会自动向其最近得一个分配粒度对其</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwSize,			<span class="comment">//所需要分配得内存区域大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD  flAllocationType,	<span class="comment">//分配得类型，决定了是保留一段内存区域还是提交。还是同时王城</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD  flProtect			<span class="comment">//内存得保护属性</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="VirtualFree"><a href="#VirtualFree" class="headerlink" title="VirtualFree"></a>VirtualFree</h5><p>将内存状态从”已提交得”变成”保留得”，此函数用于进行VirtualAlloc反向工作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">VirtualFree</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpAddress,			<span class="comment">//需要改变状态得内存区域得起始地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwSize,			<span class="comment">//需要改变状态得内存区域得大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD  dwFreeType			<span class="comment">//内存状态</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="VirtualFreeEx"><a href="#VirtualFreeEx" class="headerlink" title="VirtualFreeEx"></a>VirtualFreeEx</h5><p>释放由VirtualAllocEx分配得内存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">VirtualFreeEx</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE hProcess,		<span class="comment">//进程得句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpAddress,		<span class="comment">//指向要释放的内存区域的起始地址的指针</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwSize,		<span class="comment">//要释放的内存区域的大小，以字节为单位。</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD  dwFreeType		<span class="comment">//自由操作的类型</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Demo-4"><a href="#Demo-4" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	演示虚拟内存的使用</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	SIZE_T sizeVirtual = <span class="number">4000</span>;		<span class="comment">//大小</span></span><br><span class="line">	LPVOID lpRound = (LPVOID)<span class="number">0x100000FF</span>;	<span class="comment">//地址</span></span><br><span class="line">	MEMORY_BASIC_INFORMATION  mbi;	<span class="comment">//内存信息</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//分配内存，直接分配已提交的内存</span></span><br><span class="line">	LPVOID lpAddress = VirtualAlloc(</span><br><span class="line">		lpRound, sizeVirtual,</span><br><span class="line">		MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE</span><br><span class="line">		);</span><br><span class="line">	<span class="keyword">if</span> (lpAddress == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"VirtualAlloc error: %d\n"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Alloc:MEM_COMMIT|MEM_RESERVE\n"</span>);</span><br><span class="line">	<span class="comment">//复制数据到内存中</span></span><br><span class="line">	CopyMemory(lpAddress, <span class="string">"hello"</span>, lstrlen(<span class="string">"hello"</span>));</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"分配、复制成功，地址：0x%.8x，内容：%s\n"</span>,</span><br><span class="line">		lpAddress, lpAddress);</span><br><span class="line">	<span class="comment">//获取内存信息并打印</span></span><br><span class="line">	VirtualQuery(lpAddress, &amp;mbi, <span class="keyword">sizeof</span>(mbi));</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"使用VirtualQuery获得的信息：\n"</span></span><br><span class="line">		<span class="string">"BaseAddress:0x%.8x\tAllocationBase:0x%.8x\t"</span></span><br><span class="line">		<span class="string">"AllocationProtect:0x%.8x\tRegionSize:%u\t"</span></span><br><span class="line">		<span class="string">"State:0x%.8x\tProtect:0x%.8x\tType:0x%.8x\n"</span>,</span><br><span class="line">		mbi.BaseAddress, mbi.AllocationBase,</span><br><span class="line">		mbi.AllocationProtect, mbi.RegionSize,</span><br><span class="line">		mbi.State, mbi.Protect, mbi.Type</span><br><span class="line">		);</span><br><span class="line"></span><br><span class="line">	<span class="comment">////设置为READ-ONLY属性</span></span><br><span class="line">	<span class="comment">//if(!VirtualProtect(lpAddress,0,PAGE_READONLY,NULL))</span></span><br><span class="line">	<span class="comment">//&#123;</span></span><br><span class="line">	<span class="comment">//	printf("VirtualProtect error: %d",GetLastError());</span></span><br><span class="line">	<span class="comment">//	return 1;</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line">	<span class="comment">////测试READ-ONLY属性,异常</span></span><br><span class="line">	<span class="comment">//CopyMemory(lpAddress,"read only",lstrlen("read only"));</span></span><br><span class="line">	<span class="comment">//printf(lpAddress);</span></span><br><span class="line">	<span class="comment">////获取内存信息并打印</span></span><br><span class="line">	<span class="comment">//VirtualQuery(lpAddress,&amp;mbi,sizeof(mbi));</span></span><br><span class="line">	<span class="comment">//printf("使用VirtualQuery获得的信息：\n"</span></span><br><span class="line">	<span class="comment">//	"BaseAddress:0x%.8x\tAllocationBase:0x%.8x\t"</span></span><br><span class="line">	<span class="comment">//	"AllocationProtect:0x%.8x\tRegionSize:%d\t"</span></span><br><span class="line">	<span class="comment">//	"State:0x%.8x\tProtect:0x%.8x\tType:0x%.8x\n",</span></span><br><span class="line">	<span class="comment">//	mbi.BaseAddress,mbi.AllocationBase,</span></span><br><span class="line">	<span class="comment">//	mbi.AllocationProtect,mbi.RegionSize,</span></span><br><span class="line">	<span class="comment">//	mbi.State,mbi.Protect,mbi.Type</span></span><br><span class="line">	<span class="comment">//	);</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//DECOMMIT释放，页面将变为保留状态</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Free: DECOMMIT\n"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!VirtualFree(lpRound, sizeVirtual, MEM_DECOMMIT))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"VirtualFree error: %d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//获取内存信息并打印</span></span><br><span class="line">	VirtualQuery(lpAddress, &amp;mbi, <span class="keyword">sizeof</span>(mbi));</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"使用VirtualQuery获得的信息：\n"</span></span><br><span class="line">		<span class="string">"BaseAddress:0x%.8x\tAllocationBase:0x%.8x\t"</span></span><br><span class="line">		<span class="string">"AllocationProtect:0x%.8x\tRegionSize:%u\t"</span></span><br><span class="line">		<span class="string">"State:0x%.8x\tProtect:0x%.8x\tType:0x%.8x\n"</span>,</span><br><span class="line">		mbi.BaseAddress, mbi.AllocationBase,</span><br><span class="line">		mbi.AllocationProtect, mbi.RegionSize,</span><br><span class="line">		mbi.State, mbi.Protect, mbi.Type</span><br><span class="line">		);</span><br><span class="line">	<span class="comment">//释放内存</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Free:RELEASE\n"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!VirtualFree(lpAddress, <span class="number">0</span>, MEM_RELEASE))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"VirtualFree error: %d"</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改内存页面状态和保护属性"><a href="#修改内存页面状态和保护属性" class="headerlink" title="修改内存页面状态和保护属性"></a>修改内存页面状态和保护属性</h4><h5 id="VirtualProtect"><a href="#VirtualProtect" class="headerlink" title="VirtualProtect"></a>VirtualProtect</h5><p>改变指定虚拟内存分页得保护属性</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">VirtualProtect</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpAddress,		<span class="comment">//虚拟内存基地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwSize,		<span class="comment">//内存大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD  flNewProtect,	<span class="comment">//需要设置得新的属性</span></span></span></span><br><span class="line"><span class="function"><span class="params">  PDWORD lpflOldProtect	<span class="comment">//指向保存原属性值得DWORD变量，可以为NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="VirtualLock"><a href="#VirtualLock" class="headerlink" title="VirtualLock"></a>VirtualLock</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">VirtualLock</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpAddress,		<span class="comment">//指向要锁定的页面区域的基地址的指针</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwSize			<span class="comment">//要锁定的区域的大小，以字节为单位</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="VirtualUnLock"><a href="#VirtualUnLock" class="headerlink" title="VirtualUnLock"></a>VirtualUnLock</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">VirtualUnlock</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpAddress,		<span class="comment">//指向要解锁的页面区域的基地址的指针</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwSize			<span class="comment">//要解锁的区域的大小，以字节为单位</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Demo-5"><a href="#Demo-5" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="内存操作与内部信息管理"><a href="#内存操作与内部信息管理" class="headerlink" title="内存操作与内部信息管理"></a>内存操作与内部信息管理</h3><h4 id="复制、填充、移动、清零内存块、防止缓冲区"><a href="#复制、填充、移动、清零内存块、防止缓冲区" class="headerlink" title="复制、填充、移动、清零内存块、防止缓冲区"></a>复制、填充、移动、清零内存块、防止缓冲区</h4><h5 id="CopyMemory"><a href="#CopyMemory" class="headerlink" title="CopyMemory"></a>CopyMemory</h5><p>复制内存，第一个参数为目的地址，第二个参数为源地址，第三个参数为复制数据得大小</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CopyMemory</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  _In_       PVOID  Destination,		<span class="comment">//目的地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  _In_ <span class="keyword">const</span> VOID   *Source,			<span class="comment">//源地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  _In_       SIZE_T Length				<span class="comment">//大小长度</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="FileMemory"><a href="#FileMemory" class="headerlink" title="FileMemory"></a>FileMemory</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FillMemory</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  [out] PVOID  Destination,			<span class="comment">//需要填充得内存地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  [in]  SIZE_T Length,				<span class="comment">//填充得大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">  [in]  BYTE   Fill					<span class="comment">//填充得值</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="MoveMemory"><a href="#MoveMemory" class="headerlink" title="MoveMemory"></a>MoveMemory</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MoveMemory</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  _In_       PVOID  Destination,	<span class="comment">//需要复制得目的地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  _In_ <span class="keyword">const</span> VOID   *Source,		<span class="comment">//源地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  _In_       SIZE_T Length			<span class="comment">//复制数据得大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="ZeroMemory"><a href="#ZeroMemory" class="headerlink" title="ZeroMemory"></a>ZeroMemory</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">ZeroMemory</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  [in] PVOID  Destination,			<span class="comment">//内存地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">  [in] SIZE_T Length				<span class="comment">//内存区域大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 头文件　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 常量定义 */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MEM_BLOCK_MAX_SIZE 32</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* BOOL ShowMemContent(LPVOID lpMem,SIZE_T dwSize)</span></span><br><span class="line"><span class="comment">* 功能	显示内存中的内容</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	LPVOID lpMem 需要显示的内存指针</span></span><br><span class="line"><span class="comment">*		SIZE_T dwSize 大小</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 返回值 BOOL 如果数据过大可能溢出，则返回FALSE。</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">BOOL <span class="title">ShowMemContent</span><span class="params">(LPVOID lpMem, SIZE_T dwSize)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BYTE lpShow[MEM_BLOCK_MAX_SIZE];</span><br><span class="line">	INT i = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//防止栈溢出</span></span><br><span class="line">	<span class="keyword">if</span> (dwSize&gt;MEM_BLOCK_MAX_SIZE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"over-flow"</span>);</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//复制到数组</span></span><br><span class="line">	CopyMemory((LPVOID)lpShow, lpMem, dwSize);</span><br><span class="line">	<span class="comment">//显示</span></span><br><span class="line">	<span class="keyword">for</span> (; i&lt;dwSize; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%.2X "</span>, lpShow[i]);</span><br><span class="line">		<span class="keyword">if</span> (!((i + <span class="number">1</span>) % <span class="number">16</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	获取内存使用情况</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hHeap = GetProcessHeap();</span><br><span class="line">	LPVOID lpSrc;</span><br><span class="line">	LPVOID lpDis;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//分配内存</span></span><br><span class="line">	lpSrc = HeapAlloc(hHeap, <span class="number">0</span>, MEM_BLOCK_MAX_SIZE);</span><br><span class="line">	lpDis = HeapAlloc(hHeap, <span class="number">0</span>, MEM_BLOCK_MAX_SIZE);</span><br><span class="line">	<span class="comment">//显示新分配的内存</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"HeapAlloc 分配但不清零：\n"</span>);</span><br><span class="line">	ShowMemContent(lpDis, MEM_BLOCK_MAX_SIZE);</span><br><span class="line">	<span class="comment">//将内存清零并显示</span></span><br><span class="line">	ZeroMemory(lpDis, MEM_BLOCK_MAX_SIZE);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"ZeroMemory 清零：\n"</span>);</span><br><span class="line">	ShowMemContent(lpDis, MEM_BLOCK_MAX_SIZE);</span><br><span class="line">	<span class="comment">//使用0xBB填充全部内存</span></span><br><span class="line">	FillMemory(lpSrc, MEM_BLOCK_MAX_SIZE, <span class="number">0xBB</span>);</span><br><span class="line">	<span class="comment">//将内存块的前半部分使用0xAA填充</span></span><br><span class="line">	FillMemory(lpSrc, MEM_BLOCK_MAX_SIZE / <span class="number">2</span>, <span class="number">0xAA</span>);</span><br><span class="line">	CopyMemory(lpDis, lpSrc, MEM_BLOCK_MAX_SIZE);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"FillMemory 有规律的填充内存：\n"</span>);</span><br><span class="line">	ShowMemContent(lpDis, MEM_BLOCK_MAX_SIZE);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//释放内存</span></span><br><span class="line">	HeapFree(hHeap, <span class="number">0</span>, lpSrc);</span><br><span class="line">	HeapFree(hHeap, <span class="number">0</span>, lpDis);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取当前系统内存使用情况"><a href="#获取当前系统内存使用情况" class="headerlink" title="获取当前系统内存使用情况"></a>获取当前系统内存使用情况</h4><h5 id="GlobalMemoryStatus"><a href="#GlobalMemoryStatus" class="headerlink" title="GlobalMemoryStatus"></a>GlobalMemoryStatus</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GlobalMemoryStatus</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPMEMORYSTATUS lpBuffer		<span class="comment">//指向MEMORYSTATUSEX结构，用来保存获取得信息</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="GlobalMemoryStatusEx"><a href="#GlobalMemoryStatusEx" class="headerlink" title="GlobalMemoryStatusEx"></a>GlobalMemoryStatusEx</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GlobalMemoryStatusEx</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	LPMEMORYSTATUS lpBuffer		<span class="comment">//指向MEMORYSTATUSEX结构，用来保存获取得信息</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Demo-6"><a href="#Demo-6" class="headerlink" title="Demo"></a>Demo</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 头文件　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	获取内存使用情况</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;	</span><br><span class="line">	<span class="comment">//用于保存信息</span></span><br><span class="line">	MEMORYSTATUSEX memstatusex;</span><br><span class="line">	<span class="comment">//设置结构大小</span></span><br><span class="line">	memstatusex.dwLength = <span class="keyword">sizeof</span>(memstatusex);</span><br><span class="line">	<span class="comment">//获取系统内存使用情况</span></span><br><span class="line">	GlobalMemoryStatusEx(&amp;memstatusex);</span><br><span class="line">	<span class="comment">//打印输入结果</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"TotalPhys\tAvailPhys\tTotalVirtual\tAvailVirtual\t"</span></span><br><span class="line">		<span class="string">"TotalPageFile\tuAvailPageFile\tMemoryLoad\n"</span></span><br><span class="line">		<span class="string">"%I64u\t%I64u\t%I64u\t%I64u\t%I64u\t%I64u\t%u%%"</span>,</span><br><span class="line">		memstatusex.ullTotalPhys,memstatusex.ullAvailPhys,</span><br><span class="line">		memstatusex.ullTotalVirtual,memstatusex.ullAvailVirtual,</span><br><span class="line">		memstatusex.ullTotalPageFile,memstatusex.ullAvailPageFile,</span><br><span class="line">		memstatusex.dwMemoryLoad);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断内存指针得可用性"><a href="#判断内存指针得可用性" class="headerlink" title="判断内存指针得可用性"></a>判断内存指针得可用性</h4><h5 id="LsBadCodePtr"><a href="#LsBadCodePtr" class="headerlink" title="LsBadCodePtr"></a>LsBadCodePtr</h5><p>判断进程是否拥有堆指定地址内存得读操作权限</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">LsBadCodePtr</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	FARPROC lpfn	<span class="comment">//指向某指定地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="LsBadReadPtr"><a href="#LsBadReadPtr" class="headerlink" title="LsBadReadPtr"></a>LsBadReadPtr</h5><p>判断调用进程是否拥有对指定地址段内存得读操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">LsBadReadPtr</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">const</span> <span class="keyword">void</span>* lp,	<span class="comment">//指向起始内存地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">    UINT ucb		<span class="comment">//从其内存地址开始得内存块长度</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+
+<h5 id="LsBadStringPtr"><a href="#LsBadStringPtr" class="headerlink" title="LsBadStringPtr"></a>LsBadStringPtr</h5><p>判断调用进程是否拥有对指定字符串指针得读取权限</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">LsBadStringPtr</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	LPCTSTR lpsz,		<span class="comment">//指向字符串</span></span></span></span><br><span class="line"><span class="function"><span class="params">    UINT_PTR ucchMax	<span class="comment">//读取字符串最大长度</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+
+<h5 id="LsBadWritePtr"><a href="#LsBadWritePtr" class="headerlink" title="LsBadWritePtr"></a>LsBadWritePtr</h5><p>判断调用进程是否拥有对指定地址段内存得写操作权限</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">LsBadWritePtr</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	LPVOID lp,		<span class="comment">//起始得内存地址</span></span></span></span><br><span class="line"><span class="function"><span class="params">    UINT ucb		<span class="comment">//从起始地址开始得内存块长度</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/12/10/Windows应用程序-内存管理/">Windows应用程序-内存管理</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2019年12月10日 - 08时29分</p>
+        <p><span>最后更新:</span>2019年12月11日 - 15时35分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/12/10/Windows应用程序-内存管理/" title="Windows应用程序-内存管理">https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/12/10/Windows应用程序-内存管理/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/29/Windows应用程序-文件系统/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Windows应用程序-文件系统</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows内存管理"><span class="toc-number">1.</span> <span class="toc-text">Windows内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念"><span class="toc-number">1.1.</span> <span class="toc-text">基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#地址空间"><span class="toc-number">1.1.1.</span> <span class="toc-text">地址空间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#物理内存"><span class="toc-number">1.1.2.</span> <span class="toc-text">物理内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#虚拟地址空间"><span class="toc-number">1.1.3.</span> <span class="toc-text">虚拟地址空间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#进程的内存空间"><span class="toc-number">1.1.4.</span> <span class="toc-text">进程的内存空间</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分页与分段内存管理"><span class="toc-number">1.2.</span> <span class="toc-text">分页与分段内存管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程的内存空间-1"><span class="toc-number">1.3.</span> <span class="toc-text">进程的内存空间</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#进程虚拟地址空间的实现"><span class="toc-number">1.3.1.</span> <span class="toc-text">进程虚拟地址空间的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据共享与保护"><span class="toc-number">1.3.2.</span> <span class="toc-text">数据共享与保护</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#需要了解内容"><span class="toc-number">1.3.3.</span> <span class="toc-text">需要了解内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#虚拟内存布局、内存的分工、堆栈"><span class="toc-number">1.3.4.</span> <span class="toc-text">虚拟内存布局、内存的分工、堆栈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#内存的保护属性和存取权限"><span class="toc-number">1.3.5.</span> <span class="toc-text">内存的保护属性和存取权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#主要API"><span class="toc-number">1.3.6.</span> <span class="toc-text">主要API</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#堆管理"><span class="toc-number">1.4.</span> <span class="toc-text">堆管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#获取堆句柄、分配与再分配堆"><span class="toc-number">1.4.1.</span> <span class="toc-text">获取堆句柄、分配与再分配堆</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#HeapCreate"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">HeapCreate</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#GetProcessHeap"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">GetProcessHeap</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#GetProcessHeaps"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">GetProcessHeaps</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#HeapAlloc"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">HeapAlloc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#HeapReAlloc"><span class="toc-number">1.4.1.5.</span> <span class="toc-text">HeapReAlloc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#GetSystemInfo"><span class="toc-number">1.4.1.6.</span> <span class="toc-text">GetSystemInfo</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo"><span class="toc-number">1.4.1.7.</span> <span class="toc-text">Demo</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#获取堆中内存块大小信息"><span class="toc-number">1.4.2.</span> <span class="toc-text">获取堆中内存块大小信息</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#HeapSize"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">HeapSize</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo-1"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">Demo</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#释放内存、销毁堆"><span class="toc-number">1.4.3.</span> <span class="toc-text">释放内存、销毁堆</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#HepFree"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">HepFree</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#HeapDestroy"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">HeapDestroy</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo-2"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">Demo</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全局和局部内存管理"><span class="toc-number">1.5.</span> <span class="toc-text">全局和局部内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo-3"><span class="toc-number">1.5.0.1.</span> <span class="toc-text">Demo</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟内存管理"><span class="toc-number">1.6.</span> <span class="toc-text">虚拟内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#虚拟地址空间与内存分页"><span class="toc-number">1.6.1.</span> <span class="toc-text">虚拟地址空间与内存分页</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分配和释放可读可写得虚拟内存页面"><span class="toc-number">1.6.2.</span> <span class="toc-text">分配和释放可读可写得虚拟内存页面</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#VirtualAlloc"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">VirtualAlloc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#VirtualFree"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">VirtualFree</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#VirtualFreeEx"><span class="toc-number">1.6.2.3.</span> <span class="toc-text">VirtualFreeEx</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo-4"><span class="toc-number">1.6.2.4.</span> <span class="toc-text">Demo</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改内存页面状态和保护属性"><span class="toc-number">1.6.3.</span> <span class="toc-text">修改内存页面状态和保护属性</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#VirtualProtect"><span class="toc-number">1.6.3.1.</span> <span class="toc-text">VirtualProtect</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#VirtualLock"><span class="toc-number">1.6.3.2.</span> <span class="toc-text">VirtualLock</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#VirtualUnLock"><span class="toc-number">1.6.3.3.</span> <span class="toc-text">VirtualUnLock</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo-5"><span class="toc-number">1.6.3.4.</span> <span class="toc-text">Demo</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存操作与内部信息管理"><span class="toc-number">1.7.</span> <span class="toc-text">内存操作与内部信息管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#复制、填充、移动、清零内存块、防止缓冲区"><span class="toc-number">1.7.1.</span> <span class="toc-text">复制、填充、移动、清零内存块、防止缓冲区</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#CopyMemory"><span class="toc-number">1.7.1.1.</span> <span class="toc-text">CopyMemory</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#FileMemory"><span class="toc-number">1.7.1.2.</span> <span class="toc-text">FileMemory</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#MoveMemory"><span class="toc-number">1.7.1.3.</span> <span class="toc-text">MoveMemory</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ZeroMemory"><span class="toc-number">1.7.1.4.</span> <span class="toc-text">ZeroMemory</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#获取当前系统内存使用情况"><span class="toc-number">1.7.2.</span> <span class="toc-text">获取当前系统内存使用情况</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#GlobalMemoryStatus"><span class="toc-number">1.7.2.1.</span> <span class="toc-text">GlobalMemoryStatus</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#GlobalMemoryStatusEx"><span class="toc-number">1.7.2.2.</span> <span class="toc-text">GlobalMemoryStatusEx</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Demo-6"><span class="toc-number">1.7.2.3.</span> <span class="toc-text">Demo</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#判断内存指针得可用性"><span class="toc-number">1.7.3.</span> <span class="toc-text">判断内存指针得可用性</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#LsBadCodePtr"><span class="toc-number">1.7.3.1.</span> <span class="toc-text">LsBadCodePtr</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#LsBadReadPtr"><span class="toc-number">1.7.3.2.</span> <span class="toc-text">LsBadReadPtr</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#LsBadStringPtr"><span class="toc-number">1.7.3.3.</span> <span class="toc-text">LsBadStringPtr</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#LsBadWritePtr"><span class="toc-number">1.7.3.4.</span> <span class="toc-text">LsBadWritePtr</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2019/11/29/Windows应用程序-文件系统/" title="下一篇: Windows应用程序-文件系统">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/12/10/Windows应用程序-内存管理/">Windows应用程序-内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/29/Windows应用程序-文件系统/">Windows应用程序-文件系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/25/加密与解密-逆向分析技术/">加密与解密-逆向分析技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/22/加密与解密-静态分析/">加密与解密-静态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-3/">Reverse-Bugku-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-2/">Reverse-Bugku-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-1/">Reverse-Bugku-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-动态分析/">加密与解密-动态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-基础知识/">加密与解密-基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-联合体/">逆向工程权威指南-联合体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-结构体/">逆向工程权威指南-结构体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-伪随机函数/">逆向工程权威指南-伪随机函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/08/WinSock网络编程经络-IP/">WinSock网络编程经络-IP</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/">WinSock网络编程经络-TCP/IP体系结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-Echo客户-服务端程序/">WinSock网络编程经络-Echo客户/服务端程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/黑客编程-网络/">黑客编程-网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-入门/">Windows应用程序-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/黑客编程-入门/">黑客编程-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/18/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/12/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
