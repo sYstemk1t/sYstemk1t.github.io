@@ -5,18 +5,18 @@
   
   <title>黑客编程-常用API | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Windows API是Windows下开发应用程序的基础知识，我们常见的API函数包括进程、线程、文件、注册表、服务等相关的API函数。 文件API在Windows下，文件格式有很多种，如常见的图片、视频、音频等文件都属于保存在硬盘的存储格式不相同的文件。除了常见的磁盘文件格式外，管道、邮槽，甚至是设备对象，在Windows下也被当成文件来对待的。 文件操作相关API文件打开与关闭要对文件进行操">
+  <meta name="description" content="Windows API是Windows下开发应用程序的基础知识，我们常见的API函数包括进程、线程、文件、注册表、服务等相关的API函数。">
 <meta name="keywords" content="Hacker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="黑客编程-常用API">
 <meta property="og:url" content="https://systemk1t.github.io/2019/12/12/黑客编程-常用API/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="Windows API是Windows下开发应用程序的基础知识，我们常见的API函数包括进程、线程、文件、注册表、服务等相关的API函数。 文件API在Windows下，文件格式有很多种，如常见的图片、视频、音频等文件都属于保存在硬盘的存储格式不相同的文件。除了常见的磁盘文件格式外，管道、邮槽，甚至是设备对象，在Windows下也被当成文件来对待的。 文件操作相关API文件打开与关闭要对文件进行操">
+<meta property="og:description" content="Windows API是Windows下开发应用程序的基础知识，我们常见的API函数包括进程、线程、文件、注册表、服务等相关的API函数。">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2019-12-12T13:48:37.557Z">
+<meta property="og:updated_time" content="2019-12-13T19:35:34.220Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="黑客编程-常用API">
-<meta name="twitter:description" content="Windows API是Windows下开发应用程序的基础知识，我们常见的API函数包括进程、线程、文件、注册表、服务等相关的API函数。 文件API在Windows下，文件格式有很多种，如常见的图片、视频、音频等文件都属于保存在硬盘的存储格式不相同的文件。除了常见的磁盘文件格式外，管道、邮槽，甚至是设备对象，在Windows下也被当成文件来对待的。 文件操作相关API文件打开与关闭要对文件进行操">
+<meta name="twitter:description" content="Windows API是Windows下开发应用程序的基础知识，我们常见的API函数包括进程、线程、文件、注册表、服务等相关的API函数。">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -261,6 +261,8 @@
       
           
         <p>Windows API是Windows下开发应用程序的基础知识，我们常见的API函数包括进程、线程、文件、注册表、服务等相关的API函数。</p>
+<a id="more"></a>
+
 <h2 id="文件API"><a href="#文件API" class="headerlink" title="文件API"></a>文件API</h2><p>在Windows下，文件格式有很多种，如常见的图片、视频、音频等文件都属于保存在硬盘的存储格式不相同的文件。除了常见的磁盘文件格式外，管道、邮槽，甚至是设备对象，在Windows下也被当成文件来对待的。</p>
 <h3 id="文件操作相关API"><a href="#文件操作相关API" class="headerlink" title="文件操作相关API"></a>文件操作相关API</h3><h4 id="文件打开与关闭"><a href="#文件打开与关闭" class="headerlink" title="文件打开与关闭"></a>文件打开与关闭</h4><p>要对文件进行操作，首先要把文件打开，文件打开后会返回一个可用于操作文件的句柄，通过这个句柄就可以对文件进行读写操作了。</p>
 <h5 id="CreateFile"><a href="#CreateFile" class="headerlink" title="CreateFile"></a>CreateFile</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateFileA</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPCSTR                lpFileName,		<span class="comment">//打开的文件名</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD                 dwDesiredAccess,	<span class="comment">//访问模式</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD                 dwShareMode,	<span class="comment">//共享模式</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSECURITY_ATTRIBUTES lpSecurityAttributes,	<span class="comment">//安全属性</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD                 dwCreationDisposition,	<span class="comment">//创建或打开的文件存在或不存在的解决方法</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD                 dwFlagsAndAttributes,	<span class="comment">//指定创建新建文件的属性和对文件的操作方式</span></span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE                hTemplateFile			<span class="comment">//文件句柄模板</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
@@ -352,7 +354,7 @@
         <p><span>本文标题:</span><a href="/2019/12/12/黑客编程-常用API/">黑客编程-常用API</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2019年12月12日 - 19时00分</p>
-        <p><span>最后更新:</span>2019年12月12日 - 21时48分</p>
+        <p><span>最后更新:</span>2019年12月14日 - 03时35分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2019/12/12/黑客编程-常用API/" title="黑客编程-常用API">https://systemk1t.github.io/2019/12/12/黑客编程-常用API/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/12/12/黑客编程-常用API/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
