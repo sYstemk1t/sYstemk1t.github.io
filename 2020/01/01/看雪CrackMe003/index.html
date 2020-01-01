@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>看雪CrackMe003 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一步步尝试将《加密与解密》第五章得课后作业得CrackMe全部破解，通过任何手段写出一个类似注册机得东西。">
+<meta name="keywords" content="CrackMe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="看雪CrackMe003">
+<meta property="og:url" content="https://systemk1t.github.io/2020/01/01/看雪CrackMe003/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="一步步尝试将《加密与解密》第五章得课后作业得CrackMe全部破解，通过任何手段写出一个类似注册机得东西。">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2020/01/01/看雪CrackMe003/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/01/01/看雪CrackMe003/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/01/01/看雪CrackMe003/2.png">
+<meta property="og:updated_time" content="2020-01-01T11:14:45.934Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="看雪CrackMe003">
+<meta name="twitter:description" content="一步步尝试将《加密与解密》第五章得课后作业得CrackMe全部破解，通过任何手段写出一个类似注册机得东西。">
+<meta name="twitter:image" content="https://systemk1t.github.io/2020/01/01/看雪CrackMe003/0.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/CTF/" style="font-size: 11.67px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 16.67px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 15px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 11.67px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 15px;">c</a> <a href="/tags/cpp/" style="font-size: 10px;">cpp</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-看雪CrackMe003" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/01/01/看雪CrackMe003/" class="article-date">
+      <time datetime="2020-01-01T10:07:52.000Z" itemprop="datePublished">2020-01-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      看雪CrackMe003
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/CrackMe/">CrackMe</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>一步步尝试将《加密与解密》第五章得课后作业得CrackMe全部破解，通过任何手段写出一个类似注册机得东西。</p>
+<a id="more"></a>
+
+
+
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p> <strong>WinXP Sp3 + 52Pojie六周年OllyDbg + PEID(0.95)</strong> </p>
+<p>软件下载地址：<a href="https://github.com/sYstemk1t/Code-collection/tree/master/CrackMe/看雪/看雪CrackMe003" target="_blank" rel="noopener">https://github.com/sYstemk1t/Code-collection/tree/master/CrackMe/看雪/看雪CrackMe003</a></p>
+<h2 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程"></a>分析过程</h2><p>这个程序跑起来是提示框得，我们随意输入伪码，会弹出一个错误得提示框，我们使用上两个CrackMe得经验来说，直接<strong>bp GetDlgItemTextA</strong>，然后我们发现断点根本断不下来，我们继续去查看它得文档，它的文档提示是有反调试的，第一次遇到反调试的程序，我们不管它，我们直接跟随函数<strong>GetDlgItemTextA</strong>，然后使用硬件断点来破除它。</p>
+<p><img src="//systemk1t.github.io/2020/01/01/看雪CrackMe003/0.png" alt></p>
+<p>我们让程序跑起来，然后我们到这个函数的地址处去下硬件断点。</p>
+<p><img src="//systemk1t.github.io/2020/01/01/看雪CrackMe003/1.png" alt></p>
+<p>然后让程序继续跑起来，发现这次就可以在断点处被断下来了，然后继续查看堆栈。</p>
+<p><img src="//systemk1t.github.io/2020/01/01/看雪CrackMe003/2.png" alt></p>
+<p>查看堆栈处，堆栈处的CALL到004012C1，我们跟随到这个地址处往上。</p>
+<p>我们一直跟随到00401296地址处，然后F2下断点，让程序重新跑起来，然而程序并没有被断住，所以我们继续向上，到上一个函数体中：地址(00401230)处，然后继续下断点，这次程序断住了；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">00401230  /.  55            push ebp</span><br><span class="line">00401231  |.  8BEC          mov ebp,esp                              ;  堆栈调整</span><br><span class="line">00401233  |.  817D 0C 10010&gt;cmp [arg.2],0x110                        ;  相等不跳转,执行初始化代码</span><br><span class="line">0040123A  |.  75 1E         jnz short KGM1Tal.0040125A</span><br><span class="line">0040123C  |.  68 057F0000   push 0x7F05                              ; /RsrcName = IDI_WINLOGO</span><br><span class="line">00401241  |.  6A 00         push 0x0                                 ; |hInst = NULL</span><br><span class="line">00401243  |.  E8 5A030000   call &lt;jmp.&amp;user32.LoadIconA&gt;             ; \LoadIconA</span><br><span class="line">00401248  |.  50            push eax                                 ; /lParam = 0x0</span><br><span class="line">00401249  |.  6A 01         push 0x1                                 ; |wParam = 0x1</span><br><span class="line">0040124B  |.  68 80000000   push 0x80                                ; |Message = WM_SETICON</span><br><span class="line">00401250  |.  FF75 08       push [arg.1]                             ; |hWnd = 0x401000</span><br><span class="line">00401253  |.  E8 56030000   call &lt;jmp.&amp;user32.SendMessageA&gt;          ; \SendMessageA</span><br><span class="line">00401258  |.  EB 36         jmp short KGM1Tal.00401290</span><br><span class="line">0040125A  |&gt;  817D 0C 11010&gt;cmp [arg.2],0x111                        ;  消息处理的结束处</span><br><span class="line">00401261  |.  75 1D         jnz short KGM1Tal.00401280               ;  跳转则失败</span><br><span class="line">00401263  |.  817D 10 E9030&gt;cmp [arg.3],0x3E9                        ;  判断是否和0x3E9相等,相等不跳转</span><br><span class="line">0040126A  |.  75 24         jnz short KGM1Tal.00401290               ;  跳转则失败</span><br><span class="line">0040126C  |.  E8 A8020000   call KGM1Tal.00401519                    ;  检测是否存在0xcc断点</span><br><span class="line">00401271  |.  E8 33020000   call KGM1Tal.004014A9                    ;  检测API函数的断点</span><br><span class="line">00401276  |.  FF75 08       push [arg.1]                             ;  KGM1Tal.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401279  |.  E8 18000000   call KGM1Tal.00401296</span><br><span class="line">0040127E  |.  EB 10         jmp short KGM1Tal.00401290               ;  消息处理结束</span><br><span class="line">00401280  |&gt;  837D 0C 10    cmp [arg.2],0x10                         ;  WM_CLOSE 0x10</span><br><span class="line">00401284  |.  75 0A         jnz short KGM1Tal.00401290               ;  相等不跳转,执行结束代码</span><br><span class="line">00401286  |.  6A 00         push 0x0                                 ; /Result = 0x0</span><br><span class="line">00401288  |.  FF75 08       push [arg.1]                             ; |hWnd = 00401000</span><br><span class="line">0040128B  |.  E8 06030000   call &lt;jmp.&amp;user32.EndDialog&gt;             ; \EndDialog</span><br><span class="line">00401290  |&gt;  33C0          xor eax,eax</span><br><span class="line">00401292  |.  C9            leave</span><br><span class="line">00401293  \.  C2 1000       retn 0x10</span><br><span class="line">00401296   $  55            push ebp</span><br><span class="line">00401297   .  8BEC          mov ebp,esp</span><br><span class="line">00401299   .  60            pushad</span><br><span class="line">0040129A   .  BE FE124000   mov esi,KGM1Tal.004012FE</span><br><span class="line">0040129F   .  56            push esi</span><br><span class="line">004012A0   .  64:FF35 00000&gt;push dword ptr fs:[0]</span><br><span class="line">004012A7   .  64:8925 00000&gt;mov dword ptr fs:[0],esp</span><br><span class="line">004012AE   .  FF35 3C304000 push dword ptr ds:[0x40303C]             ; /</span><br><span class="line">004012B4   .  68 00304000   push KGM1Tal.00403000                    ; |Buffer = KGM1Tal.00403000</span><br><span class="line">004012B9   .  68 EC030000   push 0x3EC                               ; |ControlID = 3EC (1004.)</span><br><span class="line">004012BE   .  FF75 08       push dword ptr ss:[ebp+0x8]              ; |hWnd = 00401000</span><br><span class="line">004012C1   .  E8 D6020000   call &lt;jmp.&amp;user32.GetDlgItemTextA&gt;       ; \GetDlgItemTextA</span><br><span class="line">004012C6   .  FF35 40304000 push dword ptr ds:[0x403040]             ; /Count = 14 (20.)</span><br><span class="line">004012CC   .  68 23304000   push KGM1Tal.00403023                    ; |Buffer = KGM1Tal.00403023</span><br><span class="line">004012D1   .  68 ED030000   push 0x3ED                               ; |ControlID = 3ED (1005.)</span><br><span class="line">004012D6   .  FF75 08       push dword ptr ss:[ebp+0x8]              ; |hWnd = 00401000</span><br><span class="line">004012D9   .  E8 BE020000   call &lt;jmp.&amp;user32.GetDlgItemTextA&gt;       ; \GetDlgItemTextA</span><br><span class="line">004012DE   .  E8 4F000000   call KGM1Tal.00401332                    ;  初步检测</span><br><span class="line">004012E3   .  68 53304000   push KGM1Tal.00403053                    ;  ZWATRQLCGHPSXYENVBJDFKMU</span><br><span class="line">004012E8   .  E8 C9000000   call KGM1Tal.004013B6                    ;  关键函数1</span><br><span class="line">004012ED   .  E8 DC010000   call KGM1Tal.004014CE                    ;  关键函数2</span><br><span class="line">004012F2   .  6A 00         push 0x0                                 ; /Result = 0x0</span><br><span class="line">004012F4   .  FF75 08       push dword ptr ss:[ebp+0x8]              ; |hWnd = 00401000</span><br><span class="line">004012F7   .  E8 9A020000   call &lt;jmp.&amp;user32.EndDialog&gt;             ; \EndDialog</span><br><span class="line">004012FC   .  EB 26         jmp short KGM1Tal.00401324               ;  跳转到返回,消息处理结束</span><br></pre></td></tr></table></figure>
+
+<p>初步检测函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">00401332   $  33C0          xor eax,eax                              ;  EAX=0</span><br><span class="line">00401334   .  B9 00000000   mov ecx,0x0                              ;  ECX=0</span><br><span class="line">00401339   .  BE 23304000   mov esi,KGM1Tal.00403023                 ;  这个地址存储序列号第一个字符</span><br><span class="line">0040133E   .  8A06          mov al,byte ptr ds:[esi]                 ;  取序列号第一个字符</span><br><span class="line">00401340   .  EB 10         jmp short KGM1Tal.00401352               ;  无条件跳转</span><br><span class="line">00401342   &gt;  0FB6C0        movzx eax,al</span><br><span class="line">00401345   .  80B8 50314000&gt;cmp byte ptr ds:[eax+0x403150],0x2       ;  从0x403150开始存一系列数字,分析得到序列号为A~Z,下面的跳转才不实现</span><br><span class="line">0040134C   .  75 0A         jnz short KGM1Tal.00401358               ;  跳转成功则失败</span><br><span class="line">0040134E   .  41            inc ecx</span><br><span class="line">0040134F   .  8A0431        mov al,byte ptr ds:[ecx+esi]             ;  取序列号下一位</span><br><span class="line">00401352   &gt;  3C 00         cmp al,0x0                               ;  和0比较,序列号为空则不可以执行下面跳转</span><br><span class="line">00401354   .^ 77 EC         ja short KGM1Tal.00401342                ;  跳转到回到循环处,al=0,序列号为空直接退出</span><br><span class="line">00401356   .  EB 07         jmp short KGM1Tal.0040135F               ;  这条语句必须执行=&gt; 序列号由A~Z组成</span><br><span class="line">00401358   &gt;  C605 44304000&gt;mov byte ptr ds:[0x403044],0x40          ;  错误尝试,如果执行成功,则失败</span><br><span class="line">0040135F   &gt;  BE 00304000   mov esi,KGM1Tal.00403000                 ;  指向用户名</span><br><span class="line">00401364   .  33C9          xor ecx,ecx</span><br><span class="line">00401366   .  B8 01000000   mov eax,0x1</span><br><span class="line">0040136B   .  33D2          xor edx,edx                              ;  ntdll.KiFastSystemCallRet</span><br><span class="line">0040136D   .  C705 45304000&gt;mov dword ptr ds:[0x403045],0x0</span><br><span class="line">00401377   &gt;  B9 00000000   mov ecx,0x0                              ;  循环</span><br><span class="line">0040137C   .  8A0C32        mov cl,byte ptr ds:[edx+esi]             ;  取用户名第一个字符</span><br><span class="line">0040137F   .  80F9 00       cmp cl,0x0</span><br><span class="line">00401382   .  74 09         je short KGM1Tal.0040138D                ;  循环为空则失败</span><br><span class="line">00401384   .  42            inc edx                                  ;  ntdll.KiFastSystemCallRet</span><br><span class="line">00401385   .  000D 45304000 add byte ptr ds:[0x403045],cl            ;  加到0x403045,取用户名值和取最低字节</span><br><span class="line">0040138B   .^ EB EA         jmp short KGM1Tal.00401377</span><br><span class="line">0040138D   &gt;  A1 45304000   mov eax,dword ptr ds:[0x403045]          ;  除法运算,除数是ECX,被除数是EAX</span><br><span class="line">00401392   .  B9 18000000   mov ecx,0x18</span><br><span class="line">00401397   .  99            cdq</span><br><span class="line">00401398   .  F7F9          idiv ecx</span><br><span class="line">0040139A   .  8815 4F304000 mov byte ptr ds:[0x40304F],dl            ;  余数存入0x40304F</span><br><span class="line">004013A0   .  8A0D 44304000 mov cl,byte ptr ds:[0x403044]            ;  对序列号A~Z检测,把循环和判断分离,迷惑作用</span><br><span class="line">004013A6   .  80F9 40       cmp cl,0x40</span><br><span class="line">004013A9   .  75 05         jnz short KGM1Tal.004013B0</span><br><span class="line">004013AB   .  E9 45010000   jmp KGM1Tal.004014F5</span><br><span class="line">004013B0   &gt;  E9 CB000000   jmp KGM1Tal.00401480</span><br><span class="line">004013B5   .  C3            retn</span><br><span class="line">004013B6   $  55            push ebp</span><br><span class="line">004013B7   .  8BEC          mov ebp,esp</span><br><span class="line">004013B9   .  68 23304000   push KGM1Tal.00403023                    ;  ASCII &apos;KEJTMPWUDM&apos;</span><br><span class="line">004013BE   .  E8 7D010000   call KGM1Tal.00401540                    ;  检查位数,返回值必须是0xA</span><br><span class="line">004013C3   .  83F8 0A       cmp eax,0xA</span><br><span class="line">004013C6   .  0F85 29010000 jnz KGM1Tal.004014F5                     ;  跳转则失败</span><br><span class="line">004013CC   .  BE 23304000   mov esi,KGM1Tal.00403023                 ;  ASCII &apos;KEJTMPWUDM&apos;</span><br><span class="line">004013D1   .  B8 00000000   mov eax,0x0</span><br><span class="line">004013D6   .  BB 00000000   mov ebx,0x0</span><br><span class="line">004013DB   .  33C9          xor ecx,ecx</span><br><span class="line">004013DD   .  EB 06         jmp short KGM1Tal.004013E5               ;  循环</span><br><span class="line">004013DF   &gt;  8A0C30        mov cl,byte ptr ds:[eax+esi]             ;  取序列号第一个字符</span><br><span class="line">004013E2   .  03D9          add ebx,ecx                              ;  EBX加</span><br><span class="line">004013E4   .  40            inc eax</span><br><span class="line">004013E5   &gt;  83F8 09       cmp eax,0x9                              ;  把前9位加起来</span><br><span class="line">004013E8   .^ 72 F5         jb short KGM1Tal.004013DF</span><br><span class="line">004013EA   .  8BC3          mov eax,ebx</span><br><span class="line">004013EC   .  B9 09000000   mov ecx,0x9</span><br><span class="line">004013F1   .  99            cdq</span><br><span class="line">004013F2   .  F7F9          idiv ecx                                 ;  除法</span><br><span class="line">004013F4   .  A3 4A304000   mov dword ptr ds:[0x40304A],eax          ;  序列号所有字符加起来除以9,结果存入0040304A</span><br><span class="line">004013F9   .  8B7D 08       mov edi,dword ptr ss:[ebp+0x8]           ;  指向内置字符数组ZWATRQQLCGHPSXYENVBJDFKMU</span><br><span class="line">004013FC   .  8A15 4F304000 mov dl,byte ptr ds:[0x40304F]            ;  取用户名经运算得到的余数</span><br><span class="line">00401402   .  8AC2          mov al,dl                                ;  与序列号运算得到的商的低字节相加得到一个索引</span><br><span class="line">00401404   .  3C 18         cmp al,0x18</span><br><span class="line">00401406   .  76 02         jbe short KGM1Tal.0040140A</span><br><span class="line">00401408   .  2C 18         sub al,0x18</span><br><span class="line">0040140A   &gt;  A2 4E304000   mov byte ptr ds:[0x40304E],al            ;  以上的语句保证了索引值在24以内</span><br><span class="line">0040140F   .  33C0          xor eax,eax</span><br><span class="line">00401411   .  A0 4E304000   mov al,byte ptr ds:[0x40304E]            ;  再次取出索引</span><br><span class="line">00401416   .  8A2438        mov ah,byte ptr ds:[eax+edi]             ;  从数组中取出参数值</span><br><span class="line">00401419   .  8A36          mov dh,byte ptr ds:[esi]                 ;  从输入的序列号中得到第一个字符</span><br><span class="line">0040141B   .  38F4          cmp ah,dh                                ;  比较第一个字母</span><br><span class="line">0040141D   .  0F85 D2000000 jnz KGM1Tal.004014F5</span><br><span class="line">00401423   .  80EE 41       sub dh,0x41                              ;  处理第一个字符</span><br><span class="line">00401426   .  8AF2          mov dh,dl                                ;  赋其他值</span><br><span class="line">00401428   .  B4 00         mov ah,0x0</span><br><span class="line">0040142A   .  A2 4E304000   mov byte ptr ds:[0x40304E],al            ;  保存索引</span><br><span class="line">0040142F   .  33C0          xor eax,eax</span><br><span class="line">00401431   .  A0 4E304000   mov al,byte ptr ds:[0x40304E]            ;  取出索引</span><br><span class="line">00401436   .  02C2          add al,dl                                ;  把余数加到索引中</span><br><span class="line">00401438   .  3C 18         cmp al,0x18</span><br><span class="line">0040143A   .  76 02         jbe short KGM1Tal.0040143E</span><br><span class="line">0040143C   .  2C 18         sub al,0x18</span><br><span class="line">0040143E   &gt;  B9 02000000   mov ecx,0x2</span><br><span class="line">00401443   .  8A2438        mov ah,byte ptr ds:[eax+edi]             ;  从数组中得到参考值</span><br><span class="line">00401446   .  8A3431        mov dh,byte ptr ds:[ecx+esi]             ;  从输入的序列号中取得第三个字符</span><br><span class="line">00401449   .  38F4          cmp ah,dh                                ;  比较第三个字母</span><br><span class="line">0040144B   .  0F85 A4000000 jnz KGM1Tal.004014F5                     ;  不等则失败</span><br><span class="line">00401451   .  EB 24         jmp short KGM1Tal.00401477               ;  循环,检测序列号</span><br><span class="line">00401453   &gt;  A2 4E304000   mov byte ptr ds:[0x40304E],al            ;  保存索引</span><br><span class="line">00401458   .  33C0          xor eax,eax</span><br><span class="line">0040145A   .  A0 4E304000   mov al,byte ptr ds:[0x40304E]            ;  取出索引</span><br><span class="line">0040145F   .  80EE 41       sub dh,0x41                              ;  第三个字符加0x41</span><br><span class="line">00401462   .  8AD6          mov dl,dh</span><br><span class="line">00401464   .  41            inc ecx</span><br><span class="line">00401465      02C2          add al,dl                                ;  把差值加到索引上</span><br><span class="line">00401467   .  3C 18         cmp al,0x18</span><br><span class="line">00401469   .  76 02         jbe short KGM1Tal.0040146D</span><br><span class="line">0040146B   .  2C 18         sub al,0x18</span><br><span class="line">0040146D   &gt;  8A2438        mov ah,byte ptr ds:[eax+edi]             ;  从数组中取得参考值</span><br><span class="line">00401470   .  8A3431        mov dh,byte ptr ds:[ecx+esi]             ;  从序列号中取得下一个字符</span><br><span class="line">00401473   .  38F4          cmp ah,dh</span><br><span class="line">00401475   .  75 7E         jnz short KGM1Tal.004014F5               ;  不等则鼠标</span><br><span class="line">00401477   &gt;  83F9 08       cmp ecx,0x8                              ;  循环7次</span><br><span class="line">0040147A   .^ 72 D7         jb short KGM1Tal.00401453</span><br><span class="line">0040147C   .  C9            leave</span><br><span class="line">0040147D   .  C2 0400       retn 0x4</span><br></pre></td></tr></table></figure>
+
+<p>第二次检测函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">004014CE  /$  BE 23304000   mov esi,KGM1Tal.00403023                 ;  ASCII &quot;KEJTMPWUDM&quot;</span><br><span class="line">004014D3  |.  A1 4A304000   mov eax,dword ptr ds:[0x40304A]          ;  取出商低字节</span><br><span class="line">004014D8  |.  8A5E 09       mov bl,byte ptr ds:[esi+0x9]             ;  取出序列号最后一个字节</span><br><span class="line">004014DB  |.  38D8          cmp al,bl</span><br><span class="line">004014DD      75 16         jnz short KGM1Tal.004014F5               ;  爆破的时候使用这个关键跳转</span><br><span class="line">004014DF  |.  B8 6C304000   mov eax,KGM1Tal.0040306C                 ;  Great Job!</span><br><span class="line">004014E4  |.  8BD8          mov ebx,eax</span><br><span class="line">004014E6  |.  83C3 0B       add ebx,0xB</span><br><span class="line">004014E9  |.  6A 00         push 0x0                                 ; /Style = MB_OK|MB_APPLMODAL</span><br><span class="line">004014EB  |.  50            push eax                                 ; |Title = NULL</span><br><span class="line">004014EC  |.  53            push ebx                                 ; |Text = &quot;&quot;</span><br><span class="line">004014ED  |.  6A 00         push 0x0                                 ; |hOwner = NULL</span><br><span class="line">004014EF  |.  E8 B4000000   call &lt;jmp.&amp;user32.MessageBoxA&gt;           ; \MessageBoxA</span><br><span class="line">004014F4  |.  C3            retn</span><br><span class="line">004014F5  |&gt;  6A 00         push 0x0                                 ; /Style = MB_OK|MB_APPLMODAL</span><br><span class="line">004014F7  |.  68 C2304000   push KGM1Tal.004030C2                    ; |Not this time.</span><br><span class="line">004014FC  |.  68 99304000   push KGM1Tal.00403099                    ; |Try Again, something did not work right.</span><br><span class="line">00401501  |.  6A 00         push 0x0                                 ; |hOwner = NULL</span><br><span class="line">00401503  |.  E8 A0000000   call &lt;jmp.&amp;user32.MessageBoxA&gt;           ; \MessageBoxA</span><br><span class="line">00401508  |.  6A 00         push 0x0                                 ; /ExitCode = 0x0</span><br><span class="line">0040150A  \.  E8 A5000000   call &lt;jmp.&amp;kernel32.ExitProcess&gt;         ; \ExitProcess</span><br><span class="line">0040150F   .  C3            retn</span><br></pre></td></tr></table></figure>
+
+<h2 id="注册机"><a href="#注册机" class="headerlink" title="注册机"></a>注册机</h2><p>注册机代码见：<a href="https://github.com/sYstemk1t/Code-collection/tree/master/CrackMe/看雪/看雪CrackMe003/Key" target="_blank" rel="noopener">https://github.com/sYstemk1t/Code-collection/tree/master/CrackMe/看雪/看雪CrackMe003/Key</a></p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2020/01/01/看雪CrackMe003/">看雪CrackMe003</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2020年01月01日 - 18时07分</p>
+        <p><span>最后更新:</span>2020年01月01日 - 19时14分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2020/01/01/看雪CrackMe003/" title="看雪CrackMe003">https://systemk1t.github.io/2020/01/01/看雪CrackMe003/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/01/01/看雪CrackMe003/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/01/01/看雪CrackMe002/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">看雪CrackMe002</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境"><span class="toc-number">1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析过程"><span class="toc-number">2.</span> <span class="toc-text">分析过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注册机"><span class="toc-number">3.</span> <span class="toc-text">注册机</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2020/01/01/看雪CrackMe002/" title="下一篇: 看雪CrackMe002">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/看雪CrackMe003/">看雪CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/看雪CrackMe002/">看雪CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/31/看雪CrackMe001/">看雪CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/27/加密与解密-演示版保护技术/">加密与解密-演示版保护技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/21/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/20/加密与解密-TraceMe/">加密与解密-TraceMes</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/20/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/18/Windows应用程序-线程同步/">Windows应用程序-线程同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/16/cpp第一章/">cpp第一章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/13/Windows应用程序-进程/">Windows应用程序-进程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/12/黑客编程-常用API/">黑客编程-常用API</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/10/Windows应用程序-内存管理/">Windows应用程序-内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/29/Windows应用程序-文件系统/">Windows应用程序-文件系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/25/加密与解密-逆向分析技术/">加密与解密-逆向分析技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/22/加密与解密-静态分析/">加密与解密-静态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-3/">Reverse-Bugku-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-2/">Reverse-Bugku-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-1/">Reverse-Bugku-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-动态分析/">加密与解密-动态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-基础知识/">加密与解密-基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-联合体/">逆向工程权威指南-联合体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-结构体/">逆向工程权威指南-结构体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-伪随机函数/">逆向工程权威指南-伪随机函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/08/WinSock网络编程经络-IP/">WinSock网络编程经络-IP</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/">WinSock网络编程经络-TCP/IP体系结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-Echo客户-服务端程序/">WinSock网络编程经络-Echo客户/服务端程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/黑客编程-网络/">黑客编程-网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-入门/">Windows应用程序-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/黑客编程-入门/">黑客编程-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
