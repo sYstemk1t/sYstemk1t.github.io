@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Windows-Assembly-3 | sYstemk1t&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="从”Hello，World”开始！">
+<meta name="keywords" content="Assembly">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows-Assembly-3">
+<meta property="og:url" content="https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="从”Hello，World”开始！">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/Windows-Assembly-3%5C3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/5.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/6.png">
+<meta property="og:updated_time" content="2020-04-06T17:53:59.522Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows-Assembly-3">
+<meta name="twitter:description" content="从”Hello，World”开始！">
+<meta name="twitter:image" content="https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/Windows-Assembly-3%5C3.png">
+  
+    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">sYstemk1t</a></h1>
+        </hgroup>
+
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">博客首页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                            
+                                <a class="fl QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 13.33px;">Assembly</a> <a href="/tags/CTF/" style="font-size: 11.67px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 16.67px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 15px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 11.67px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 15px;">c</a> <a href="/tags/cpp/" style="font-size: 10px;">cpp</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://r00tk1ts.github.io/">r00tk1ts</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">二进制安全路上努力的小菜鸡、喜欢Web安全的白帽子</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">sYstemk1t</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">sYstemk1t</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">博客首页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=xlB77L1vEh1ADj5j&r=e4f780bf38191ea1b32a0539f28ee507" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/sYstemk1t" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/sYstemk1t/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/7198175555/profile?rightmod=1&wvr=6&mod=personinfo" title="weibo">weibo</a>
+                    
+                        <a class="QQ" target="_blank" href="https://user.qzone.qq.com/806310294/infocenter" title="QQ">QQ</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Windows-Assembly-3" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/04/02/Windows-Assembly-3/" class="article-date">
+      <time datetime="2020-04-02T13:37:44.000Z" itemprop="datePublished">2020-04-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows-Assembly-3
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows32汇编语言设计/">Windows32汇编语言设计</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>从”Hello，World”开始！</p>
+<a id="more"></a>
+
+<h2 id="Win32汇编程序结构"><a href="#Win32汇编程序结构" class="headerlink" title="Win32汇编程序结构"></a>Win32汇编程序结构</h2><p>首先看看C语言实现”Hello，World”：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Hello,World"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在c语言比重，我们不必为堆栈段、数据段核代码段的定义而担心，因为编译器会将程序中的字符串核代码语言存放到它们应该去的地方，程序开始的时候会找到main()函数。</p>
+<p>在汇编中，我们需要自己去定义每个数据存放的段。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">;堆栈段</span><br><span class="line">stack	segment	stack</span><br><span class="line">		db	100	dup	(?)</span><br><span class="line">stack	ends</span><br><span class="line"></span><br><span class="line">;数据段</span><br><span class="line">data	segment	</span><br><span class="line">szHello	db	&apos;Hello,World&apos;</span><br><span class="line">data	ends</span><br><span class="line"></span><br><span class="line">;代码段</span><br><span class="line">code	segment</span><br><span class="line">		assume cs:code,ds:code,ss:stack</span><br><span class="line">start:</span><br><span class="line">		mov ax,data</span><br><span class="line">		mov ds,ax</span><br><span class="line">		mov ah,9</span><br><span class="line">		mov dx,offset szHello</span><br><span class="line">		int 21h</span><br><span class="line">		mov ah,4ch</span><br><span class="line">		int 21h</span><br><span class="line">code ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
+
+<p>我们首先自己写一个Win32版本的Hello程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">		.386</span><br><span class="line">		.model flat,stdcall</span><br><span class="line">		option casemap:none</span><br><span class="line">;文件定义</span><br><span class="line">include	windows.inc</span><br><span class="line">include user32.inc</span><br><span class="line">include kernel32.inc</span><br><span class="line">includelib  kernel32.lib</span><br><span class="line">includelib  user32.lib</span><br><span class="line"></span><br><span class="line">;数据段</span><br><span class="line">        .data</span><br><span class="line">szCaption   db  &apos;First Elastic frame&apos;,0</span><br><span class="line">szText      db  &apos;Hello,World&apos;, 0</span><br><span class="line"></span><br><span class="line">;代码段</span><br><span class="line">        .code</span><br><span class="line">start:</span><br><span class="line">        invoke MessageBoxA,NULL,offset szText,offset szCaption,0</span><br><span class="line">        invoke ExitProcess,NULL</span><br><span class="line"></span><br><span class="line">        end start</span><br></pre></td></tr></table></figure>
+
+<h4 id="模式定义"><a href="#模式定义" class="headerlink" title="模式定义"></a>模式定义</h4><p>.386是汇编语言的伪指令，它在低版本的宏汇编就已经存在，类似的指令还有.8086，.186，.386等，用于告诉编译器在编译本程序中使用的指令集。<strong>在DOS程序默认使用8086指令集</strong></p>
+<h4 id="model语句"><a href="#model语句" class="headerlink" title=".model语句"></a>.model语句</h4><p>.model语句是用来定义程序工作的模式，它的使用方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.model	内存模式[语言模式][其他模式]</span><br></pre></td></tr></table></figure>
+
+<p>内存模式的定义可以直接影响生成的可执行文件，可执行文件的大小从小到大，可以分为很多种，在DOS的可执行程序中，有只用到 64KB的.com文件。到了Win32的情况下，又有了4GB内存的PE格式的可执行文件，编写不同类型的可执行文件要用不同的.model语句定义不同的参数。</p>
+<p><img src="//systemk1t.github.io/2020/04/02/Windows-Assembly-3/Windows-Assembly-3%5C3.png" alt></p>
+<p><strong>Windows的API调用使用的stdcall格式，四朋哟早Win32汇编中没有选项，必须在.model中加上stdcall传递参数的细节</strong></p>
+<h4 id="option语句"><a href="#option语句" class="headerlink" title="option语句"></a>option语句</h4><p>用option语句定义的选项有很多，在Win32汇编中必须定义这个选项，因为Win32API是对API区分大写。</p>
+<h3 id="段的定义"><a href="#段的定义" class="headerlink" title="段的定义"></a>段的定义</h3><p>把编写的Hello源代码中的语句归纳一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">    .386</span><br><span class="line">    .model flat,stdcall</span><br><span class="line">    option casemap:none</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;Include语句&gt;</span><br><span class="line">    .stack [堆栈段的大小]</span><br><span class="line">    .data</span><br><span class="line">    &lt;初始化后的数据&gt;</span><br><span class="line">    .data?</span><br><span class="line">    &lt;未初始化后的数据&gt;</span><br><span class="line">    .const</span><br><span class="line">    &lt;一些常量定义&gt;</span><br><span class="line">    .code</span><br><span class="line">    &lt;代码&gt;</span><br><span class="line">    &lt;开始标号&gt;</span><br><span class="line">        &lt;其他语句&gt;</span><br><span class="line"></span><br><span class="line">    end &lt;开始标号&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>.stack，.data，.data?，.const和.code是分段伪指令，Win32中实际只有代码和数据之分，由于Win32汇编不必考虑堆栈，系统会分配一个向下的、足够大的段作为堆栈段，所以.stack经常会被忽略定义</strong></p>
+<h4 id="数据段"><a href="#数据段" class="headerlink" title="数据段"></a>数据段</h4><p>.data，.data?和.const定义的是数据段，分别对应不同的数据定义方式，在最后也放在不同的节区中。<strong>程序中的数据定义一般可以归纳为三类。</strong></p>
+<ul>
+<li>第一类是可读可写的已定义变量。</li>
+<li>第二类是可读可写的未定义变量</li>
+<li>第三类是一些常量。</li>
+</ul>
+<h4 id="代码段"><a href="#代码段" class="headerlink" title="代码段"></a>代码段</h4><p>.code段是代码段，所有的指令都必须写在代码段中，在可执行文件中，代码段一般是放在TEXT节区中。Win32环境中的数据段是不可执行的，只有代码段有可执行数据。堆与工作在环3层的应用来说，.code段是不可写的。</p>
+<h4 id="堆栈段"><a href="#堆栈段" class="headerlink" title="堆栈段"></a>堆栈段</h4><p>在程序中不必定义堆栈段，系统会自动分配堆栈空间。唯一值得一提的是：<strong>堆栈段的内存属性是可读可写可执行的</strong>。</p>
+<h3 id="注释和换行"><a href="#注释和换行" class="headerlink" title="注释和换行"></a>注释和换行</h3><p>汇编中的注释是以”;”开始，如果一行写不下的代码，可以加一个”&quot;。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">invoke MessageBoxA	\</span><br><span class="line">		NULL	;父窗口句柄</span><br><span class="line">		offset szText	;消息窗口的文字</span><br><span class="line">		offset szCapTion	;标题文字</span><br><span class="line">		MB_OK	;弹出方式</span><br></pre></td></tr></table></figure>
+
+<h2 id="调用API"><a href="#调用API" class="headerlink" title="调用API"></a>调用API</h2><h3 id="API是什么"><a href="#API是什么" class="headerlink" title="API是什么"></a>API是什么</h3><p>Win32程序是构筑在Win32 API上的。在Win32API中，包含了大量的函数、结构体和消息等，它们不仅被程序调用，也是自身的一部分。</p>
+<p>应用程序在使用的时候是由Windows自助装入DLL程序并调用相应的函数</p>
+<ul>
+<li>Kernel32.dll-系统服务功能。包括内存管理、任务管理和动态链接等。</li>
+<li>GdI32.dll-图形设备接口。利用VGA等显示设备驱动程序完成显示</li>
+<li>User32.dll-用户接口服务。建立窗口和传送消息等</li>
+</ul>
+<h3 id="调用API-1"><a href="#调用API-1" class="headerlink" title="调用API"></a>调用API</h3><p>Win32API是通过堆栈来传递参数的，调用者把参数一个个压入栈，DLL中的函数程序再从堆栈中取出参数处理，并在返回前将堆栈中无用的参数丢弃。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int MessageBox(</span><br><span class="line">  HWND    hWnd,</span><br><span class="line">  LPCTSTR lpText,</span><br><span class="line">  LPCTSTR lpCaption,</span><br><span class="line">  UINT    uType</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Win32环境中的实际参数只有一个类型，那就是一个32位的整数，所以这些参数都是dword类型，之所以可以定义成不同的模样，是为了说明其用途。</strong></p>
+<p>在汇编中调用MessageBox函数的方法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">push uType</span><br><span class="line">push lpCaption</span><br><span class="line">push lpText</span><br><span class="line">push hWnd</span><br><span class="line">call MessageBox</span><br></pre></td></tr></table></figure>
+
+<p>源程序编译链接称为可执行文件后，call MessageBox语句中的MessageBox会被替换成一个地址，指向可执行文件中的导入表。</p>
+<h4 id="invoke"><a href="#invoke" class="headerlink" title="invoke"></a>invoke</h4><p>invoke伪指令，它的格式是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">invoke	函数名[,参数1][,参数2].....</span><br></pre></td></tr></table></figure>
+
+<p>对MessageBox的调用可以写为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">invoke MessageBox,NULL,offset szText,offset szCaption,MB_OK</span><br></pre></td></tr></table></figure>
+
+<p><strong>invoke并不是80386处理器的指令，而是一个伪指令，在编译的时候由编译器把上面的指令展开称为我们需要的4个push指令和1个call指令</strong></p>
+<h4 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h4><p>返回值的类型对汇编程序来说也是一种dword类型，它永远存放在eax中。如果返回值的内容一个eax不能容纳，Win32API采用的方法一般都是eax中反汇一个指向数据的指针，或者在调用参数中提供一个缓冲区的地址，干脆把数据返回到缓冲区中。</p>
+<h4 id="函数声明"><a href="#函数声明" class="headerlink" title="函数声明"></a>函数声明</h4><p>在调用API函数的时候，必须预先声明，否则，编译器不会认识这个函数。</p>
+<p>invoke伪指令也无法检查参数个数。声明函数的格式是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">函数名 proto [距离][语言][参数1]:数据类型[参数2]:数据类型</span><br></pre></td></tr></table></figure>
+
+<p>proto伪指令的距离是NEAR、FAR、NEAR16、NEAR32，FAR16或FAR32，Win32中只有一个平坦的段，无所谓距离，所以定义的时候是忽略的，语言类型就是.model那些类型。</p>
+<p>举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MessageBox Proto hWnd:dword,lpText:dword,lpCaption:dword,uType:dword</span><br><span class="line">MessageBox Proto :dword,:dword,:dword,:dword</span><br></pre></td></tr></table></figure>
+
+<h4 id="Include"><a href="#Include" class="headerlink" title="Include"></a>Include</h4><p>对于所有要用到的API函数，在程序的开始部分必须预先声明，但这个步骤比较麻烦，为了简约，可以采用各种通用的操作方法，就是把所有的声明写在一个文件中，然后包含。</p>
+<p>举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">include user32.inc</span><br><span class="line">include	kernel32.inc</span><br></pre></td></tr></table></figure>
+
+<p>include语句还可以在源文件中包含其他文件，当多个源程序用到相同的函数定义、常量定义、甚至源代码的时候，可以把相同的部分写成一个文件，然后再不同的源程序中include。</p>
+<p><strong>编译器对include的处理仅仅只是把这一行用指定的文件内容替换</strong></p>
+<p>如果遇到文件和关键字同名可能会引起编译器混淆的时候，可以用”&lt;&gt;”将文件名括起来。</p>
+<h4 id="Includelib"><a href="#Includelib" class="headerlink" title="Includelib"></a>Includelib</h4><p>在Win32汇编中使用API函数，程序必须知道调用的API函数存在于那个DLL中，否则，操作系统必须搜索系统中所有的DLL，并且无法处理不同DLL中的同名函数，这显然是不显示的，所以，必须有文件包含DLL库正确的定位信息。</p>
+<p><strong>Win32环境中，程序链接的时候仍然使用函数库来定位函数信息，只不过由于函数代码存放于DLL中，库文件中只留着函数的定位信息和参数数据等简单信息，这种库称为导入库，一个DLL文件对应一个导入库</strong></p>
+<p>举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">includelib	库文件名</span><br><span class="line">includelib	&lt;库文件名&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="标号、变量和数据结构"><a href="#标号、变量和数据结构" class="headerlink" title="标号、变量和数据结构"></a>标号、变量和数据结构</h3><p><strong>当程序需要跳转到另外一个位置的时候，需要有一个标识来指示新的位置，这就是标号。</strong></p>
+<p>变量是计算机内存中已命名的存储位置，变量的之再运行中是需要改变的，所以它必须定义在可写的段中，或者堆栈中。</p>
+<p>在MASM中标号和变量的命名规划如下：</p>
+<ul>
+<li>可以用字母、数字、夏欢及符号@、$和?。</li>
+<li>第一个符号不可以为数字。</li>
+<li>长度不可以超过240个字符。</li>
+<li>不可以使用指令关键字。</li>
+<li>在作用域必须是唯一的。</li>
+</ul>
+<h4 id="标号"><a href="#标号" class="headerlink" title="标号"></a>标号</h4><h5 id="标号-1"><a href="#标号-1" class="headerlink" title="标号"></a>标号</h5><p>在程序使用跳转指令的时候，可以使用标号来标识转的目的地，编译器在编译的时候将它替换为地址，标号即可以定义在目的指令同一行的头部，也可以在目的指令前一行单独用一行定义，格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">标号名:		目的指令		;方法1</span><br><span class="line">或</span><br><span class="line">标号名::		目的指令		;方法2</span><br></pre></td></tr></table></figure>
+
+<p>标号的作用域是当前的子程序，在单个子程序中标号不能同名，否则编译器不知道该使用哪个地址，但在不同的子程序中可以有相同名称的标号。</p>
+<h5 id><a href="#" class="headerlink" title="@@"></a>@@</h5><p>在DOS的年代，为标号起名字很麻烦，因为汇编使用的跳转指令很多，所以程序中会有很多个标号。</p>
+<p>事实上，很多标号使用一到两次，并不一定需要一个有意义的名称。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	mov cx,1234h</span><br><span class="line">	cmp flag,1</span><br><span class="line">	jz	1oc1</span><br><span class="line">	mov cx,1000h</span><br><span class="line"></span><br><span class="line">loc1:</span><br><span class="line">	...</span><br><span class="line">	loop loc1</span><br></pre></td></tr></table></figure>
+
+<p>对于上面这样的程序，高版本的MASM使用@@标号去代替它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	mov cx,1234h</span><br><span class="line">	cmp flag,1</span><br><span class="line">	jz	@F</span><br><span class="line">	mov cx,1000h</span><br><span class="line"></span><br><span class="line">@@:</span><br><span class="line">	...</span><br><span class="line">	loop @B</span><br></pre></td></tr></table></figure>
+
+<p><strong>当使用了@@作为标号的时候，可以使用@F和@B来引用，@F标识本条指令后第一个@@标号，@B标识本条指令前的第一个@@标号，程序中可以有很多个@@标号，但是@F和@B只寻找距离自己最近的那个</strong></p>
+<h4 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h4><h5 id="全局变量的定义"><a href="#全局变量的定义" class="headerlink" title="全局变量的定义"></a>全局变量的定义</h5><p>全局变量的作用域在整个程序，Win32汇编的全局变量定义在.data或.data?段内，剋有同时定义变量的类型和长度、</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">变量名	类型	初始值1,初始值2,...</span><br><span class="line">变量名	类型	重复数据 dup (初始值1,初始值2...)</span><br></pre></td></tr></table></figure>
+
+<p><img src="//systemk1t.github.io/2020/04/02/Windows-Assembly-3/4.png" alt></p>
+<p>所有使用到变量类型的情况中，只有定义全局变量的时候才可以使用缩写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	.data</span><br><span class="line">wHour	dw	?	;未初始化的word类型变量</span><br><span class="line">wMinute	dw	10	;初始化为10的变量</span><br><span class="line">_hWnd	dd	?	;双字类型的变量</span><br><span class="line">word_Buffer	dw	100	dup	(1,2)	;以0001，0002，0001，0002在内存中重复100次</span><br><span class="line">szBuffer	byte	1024	dup	(?)	;1024字节缓冲区</span><br><span class="line">szText	db	&apos;Hello,World!&apos;	;字符串共占12字节。</span><br></pre></td></tr></table></figure>
+
+<h5 id="全局变量的初始化"><a href="#全局变量的初始化" class="headerlink" title="全局变量的初始化"></a>全局变量的初始化</h5><p>全局变量在定义在即可只当初值，也可以使用？预留空间，在.data?段中，只可以用？预留空间。因为.data？不能初始值。<strong>如果用问号指定全局变量如果要以0为初始值的话，在程序中不必特意赋值。</strong></p>
+<h4 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h4><h5 id="局部变量定义"><a href="#局部变量定义" class="headerlink" title="局部变量定义"></a>局部变量定义</h5><p>MASM用local伪指令提供了对局部变量的支持：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">local	变量名1[[重复数据]][:类型],变量名2[[重复数据]][:类型]...</span><br></pre></td></tr></table></figure>
+
+<p>local伪指令必须紧接在子程序定义的伪指令proc后、其他指令开始前，因为局部变量的数据在子程序开始之前就要确定下来。<strong>win32默认的类型是dword，当定义数组的时候，可以使用[]括号括起来，不能使用定义全局变量的dup伪指令。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">local	loc1[1024]:byte	;1024字节长的局部变量locl</span><br><span class="line">local	loc2	;loc2的局部变量，默认类型为dword</span><br><span class="line">local	loc3:WNDCLASS	;WNDCLASS的数据结构</span><br></pre></td></tr></table></figure>
+
+<p>使用局部变量的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">TestProc	proc</span><br><span class="line">	local	@locl:dword,@loc2:word</span><br><span class="line">	local	@loc3:byte</span><br><span class="line">	mov eax,@loc1</span><br><span class="line">	mov ax,@loc2</span><br><span class="line">	mov al,@loc3</span><br><span class="line">	</span><br><span class="line">TestProc	endp</span><br></pre></td></tr></table></figure>
+
+<p>我们可以查看一下它的反汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">00401000 &gt; $  	55            push ebp</span><br><span class="line">00401001   .  8BEC          mov ebp,esp</span><br><span class="line">00401003   .  83C4 F8       add esp,-0x8</span><br><span class="line">00401006   .  8B45 FC       mov eax,dword ptr ss:[ebp-0x4]           ;  kernel32.BaseThreadInitThunk</span><br><span class="line">00401009   .  66:8B45 FA    mov ax,word ptr ss:[ebp-0x6]</span><br><span class="line">0040100D   .  8A45 F9       mov al,byte ptr ss:[ebp-0x7]</span><br><span class="line">00401010	.	C9				leave</span><br><span class="line">00401011	.	C3				ret</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，反汇编后的指令比源程序多了前后两段指令，分别是:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">00401000 &gt; $  	55            push ebp</span><br><span class="line">00401001   .  8BEC          mov ebp,esp</span><br><span class="line">00401003   .  83C4 F8       add esp,-0x8</span><br><span class="line">...</span><br><span class="line">00401010	.	C9				leave</span><br></pre></td></tr></table></figure>
+
+<p>这些就是局部变量所必须的指令，分别用于局部变量的准备和收尾，执行了call指令后，CPU把反汇的地址压入栈，再转移到子程序执行，esp在程序执行过程中随时用到，不可以使用esp做指针来存取局部变量。于是在初始化之前，先使用push ebp指令把原来的ebp保存起来，然后把esp放入ebp中，供存取变量做指针用，在后面就是在堆中分配空间，堆的生长空间是向下的。所以需要增加一个负值。</p>
+<p><strong>在程序结束的时候，必须把正确的esp设置回去，否则ret指令会从堆中读取到错误的地址返回。</strong></p>
+<h5 id="局部变量初始化"><a href="#局部变量初始化" class="headerlink" title="局部变量初始化"></a>局部变量初始化</h5><p>局部变量的起始值是随机的，是其他子程序执行后堆栈里留下的垃圾数据，所以使用局部变量的值一定要初始化，特别是定义为结构体后当参数传递给API函数的时候。</p>
+<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><p>数据结构是由多个字段组成的数据”样板”，相当于自定义的数据类型，数据结构中每一个字段可以是字节、字、双字、字符串或其他可能的数据类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">WNDCLASS	struct</span><br><span class="line">style	DWORD	?</span><br><span class="line">lpfnWndProc	DWORD ?</span><br><span class="line">cbClsExtra	DWORD	?</span><br><span class="line">cbWndExtra	DWORD	?</span><br><span class="line">hInstance	DWORD	?</span><br><span class="line">hIcon	DWORD	?</span><br><span class="line">hCursor	DWORD	?</span><br><span class="line">hbrBackground	DWORD	?</span><br><span class="line">lpszMenuName	DWORD	?</span><br><span class="line">lpszClassName	DWORD	?</span><br><span class="line">WNDCLASS	ends</span><br></pre></td></tr></table></figure>
+
+<p>需要使用定义的结构体的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">	.data?</span><br><span class="line">stWndClass	WNDCLASS	&lt;&gt;	;使用未定义方法</span><br><span class="line">	....</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">	.data</span><br><span class="line">stWndClass	WNDCLASS	&lt;1,1,1,1,1,1,1,1,1,1&gt;	;将结构体中每个字段都初始化为1</span><br><span class="line">	....</span><br></pre></td></tr></table></figure>
+
+<p>在汇编中，数据结构的引用方法有很多种，如果需要使用某个字段的时候，最直接的办法就是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov eax,stWndClass.lpfnWndProc	;把lpfnWndProc字段的值存入eax中</span><br></pre></td></tr></table></figure>
+
+<p>但是在操作系统中，内存地址会代替这个名称，比如stWndClass在内存中的地址是00403000h，这句指令就会被编译称为mov eax,[00403004h]，因为lpfnWndProc是stWndClass中第二个字段，第一个字段为dword，已经占用了4字节空间。</p>
+<p>在实际使用中， 常常有使用指针存取数据结构的情况，如果使用esi寄存器做指针寻址，可以使用下列语句完成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov esi,offset stWndClass</span><br><span class="line">assume	esi:ptr WNDCLASS</span><br><span class="line">mov eax,[esi].lpfnWndProc</span><br><span class="line">....</span><br><span class="line">assume	esi:nothing</span><br></pre></td></tr></table></figure>
+
+<p><strong>在不再使用esi寄存器做指针的时候要用assume esi:nothing取消定义</strong></p>
+<h4 id="变量的使用"><a href="#变量的使用" class="headerlink" title="变量的使用"></a>变量的使用</h4><h5 id="以不同的类型访问数据"><a href="#以不同的类型访问数据" class="headerlink" title="以不同的类型访问数据"></a>以不同的类型访问数据</h5><p>在MASM中以不同的类型访问不同的数据不会对变量造成影响。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">szBuffer	db	1024	dup	(?)</span><br></pre></td></tr></table></figure>
+
+<p>然后从其他地方获取了数据，但数据格式是以字为组织的，要处理数据，最有效的方法就是两个字节两个字节的处理。<strong>所以在MASM要用指定类型之外的长度访问变量，必须显式的指出要访问的长度</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">类型	ptr	变量名</span><br></pre></td></tr></table></figure>
+
+<p><strong>变量名可以是byte、word、dword、fword、qword、real8个real0</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov ax,word	ptr	szBuffer</span><br><span class="line">mov	eax,dword ptr szBuffer</span><br></pre></td></tr></table></figure>
+
+<p><strong>指定类型的参数访问并不会检测长度是否溢出</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">		.data</span><br><span class="line">bTest1	db	12h</span><br><span class="line">wTest2	dw	1234h</span><br><span class="line">dwTest3	dd	12345678h</span><br><span class="line">		....</span><br><span class="line">		.code</span><br><span class="line">mov al,bTest1</span><br><span class="line">mov ax,word	ptr	bTest1</span><br><span class="line">mov eax,dword ptr bTest1</span><br></pre></td></tr></table></figure>
+
+<p>我们查看一下反汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00401000 &gt; $  A0 00204000   mov al,byte ptr ds:[0x402000]</span><br><span class="line">00401005   .  66:A1 0020400&gt;mov ax,word ptr ds:[0x402000]</span><br><span class="line">0040100B   .  A1 00204000   mov eax,dword ptr ds:[0x402000]</span><br></pre></td></tr></table></figure>
+
+<p>如果需要把一个字节扩展称为一个字或一个双字再存放，可以使用80386的扩展指令来实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">movzx	ax,bTest1</span><br><span class="line">movzx	eax,bTest1</span><br><span class="line">movzx	eax,c1</span><br><span class="line">movzx	eax,ax</span><br></pre></td></tr></table></figure>
+
+<p><strong>用movzx指令进行数据长度扩展是32位汇编经常使用的，该指令总是将扩展数据位用0替代。使用另一条指令movsx可以完成带符号位的扩展，当被扩展数据的做高位为0时，效果和movzx相同；当最高位为1时，则扩展部分的数据位全部用1填充。</strong></p>
+<h5 id="变量的尺寸和数量"><a href="#变量的尺寸和数量" class="headerlink" title="变量的尺寸和数量"></a>变量的尺寸和数量</h5><p>在源程序中用到变量的尺寸和数量的时候，可以使用sizeof和lengthof伪指令来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sizeof	变量名、数据类型或数据结构名</span><br><span class="line">lengthof	变量名、数据类型或数据结构名</span><br></pre></td></tr></table></figure>
+
+<p>如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">stWndClass	WNDCLASS	&lt;&gt;</span><br><span class="line">SzHello		db	&apos;Hello,World!&apos;,	0</span><br><span class="line">dwTest		dd	1,2,3,4</span><br><span class="line">		.code</span><br><span class="line">		mov eax,sizeof stWndClass</span><br><span class="line">		mov ebx,sizeof	WNDCLASS</span><br><span class="line">		mov ecx,sizeof	szHello</span><br><span class="line">		mov edx,sizeof	dword</span><br><span class="line">		mov esi,sizeof	dwTest</span><br></pre></td></tr></table></figure>
+
+<p>我们查看一下反汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">00401000 &gt; $  B8 28000000   mov eax,0x28</span><br><span class="line">00401005   .  BB 28000000   mov ebx,0x28</span><br><span class="line">0040100A   ?  B9 0D000000   mov ecx,0xD</span><br><span class="line">0040100F   ?  BA 04000000   mov edx,0x4</span><br><span class="line">00401014   .  BE 10000000   mov esi,0x10</span><br></pre></td></tr></table></figure>
+
+<p><strong>sizeof和lengthor的数值是编译时候产生的，由编译器直接替换到指令中去。</strong></p>
+<h5 id="获取变量地址"><a href="#获取变量地址" class="headerlink" title="获取变量地址"></a>获取变量地址</h5><p>获取变量地址的操作对于全局变量和局部变量是不同的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov	寄存器,offset	变量名</span><br></pre></td></tr></table></figure>
+
+<p><strong>offset是取变量地址的伪操作符，它仅仅把变量的地址代入到指令中，这个操作是在编译时而不是运行时完成的。</strong></p>
+<p>对于局部变量，它是用ebp来做指针操作的，假设ebp的值是401000h，那么局部变量1的地址是ebp-4即400FCh，由于ebp的值是随着程序的执行环境不同而不同的，所以局部变量的地址值在编译的时候也是不确定的，不可能使用offset伪操作符来获取它的地址。</p>
+<p>所以80386处理器中有一条指令来取指针的地址，就是lea指令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lea	eax,[ebp-4]</span><br></pre></td></tr></table></figure>
+
+<p><strong>该指令可以在运行时按照ebp的值实际计算出地址放到eax中</strong></p>
+<p>如果在invoke的参数中需要使用局部变量的地址，那么可以使用addr来获取</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addr	局部变量名或全局变量名</span><br></pre></td></tr></table></figure>
+
+<p><strong>当addr后跟全局变量名的时候，编译器自动按照offset的用法来使用；当addr后面跟着局部变量名的时候，编译器会自动用lea指令先把地址取到eax中，然后用eax来代替局部变量使用</strong></p>
+<h3 id="使用子程序"><a href="#使用子程序" class="headerlink" title="使用子程序"></a>使用子程序</h3><p>当程序中需要重复调用一段代码的时候，可以将它实现为一个子程序，在主程序中用call指令来调用它，这样可以不用写重复代码，仅仅使用call指令就可以完成多次同样的工作。</p>
+<h4 id="子程序的定义"><a href="#子程序的定义" class="headerlink" title="子程序的定义"></a>子程序的定义</h4><p>子程序的定义方式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">子程序名	proc	[距离][语言类型][可视区域][USES寄存器列表][,参数:类型]...[VARARG]</span><br><span class="line">local	局部变量列表</span><br><span class="line"></span><br><span class="line">	....</span><br><span class="line">	指令</span><br><span class="line">	</span><br><span class="line">子程序名	endp</span><br></pre></td></tr></table></figure>
+
+<p>proc和endp伪指令定义了子程序开始和结束的位置，proc后面跟的参数是子程序的属性和输入参数，子程序的属性有:</p>
+<ul>
+<li>距离：可以是NEAR，FAR，NEAR16，NEAR32，FAR16或FAR32，Win32中只有一个平坦的段，无所谓距离，所以对距离的定义忽略。</li>
+<li>语言类型：表示参数的使用方式和堆栈平衡的方式，可以是stdcall，c，syscall，basic，fortran和pascal，如果虎烈，则使用程序头部.model的值</li>
+<li>可视区域：可以是PRIVATE，PUBLIC和EXPORT</li>
+<li>USES寄存器列表：由编译器在子程序指令开始前安排push这些寄存器的指令，并在ret前自动安排pop指令，用于保存执行环境。</li>
+<li>参数和类型：参数指参数的名称，在定义参数名的时候不能跟全局变量和子程序的局部变量崇明。对于类型，Win32中的参数类型只有32位的dword类型。</li>
+</ul>
+<p>完成定义之后，可以用invoke来调用子程序，当invoke伪指令位于被调用的子程序代码之前的时候，编译器处理到invoke语句的时候还没有扫描到子程序的定义信息。所以避免出现这种错误，必须在程序的头部用proto伪操作定义程序的信息。</p>
+<h4 id="参数传递和堆栈平衡"><a href="#参数传递和堆栈平衡" class="headerlink" title="参数传递和堆栈平衡"></a>参数传递和堆栈平衡</h4><p>在调用子程序时，参数的传递是通过堆栈进行的，也就是说：调用者把要传递给子程序的参数压入堆栈，子程序在堆栈中取出相应的值再使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SubRouting(Var1,Var2,Var3)</span><br></pre></td></tr></table></figure>
+
+<p>反汇编后的代码可能是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">push Var3</span><br><span class="line">push Var2</span><br><span class="line">push Var1</span><br><span class="line">add esp,0xb		;b代表12</span><br></pre></td></tr></table></figure>
+
+<p>调用约定如下：</p>
+<p><img src="//systemk1t.github.io/2020/04/02/Windows-Assembly-3/5.png" alt></p>
+<p>写一个Demo：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Sub1	proc	C	_Var1,Var2</span><br><span class="line">		mov eax,_Var1</span><br><span class="line">		mov ebx,_Var2</span><br><span class="line">		ret</span><br><span class="line">Sub1	endp</span><br><span class="line"></span><br><span class="line">Sub2	proc	PASCAL	_Var1,Var2</span><br><span class="line">		mov eax,_Var1</span><br><span class="line">		mov ebx,_Var2</span><br><span class="line">		ret</span><br><span class="line">Sub2	endp</span><br><span class="line"></span><br><span class="line">Sub3	proc	_Var1,Var2</span><br><span class="line">		mov eax,_Var1</span><br><span class="line">		mov ebx,_Var2</span><br><span class="line">		ret</span><br><span class="line">Sub3	endp</span><br><span class="line"></span><br><span class="line">	invoke Sub1,1,2</span><br><span class="line">	invoke Sub2,1,2</span><br><span class="line">	invoke Sub3,1,2</span><br></pre></td></tr></table></figure>
+
+<p>我们查看一下反汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">;这里是Sub1-C类型</span><br><span class="line">.text:00401000 sub_401000      proc near               ; CODE XREF: .text:00401029↓p</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000 arg_0           = dword ptr  8</span><br><span class="line">.text:00401000 arg_4           = dword ptr  0Ch</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000                 push    ebp</span><br><span class="line">.text:00401001                 mov     ebp, esp</span><br><span class="line">.text:00401003                 mov     eax, [ebp+arg_0]</span><br><span class="line">.text:00401006                 mov     ebx, [ebp+arg_4]</span><br><span class="line">.text:00401009                 leave</span><br><span class="line">.text:0040100A                 retn</span><br><span class="line">.text:0040100A sub_401000      endp</span><br><span class="line"></span><br><span class="line">;这里是Sub1-PASCAL类型</span><br><span class="line">.text:0040100B sub_40100B      proc near               ; CODE XREF: .text:00401035↓p</span><br><span class="line">.text:0040100B</span><br><span class="line">.text:0040100B arg_0           = dword ptr  8</span><br><span class="line">.text:0040100B arg_4           = dword ptr  0Ch</span><br><span class="line">.text:0040100B</span><br><span class="line">.text:0040100B                 push    ebp</span><br><span class="line">.text:0040100C                 mov     ebp, esp</span><br><span class="line">.text:0040100E                 mov     eax, [ebp+arg_4]</span><br><span class="line">.text:00401011                 mov     ebx, [ebp+arg_0]</span><br><span class="line">.text:00401014                 leave</span><br><span class="line">.text:00401015                 retn    8</span><br><span class="line">.text:00401015 sub_40100B      endp</span><br><span class="line"></span><br><span class="line">;这里是Sub1-StaCall类型</span><br><span class="line">.text:00401018 sub_401018      proc near               ; CODE XREF: .text:0040103E↓p</span><br><span class="line">.text:00401018</span><br><span class="line">.text:00401018 arg_0           = dword ptr  8</span><br><span class="line">.text:00401018 arg_4           = dword ptr  0Ch</span><br><span class="line">.text:00401018</span><br><span class="line">.text:00401018                 push    ebp</span><br><span class="line">.text:00401019                 mov     ebp, esp</span><br><span class="line">.text:0040101B                 mov     eax, [ebp+arg_0]</span><br><span class="line">.text:0040101E                 mov     ebx, [ebp+arg_4]</span><br><span class="line">.text:00401021                 leave</span><br><span class="line">.text:00401022                 retn    8</span><br><span class="line">.text:00401022 sub_401018      endp</span><br><span class="line"></span><br><span class="line">.text:00401025 start:</span><br><span class="line">;C类型</span><br><span class="line">.text:00401025                 push    2</span><br><span class="line">.text:00401027                 push    1</span><br><span class="line">.text:00401029                 call    sub_401000</span><br><span class="line">.text:0040102E                 add     esp, 8</span><br><span class="line">;PASCAL类型</span><br><span class="line">.text:00401031                 push    1</span><br><span class="line">.text:00401033                 push    2</span><br><span class="line">.text:00401035                 call    sub_40100B</span><br><span class="line">;StaCall类型</span><br><span class="line">.text:0040103A                 push    2</span><br><span class="line">.text:0040103C                 push    1</span><br><span class="line">.text:0040103E                 call    sub_401018</span><br></pre></td></tr></table></figure>
+
+<p>C类型和StaCall类型都是先把右边的参数压入栈，而PASCAL类型是先把左边的压入栈。在平衡堆栈上，C类型是在调用者使用call指令后，自行平衡堆栈，而PASCAl和StaCall的调用者则是不需要管理堆栈，堆栈平衡的操作都是由子程序完成。</p>
+<p><strong>Win32默认使用StdCall，所以在调用子程序或API后，不需要自行平衡堆栈</strong></p>
+<h3 id="高级语言"><a href="#高级语言" class="headerlink" title="高级语言"></a>高级语言</h3><h4 id="条件测试语句"><a href="#条件测试语句" class="headerlink" title="条件测试语句"></a>条件测试语句</h4><p>在高级语言中，所有的分支和循环语句首先都要涉及条件，也就是涉及一个表达式的结果是”TRUE”还是”FALSE”的问题，表达式中往往有用来做比较和计算的操作符。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">寄存器或变量	操作符	操作数</span><br></pre></td></tr></table></figure>
+
+<p>两个以上的表达式可以用逻辑运算符链接：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(表达式1)逻辑运算符(表达式2)逻辑运算符(表达式3)</span><br></pre></td></tr></table></figure>
+
+<p>标志寄存器的各种标志位来做条件跳转，它们本身相当于一个表达式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CARRY?        表示Carry位是否置位</span><br><span class="line">OVERFLOW?     表示Overflow位是否置位</span><br><span class="line">PARITY?       表示Parity位是否置位</span><br><span class="line">SIGN?         表示Sign位是否置位</span><br><span class="line">ZERO?         表示Zero位是否置位</span><br></pre></td></tr></table></figure>
+
+<h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><p>分支语句用来根据条件表达式测试的真假执行不同的代码模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.if	条件表达式1</span><br><span class="line">	表达式1为&quot;真&quot;时执行的指令</span><br><span class="line">.elseif	条件表达式2</span><br><span class="line">	表达式2为&quot;真&quot;时执行的指令</span><br><span class="line">.elseif	条件表达式3</span><br><span class="line">	表达式3为&quot;真&quot;时执行的指令</span><br><span class="line">.else</span><br><span class="line">	所有表达式为&quot;假&quot;时执行的指令</span><br><span class="line">.endif</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键字if/elseif/else/endif的前面有个小数点，如果不加小数点，就变成宏汇编中的条件汇编伪操作了，结果差距很大</strong></p>
+<p>书上的Demo未通过，因为没有定义dWY和dWY，不误导。</p>
+<p>Demo：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	.386</span><br><span class="line">	.model flat,stdcall</span><br><span class="line">	option casemap:none</span><br><span class="line"></span><br><span class="line">include windows.inc</span><br><span class="line">include user32.inc</span><br><span class="line">include kernel32.inc</span><br><span class="line">includelib kernel32.lib</span><br><span class="line">includelib user32.lib</span><br><span class="line"></span><br><span class="line">include gdi32.inc</span><br><span class="line">includelib gdi32.lib</span><br><span class="line">		.data</span><br><span class="line">	dWX	dd	?</span><br><span class="line">	dWY	dd	?</span><br><span class="line">		.code</span><br><span class="line">start:</span><br><span class="line">	</span><br><span class="line">	.if eax &amp;&amp; (ebx &gt;= dWX) || !(dWY != ecx)</span><br><span class="line">	    mov    esi,01</span><br><span class="line">	.elseif edx</span><br><span class="line">	    mov    esi,02</span><br><span class="line">	.elseif esi &amp; 1</span><br><span class="line">	    mov    esi,03</span><br><span class="line">	.elseif ZERO? &amp;&amp; CARRY?</span><br><span class="line">	    mov    esi,04</span><br><span class="line">	.endif</span><br><span class="line">	</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
+
+<p>得到的汇编指令如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">	;.if eax</span><br><span class="line">.text:00401000                 or      eax, eax</span><br><span class="line">.text:00401002                 je      short loc_40100C</span><br><span class="line">	;(ebx&gt;=dWX)</span><br><span class="line">.text:00401004                 cmp     ebx, dword_402000</span><br><span class="line">.text:0040100A                 jnb     short loc_401014</span><br><span class="line">	;(dWY!=ecx)</span><br><span class="line">.text:0040100C                 cmp     dword_402004, ecx</span><br><span class="line">.text:00401012                 jne     short loc_40101B</span><br><span class="line">.text:00401014                 mov     esi, 1</span><br><span class="line">.text:00401019                 jmp     short near ptr word_40103E</span><br><span class="line">	;elseif edx</span><br><span class="line">.text:0040101B                 or      edx, edx</span><br><span class="line">.text:0040101D                 je      short loc_401026</span><br><span class="line">.text:0040101F                 mov     esi, 2</span><br><span class="line">.text:00401024                 jmp     short near ptr word_40103E</span><br><span class="line">	;elseif esi &amp; 1</span><br><span class="line">.text:00401026                 test    esi, 1</span><br><span class="line">.text:0040102C                 jz      short loc_401035</span><br><span class="line">.text:0040102E                 mov     esi, 3</span><br><span class="line">.text:00401033                 jmp     short near ptr word_40103E</span><br><span class="line">	;ZERO?</span><br><span class="line">.text:00401035                 jnz     short near ptr word_40103E</span><br><span class="line">	;CARRY?</span><br><span class="line">.text:00401037                 jnb     short near ptr word_40103E</span><br><span class="line">.text:00401039                 mov     esi, 4</span><br></pre></td></tr></table></figure>
+
+<h4 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h4><p>MASM的循环伪指令可以根据条件表达式的真假来控制循环是否继续，也可以在循环体中直接退出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">.while 条件测试表达式</span><br><span class="line">    指令</span><br><span class="line">    [.break [.if 退出条件]]</span><br><span class="line">    [.continue]</span><br><span class="line">.endw</span><br><span class="line">;或</span><br><span class="line">.repeat</span><br><span class="line">    指令</span><br><span class="line">    [.break [.if 退出条件]]</span><br><span class="line">    [.continue]</span><br><span class="line">    .until    条件测试表达式    (或 .untilcxz [条件测试表达式])</span><br></pre></td></tr></table></figure>
+
+<p>我们写一个Demo:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">	.386</span><br><span class="line">	.model flat,stdcall</span><br><span class="line">	option casemap:none</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">include windows.inc</span><br><span class="line">include user32.inc</span><br><span class="line">include kernel32.inc</span><br><span class="line">includelib kernel32.lib</span><br><span class="line">includelib user32.lib</span><br><span class="line"></span><br><span class="line">include gdi32.inc</span><br><span class="line">includelib gdi32.lib</span><br><span class="line"></span><br><span class="line">	.code</span><br><span class="line">start:</span><br><span class="line">   .while  eax &gt; 1</span><br><span class="line"></span><br><span class="line">    mov     esi,1</span><br><span class="line"></span><br><span class="line">        .break  .if ebx</span><br><span class="line"></span><br><span class="line">        .continue</span><br><span class="line"></span><br><span class="line">        mov     esi,2</span><br><span class="line"></span><br><span class="line">    .endw</span><br><span class="line"></span><br><span class="line">    .repeat</span><br><span class="line"></span><br><span class="line">        mov     esi,1</span><br><span class="line"></span><br><span class="line">        .break  .if !ebx</span><br><span class="line"></span><br><span class="line">        .continue</span><br><span class="line"></span><br><span class="line">        mov     esi,2</span><br><span class="line"></span><br><span class="line">    .until      eax &gt; 1</span><br><span class="line"></span><br><span class="line">    .repeat</span><br><span class="line"></span><br><span class="line">        mov     esi,1</span><br><span class="line"></span><br><span class="line">        .break</span><br><span class="line"></span><br><span class="line">    .untilcxz</span><br><span class="line">	end start</span><br></pre></td></tr></table></figure>
+
+<p>查看一下反汇编：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">;.while第一个循环开始</span><br><span class="line">.text:00401000 start:</span><br><span class="line">.text:00401000                 jmp     short loc_401012</span><br><span class="line">.text:00401002</span><br><span class="line">.text:00401002                 mov     esi, 1</span><br><span class="line">.text:00401007                 or      ebx, ebx</span><br><span class="line">;.break .if ebx</span><br><span class="line">.text:00401009                 jnz     short loc_401017</span><br><span class="line">;.continue</span><br><span class="line">.text:0040100B                 jmp     short loc_401012</span><br><span class="line">.text:0040100D                 mov     esi, 2</span><br><span class="line">;while eax &gt; 1</span><br><span class="line">.text:00401012                 cmp     eax, 1</span><br><span class="line">.text:00401015                 ja      short loc_401002</span><br><span class="line">.text:00401017</span><br><span class="line">;.rapeat第二个循环开始</span><br><span class="line">.text:00401017                 mov     esi, 1</span><br><span class="line">;.break .if !ebx</span><br><span class="line">.text:0040101C                 or      ebx, ebx</span><br><span class="line">.text:0040101E                 jz      short loc_40102C</span><br><span class="line">;.continue</span><br><span class="line">.text:00401020                 jmp     short loc_401027</span><br><span class="line">.text:00401022                 mov     esi, 2</span><br><span class="line">;.until eax &gt; 1</span><br><span class="line">.text:00401027                 cmp     eax, 1</span><br><span class="line">.text:0040102A                 jbe     short loc_401017</span><br><span class="line">;.repeat第三个循环开始</span><br><span class="line">.text:0040102C</span><br><span class="line">;.break</span><br><span class="line">.text:0040102C                 mov     esi, 1</span><br><span class="line">;.untilcxz</span><br><span class="line">.text:00401031                 jmp     short near ptr byte_401035</span><br><span class="line">.text:00401033   .^\E2 F7         loopd short while.0040102C	;注意这里是loop指令！</span><br></pre></td></tr></table></figure>
+
+<p><strong>.break翻译成一个跳转指令跳转到循环结束的地方</strong></p>
+<p><strong>.continue是一个无条件跳转指令跳到循环开始的地方</strong></p>
+<p><strong>.while是先比较条件再执行循环体</strong></p>
+<p><strong>.repeat是先执行循环体再比较条件</strong></p>
+<p><strong>loop指令可以自动递减ecx的值来控制循环，不适用loop将会在循环体内多设置一条递减指令</strong></p>
+<h3 id="代码风格"><a href="#代码风格" class="headerlink" title="代码风格"></a>代码风格</h3><h4 id="匈牙利"><a href="#匈牙利" class="headerlink" title="匈牙利"></a>匈牙利</h4><p><img src="//systemk1t.github.io/2020/04/02/Windows-Assembly-3/6.png" alt></p>
+<p>补充：</p>
+<p><strong>对局部变量的地址引用要用lea指令或者addr伪操作，全局变量要用offset</strong></p>
+<p><strong>在参数的前面加下划线，在局部变量前加@，在内部程序的名称前面加下划线</strong></p>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2020/04/02/Windows-Assembly-3/">Windows-Assembly-3</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
+        <p><span>发布时间:</span>2020年04月02日 - 21时37分</p>
+        <p><span>最后更新:</span>2020年04月07日 - 01时53分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/02/Windows-Assembly-3/" title="Windows-Assembly-3">https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/02/Windows-Assembly-3/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/01/01/看雪CrackMe003/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">看雪CrackMe003</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Win32汇编程序结构"><span class="toc-number">1.</span> <span class="toc-text">Win32汇编程序结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#模式定义"><span class="toc-number">1.0.1.</span> <span class="toc-text">模式定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#model语句"><span class="toc-number">1.0.2.</span> <span class="toc-text">.model语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#option语句"><span class="toc-number">1.0.3.</span> <span class="toc-text">option语句</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#段的定义"><span class="toc-number">1.1.</span> <span class="toc-text">段的定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据段"><span class="toc-number">1.1.1.</span> <span class="toc-text">数据段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#代码段"><span class="toc-number">1.1.2.</span> <span class="toc-text">代码段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#堆栈段"><span class="toc-number">1.1.3.</span> <span class="toc-text">堆栈段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注释和换行"><span class="toc-number">1.2.</span> <span class="toc-text">注释和换行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调用API"><span class="toc-number">2.</span> <span class="toc-text">调用API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#API是什么"><span class="toc-number">2.1.</span> <span class="toc-text">API是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调用API-1"><span class="toc-number">2.2.</span> <span class="toc-text">调用API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#invoke"><span class="toc-number">2.2.1.</span> <span class="toc-text">invoke</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#返回值"><span class="toc-number">2.2.2.</span> <span class="toc-text">返回值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#函数声明"><span class="toc-number">2.2.3.</span> <span class="toc-text">函数声明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Include"><span class="toc-number">2.2.4.</span> <span class="toc-text">Include</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Includelib"><span class="toc-number">2.2.5.</span> <span class="toc-text">Includelib</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#标号、变量和数据结构"><span class="toc-number">2.3.</span> <span class="toc-text">标号、变量和数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#标号"><span class="toc-number">2.3.1.</span> <span class="toc-text">标号</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#标号-1"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">标号</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#null"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">@@</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#全局变量"><span class="toc-number">2.3.2.</span> <span class="toc-text">全局变量</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#全局变量的定义"><span class="toc-number">2.3.2.1.</span> <span class="toc-text">全局变量的定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#全局变量的初始化"><span class="toc-number">2.3.2.2.</span> <span class="toc-text">全局变量的初始化</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#局部变量"><span class="toc-number">2.3.3.</span> <span class="toc-text">局部变量</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#局部变量定义"><span class="toc-number">2.3.3.1.</span> <span class="toc-text">局部变量定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#局部变量初始化"><span class="toc-number">2.3.3.2.</span> <span class="toc-text">局部变量初始化</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据结构"><span class="toc-number">2.3.4.</span> <span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#变量的使用"><span class="toc-number">2.3.5.</span> <span class="toc-text">变量的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#以不同的类型访问数据"><span class="toc-number">2.3.5.1.</span> <span class="toc-text">以不同的类型访问数据</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#变量的尺寸和数量"><span class="toc-number">2.3.5.2.</span> <span class="toc-text">变量的尺寸和数量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#获取变量地址"><span class="toc-number">2.3.5.3.</span> <span class="toc-text">获取变量地址</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用子程序"><span class="toc-number">2.4.</span> <span class="toc-text">使用子程序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#子程序的定义"><span class="toc-number">2.4.1.</span> <span class="toc-text">子程序的定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参数传递和堆栈平衡"><span class="toc-number">2.4.2.</span> <span class="toc-text">参数传递和堆栈平衡</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高级语言"><span class="toc-number">2.5.</span> <span class="toc-text">高级语言</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#条件测试语句"><span class="toc-number">2.5.1.</span> <span class="toc-text">条件测试语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分支"><span class="toc-number">2.5.2.</span> <span class="toc-text">分支</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#循环"><span class="toc-number">2.5.3.</span> <span class="toc-text">循环</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码风格"><span class="toc-number">2.6.</span> <span class="toc-text">代码风格</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#匈牙利"><span class="toc-number">2.6.1.</span> <span class="toc-text">匈牙利</span></a></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <div id="gitments"></div>
+<script src="/js/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luuman',
+      repo: 'luuman.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: '',
+      },
+    })
+    gitment.render('gitments')
+</script>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2020/01/01/看雪CrackMe003/" title="下一篇: 看雪CrackMe003">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/04/02/Windows-Assembly-3/">Windows-Assembly-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/看雪CrackMe003/">看雪CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/看雪CrackMe002/">看雪CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/31/看雪CrackMe001/">看雪CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/27/加密与解密-演示版保护技术/">加密与解密-演示版保护技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/21/CrackMe002/">CrackMe002</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/20/加密与解密-TraceMe/">加密与解密-TraceMes</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/20/CrackMe001/">CrackMe001</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/18/Windows应用程序-线程同步/">Windows应用程序-线程同步</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/16/cpp第一章/">cpp第一章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/13/Windows应用程序-进程/">Windows应用程序-进程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/12/黑客编程-常用API/">黑客编程-常用API</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/10/Windows应用程序-内存管理/">Windows应用程序-内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/29/Windows应用程序-文件系统/">Windows应用程序-文件系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/25/加密与解密-逆向分析技术/">加密与解密-逆向分析技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/22/加密与解密-静态分析/">加密与解密-静态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-3/">Reverse-Bugku-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-2/">Reverse-Bugku-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/15/Reverse-Bugku-1/">Reverse-Bugku-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-动态分析/">加密与解密-动态分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/13/加密与解密-基础知识/">加密与解密-基础知识</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-联合体/">逆向工程权威指南-联合体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-结构体/">逆向工程权威指南-结构体</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/逆向工程权威指南-伪随机函数/">逆向工程权威指南-伪随机函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/08/WinSock网络编程经络-IP/">WinSock网络编程经络-IP</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-TCP-IP体系结构/">WinSock网络编程经络-TCP/IP体系结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/07/WinSock网络编程经络-Echo客户-服务端程序/">WinSock网络编程经络-Echo客户/服务端程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/黑客编程-网络/">黑客编程-网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-API概要/">Windows应用程序-API概要</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/Windows应用程序-入门/">Windows应用程序-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/04/黑客编程-入门/">黑客编程-入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/01/逆向工程核心原理-DLL卸载/">逆向工程核心原理-DLL卸载</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程权威指南-数组/">逆向工程权威指南-数组</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-DLL注入/">逆向工程核心原理-DLL注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-消息钩子/">逆向工程核心原理-消息钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/31/逆向工程核心原理-键盘记录器/">逆向工程核心原理-键盘记录器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-浮点数/">逆向工程权威指南-浮点数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-数学计算指令/">逆向工程权威指南-数学计算指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-字符串/">逆向工程权威指南-字符串</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/30/逆向工程权威指南-循环/">逆向工程权威指南-循环</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/29/逆向工程权威指南-switch/">逆向工程权威指南-switch</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/28/逆向工程权威指南-指针/">逆向工程权威指南-指针</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-返回值/">逆向工程权威指南-返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/26/逆向工程权威指南-参数获取/">逆向工程权威指南-参数获取</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/25/逆向工程权威指南-scanf/">逆向工程权威指南-scanf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-条件转移指令/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/12/线程本地存储器/">线程本地存储器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/11/内联钩子/">内联钩子</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈帧/">逆向工程核心原理-栈帧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/10/逆向工程核心原理-栈/">逆向工程核心原理-栈</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/CrackMe015/">CrackMe015</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/03/DLL高级技术/">DLL高级技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/01/DLL基础/">DLL基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe009/">CrackMe009</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/26/CrackMe008/">CrackMe008</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/CrackMe003/">CrackMe003</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/23/0day-Security栈溢出/">0day-Security栈溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/11/PE延迟加载导入表/">PE延迟加载导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/09/PE导出表/">PE导出表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/Windows内存管理/">Windows内存管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/05/PE导入表/">PE导入表</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-15/">Windows-Kernel-15</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-14/">Windows-Kernel-14</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/04/Windows-Kernel-13/">Windows-Kernel-13</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-9/">Windows-Kernel-9</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/31/0day-security-software-vulnerability-1/">0day-security-software-vulnerability-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/30/Windows-Kernel-7/">Windows-Kernel-7</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/29/Windows-Assembly-1/">Windows-Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/28/Windows-Kernel-6/">Windows-Kernel-6</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/27/Windows-Kernel-4/">Windows-Kernel-4</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/24/Windows-Kernel-3/">Windows-Kernel-3</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-2/">Assembly-2</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/Assembly-1/">Assembly-1</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c语言第六章/">c语言第六章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第八章/">c与指针-第八章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/c与指针-第七章/">c与指针-第七章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第五章/">c语言第五章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/17/c语言第二章/">c语言第二章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/16/c语言第四章/">C语言第四章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/15/c语言第三章/">C语言第三章</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/c语言第一章/">c语言第一章</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 sYstemk1t
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+  <!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+</body>
+</html>
