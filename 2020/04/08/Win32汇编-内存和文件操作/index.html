@@ -3,28 +3,23 @@
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
-  <title>CrackMe009 | sYstemk1t&#39;s Blog</title>
+  <title>Win32汇编-内存和文件操作 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
-<meta name="keywords" content="CrackMe">
+  <meta name="description" content="Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。">
+<meta name="keywords" content="Assembly">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CrackMe009">
-<meta property="og:url" content="https://systemk1t.github.io/2019/09/26/CrackMe009/index.html">
+<meta property="og:title" content="Win32汇编-内存和文件操作">
+<meta property="og:url" content="https://systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
+<meta property="og:description" content="Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/0.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/1.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/3.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/4.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/5.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/6.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/7.png">
-<meta property="og:updated_time" content="2019-09-26T04:45:15.987Z">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/1.png">
+<meta property="og:updated_time" content="2020-04-09T11:35:19.708Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CrackMe009">
-<meta name="twitter:description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
-<meta name="twitter:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/0.png">
+<meta name="twitter:title" content="Win32汇编-内存和文件操作">
+<meta name="twitter:description" content="Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。">
+<meta name="twitter:image" content="https://systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -226,11 +221,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-CrackMe009" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Win32汇编-内存和文件操作" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2019/09/26/CrackMe009/" class="article-date">
-      <time datetime="2019-09-26T04:22:28.000Z" itemprop="datePublished">2019-09-26</time>
+      <a href="/2020/04/08/Win32汇编-内存和文件操作/" class="article-date">
+      <time datetime="2020-04-08T10:41:48.000Z" itemprop="datePublished">2020-04-08</time>
 </a>
     </div>
   
@@ -243,7 +238,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      CrackMe009
+      Win32汇编-内存和文件操作
     </h1>
   
 
@@ -252,13 +247,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/160个CrackMe/">160个CrackMe</a>
+    <a class="article-category-link" href="/categories/Windows32汇编语言设计/">Windows32汇编语言设计</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -268,32 +263,31 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <hr>
-<p>CrackMe009</p>
-<ul>
-<li>爆破程序以登陆</li>
-<li>追踪正确账号密码</li>
-</ul>
+        <p>Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。</p>
 <a id="more"></a>
 
 
 
-<h2 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h2><p>使用PEiD查壳</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/0.png" alt></p>
-<h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h2><p>查找字符串，然后确定关键跳转点</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/1.png" alt></p>
-<p>然后往上翻，发现其实和CrackMe008相似，修改je的方法我们不用，我们用一个其他方法来修改</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/3.png" alt></p>
-<p>然后我们单步向下走，这个时候我设置的账号密码都是1</p>
-<p>上一次EAX寄存器的值都为0，那么这次我们都给它改为FFFFFFFF</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/4.png" alt></p>
-<p>修改：</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/5.png" alt></p>
-<p>然后继续单步向下走：</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/6.png" alt></p>
-<h2 id="追码"><a href="#追码" class="headerlink" title="追码"></a>追码</h2><p>继续上面的，我们可以看到，我们输入了两个1的时候，看变量</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/7.png" alt></p>
-<p>但是这里没有直接显示，然后网上看了一下别人的解释，VB的变量类似于一个结构体。变量的前八个字节，存放该变量的数据类型，第九个字节开始存放的是该变量的地址。</p>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><h3 id="内存管理基础"><a href="#内存管理基础" class="headerlink" title="内存管理基础"></a>内存管理基础</h3><p>Win32中的内存是分层次的，系统提供了几组不同层次的函数来管理内存，它们分别是标准内存管理、堆管理、虚拟内存管理和内存映射文件。</p>
+<p><strong>Windows使用了一个以页为基础的虚拟内存系统。Windows充分利用了8086CPU保护模式下的线性寻址机制和分页机制，这些机制是Win32内存管理的基础。</strong>Win32提供了一组虚拟内存管理函数来管理虚拟内存，主要用于保留、提交、释放虚拟内存，在虚拟内存页上改变保护方式、锁定虚拟内存页，以及查询一个进程的虚拟内存等操作。</p>
+<p>堆管理函数就是有效地管理内存和进程的地址空间。</p>
+<p><img src="//systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/0.png" alt></p>
+<p>在Win32中，进程可以使用的整个地址空间就是一个堆。并且”堆”被分为了两种：</p>
+<ul>
+<li>默认堆：默认堆只有一个，指的就是可以使用的整个地址空间；</li>
+<li>动态堆：类似于C语言使用的那种堆，一个进程可以随意建立多个堆，页可以随意将它们释放，动态全部位于默认堆中。</li>
+</ul>
+<p>标准内存管理函数总是在默认堆中分配和释放内存，这组函数就是常规意义上的内存管理函数。</p>
+<p>内存映射文件函数比较独立，它是为了文件操作的方便而设立的，当对文件进行操作的时候，一般总是先打开文件，然后申请一块内存做缓冲区，再将文件数据循环读入并处理，当文件长度大于缓冲区的时候需要多次读入，每次读入后缓冲区边界位置的数据是个麻烦。<strong>内存映射文件使用同样的方法将一个文件直接映射到进程的地址空间中，这样可以通过内存指针用读写内存的方式直接存取文件内容。</strong></p>
+<p><img src="//systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/1.png" alt></p>
+<h3 id="内存状态"><a href="#内存状态" class="headerlink" title="内存状态"></a>内存状态</h3><p>一个进程可寻址的地址空间是4GB，但用户可以直接管理的空间只有2GB，其中高2GB是供操作系统内核使用的。</p>
+<p>既然用户可以使用的地址空间又2GB，但是用户并不可以将这2GB地址空间全部占用，因为用户可申请的2GB内存是可以使用的”地址”空间，而表示可以使用的”内存”空间，可分配内存的大小还受制于物理内存和磁盘文件的大小。</p>
+<p>Win32设计了一个预先得到系统的配置情况的API:GlobalMemoryStatus</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GlobalMemoryStatus</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPMEMORYSTATUS lpBuffer</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中lpBuffer指向一个MEMORYSTATUS的结构体，结构体定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">MEMORYSTATUS</span> &#123;</span></span><br><span class="line">  DWORD  dwLength;			<span class="comment">//本结构长度</span></span><br><span class="line">  DWORD  dwMemoryLoad;		<span class="comment">//已用物理内存的百分比</span></span><br><span class="line">  SIZE_T dwTotalPhys;		<span class="comment">//物理内存总量</span></span><br><span class="line">  SIZE_T dwAvailPhys;		<span class="comment">//可用物理内存</span></span><br><span class="line">  SIZE_T dwTotalPageFile;	<span class="comment">//交换文件总大小</span></span><br><span class="line">  SIZE_T dwAvailPageFile;	<span class="comment">//交换文件中空闲部分大小</span></span><br><span class="line">  SIZE_T dwTotalVirtual;	<span class="comment">//当前可用的地址空间</span></span><br><span class="line">  SIZE_T dwAvailVirtual;	<span class="comment">//当前空闲的地址空间</span></span><br><span class="line">&#125; MEMORYSTATUS, *LPMEMORYSTATUS;</span><br></pre></td></tr></table></figure>
+
 
       
       
@@ -349,13 +343,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2019/09/26/CrackMe009/">CrackMe009</a></p>
+        <p><span>本文标题:</span><a href="/2020/04/08/Win32汇编-内存和文件操作/">Win32汇编-内存和文件操作</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
-        <p><span>发布时间:</span>2019年09月26日 - 12时22分</p>
-        <p><span>最后更新:</span>2019年09月26日 - 12时45分</p>
+        <p><span>发布时间:</span>2020年04月08日 - 18时41分</p>
+        <p><span>最后更新:</span>2020年04月09日 - 19时35分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/26/CrackMe009/" title="CrackMe009">https://systemk1t.github.io/2019/09/26/CrackMe009/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/26/CrackMe009/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/08/Win32汇编-内存和文件操作/" title="Win32汇编-内存和文件操作">https://systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/08/Win32汇编-内存和文件操作/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -368,18 +362,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/09/27/52pojie新手Crack/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          52pojie新手Crack
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/09/26/CrackMe008/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">CrackMe008</div>
+    <a href="/2020/04/07/Windows-Assembly-4/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Windows-Assembly-4</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -390,7 +375,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#查壳"><span class="toc-number">1.</span> <span class="toc-text">查壳</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#爆破"><span class="toc-number">2.</span> <span class="toc-text">爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#追码"><span class="toc-number">3.</span> <span class="toc-text">追码</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#内存管理"><span class="toc-number">1.</span> <span class="toc-text">内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#内存管理基础"><span class="toc-number">1.1.</span> <span class="toc-text">内存管理基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存状态"><span class="toc-number">1.2.</span> <span class="toc-text">内存状态</span></a></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -456,13 +441,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/09/27/52pojie新手Crack/" title="上一篇: 52pojie新手Crack">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/09/26/CrackMe008/" title="下一篇: CrackMe008">
+            <a href="/2020/04/07/Windows-Assembly-4/" title="下一篇: Windows-Assembly-4">
                 <i class="fa fa-angle-right"></i>
             </a>
         
