@@ -142,7 +142,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 15px;">Assembly</a> <a href="/tags/CTF/" style="font-size: 11.67px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 16.67px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.33px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 11.67px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 13.33px;">c</a> <a href="/tags/cpp/" style="font-size: 10px;">cpp</a>
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 16px;">Assembly</a> <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 18px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 14px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 12px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 20px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 12px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 14px;">c</a> <a href="/tags/cpp/" style="font-size: 10px;">cpp</a>
                     </div>
                 </section>
                 
@@ -217,6 +217,89 @@
     </div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Windows核心编程-进程" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/04/17/Windows核心编程-进程/" class="article-date">
+      <time datetime="2020-04-17T01:18:24.000Z" itemprop="datePublished">2020-04-17</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/17/Windows核心编程-进程/">Windows核心编程 - 进程</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>进程是正在运行的程序的一个实例，它由两部分组成：</p>
+<ul>
+<li>一个内核对象，操作系统用它来管理进程；</li>
+<li>一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；</li>
+</ul>
+<p>对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。</p>
+<h2 id="Windows程序"><a href="#Windows程序" class="headerlink" title="Windows程序"></a>Windows程序</h2><p>Windows应用程序必须有一个入口函数，应用程序在开始运行的时候，这个函数会被调用。C++程序员可以选择两种入口点函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> WINAPI _tWinMain(HINSTANCE hInstance,</span><br><span class="line">                    HINSTANCE,</span><br><span class="line">                    PTSTR pszCmdLine,</span><br><span class="line">                    <span class="keyword">int</span> nCmdShow);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc,TCHAR *argv[],TCHAR *envp[])</span><br></pre></td></tr></table></figure>
+
+<p>具体的符号取决于我们是否使用UNICODE字符串。操作系统并不会调用我们所定义的入口函数。</p>
+<h3 id="进程实例句柄"><a href="#进程实例句柄" class="headerlink" title="进程实例句柄"></a>进程实例句柄</h3><p>加载到进程地址空间的每一个可执行文件或DLL都被赋予了一个独一无二的实例句柄。可执行文件的实例被当作WinMain函数的第一个参数hInstanceExe传入。</p>
+<p><strong>HMODULE和HINSTANCE是完全一样的，之所以有两种数据类型，是由于在16位Windows中，它们两个表示不同类型的数据</strong></p>
+<p>WinMain的hInstance参数的实际值是一个内存基地址；系统将可执行文件的影响加载到进程的地址空间中的这个位置。</p>
+<p>可执行文件的映像具体到哪一个地址，是由链接器决定的。不同版本的链接器使用不同的基地址。由于历史原因，VS链接器使用的基地址是0x00400000，这是由于在Win98中，可执行文件的映像能加载到最低的一个地址。</p>
+<p>为了得到一个可执行文件或DLL文件被加载到进程地址空间的什么地方，我们使用<strong>GetModuleHandle</strong>或<strong>GetModuleHandleEx</strong>函数来获取；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"windows.h"</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> <span class="keyword">const</span> IMAGE_DOS_HEADER _ImageBase;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DumpModule</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HMODULE hModule = GetModuleHandle(<span class="literal">NULL</span>);</span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With GetModuleHandle(NULL)=0x%x\r\n"</span>), hModule);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With _ImageBase=0x%x\r\n"</span>), (HINSTANCE)&amp;hModule);</span><br><span class="line"></span><br><span class="line">	hModule = <span class="literal">NULL</span>;</span><br><span class="line">	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (PCTSTR)DumpModule, &amp;hModule);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With GetModuleHandleEx =0x%x\r\n"</span>), hModule);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DumpModule();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="进程命令行"><a href="#进程命令行" class="headerlink" title="进程命令行"></a>进程命令行</h3><p>系统在创建一个新的进程时，会传一个命令行给它。这个命令行几乎总是非空的；</p>
+<p>C运行库的启动代码开始执行一个GUI应用程序时，会调用Windows函数<strong>GetCommandLine</strong>函数来获取进程的完整命令行，忽略可执行文件的名称，然后将指向命令行剩余部分的一个指针传递给WinMain的pszCommand参数。</p>
+<h3 id="进程的环境变量"><a href="#进程的环境变量" class="headerlink" title="进程的环境变量"></a>进程的环境变量</h3><p>每个进程都有与它自己相关的一个环境块，这是在进程地址空间内分配的一块内存；</p>
+<p>我们可以使用<strong>GetEnvironmentStrings</strong>函数来获取；</p>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-Windows核心编程-内核对象" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -803,73 +886,6 @@
       
         <p class="article-more-link">
           <a  href="/2020/01/01/看雪CrackMe002/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-看雪CrackMe001" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/12/31/看雪CrackMe001/" class="article-date">
-      <time datetime="2019-12-31T07:54:58.000Z" itemprop="datePublished">2019-12-31</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/31/看雪CrackMe001/">看雪CrackMe001</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p> 一步步尝试将《加密与解密》第五章得课后作业得CrackMe全部破解，通过任何手段写出一个类似注册机得东西。</p>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/CrackMe/">CrackMe</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/12/31/看雪CrackMe001/#more">sYstemk1t >></a>
         </p>
       
       <div class="clearfix"></div>

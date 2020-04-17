@@ -3,20 +3,20 @@
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
-  <title>C语言第四章 | sYstemk1t&#39;s Blog</title>
+  <title>Windows核心编程 - 进程 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="函数与程序结构、函数的基本知识、返回非整形值的函数">
-<meta name="keywords" content="c">
+  <meta name="description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。 Windows程序Windows应用程序必须有一个入口函数，应用程序在开始运行的">
+<meta name="keywords" content="Windows-Kernel">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C语言第四章">
-<meta property="og:url" content="https://systemk1t.github.io/2019/05/16/c语言第四章/index.html">
+<meta property="og:title" content="Windows核心编程 - 进程">
+<meta property="og:url" content="https://systemk1t.github.io/2020/04/17/Windows核心编程-进程/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="函数与程序结构、函数的基本知识、返回非整形值的函数">
+<meta property="og:description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。 Windows程序Windows应用程序必须有一个入口函数，应用程序在开始运行的">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2019-08-22T00:45:16.170Z">
+<meta property="og:updated_time" content="2020-04-17T02:53:22.270Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C语言第四章">
-<meta name="twitter:description" content="函数与程序结构、函数的基本知识、返回非整形值的函数">
+<meta name="twitter:title" content="Windows核心编程 - 进程">
+<meta name="twitter:description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。 Windows程序Windows应用程序必须有一个入口函数，应用程序在开始运行的">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -218,11 +218,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-c语言第四章" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Windows核心编程-进程" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2019/05/16/c语言第四章/" class="article-date">
-      <time datetime="2019-05-16T10:39:03.000Z" itemprop="datePublished">2019-05-16</time>
+      <a href="/2020/04/17/Windows核心编程-进程/" class="article-date">
+      <time datetime="2020-04-17T01:18:24.000Z" itemprop="datePublished">2020-04-17</time>
 </a>
     </div>
   
@@ -235,7 +235,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      C语言第四章
+      Windows核心编程 - 进程
     </h1>
   
 
@@ -244,13 +244,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/C程序设计语言/">C程序设计语言</a>
+    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -260,23 +260,27 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="函数与程序结构、函数的基本知识、返回非整形值的函数"><a href="#函数与程序结构、函数的基本知识、返回非整形值的函数" class="headerlink" title="函数与程序结构、函数的基本知识、返回非整形值的函数"></a>函数与程序结构、函数的基本知识、返回非整形值的函数</h2><a id="more"></a>
+        <p>进程是正在运行的程序的一个实例，它由两部分组成：</p>
+<ul>
+<li>一个内核对象，操作系统用它来管理进程；</li>
+<li>一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；</li>
+</ul>
+<p>对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。</p>
+<h2 id="Windows程序"><a href="#Windows程序" class="headerlink" title="Windows程序"></a>Windows程序</h2><p>Windows应用程序必须有一个入口函数，应用程序在开始运行的时候，这个函数会被调用。C++程序员可以选择两种入口点函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> WINAPI _tWinMain(HINSTANCE hInstance,</span><br><span class="line">                    HINSTANCE,</span><br><span class="line">                    PTSTR pszCmdLine,</span><br><span class="line">                    <span class="keyword">int</span> nCmdShow);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc,TCHAR *argv[],TCHAR *envp[])</span><br></pre></td></tr></table></figure>
 
-<h1 id="函数与程序结构"><a href="#函数与程序结构" class="headerlink" title="函数与程序结构"></a>函数与程序结构</h1><p>函数可以把大的计算任务分解成若干个较小的任务。</p>
-<h2 id="函数的基本知识"><a href="#函数的基本知识" class="headerlink" title="函数的基本知识"></a>函数的基本知识</h2><p>函数的定义声明如下：</p>
-<p>返回值类型    函数名    (参数声明表)</p>
-<p>{</p>
-<p>​    声明和语句</p>
-<p>}</p>
-<p>程序可以堪称是变量定义和函数定义的集合。</p>
-<p>被调用函数通过return语句想调用者返回值。</p>
-<h2 id="返回非整形值的函数"><a href="#返回非整形值的函数" class="headerlink" title="返回非整形值的函数"></a>返回非整形值的函数</h2><p>如果返回值的类型为double或者float，我们通过atof函数来说明函数返回非整型值的办法。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXLINE 100</span></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">double</span> sum, atof(<span class="keyword">char</span>[]);</span><br><span class="line">	<span class="keyword">char</span> line[MAXLINE];</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">getline</span><span class="params">(<span class="keyword">char</span> line[], <span class="keyword">int</span> max)</span></span>;</span><br><span class="line"></span><br><span class="line">	sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (getline(line, MAXLINE) &gt; <span class="number">0</span>)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\t%g\n"</span>, sum += atof(line));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体的符号取决于我们是否使用UNICODE字符串。操作系统并不会调用我们所定义的入口函数。</p>
+<h3 id="进程实例句柄"><a href="#进程实例句柄" class="headerlink" title="进程实例句柄"></a>进程实例句柄</h3><p>加载到进程地址空间的每一个可执行文件或DLL都被赋予了一个独一无二的实例句柄。可执行文件的实例被当作WinMain函数的第一个参数hInstanceExe传入。</p>
+<p><strong>HMODULE和HINSTANCE是完全一样的，之所以有两种数据类型，是由于在16位Windows中，它们两个表示不同类型的数据</strong></p>
+<p>WinMain的hInstance参数的实际值是一个内存基地址；系统将可执行文件的影响加载到进程的地址空间中的这个位置。</p>
+<p>可执行文件的映像具体到哪一个地址，是由链接器决定的。不同版本的链接器使用不同的基地址。由于历史原因，VS链接器使用的基地址是0x00400000，这是由于在Win98中，可执行文件的映像能加载到最低的一个地址。</p>
+<p>为了得到一个可执行文件或DLL文件被加载到进程地址空间的什么地方，我们使用<strong>GetModuleHandle</strong>或<strong>GetModuleHandleEx</strong>函数来获取；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"windows.h"</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> <span class="keyword">const</span> IMAGE_DOS_HEADER _ImageBase;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DumpModule</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HMODULE hModule = GetModuleHandle(<span class="literal">NULL</span>);</span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With GetModuleHandle(NULL)=0x%x\r\n"</span>), hModule);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With _ImageBase=0x%x\r\n"</span>), (HINSTANCE)&amp;hModule);</span><br><span class="line"></span><br><span class="line">	hModule = <span class="literal">NULL</span>;</span><br><span class="line">	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (PCTSTR)DumpModule, &amp;hModule);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With GetModuleHandleEx =0x%x\r\n"</span>), hModule);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DumpModule();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>其中，声明语句</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> sum,atof(<span class="keyword">char</span> []);</span><br></pre></td></tr></table></figure>
-
-<p>表明sum是一个double类型的变量，atof函数带有个char[]类型的参数，且返回一个double类型的值</p>
+<h3 id="进程命令行"><a href="#进程命令行" class="headerlink" title="进程命令行"></a>进程命令行</h3><p>系统在创建一个新的进程时，会传一个命令行给它。这个命令行几乎总是非空的；</p>
+<p>C运行库的启动代码开始执行一个GUI应用程序时，会调用Windows函数<strong>GetCommandLine</strong>函数来获取进程的完整命令行，忽略可执行文件的名称，然后将指向命令行剩余部分的一个指针传递给WinMain的pszCommand参数。</p>
+<h3 id="进程的环境变量"><a href="#进程的环境变量" class="headerlink" title="进程的环境变量"></a>进程的环境变量</h3><p>每个进程都有与它自己相关的一个环境块，这是在进程地址空间内分配的一块内存；</p>
+<p>我们可以使用<strong>GetEnvironmentStrings</strong>函数来获取；</p>
 
       
       
@@ -332,13 +336,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2019/05/16/c语言第四章/">C语言第四章</a></p>
+        <p><span>本文标题:</span><a href="/2020/04/17/Windows核心编程-进程/">Windows核心编程 - 进程</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
-        <p><span>发布时间:</span>2019年05月16日 - 18时39分</p>
-        <p><span>最后更新:</span>2019年08月22日 - 08时45分</p>
+        <p><span>发布时间:</span>2020年04月17日 - 09时18分</p>
+        <p><span>最后更新:</span>2020年04月17日 - 10时53分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/05/16/c语言第四章/" title="C语言第四章">https://systemk1t.github.io/2019/05/16/c语言第四章/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/05/16/c语言第四章/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/17/Windows核心编程-进程/" title="Windows核心编程 - 进程">https://systemk1t.github.io/2020/04/17/Windows核心编程-进程/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/17/Windows核心编程-进程/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -351,18 +355,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/05/17/c语言第五章/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          c语言第五章
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/05/15/c语言第三章/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">C语言第三章</div>
+    <a href="/2020/04/15/Windows核心编程-内核对象/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Windows核心编程 - 内核对象</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -373,7 +368,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#函数与程序结构、函数的基本知识、返回非整形值的函数"><span class="toc-number">1.</span> <span class="toc-text">函数与程序结构、函数的基本知识、返回非整形值的函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#函数与程序结构"><span class="toc-number"></span> <span class="toc-text">函数与程序结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#函数的基本知识"><span class="toc-number">1.</span> <span class="toc-text">函数的基本知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#返回非整形值的函数"><span class="toc-number">2.</span> <span class="toc-text">返回非整形值的函数</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows程序"><span class="toc-number">1.</span> <span class="toc-text">Windows程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#进程实例句柄"><span class="toc-number">1.1.</span> <span class="toc-text">进程实例句柄</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程命令行"><span class="toc-number">1.2.</span> <span class="toc-text">进程命令行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程的环境变量"><span class="toc-number">1.3.</span> <span class="toc-text">进程的环境变量</span></a></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -439,13 +434,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/05/17/c语言第五章/" title="上一篇: c语言第五章">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/05/15/c语言第三章/" title="下一篇: C语言第三章">
+            <a href="/2020/04/15/Windows核心编程-内核对象/" title="下一篇: Windows核心编程 - 内核对象">
                 <i class="fa fa-angle-right"></i>
             </a>
         
