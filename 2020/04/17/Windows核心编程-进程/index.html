@@ -5,18 +5,18 @@
   
   <title>Windows核心编程 - 进程 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。 Windows程序Windows应用程序必须有一个入口函数，应用程序在开始运行的">
+  <meta name="description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。">
 <meta name="keywords" content="Windows-Kernel">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows核心编程 - 进程">
 <meta property="og:url" content="https://systemk1t.github.io/2020/04/17/Windows核心编程-进程/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。 Windows程序Windows应用程序必须有一个入口函数，应用程序在开始运行的">
+<meta property="og:description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2020-04-17T02:53:22.270Z">
+<meta property="og:updated_time" content="2020-04-17T02:55:23.387Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Windows核心编程 - 进程">
-<meta name="twitter:description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。 Windows程序Windows应用程序必须有一个入口函数，应用程序在开始运行的">
+<meta name="twitter:description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -266,6 +266,8 @@
 <li>一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；</li>
 </ul>
 <p>对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。</p>
+<a id="more"></a>
+
 <h2 id="Windows程序"><a href="#Windows程序" class="headerlink" title="Windows程序"></a>Windows程序</h2><p>Windows应用程序必须有一个入口函数，应用程序在开始运行的时候，这个函数会被调用。C++程序员可以选择两种入口点函数：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> WINAPI _tWinMain(HINSTANCE hInstance,</span><br><span class="line">                    HINSTANCE,</span><br><span class="line">                    PTSTR pszCmdLine,</span><br><span class="line">                    <span class="keyword">int</span> nCmdShow);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc,TCHAR *argv[],TCHAR *envp[])</span><br></pre></td></tr></table></figure>
 
@@ -339,7 +341,7 @@
         <p><span>本文标题:</span><a href="/2020/04/17/Windows核心编程-进程/">Windows核心编程 - 进程</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2020年04月17日 - 09时18分</p>
-        <p><span>最后更新:</span>2020年04月17日 - 10时53分</p>
+        <p><span>最后更新:</span>2020年04月17日 - 10时55分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2020/04/17/Windows核心编程-进程/" title="Windows核心编程 - 进程">https://systemk1t.github.io/2020/04/17/Windows核心编程-进程/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/17/Windows核心编程-进程/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
