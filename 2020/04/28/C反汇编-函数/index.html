@@ -14,7 +14,7 @@
 <meta property="og:description" content="函数在高级语言中就是一串指令的集合；">
 <meta property="og:locale" content="cn">
 <meta property="og:image" content="https://systemk1t.github.io/2020/04/28/C反汇编-函数/0.png">
-<meta property="og:updated_time" content="2020-04-28T13:26:50.234Z">
+<meta property="og:updated_time" content="2020-04-28T13:35:35.105Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C反汇编 - 函数">
 <meta name="twitter:description" content="函数在高级语言中就是一串指令的集合；">
@@ -287,11 +287,8 @@
 <p>函数：                            </p>
 <p>计算机的函数，是一个固定的一个程序段，或称其为一个子程序，它在可以实现固定运算功能的同时还带有一入口和一个出口，所谓的入口，就是函数所带的各个参数，我们可以通过这个入口，把函数的参数值代入子程序，供计算机处理，所谓出口，就是指函数的计算结果,也称为返回值，在计算机求得之后，由此口带回给调用它的程序。                            </p>
 <p>汇编中的函数：                            </p>
-<p>PUSH EBP                提升堆栈，为函数执行提供空间<br>MOV EBP,ESP<br>SUB ESP,40<br>PUSH EBX                保留现场：函数在执行的时候会用到一些寄存器，但这些寄存器中的值很可能会被后面的<br>PUSH ESI                程序用到，所以要先存储到内存中<br>PUSH EDI<br>LEA EDI,DWORD PTR SS:[EBP-40]                向分配的空间填充数据<br>MOV ECX,10<br>MOV EAX,CCCCCCCC<br>REP STOS DWORD PTR ES:[EDI]<br>MOV EAX,DWORD PTR SS:[EBP+8]                该函数的功能<br>ADD EAX,DWORD PTR SS:[EBP+C]<br>POP EDI                恢复现场：将之前保留的寄存器的值恢复<br>POP ESI<br>POP EBX<br>MOV ESP,EBP                降低堆栈<br>POP EBP                恢复栈底<br>RETN                函数执行完毕，返回到调用处            </p>
-<p>函数的入口：                            </p>
-<p>PUSH 2                函数的参数<br>PUSH 1<br>CALL 0040100A                调用函数            </p>
-<p>函数的出口：                            </p>
-<p>MOV EAX,DWORD PTR SS:[EBP+8]                上面的这个函数将计算结果存储到EAX中<br>ADD EAX,DWORD PTR SS:[EBP+C]                我们称为返回值            </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">PUSH EBP				提升堆栈，为函数执行提供空间			</span><br><span class="line">MOV EBP,ESP							</span><br><span class="line">SUB ESP,40							</span><br><span class="line">PUSH EBX				保留现场：函数在执行的时候会用到一些寄存器，但这些寄存器中的值很可能会被后面的			</span><br><span class="line">PUSH ESI				程序用到，所以要先存储到内存中			</span><br><span class="line">PUSH EDI							</span><br><span class="line">LEA EDI,DWORD PTR SS:[EBP-40]				向分配的空间填充数据			</span><br><span class="line">MOV ECX,10							</span><br><span class="line">MOV EAX,CCCCCCCC							</span><br><span class="line">REP STOS DWORD PTR ES:[EDI]							</span><br><span class="line">MOV EAX,DWORD PTR SS:[EBP+8]				该函数的功能			</span><br><span class="line">ADD EAX,DWORD PTR SS:[EBP+C]							</span><br><span class="line">POP EDI				恢复现场：将之前保留的寄存器的值恢复			</span><br><span class="line">POP ESI							</span><br><span class="line">POP EBX							</span><br><span class="line">MOV ESP,EBP				降低堆栈			</span><br><span class="line">POP EBP				恢复栈底			</span><br><span class="line">RETN				函数执行完毕，返回到调用处			</span><br><span class="line">							</span><br><span class="line">							</span><br><span class="line">							</span><br><span class="line">函数的入口：							</span><br><span class="line">							</span><br><span class="line">							</span><br><span class="line">PUSH 2				函数的参数			</span><br><span class="line">PUSH 1							</span><br><span class="line">CALL 0040100A				调用函数			</span><br><span class="line">							</span><br><span class="line">							</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">函数的出口：							</span><br><span class="line">							</span><br><span class="line">							</span><br><span class="line">MOV EAX,DWORD PTR SS:[EBP+8]				上面的这个函数将计算结果存储到EAX中			</span><br><span class="line">ADD EAX,DWORD PTR SS:[EBP+C]				我们称为返回值</span><br></pre></td></tr></table></figure>
+
 
       
       
@@ -350,7 +347,7 @@
         <p><span>本文标题:</span><a href="/2020/04/28/C反汇编-函数/">C反汇编 - 函数</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2020年04月28日 - 19时43分</p>
-        <p><span>最后更新:</span>2020年04月28日 - 21时26分</p>
+        <p><span>最后更新:</span>2020年04月28日 - 21时35分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2020/04/28/C反汇编-函数/" title="C反汇编 - 函数">https://systemk1t.github.io/2020/04/28/C反汇编-函数/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/28/C反汇编-函数/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
