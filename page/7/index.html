@@ -142,7 +142,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 15px;">Assembly</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF/" style="font-size: 11.67px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 16.67px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.33px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 11.67px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18.33px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 11.67px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 13.33px;">c</a>
+                        <a href="/tags/0day安全-软件安全分析技术/" style="font-size: 10px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 16px;">Assembly</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/Crack/" style="font-size: 10px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 16px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 10px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 14px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 20px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 12px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 10px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 18px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 12px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 14px;">c</a>
                     </div>
                 </section>
                 
@@ -217,6 +217,83 @@
     </div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-插入DLL和挂钩子" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/10/12/插入DLL和挂钩子/" class="article-date">
+      <time datetime="2019-10-12T07:15:42.000Z" itemprop="datePublished">2019-10-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <hr>
+<hr>
+<p>在Windows操作系统中，每个进程都有它自己的私有地址空间。当使用指针来引用内存时，指针的值将引用你自己进程的地址空间中的一个内存地址。你的进程不能创建一个其引用属于另一个进程的内存指针。</p>
+<p>Windows在运行的各个进程共享2GB的地址空间，该地址空间从0x80000000至0xFFFFFFFF。只有内存映像文件和系统组件才能映射到这个区域。</p>
+<p>有些情况下，必须打破进程的界限，访问另一个进程的地址空间，这些情况包括：</p>
+<ul>
+<li>当你想要为另一个进程创建的窗口建立子类时</li>
+<li>当你需要调试帮助时(例如，当你需要确定另一个进程正在使用那个DLL时)</li>
+<li>当你想要挂接其他进程时</li>
+</ul>
+<p><strong>当你的DLL进入另一个进程的地址空间，就可以对另一个进程为所欲为</strong></p>
+          
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2019/10/12/插入DLL和挂钩子/#more">sYstemk1t >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-线程本地存储器" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -822,78 +899,6 @@
       
         <p class="article-more-link">
           <a  href="/2019/09/30/逆向工程核心原理-逆向Hello程序/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-52pojie新手Crack" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/09/27/52pojie新手Crack/" class="article-date">
-      <time datetime="2019-09-26T18:56:01.000Z" itemprop="datePublished">2019-09-27</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <hr>
-<p>52破解找来的新手Crack，检验一下这几天的学习成果</p>
-<ul>
-<li>爆破</li>
-<li>获取正确账号密码</li>
-</ul>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/52Pojie/">52Pojie</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/09/27/52pojie新手Crack/#more">sYstemk1t >></a>
         </p>
       
       <div class="clearfix"></div>
