@@ -3,22 +3,22 @@
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
-  <title>逆向工程权威指南-printf | sYstemk1t&#39;s Blog</title>
+  <title>C反汇编 - 整型 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="主要为了学习printf的参数传递的过程">
-<meta name="keywords" content="Reverse">
+  <meta name="description" content="在C语言中，整型包括整型常量和整型变量，整型变量又包括短整型、基本整型、长整型，它们都分为有符号和无符号两种版本;">
+<meta name="keywords" content="Assembly">
 <meta property="og:type" content="article">
-<meta property="og:title" content="逆向工程权威指南-printf">
-<meta property="og:url" content="https://systemk1t.github.io/2019/10/24/逆向工程权威指南-printf/index.html">
+<meta property="og:title" content="C反汇编 - 整型">
+<meta property="og:url" content="https://systemk1t.github.io/2020/04/29/C反汇编-整型/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="主要为了学习printf的参数传递的过程">
+<meta property="og:description" content="在C语言中，整型包括整型常量和整型变量，整型变量又包括短整型、基本整型、长整型，它们都分为有符号和无符号两种版本;">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https://systemk1t.github.io/2019/10/24/逆向工程权威指南-printf/0.png">
-<meta property="og:updated_time" content="2019-10-25T03:35:42.815Z">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/29/C反汇编-整型/0.png">
+<meta property="og:updated_time" content="2020-04-29T07:21:49.744Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="逆向工程权威指南-printf">
-<meta name="twitter:description" content="主要为了学习printf的参数传递的过程">
-<meta name="twitter:image" content="https://systemk1t.github.io/2019/10/24/逆向工程权威指南-printf/0.png">
+<meta name="twitter:title" content="C反汇编 - 整型">
+<meta name="twitter:description" content="在C语言中，整型包括整型常量和整型变量，整型变量又包括短整型、基本整型、长整型，它们都分为有符号和无符号两种版本;">
+<meta name="twitter:image" content="https://systemk1t.github.io/2020/04/29/C反汇编-整型/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -220,11 +220,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-逆向工程权威指南-printf" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-C反汇编-整型" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2019/10/24/逆向工程权威指南-printf/" class="article-date">
-      <time datetime="2019-10-24T07:56:04.000Z" itemprop="datePublished">2019-10-24</time>
+      <a href="/2020/04/29/C反汇编-整型/" class="article-date">
+      <time datetime="2020-04-29T06:43:36.000Z" itemprop="datePublished">2020-04-29</time>
 </a>
     </div>
   
@@ -237,7 +237,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      逆向工程权威指南-printf
+      C反汇编 - 整型
     </h1>
   
 
@@ -246,13 +246,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/逆向工程权威指南/">逆向工程权威指南</a>
+    <a class="article-category-link" href="/categories/反汇编/">反汇编</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reverse/">Reverse</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -262,32 +262,31 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>主要为了学习printf的参数传递的过程</p>
+        <p>在C语言中，整型包括整型常量和整型变量，整型变量又包括短整型、基本整型、长整型，它们都分为有符号和无符号两种版本;</p>
 <a id="more"></a>
 
-<h2 id="x86"><a href="#x86" class="headerlink" title="x86"></a>x86</h2><h3 id="x86-传递3个参数"><a href="#x86-传递3个参数" class="headerlink" title="x86:传递3个参数"></a>x86:传递3个参数</h3><p>使用MSVC 2010 express编译程序，可以得到以下汇编指令：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"a=%d;b=%d;c=%d"</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>汇编代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">$SG3849	DB	&apos;a=%d;b=%d;c=%d&apos;, 00H</span><br><span class="line">CONST	ENDS</span><br><span class="line">PUBLIC	_main</span><br><span class="line">EXTRN	_printf:PROC</span><br><span class="line">; Function compile flags: /Odtp</span><br><span class="line">_TEXT	SEGMENT</span><br><span class="line">_main	PROC</span><br><span class="line">; File c:\code\reverse_code\ջ\printf\printf\main.cpp</span><br><span class="line">; Line 4</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">; Line 5</span><br><span class="line">	push	3		;将3压入栈中，使用栈传递参数</span><br><span class="line">	push	2</span><br><span class="line">	push	1</span><br><span class="line">	push	OFFSET $SG3849</span><br><span class="line">	call	_printf</span><br><span class="line">	add	esp, 16					; 00000010H</span><br><span class="line">; Line 6</span><br><span class="line">	xor	eax, eax</span><br><span class="line">; Line 7</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_main	ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
 
-<p>printf的参数传递以逆序存入栈中，第一个参数在最后出栈。</p>
-<p>在32位环境下，32位地址指针和int类型数据都占据4字节空间。所以我们最后恢复ESP中的栈指针；</p>
-<p>如果程序中连续的调用多个函数，且调用函数的指令之间不夹杂其他指令，那么编译器可能把释放参数存储空间的ADD ESP,x这个指令进行合并，一次性释放所有的空间；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">push a1</span><br><span class="line">push a2</span><br><span class="line">call ...</span><br><span class="line">...</span><br><span class="line">push a1</span><br><span class="line">push a2</span><br><span class="line">call ...</span><br><span class="line">...</span><br><span class="line">push a1</span><br><span class="line">push a2</span><br><span class="line">push a3</span><br><span class="line">call ...</span><br><span class="line">add esp,24	;一次性恢复栈空间指针</span><br></pre></td></tr></table></figure>
+<h1 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h1><h2 id="C变量类型"><a href="#C变量类型" class="headerlink" title="C变量类型"></a>C变量类型</h2><p><img src="//systemk1t.github.io/2020/04/29/C反汇编-整型/0.png" alt></p>
+<h2 id="整数类型"><a href="#整数类型" class="headerlink" title="整数类型"></a>整数类型</h2><p>char、short、int、long</p>
+<p>char    8BIT    1字节    0~0xFF</p>
+<p>short    16BIT    2字节    0~0xFFFF</p>
+<p>int        32BIT    4字节    0~0xFFFFFFFF</p>
+<p>long        32BIT    4字节    0~0xFFFFFFFF</p>
+<h2 id="有无符号数"><a href="#有无符号数" class="headerlink" title="有无符号数"></a>有无符号数</h2><p> 有符号数和无符号数在内存中存储的时候没有任何区别；</p>
+<h3 id="unsigned"><a href="#unsigned" class="headerlink" title="unsigned"></a>unsigned</h3><p>无符号数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> y = <span class="number">0xFFFFFFFF</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%u\r\n"</span>,y);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>,y);</span><br></pre></td></tr></table></figure>
 
-<p>printf调试：</p>
-<p><img src="//systemk1t.github.io/2019/10/24/逆向工程权威指南-printf/0.png" alt></p>
-<h3 id="Gcc编译后的printf"><a href="#Gcc编译后的printf" class="headerlink" title="Gcc编译后的printf"></a>Gcc编译后的printf</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">; int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">public _main</span><br><span class="line">_main proc near</span><br><span class="line"></span><br><span class="line">argc= dword ptr  8</span><br><span class="line">argv= dword ptr  0Ch</span><br><span class="line">envp= dword ptr  10h</span><br><span class="line"></span><br><span class="line">push    ebp</span><br><span class="line">mov     ebp, esp</span><br><span class="line">and     esp, 0FFFFFFF0h</span><br><span class="line">sub     esp, 10h</span><br><span class="line">call    ___main</span><br><span class="line">mov     dword ptr [esp+0Ch], 3</span><br><span class="line">mov     dword ptr [esp+8], 2</span><br><span class="line">mov     dword ptr [esp+4], 1</span><br><span class="line">mov     dword ptr [esp], offset aADBDCD ; &quot;a=%d,b=%d,c=%d&quot;</span><br><span class="line">call    _printf</span><br><span class="line">mov     eax, 0</span><br><span class="line">leave</span><br><span class="line">retn</span><br><span class="line">_main endp</span><br></pre></td></tr></table></figure>
+<h3 id="signed"><a href="#signed" class="headerlink" title="signed"></a>signed</h3><p>有符号数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x = <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">	<span class="comment">//unsigned int y = 0xFFFFFFFF;</span></span><br><span class="line">	<span class="comment">//printf("%u\r\n",y);</span></span><br><span class="line">	<span class="comment">//printf("%d\r\n",y);</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>,i);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%u\r\n"</span>,x);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>,x);</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>相比于MSVC的编译，GCC生成的程序仅在参数入栈的方式有区别，</strong></p>
-<p>GCC没有使用PUSH/POP指令，而是直接对栈进行操作。</p>
-<h3 id="GCC和GDB"><a href="#GCC和GDB" class="headerlink" title="GCC和GDB"></a>GCC和GDB</h3><p>在linux下，使用gcc编译的情况下，添加-g选项表示在可执行文件中生成debug信息</p>
-<h2 id="x64"><a href="#x64" class="headerlink" title="x64"></a>x64</h2><h3 id="传递9个参数"><a href="#传递9个参数" class="headerlink" title="传递9个参数"></a>传递9个参数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"a=%d,b=%d,c=%d,d=%d,e=%d,f=%d,g=%d,h=%d"</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">signed</span> <span class="keyword">char</span> c = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">int</span> y = c;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">""</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>Win64使用RCX、RDX、R8、R9等寄存器传递前4个参数，使用栈来传递其余的参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">PUBLIC	_main</span><br><span class="line">EXTRN	_printf:NEAR</span><br><span class="line">_DATA	SEGMENT</span><br><span class="line">$SG526	DB	&apos;a=%d,b=%d,c=%d,d=%d,e=%d,f=%d,g=%d,h=%d&apos;, 00H</span><br><span class="line">_DATA	ENDS</span><br><span class="line">_TEXT	SEGMENT</span><br><span class="line">_main	PROC NEAR</span><br><span class="line">; File printf.cpp</span><br><span class="line">; Line 3</span><br><span class="line">	push	ebp</span><br><span class="line">	mov	ebp, esp</span><br><span class="line">; Line 4</span><br><span class="line">	push	9</span><br><span class="line">	push	8</span><br><span class="line">	push	7</span><br><span class="line">	push	6</span><br><span class="line">	push	5</span><br><span class="line">	push	4</span><br><span class="line">	push	3</span><br><span class="line">	push	2</span><br><span class="line">	push	1</span><br><span class="line">	push	OFFSET FLAT:$SG526</span><br><span class="line">	call	_printf</span><br><span class="line">	add	esp, 40					; 00000028H</span><br><span class="line">; Line 5</span><br><span class="line">	xor	eax, eax</span><br><span class="line">; Line 6</span><br><span class="line">	pop	ebp</span><br><span class="line">	ret	0</span><br><span class="line">_main	ENDP</span><br><span class="line">_TEXT	ENDS</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+<h3 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> x = <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> y = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(x&gt;y)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"X&gt;Y\r\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> x = <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">char</span> y = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(x&gt;y)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"X&gt;Y\r\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>有无符号数在做比较的时候才有差异</strong></p>
 
       
       
@@ -343,13 +342,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2019/10/24/逆向工程权威指南-printf/">逆向工程权威指南-printf</a></p>
+        <p><span>本文标题:</span><a href="/2020/04/29/C反汇编-整型/">C反汇编 - 整型</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
-        <p><span>发布时间:</span>2019年10月24日 - 15时56分</p>
-        <p><span>最后更新:</span>2019年10月25日 - 11时35分</p>
+        <p><span>发布时间:</span>2020年04月29日 - 14时43分</p>
+        <p><span>最后更新:</span>2020年04月29日 - 15时21分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/10/24/逆向工程权威指南-printf/" title="逆向工程权威指南-printf">https://systemk1t.github.io/2019/10/24/逆向工程权威指南-printf/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/10/24/逆向工程权威指南-printf/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/29/C反汇编-整型/" title="C反汇编 - 整型">https://systemk1t.github.io/2020/04/29/C反汇编-整型/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/29/C反汇编-整型/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -362,18 +361,18 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/10/24/逆向工程权威指南-条件转移指令/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2020/04/29/C反汇编-浮点/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          逆向工程权威指南-栈
+          C反汇编 - 浮点
         
       </div>
     </a>
   
   
-    <a href="/2019/10/24/逆向工程权威指南-栈/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">逆向工程权威指南-栈</div>
+    <a href="/2020/04/29/C反汇编-参数/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">C反汇编 - 参数</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -384,7 +383,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#x86"><span class="toc-number">1.</span> <span class="toc-text">x86</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#x86-传递3个参数"><span class="toc-number">1.1.</span> <span class="toc-text">x86:传递3个参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gcc编译后的printf"><span class="toc-number">1.2.</span> <span class="toc-text">Gcc编译后的printf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCC和GDB"><span class="toc-number">1.3.</span> <span class="toc-text">GCC和GDB</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#x64"><span class="toc-number">2.</span> <span class="toc-text">x64</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#传递9个参数"><span class="toc-number">2.1.</span> <span class="toc-text">传递9个参数</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#整型"><span class="toc-number">1.</span> <span class="toc-text">整型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#C变量类型"><span class="toc-number">1.1.</span> <span class="toc-text">C变量类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#整数类型"><span class="toc-number">1.2.</span> <span class="toc-text">整数类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有无符号数"><span class="toc-number">1.3.</span> <span class="toc-text">有无符号数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#unsigned"><span class="toc-number">1.3.1.</span> <span class="toc-text">unsigned</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#signed"><span class="toc-number">1.3.2.</span> <span class="toc-text">signed</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扩展"><span class="toc-number">1.3.3.</span> <span class="toc-text">扩展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#比较"><span class="toc-number">1.3.4.</span> <span class="toc-text">比较</span></a></li></ol></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -450,13 +449,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/10/24/逆向工程权威指南-条件转移指令/" title="上一篇: 逆向工程权威指南-栈">
+            <a href="/2020/04/29/C反汇编-浮点/" title="上一篇: C反汇编 - 浮点">
                 <i class="fa fa-angle-left"></i>
             </a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/10/24/逆向工程权威指南-栈/" title="下一篇: 逆向工程权威指南-栈">
+            <a href="/2020/04/29/C反汇编-参数/" title="下一篇: C反汇编 - 参数">
                 <i class="fa fa-angle-right"></i>
             </a>
         

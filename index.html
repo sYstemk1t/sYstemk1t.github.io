@@ -218,6 +218,148 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-C反汇编-浮点" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/04/29/C反汇编-浮点/" class="article-date">
+      <time datetime="2020-04-29T07:22:03.000Z" itemprop="datePublished">2020-04-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/29/C反汇编-浮点/">C反汇编 - 浮点</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>float类型就是一种小数类型；</p>
+<h1 id="浮点类型"><a href="#浮点类型" class="headerlink" title="浮点类型"></a>浮点类型</h1><h2 id="浮点种类"><a href="#浮点种类" class="headerlink" title="浮点种类"></a>浮点种类</h2><h3 id="float"><a href="#float" class="headerlink" title="float"></a>float</h3><p>4字节</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> x = <span class="number">1.23</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="double"><a href="#double" class="headerlink" title="double"></a>double</h3><p>8字节</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> d = <span class="number">2.34</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="long-double"><a href="#long-double" class="headerlink" title="long double"></a>long double</h3><p>8字节，某些平台下会是16字节</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> <span class="keyword">double</span> d = <span class="number">2.34</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="浮点类型存储格式"><a href="#浮点类型存储格式" class="headerlink" title="浮点类型存储格式"></a>浮点类型存储格式</h2><p><strong>float和double在存储方式上都是遵从IEEE编码</strong></p>
+<p><img src="//systemk1t.github.io/2020/04/29/C反汇编-浮点/0.png" alt></p>
+<h2 id="float转换步骤"><a href="#float转换步骤" class="headerlink" title="float转换步骤"></a>float转换步骤</h2><p><img src="//systemk1t.github.io/2020/04/29/C反汇编-浮点/1.png" alt></p>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/反汇编/">反汇编</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-C反汇编-整型" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/04/29/C反汇编-整型/" class="article-date">
+      <time datetime="2020-04-29T06:43:36.000Z" itemprop="datePublished">2020-04-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/29/C反汇编-整型/">C反汇编 - 整型</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p>在C语言中，整型包括整型常量和整型变量，整型变量又包括短整型、基本整型、长整型，它们都分为有符号和无符号两种版本;</p>
+          
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/反汇编/">反汇编</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2020/04/29/C反汇编-整型/#more">sYstemk1t >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-C反汇编-参数" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -728,140 +870,6 @@
       
         <p class="article-more-link">
           <a  href="/2020/04/17/Windows核心编程-进程/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Windows核心编程-内核对象" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/04/15/Windows核心编程-内核对象/" class="article-date">
-      <time datetime="2020-04-15T11:27:34.000Z" itemprop="datePublished">2020-04-15</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/15/Windows核心编程-内核对象/">Windows核心编程 - 内核对象</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p> 进程对象有一个进程I D 、一个基本优先级和一个退出代码，而文件对象则拥有一个字节位移、一个共享模式和一个打开模式。  <strong>内核对象是系统提供的用户模式下代码与内核模式下代码进行交互的基本接口</strong> </p>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2020/04/15/Windows核心编程-内核对象/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Windows核心编程-字符和字符串处理" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/04/14/Windows核心编程-字符和字符串处理/" class="article-date">
-      <time datetime="2020-04-14T13:45:07.000Z" itemprop="datePublished">2020-04-14</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Windows核心编程-字符和字符串处理/">Windows核心编程 - 字符和字符串处理</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p>缓冲区溢出已成为针对操作系统的各个组件发起安全攻击的媒介</p>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2020/04/14/Windows核心编程-字符和字符串处理/#more">sYstemk1t >></a>
         </p>
       
       <div class="clearfix"></div>
