@@ -3,25 +3,22 @@
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
-  <title>加密与解密-基础知识 | sYstemk1t&#39;s Blog</title>
+  <title>C反汇编 - 参数 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Windows下研究加密与解密技术，必须了解操作系统的一些基础知识，这样在分析过程中才可以有的放矢">
-<meta name="keywords" content="Hacker">
+  <meta name="description" content="参数，也叫参变量，是一个变量；">
+<meta name="keywords" content="Assembly">
 <meta property="og:type" content="article">
-<meta property="og:title" content="加密与解密-基础知识">
-<meta property="og:url" content="https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/index.html">
+<meta property="og:title" content="C反汇编 - 参数">
+<meta property="og:url" content="https://systemk1t.github.io/2020/04/29/C反汇编-参数/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="Windows下研究加密与解密技术，必须了解操作系统的一些基础知识，这样在分析过程中才可以有的放矢">
+<meta property="og:description" content="参数，也叫参变量，是一个变量；">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/0.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/1.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/2.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/3.png">
-<meta property="og:updated_time" content="2019-11-13T10:14:04.222Z">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/29/C反汇编-参数/0.png">
+<meta property="og:updated_time" content="2020-04-29T03:51:44.032Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="加密与解密-基础知识">
-<meta name="twitter:description" content="Windows下研究加密与解密技术，必须了解操作系统的一些基础知识，这样在分析过程中才可以有的放矢">
-<meta name="twitter:image" content="https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/0.png">
+<meta name="twitter:title" content="C反汇编 - 参数">
+<meta name="twitter:description" content="参数，也叫参变量，是一个变量；">
+<meta name="twitter:image" content="https://systemk1t.github.io/2020/04/29/C反汇编-参数/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -223,11 +220,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-加密与解密-基础知识" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-C反汇编-参数" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2019/11/13/加密与解密-基础知识/" class="article-date">
-      <time datetime="2019-11-13T06:53:19.000Z" itemprop="datePublished">2019-11-13</time>
+      <a href="/2020/04/29/C反汇编-参数/" class="article-date">
+      <time datetime="2020-04-29T03:07:27.000Z" itemprop="datePublished">2020-04-29</time>
 </a>
     </div>
   
@@ -240,7 +237,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      加密与解密-基础知识
+      C反汇编 - 参数
     </h1>
   
 
@@ -249,13 +246,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/加密与解密/">加密与解密</a>
+    <a class="article-category-link" href="/categories/反汇编/">反汇编</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hacker/">Hacker</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -265,78 +262,27 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>Windows下研究加密与解密技术，必须了解操作系统的一些基础知识，这样在分析过程中才可以有的放矢</p>
+        <p>参数，也叫参变量，是一个变量；</p>
 <a id="more"></a>
 
+<h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><h3 id="参数内存布局"><a href="#参数内存布局" class="headerlink" title="参数内存布局"></a>参数内存布局</h3><p>写一个例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Add</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> z = x + y;</span><br><span class="line">	<span class="keyword">return</span> z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Add(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>我们通过解释汇编代码来学习内存的布局：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">10:       Add(1,2);	</span><br><span class="line">00401078   push        2		;第二个参数入栈</span><br><span class="line">0040107A   push        1		;第一个参数入栈</span><br><span class="line">0040107C   call        @ILT+0(_Add) (00401005)</span><br><span class="line">						;汇编通过call来调用函数</span><br><span class="line">00401081   add         esp,8</span><br></pre></td></tr></table></figure>
 
-<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="静态分析技术"><a href="#静态分析技术" class="headerlink" title="静态分析技术"></a>静态分析技术</h3><p>所谓静态分析，是根据反汇编得到的程序指令进行分析，最常用的方法是根据提示信息入手进行分析。目前大多数软件在设计的时候都采用人机对话的方式。因此，阅读通过经挨反汇编得到的程序清单，通过包含提示信息的程序片段，就可以知道提前信息前后的程序片段所完成的功能，从而宏观的了解编程思路。常用软件用IDA等</p>
-<h3 id="动态分析技术"><a href="#动态分析技术" class="headerlink" title="动态分析技术"></a>动态分析技术</h3><p>虽然静态分析可以了解各个模块的功能，以及整个软件的编程思路，但是我们不能了解软件各个模块的技术细节，对于软件分析来说，静态分析是第一步，动态跟踪才是分析软件的关键。</p>
+<p><strong>C语言默认使用stdcall的方式来调用参数</strong></p>
+<p><img src="//systemk1t.github.io/2020/04/29/C反汇编-参数/0.png" alt></p>
+<p>总结一下：</p>
 <ul>
-<li>许多软件在整体上完成的功能，一般要分解成若干个模块来实现，后一模块执行时要使用前一模块处理的结果。如果只对软件进行静态分析，一般是很难获得这些中间结果的。</li>
-<li>许多软件在运行时，其最初执行的一段程序往往需要对后面的各个模块进行一些初始化的工作，并不依赖系统的重定位</li>
-<li>许多加密程序为了阻止非法的跟中和阅读，对执行代码的大部分内容进行了加密替换，但只有最初的一段是铭文的，加密程序在运行时时会采用逐块加密、逐块执行的方法</li>
+<li>ebp+8开始是参数</li>
+<li>esp-4开始是局部变量</li>
 </ul>
-<h4 id="对软件进行粗跟踪"><a href="#对软件进行粗跟踪" class="headerlink" title="对软件进行粗跟踪"></a>对软件进行粗跟踪</h4><p>所谓粗跟踪，是指在跟踪时大块大块的跟踪，在遇到调用指令(call)、重复操作指令(REP)、循环操作指令(loop)等指令的时候一般不要跟踪，而要根据执行结果分析该程序的功能；</p>
-<h4 id="对关键部分进行跟踪"><a href="#对关键部分进行跟踪" class="headerlink" title="对关键部分进行跟踪"></a>对关键部分进行跟踪</h4><p>在对软件进行一定程序的粗跟踪之后，就能获取程序中我们所关心的模块或程序段，这样就可以有针对该模块进行具体而详细。在一般情况下，我们可能要进行多次关键代码的跟踪菜能读懂程序。<strong>在每次跟踪时把比较关键的中间结果或指令记录一下，会对下一次分析有很大的帮助</strong></p>
-<h2 id="文本字符"><a href="#文本字符" class="headerlink" title="文本字符"></a>文本字符</h2><p>计算机中存储的信息都是用二进制数值显示的，屏幕上显示的东西都是二进制数值转换之后的结果；</p>
-<h3 id="ASCII与UNICODE字符集"><a href="#ASCII与UNICODE字符集" class="headerlink" title="ASCII与UNICODE字符集"></a>ASCII与UNICODE字符集</h3><p>字符集是一个系统支持的所有抽象字符的集合。字符是各种文字和符号的总称，包括各种文字、标点符号、图形符号、数字等</p>
-<p><img src="//systemk1t.github.io/2019/11/13/加密与解密-基础知识/0.png" alt></p>
-<p>Unicode是对ASCII字符编码的一个扩展，只不过在Windows中用2字节对进行编码，因此也被称为宽字符集。</p>
-<p>Intel处理器在内存中将一个字存入存储器需要占用相继的2字节，这个字节按照小端方式存入，即低位字节存入低地址，高位字节存入高地址。</p>
-<p><img src="//systemk1t.github.io/2019/11/13/加密与解密-基础知识/1.png" alt></p>
-<h3 id="字节存储顺序"><a href="#字节存储顺序" class="headerlink" title="字节存储顺序"></a>字节存储顺序</h3><ul>
-<li>Big-endian：高位存入低地址，低位存入高地址</li>
-<li>Little-endian：低位存入低地址，高位存入高地址</li>
-</ul>
-<p><img src="//systemk1t.github.io/2019/11/13/加密与解密-基础知识/2.png" alt></p>
-<h2 id="Windows操作系统"><a href="#Windows操作系统" class="headerlink" title="Windows操作系统"></a>Windows操作系统</h2><h3 id="Win32-API函数"><a href="#Win32-API函数" class="headerlink" title="Win32 API函数"></a>Win32 API函数</h3><p>现在很多讲程序设计的书都是基于MFC库和OWL库的Windows设计，对Windows实现细节鲜有讨论，而调试程序是要和系统底层打交道的，所以有必要掌握一些API函数的知识</p>
-<p><img src="//systemk1t.github.io/2019/11/13/加密与解密-基础知识/3.png" alt></p>
-<p>Windows运转的核心是动态链接库。Windows提供了丰富的应用程序可利用的函数接口，这些函数采用动态链接库(DLL)实现。</p>
-<p>在早期，Windows的主要部分是由三个动态链接库实现，它们分别代表Windows的3个主要子系统，叫做Kernel、GDI、user</p>
-<h3 id="WOW64"><a href="#WOW64" class="headerlink" title="WOW64"></a>WOW64</h3><p>WOW64是64位Windows操作系统的子系统，可以使大多数32位应用程序在不进行修改的情况下运行在64位操作系统上</p>
-<p>64位的Windows，除了带有64位操作系统应有的系统文件，还有32位操作系统与的系统文件。Windows64的系统文件都放在一个叫做”system32”的文件中，Windows\system32文件中有原生的64位映像文件，为了兼容32位系统，还增加了\Windows\SysWOW64文件夹，其中存储了32位的系统文件。</p>
-<p>64位应用程序会加载System32下64位的Kernel32、User32、ntdll.dll。当应用程序加载时，WOW64建立32位Ntdll.dll所要求的环境，将CPU模式切换至32位，并开始执行32位加载器，就如同该进程运行在32位系统上一样</p>
-<p>WOW64既不支持16位应用程序的执行(32位Windows支持16位应用程序执行)，也不支持加载32位内核模式的设备驱动程序。WOW64进程只能加载32位DLL，不能加载原生的64位DLL</p>
-<h3 id="Windows消息机制"><a href="#Windows消息机制" class="headerlink" title="Windows消息机制"></a>Windows消息机制</h3><p>Windows是一个消息驱动式系统。Windows消息提供在应用程序与应用程序之间、应用程序与WIndows系统之间的通信的手段。应用程序想要实现的功能由消息触发，通过对消息的相应和处理完成</p>
-<h4 id="系统消息队列"><a href="#系统消息队列" class="headerlink" title="系统消息队列"></a>系统消息队列</h4><p>计算机的所有输入设备由Windows监控，当一个事件发生的时候，Windows先将输入的消息放入系统消息对流额，再将输入的消息复制到相应的应用程序队列中，应用程序中的消息循环在它的消息队列中检索每个消息对发送给对应的窗口函数。一个事件从发生到到达它的窗口函数必须经历以上的步骤；</p>
-<h3 id="SendMessage函数"><a href="#SendMessage函数" class="headerlink" title="SendMessage函数"></a>SendMessage函数</h3><p>调用一个窗口的窗口函数，将一条消息发送给那个窗口。除非消息处理完毕，否则该函数不会返回</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LRESULT <span class="title">SendMessage</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	HWND hWnd,</span></span></span><br><span class="line"><span class="function"><span class="params">    UINT Msg,</span></span></span><br><span class="line"><span class="function"><span class="params">    WPARAM wParam,</span></span></span><br><span class="line"><span class="function"><span class="params">    LPARAM lParam</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>返回值通常存储在EAX寄存器中；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">5:        return z;</span><br><span class="line">00401041   mov         eax,dword ptr [ebp-4]</span><br></pre></td></tr></table></figure>
 
-<p>返回值:由具体的消息决定，如果消息投递成功，则返回TRUE（非零）</p>
-<h3 id="WM-COMMAND消息"><a href="#WM-COMMAND消息" class="headerlink" title="WM_COMMAND消息"></a>WM_COMMAND消息</h3><p>当用户从按钮或者菜单选择一条命令或者一个控件时该消息被发送给它的父窗口，或者一个快捷键被释放时发送</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WM_COMMAND</span><br><span class="line">	wNotifyCode - HIWORD(wParam),</span><br><span class="line">	wID = LOWORD(wParam),</span><br><span class="line">	hwndCtl = (HWND)lParam</span><br></pre></td></tr></table></figure>
+<h4 id="使用返回值"><a href="#使用返回值" class="headerlink" title="使用返回值"></a>使用返回值</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00401084   mov         dword ptr [ebp-4],eax	;返回值存储在eax中，eax赋值给[ebp-4]的位置</span><br><span class="line">12:       printf(&quot;%d\r\n&quot;,c);</span><br><span class="line">00401087   mov         eax,dword ptr [ebp-4]	;[ebp-4]的位置的数据传递给eax</span><br></pre></td></tr></table></figure>
 
-<p>返回值：如果应用程序处理这条消息，则返回值为0</p>
-<h3 id="WM-DESTROY消息"><a href="#WM-DESTROY消息" class="headerlink" title="WM_DESTROY消息"></a>WM_DESTROY消息</h3><p>当一个窗口被销毁时发送该消息，该消息的十六进制数值是02h，没有参数</p>
-<p>返回值：如果应用程序处理这条消息，则返回值为0</p>
-<h3 id="WM-GETTEXT消息"><a href="#WM-GETTEXT消息" class="headerlink" title="WM_GETTEXT消息"></a>WM_GETTEXT消息</h3><p>应用程序发送一条WM_GWTTEXT消息，将一个对应窗口的文本复制到一个由呼叫程序提供的缓冲区中</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WM_GETTEXT</span><br><span class="line">    wParam = (WPARAM) cchTextMax;	<span class="comment">//需要复制的字符数</span></span><br><span class="line">	lParam = (LPARAM) lpszText;		<span class="comment">//接受文本的缓冲区地址</span></span><br></pre></td></tr></table></figure>
-
-<p>返回值：被复制的字符数</p>
-<h3 id="WM-QUIT消息"><a href="#WM-QUIT消息" class="headerlink" title="WM_QUIT消息"></a>WM_QUIT消息</h3><p>当应用程序调用PostQuitMessage函数时，生成WM_QUIT消息，</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WM_QUIT</span><br><span class="line">    nExitCode = (<span class="keyword">int</span>) wParam	<span class="comment">//退出代码</span></span><br></pre></td></tr></table></figure>
-
-<p>返回值：这条消息没有返回值</p>
-<h3 id="WM-LBUTTONDOWN消息"><a href="#WM-LBUTTONDOWN消息" class="headerlink" title="WM_LBUTTONDOWN消息"></a>WM_LBUTTONDOWN消息</h3><p>当鼠标光标停留在一个客户区切用户按下鼠标左键时，WM_LBUTTONDOWN消息将被发送，如果鼠标动作未被捕获，这条希奥希将发送给光标下的窗口；否则，将被发送给已经捕捉鼠标动作的窗口</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WM_LUBTTONDOWN</span><br><span class="line">    fwKeys - wParam;		<span class="comment">//key旗标</span></span><br><span class="line">	xPos = LOWORD(lParam);	<span class="comment">//光标的水平位置</span></span><br><span class="line">	yPos = HIWORD(lParam);	<span class="comment">//光标的垂直位置</span></span><br></pre></td></tr></table></figure>
-
-<p>返回值：如果应用程序处理了这条消息，则返回值为0</p>
-<h2 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h2><p>在默认情况下，32位Windows操作系统的地址空间在4GB以内。WIn32的平坦内存模式使每个进程都能拥有自己的虚拟空间。对32位进程来说，这个地址空间是4GB，因为32位指针拥有00000000h~FFFFFFFFh的任何值。此时，程序的代码和数据都放在同一地址空间中，不必区分代码和数据段</p>
-<p>虚拟内存(Virtual Memory)不是真正的内存，它通过映射(map)的方法使可用虚拟地址(Virtual Address)达到4GB，每个应用程序可以获得2GB虚拟地址，剩下的2GB留给操作系统使用，在Windows NT中，应用程序设置可以获得3GB的虚拟地址；</p>
-<p><strong>Windws是一个分时的多任务操作系统，CPU时间在被分成一个个时间片后分配给不同的程序。在一个时间片里，与这个程序的执行无关的内容不会映射到线性地址中。因此，每个程序都有自己的4GB寻址空间，互不干扰。在物理内存中，操作系统和系统DLL代码需要供每个应用程序调用，所以它们必须在任意时刻必须被映射。用户的exe程序只有在自己所属的时间片内被映射，用户DLL则有选择的映射</strong></p>
-<p>简单的来说，虚拟内存实现和过程如下：</p>
-<ul>
-<li>当一个应用程序启动时，操作系统就创建一个进程，并给该进程分配2GB虚拟地址(不是内存，只是地址)</li>
-<li>虚拟内存管理器将应用程序的代码映射到那个应用程序的虚拟地址中的某个位置，并把当前需要的代码读入屋里地址</li>
-<li>如果使用DLL，DLL也会被映射到进程的虚拟地址空间中，有需要的时候才会被读入物理内存</li>
-<li>其他项目(数据、堆栈等)的空间也是从屋里内存中分配的，并将映射到虚拟地址空间中</li>
-<li>其他程序通过使用其虚拟地址空间中的地址开始执行，然后，虚拟内存管理器把每次内存访问映射到物理位置</li>
-</ul>
-<p>应用程序不会直接访问物理地址</p>
-<p>虚拟内存管理器通过虚拟地址的访问请求来控制所有的物理地址访问</p>
-<p>每个应用程序都有独立的4GB寻址空间，不同应用程序的地址是彼此隔离的</p>
-<p>DLL程序没有“私有”空间，它们总是被映射到其他应用程序的地址空间中，作为其他应用程序的一部分运行。其原因是：如果DLL不与其他程序处于同一个地址空间，应用程序就无法调用它</p>
 
       
       
@@ -392,13 +338,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2019/11/13/加密与解密-基础知识/">加密与解密-基础知识</a></p>
+        <p><span>本文标题:</span><a href="/2020/04/29/C反汇编-参数/">C反汇编 - 参数</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
-        <p><span>发布时间:</span>2019年11月13日 - 14时53分</p>
-        <p><span>最后更新:</span>2019年11月13日 - 18时14分</p>
+        <p><span>发布时间:</span>2020年04月29日 - 11时07分</p>
+        <p><span>最后更新:</span>2020年04月29日 - 11时51分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/13/加密与解密-基础知识/" title="加密与解密-基础知识">https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/11/13/加密与解密-基础知识/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/29/C反汇编-参数/" title="C反汇编 - 参数">https://systemk1t.github.io/2020/04/29/C反汇编-参数/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/29/C反汇编-参数/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -411,18 +357,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/11/13/加密与解密-动态分析/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          加密与解密-动态分析
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/11/10/逆向工程权威指南-联合体/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">逆向工程权威指南-联合体</div>
+    <a href="/2020/04/29/C反汇编-变量/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">C反汇编 - 变量</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -433,7 +370,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基础"><span class="toc-number">1.</span> <span class="toc-text">基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态分析技术"><span class="toc-number">1.1.</span> <span class="toc-text">静态分析技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态分析技术"><span class="toc-number">1.2.</span> <span class="toc-text">动态分析技术</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#对软件进行粗跟踪"><span class="toc-number">1.2.1.</span> <span class="toc-text">对软件进行粗跟踪</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#对关键部分进行跟踪"><span class="toc-number">1.2.2.</span> <span class="toc-text">对关键部分进行跟踪</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文本字符"><span class="toc-number">2.</span> <span class="toc-text">文本字符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ASCII与UNICODE字符集"><span class="toc-number">2.1.</span> <span class="toc-text">ASCII与UNICODE字符集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字节存储顺序"><span class="toc-number">2.2.</span> <span class="toc-text">字节存储顺序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows操作系统"><span class="toc-number">3.</span> <span class="toc-text">Windows操作系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Win32-API函数"><span class="toc-number">3.1.</span> <span class="toc-text">Win32 API函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WOW64"><span class="toc-number">3.2.</span> <span class="toc-text">WOW64</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows消息机制"><span class="toc-number">3.3.</span> <span class="toc-text">Windows消息机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#系统消息队列"><span class="toc-number">3.3.1.</span> <span class="toc-text">系统消息队列</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SendMessage函数"><span class="toc-number">3.4.</span> <span class="toc-text">SendMessage函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WM-COMMAND消息"><span class="toc-number">3.5.</span> <span class="toc-text">WM_COMMAND消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WM-DESTROY消息"><span class="toc-number">3.6.</span> <span class="toc-text">WM_DESTROY消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WM-GETTEXT消息"><span class="toc-number">3.7.</span> <span class="toc-text">WM_GETTEXT消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WM-QUIT消息"><span class="toc-number">3.8.</span> <span class="toc-text">WM_QUIT消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WM-LBUTTONDOWN消息"><span class="toc-number">3.9.</span> <span class="toc-text">WM_LBUTTONDOWN消息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟内存"><span class="toc-number">4.</span> <span class="toc-text">虚拟内存</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#参数"><span class="toc-number">1.</span> <span class="toc-text">参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#参数内存布局"><span class="toc-number">1.1.</span> <span class="toc-text">参数内存布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#返回值"><span class="toc-number">1.2.</span> <span class="toc-text">返回值</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#使用返回值"><span class="toc-number">1.2.1.</span> <span class="toc-text">使用返回值</span></a></li></ol></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -499,13 +436,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/11/13/加密与解密-动态分析/" title="上一篇: 加密与解密-动态分析">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/11/10/逆向工程权威指南-联合体/" title="下一篇: 逆向工程权威指南-联合体">
+            <a href="/2020/04/29/C反汇编-变量/" title="下一篇: C反汇编 - 变量">
                 <i class="fa fa-angle-right"></i>
             </a>
         
