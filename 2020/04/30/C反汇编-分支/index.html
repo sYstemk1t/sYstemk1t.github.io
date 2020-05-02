@@ -5,19 +5,19 @@
   
   <title>C反汇编 - 分支 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="C语言有两种类型的语句可以控制程序的执行流程，一种是分支，一种是循环； 分支ifif(表达书) ​    语句; 12345678910111213141516#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;	int x = 10;	int y = 20;	if(x&amp;gt;y)	&amp;#123;		printf(&quot;x&amp;gt;y\r\n&quot;);	&amp;#125;	if(x&amp;lt">
+  <meta name="description" content="C语言有两种类型的语句可以控制程序的执行流程，一种是分支，一种是循环；">
 <meta name="keywords" content="Assembly">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C反汇编 - 分支">
 <meta property="og:url" content="https://systemk1t.github.io/2020/04/30/C反汇编-分支/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="C语言有两种类型的语句可以控制程序的执行流程，一种是分支，一种是循环； 分支ifif(表达书) ​    语句; 12345678910111213141516#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;	int x = 10;	int y = 20;	if(x&amp;gt;y)	&amp;#123;		printf(&quot;x&amp;gt;y\r\n&quot;);	&amp;#125;	if(x&amp;lt">
+<meta property="og:description" content="C语言有两种类型的语句可以控制程序的执行流程，一种是分支，一种是循环；">
 <meta property="og:locale" content="cn">
 <meta property="og:image" content="https://systemk1t.github.io/2020/04/30/C反汇编-分支/0.png">
-<meta property="og:updated_time" content="2020-05-02T08:24:58.143Z">
+<meta property="og:updated_time" content="2020-05-02T11:25:35.412Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C反汇编 - 分支">
-<meta name="twitter:description" content="C语言有两种类型的语句可以控制程序的执行流程，一种是分支，一种是循环； 分支ifif(表达书) ​    语句; 12345678910111213141516#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;	int x = 10;	int y = 20;	if(x&amp;gt;y)	&amp;#123;		printf(&quot;x&amp;gt;y\r\n&quot;);	&amp;#125;	if(x&amp;lt">
+<meta name="twitter:description" content="C语言有两种类型的语句可以控制程序的执行流程，一种是分支，一种是循环；">
 <meta name="twitter:image" content="https://systemk1t.github.io/2020/04/30/C反汇编-分支/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
@@ -263,6 +263,8 @@
       
           
         <p>C语言有两种类型的语句可以控制程序的执行流程，一种是分支，一种是循环；</p>
+ <a id="more"></a>
+
 <h2 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h2><h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><p>if(表达书)</p>
 <p>​    语句;</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x = <span class="number">10</span>;</span><br><span class="line">	<span class="keyword">int</span> y = <span class="number">20</span>;</span><br><span class="line">	<span class="keyword">if</span>(x&gt;y)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"x&gt;y\r\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(x&lt;y)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"x&lt;y\r\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -388,7 +390,7 @@
         <p><span>本文标题:</span><a href="/2020/04/30/C反汇编-分支/">C反汇编 - 分支</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
         <p><span>发布时间:</span>2020年04月30日 - 09时11分</p>
-        <p><span>最后更新:</span>2020年05月02日 - 16时24分</p>
+        <p><span>最后更新:</span>2020年05月02日 - 19时25分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2020/04/30/C反汇编-分支/" title="C反汇编 - 分支">https://systemk1t.github.io/2020/04/30/C反汇编-分支/</a>
             <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/04/30/C反汇编-分支/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
