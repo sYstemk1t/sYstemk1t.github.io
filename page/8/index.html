@@ -218,6 +218,219 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-逆向工程权威指南-栈" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/10/24/逆向工程权威指南-栈/" class="article-date">
+      <time datetime="2019-10-24T06:40:09.000Z" itemprop="datePublished">2019-10-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/24/逆向工程权威指南-栈/">逆向工程权威指南-栈</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p>栈空间是CPU寄存器里的某个指针指向的一片内存区域。在分配栈空间以后，栈指针指向栈底部。push会减少栈指针的数值，而pop会增加栈指针的数值。栈的底部使用的是整个栈的最低地址，即是整个栈的起始内存地址。</p>
+          
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/逆向工程权威指南/">逆向工程权威指南</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reverse/">Reverse</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2019/10/24/逆向工程权威指南-栈/#more">sYstemk1t >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-录屏软件的Crack" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/10/20/录屏软件的Crack/" class="article-date">
+      <time datetime="2019-10-20T12:59:49.000Z" itemprop="datePublished">2019-10-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/20/录屏软件的Crack/">录屏软件的Crack</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <hr>
+<hr>
+<p>对某录屏软件的一次追码</p>
+          
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Reverse/">Reverse</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Crack/">Crack</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2019/10/20/录屏软件的Crack/#more">sYstemk1t >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-插入DLL和挂钩子" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/10/12/插入DLL和挂钩子/" class="article-date">
+      <time datetime="2019-10-12T07:15:42.000Z" itemprop="datePublished">2019-10-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/12/插入DLL和挂钩子/">插入DLL和挂钩子</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <hr>
+<hr>
+<p>在Windows操作系统中，每个进程都有它自己的私有地址空间。当使用指针来引用内存时，指针的值将引用你自己进程的地址空间中的一个内存地址。你的进程不能创建一个其引用属于另一个进程的内存指针。</p>
+<p>Windows在运行的各个进程共享2GB的地址空间，该地址空间从0x80000000至0xFFFFFFFF。只有内存映像文件和系统组件才能映射到这个区域。</p>
+<p>有些情况下，必须打破进程的界限，访问另一个进程的地址空间，这些情况包括：</p>
+<ul>
+<li>当你想要为另一个进程创建的窗口建立子类时</li>
+<li>当你需要调试帮助时(例如，当你需要确定另一个进程正在使用那个DLL时)</li>
+<li>当你想要挂接其他进程时</li>
+</ul>
+<p><strong>当你的DLL进入另一个进程的地址空间，就可以对另一个进程为所欲为</strong></p>
+          
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2019/10/12/插入DLL和挂钩子/#more">sYstemk1t >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-线程本地存储器" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -685,215 +898,6 @@
       
         <p class="article-more-link">
           <a  href="/2019/10/01/DLL基础/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-逆向工程核心原理-32位寄存器" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/09/30/逆向工程核心原理-32位寄存器/" class="article-date">
-      <time datetime="2019-09-30T04:51:33.000Z" itemprop="datePublished">2019-09-30</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/30/逆向工程核心原理-32位寄存器/">逆向工程核心原理-32位寄存器</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <hr>
-<p>32位寄存器相关讲解</p>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/逆向工程核心原理/">逆向工程核心原理</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reverse/">Reverse</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/09/30/逆向工程核心原理-32位寄存器/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-逆向工程核心原理-逆向Hello程序" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/09/30/逆向工程核心原理-逆向Hello程序/" class="article-date">
-      <time datetime="2019-09-30T01:19:52.000Z" itemprop="datePublished">2019-09-30</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/30/逆向工程核心原理-逆向Hello程序/">逆向工程核心原理-逆向Hello程序</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <hr>
-<hr>
-<p>通过调试Hello World来学习Ollydbg调试器</p>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/逆向工程核心原理/">逆向工程核心原理</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reverse/">Reverse</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/09/30/逆向工程核心原理-逆向Hello程序/#more">sYstemk1t >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-52pojie新手Crack" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/09/27/52pojie新手Crack/" class="article-date">
-      <time datetime="2019-09-26T18:56:01.000Z" itemprop="datePublished">2019-09-27</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/27/52pojie新手Crack/">52pojie新手Crack</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <hr>
-<p>52破解找来的新手Crack，检验一下这几天的学习成果</p>
-<ul>
-<li>爆破</li>
-<li>获取正确账号密码</li>
-</ul>
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/52Pojie/">52Pojie</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/09/27/52pojie新手Crack/#more">sYstemk1t >></a>
         </p>
       
       <div class="clearfix"></div>
