@@ -3,22 +3,23 @@
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
-  <title>线程本地存储器 | sYstemk1t&#39;s Blog</title>
+  <title>C反汇编 - 指针数组与数组指针 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
-<meta name="keywords" content="Windows-Kernel">
+  <meta name="description" content="数组指针与指针数组是完全不同的两个概念；">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线程本地存储器">
-<meta property="og:url" content="https://systemk1t.github.io/2019/10/12/线程本地存储器/index.html">
+<meta property="og:title" content="C反汇编 - 指针数组与数组指针">
+<meta property="og:url" content="https://systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
+<meta property="og:description" content="数组指针与指针数组是完全不同的两个概念；">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https://systemk1t.github.io/2019/10/12/线程本地存储器/0.png">
-<meta property="og:updated_time" content="2019-10-12T11:41:44.352Z">
+<meta property="og:image" content="https://systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/1.png">
+<meta property="og:updated_time" content="2020-05-06T04:25:16.362Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="线程本地存储器">
-<meta name="twitter:description" content="C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
-<meta name="twitter:image" content="https://systemk1t.github.io/2019/10/12/线程本地存储器/0.png">
+<meta name="twitter:title" content="C反汇编 - 指针数组与数组指针">
+<meta name="twitter:description" content="数组指针与指针数组是完全不同的两个概念；">
+<meta name="twitter:image" content="https://systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/0.png">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -220,11 +221,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-线程本地存储器" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-C反汇编-指针数组与数组指针" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2019/10/12/线程本地存储器/" class="article-date">
-      <time datetime="2019-10-12T06:39:37.000Z" itemprop="datePublished">2019-10-12</time>
+      <a href="/2020/05/06/C反汇编-指针数组与数组指针/" class="article-date">
+      <time datetime="2020-05-06T03:03:31.000Z" itemprop="datePublished">2020-05-06</time>
 </a>
     </div>
   
@@ -237,7 +238,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      线程本地存储器
+      C反汇编 - 指针数组与数组指针
     </h1>
   
 
@@ -245,16 +246,8 @@
       
       <div class="article-info article-info-post">
         
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Windows核心编程/">Windows核心编程</a>
-    </div>
-
 
         
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Kernel/">Windows-Kernel</a></li></ul>
-    </div>
-
         <div class="clearfix"></div>
       </div>
       
@@ -262,43 +255,29 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <hr>
-<p>C/C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。</p>
+        <p>数组指针与指针数组是完全不同的两个概念；</p>
 <a id="more"></a>
 
-<h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><h3 id="动态TLS"><a href="#动态TLS" class="headerlink" title="动态TLS"></a>动态TLS</h3><p>如需要使用动态TLS，应用程序可以调用一组4个函数。这些函数实际上是DLL用的最多的函数。</p>
-<p>Windows用来管理TLS的内部数据结构：</p>
-<p><img src="//systemk1t.github.io/2019/10/12/线程本地存储器/0.png" alt></p>
-<p>每个标志均可设置为FREE或者INUSE，表示TLS时隙(slot)是否正在使用。微软保证至少TLS_MINIMUM_AVAILBLE位标志是可供使用的。<strong>TLS_MINIMUM_AVAILBLE再WinNT.h中被定为64。</strong></p>
-<p>如果需要使用动态TLS，必须使用TlsAlloc函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">TlsAlloc</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<h2 id="指针数组"><a href="#指针数组" class="headerlink" title="指针数组"></a>指针数组</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> Array[<span class="number">10</span>];	 <span class="comment">//10char</span></span><br><span class="line"><span class="keyword">char</span>* Array[<span class="number">10</span>];	<span class="comment">//10指针(char*)</span></span><br><span class="line">Point* Array[<span class="number">10</span>];	<span class="comment">//10指针(Point*</span></span><br></pre></td></tr></table></figure>
 
-<p>这个函数命令系统对进程中的位标志进行扫描，找到一个FREE标志。随后系统将该标志位从FREE改为INUSE，并且TlsAlloc返回位数组中的标志的索引。DLL(程序)通常将该索引值 保存再一个全局变量中。</p>
-<p>如果TlsAlloc在列表中找不到FREE标志，<strong>它就返回TLS_OUT_OF_INDEXES(在WinBase.h中被定义为0xFFFFFFFF)。当TlsAlloc第一次被调用，系统发现第一个标志是FREE，并且将其标志改为INUSE，同时TlsAlloc返回0。</strong></p>
-<p>当创建一个线程时，便分配一个TLS_MINIMUM_AVAILABEPVOID值得数组，并且将它初始化为0，然后由系统将它与线程联系起来</p>
-<p>在能够将信息存储在线程得PVOID数组之前，必须知道数组中得哪个索引值可以使用，这就是前面调用TslAlloc索要达到得目的</p>
-<p>如果要将一个值放入线程得数组中，可以使用TlsSetValue函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BOOl TslSetValue</span><br><span class="line">(</span><br><span class="line">	DWORD dwTlsIndex,	<span class="comment">//dwTlsIndex参数标识的索引处</span></span><br><span class="line">    PVOID pvTlsValue	<span class="comment">//pvoid数值</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>定义代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* a = <span class="string">"Hello"</span>;</span><br><span class="line">	<span class="keyword">char</span>* b = <span class="string">"sYstemk1t"</span>;</span><br><span class="line">	<span class="keyword">char</span>* Array[<span class="number">2</span>] = &#123;a,b&#125;;</span><br><span class="line">	<span class="keyword">char</span>* Array1[<span class="number">2</span>];</span><br><span class="line">	Array1[<span class="number">1</span>] = (<span class="keyword">char</span>*)<span class="string">'A'</span>;</span><br><span class="line">	Array1[<span class="number">0</span>] = (<span class="keyword">char</span>*)<span class="string">'B'</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span>* Array3[<span class="number">2</span>] = &#123;</span><br><span class="line">        <span class="string">"Hello"</span>,</span><br><span class="line">        <span class="string">"sYstemk1t"</span></span><br><span class="line">        </span><br><span class="line">    &#125;;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>线程在调用TlsSetValue时，可以改变它自己的数组，但是不可以改变其线程的TLS值</p>
-<p>如果要在线程的数组中检索一个值，可以使用TlsGetValue函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PVOID <span class="title">TlsGetValue</span><span class="params">(DWORD dwTlsIndex)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="结构体数组指针"><a href="#结构体数组指针" class="headerlink" title="结构体数组指针"></a>结构体数组指针</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Student</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line">	<span class="keyword">int</span> y;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Student</span> <span class="title">St</span>[10];</span>			<span class="comment">//整体宽度80</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Student</span> <span class="title">St1</span>;</span>				<span class="comment">//8字节</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Student</span> *<span class="title">St2</span>[10];</span>		<span class="comment">//40字节，4字节*10个成员</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Student</span> *<span class="title">St3</span>;</span>			<span class="comment">//4字节，每个指针占用4字节</span></span><br><span class="line">	<span class="keyword">int</span> x = <span class="keyword">sizeof</span>(St);				</span><br><span class="line">	<span class="keyword">int</span> y = <span class="keyword">sizeof</span>(St1);</span><br><span class="line">	<span class="keyword">int</span> z = <span class="keyword">sizeof</span>(St2);</span><br><span class="line">	<span class="keyword">int</span> t = <span class="keyword">sizeof</span>(St3);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>该返回的返回值与索引dwTlsIndex处的TLS时隙联系起来。与TlsSetValue一样，TlsGetValue只查看属于调用线程的数组。</p>
-<p>如果所有的线程都不需要保留TLS时隙的位置的时候，应该调用TlsFree：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">TlsFree</span><span class="params">(DWORD dwTlsIndex)</span></span>;</span><br></pre></td></tr></table></figure>
+<h2 id="数组指针"><a href="#数组指针" class="headerlink" title="数组指针"></a>数组指针</h2><h3 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Array[] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span>* x = Array;				<span class="comment">//类型是int*</span></span><br><span class="line">	<span class="keyword">int</span>* y = (<span class="keyword">int</span>*)&amp;Array;		<span class="comment">//数组指针</span></span><br><span class="line">	<span class="keyword">int</span>(*px)[<span class="number">5</span>];</span><br><span class="line">	<span class="keyword">char</span>(*px1)[<span class="number">5</span>];</span><br><span class="line">	<span class="keyword">int</span>(*px2)[<span class="number">2</span>][<span class="number">5</span>];</span><br><span class="line">	<span class="keyword">char</span>(*px3)[<span class="number">3</span>][<span class="number">3</span>][<span class="number">3</span>];</span><br><span class="line">	px = (<span class="keyword">int</span>(*)[<span class="number">5</span>])<span class="number">1</span>;</span><br><span class="line">	px1 = (<span class="keyword">char</span>(*)[<span class="number">5</span>])<span class="number">1</span>;</span><br><span class="line">	px2 = (<span class="keyword">int</span>(*)[<span class="number">2</span>][<span class="number">5</span>])<span class="number">1</span>;</span><br><span class="line">	px3 = (<span class="keyword">char</span>(*)[<span class="number">3</span>][<span class="number">3</span>][<span class="number">3</span>])<span class="number">1</span>;</span><br><span class="line">	px++;</span><br><span class="line">	px1++;</span><br><span class="line">	px2++;</span><br><span class="line">	px3++;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d %d %d %d\r\n"</span>,px,px1,px2,px3);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>该函数告诉系统时隙不需要保留，由进程的位标志数组管理的INUSE标志再次被设置为FREE。如果线程在后面调用TlsAlloc，那么将来就分配该INUSE标志。如果TlsFree成功，函数将返回TRUE</p>
-<h4 id="使用动态TLS"><a href="#使用动态TLS" class="headerlink" title="使用动态TLS"></a>使用动态TLS</h4><p>如果DLL使用TLS，那么当它用DLL_PROCESS_ATTACH标志为它调用DllMain函数的时候，它也调用TlsAlloc。当调用DLL_PROCESS_DETACH调用DllMain函数的时候，它就调用TlsFree。</p>
-<p><strong>TlsGetValue和TlsSetValue的调用是在调用DLL中包含的函数时进行的</strong></p>
-<h3 id="静态TLS"><a href="#静态TLS" class="headerlink" title="静态TLS"></a>静态TLS</h3><p>静态TLS也能够将数据和线程联系起来，比如说，你想要将起始时间和应用程序创建的每个线程联系起来，使用以下声明：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__declspec(thread) DWORD gt_dwStartTime = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="//systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/0.png" alt></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="一维数组"><a href="#一维数组" class="headerlink" title="一维数组"></a>一维数组</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Array[]= &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span> (*px)[<span class="number">10</span>] = &amp;Array;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">10</span>;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>,(*px)[i]);			<span class="comment">//取值办法，(*px)[i]是下标</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>,px[<span class="number">0</span>][i]);			</span><br><span class="line">		px++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>__declspec（thread）是微软给VC++编译器的一个修改符号，它告诉编译器，对应的变量应该存放可执行文件或DLL文件中它的自己的节中。后面的变量必须声明为函数中(或函数外)的一个全局变量或静态变量。不能声明一个局部变量。<strong>因为局部变量和特定的线程是相关的</strong></p>
-<p>当编译器对程序进行编译的时候，它将所有的TLS变量放入它们自己的节中，这个节的名字就是’.tls’。</p>
-<p>为了使静态TLS能够运行，操作系统必须参与其操作。当你的应用程序加载到内存时，系统就寻找你的可执行文件中的”.tls”节，并且动态地分配一个足够大的内存块，以便存放所有的静态TLS变量。<strong>应用程序中的代码每次引用其中一个变量时，就要转换为已分配内存块中包含的一个内存位置。</strong></p>
-<p><strong>如果进程创建了一个线程，那么系统就要捕获它并且自动分配另外一个内存块，以便存放新县城的静态TLS变量。新线程只拥有对它自己的静态TLS变量的访问权，不能访问属于其他线程的TLS变量</strong></p>
+<h4 id="二维数组"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Array[][<span class="number">3</span>] = &#123;</span><br><span class="line">		&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;,</span><br><span class="line">		&#123;<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>&#125;,</span><br><span class="line">		&#123;<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>&#125;</span><br><span class="line">	</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="keyword">int</span> (*px)[<span class="number">3</span>] = &amp;Array[<span class="number">0</span>];	<span class="comment">//加了&amp;的数组就会升维</span></span><br><span class="line">	 </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">3</span>;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\r\n"</span>,(*px)[i]);</span><br><span class="line">		px++;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p><img src="//systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/2.png" alt></p>
+<h4 id="二维数组控制一维数组"><a href="#二维数组控制一维数组" class="headerlink" title="二维数组控制一维数组"></a>二维数组控制一维数组</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Array[] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span> (*px)[<span class="number">2</span>][<span class="number">2</span>] = (<span class="keyword">int</span> (*)[<span class="number">2</span>][<span class="number">2</span>])Array;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d %d\r\n"</span>,(*px)[<span class="number">0</span>][<span class="number">0</span>],(*px)[<span class="number">0</span>][<span class="number">1</span>]);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d %d\r\n"</span>,(*px)[<span class="number">1</span>][<span class="number">0</span>],(*px)[<span class="number">1</span>][<span class="number">1</span>]);</span><br><span class="line">	px++;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d %d\r\n"</span>,(*px)[<span class="number">1</span>][<span class="number">0</span>],(*px)[<span class="number">1</span>][<span class="number">1</span>]);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="//systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/1.png" alt></p>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p>int <em>p[5] 与 int (</em>p)[5]  有什么区别？</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[] 的优先级高于*  所以先组合成p[<span class="number">5</span>]数组 再由<span class="keyword">int</span> *说明 数组存储的类型 == <span class="keyword">int</span>* p[<span class="number">5</span>];</span><br><span class="line">() 的优先级高于[] 所以*先p先组合成指针 再由<span class="keyword">int</span>[<span class="number">5</span>]说明数组的宽度</span><br></pre></td></tr></table></figure>
       
       
         <div class="page-reward">
@@ -353,13 +332,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2019/10/12/线程本地存储器/">线程本地存储器</a></p>
+        <p><span>本文标题:</span><a href="/2020/05/06/C反汇编-指针数组与数组指针/">C反汇编 - 指针数组与数组指针</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
-        <p><span>发布时间:</span>2019年10月12日 - 14时39分</p>
-        <p><span>最后更新:</span>2019年10月12日 - 19时41分</p>
+        <p><span>发布时间:</span>2020年05月06日 - 11时03分</p>
+        <p><span>最后更新:</span>2020年05月06日 - 12时25分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/10/12/线程本地存储器/" title="线程本地存储器">https://systemk1t.github.io/2019/10/12/线程本地存储器/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/10/12/线程本地存储器/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/06/C反汇编-指针数组与数组指针/" title="C反汇编 - 指针数组与数组指针">https://systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/05/06/C反汇编-指针数组与数组指针/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -372,18 +351,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/10/12/插入DLL和挂钩子/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          插入DLL和挂钩子
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/10/11/内联钩子/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">内联钩子</div>
+    <a href="/2020/05/05/C反汇编-结构体指针/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">C反汇编 - 结构体指针</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -394,7 +364,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TLS"><span class="toc-number">1.</span> <span class="toc-text">TLS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#动态TLS"><span class="toc-number">1.1.</span> <span class="toc-text">动态TLS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#使用动态TLS"><span class="toc-number">1.1.1.</span> <span class="toc-text">使用动态TLS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态TLS"><span class="toc-number">1.2.</span> <span class="toc-text">静态TLS</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#指针数组"><span class="toc-number">1.</span> <span class="toc-text">指针数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义"><span class="toc-number">1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结构体数组指针"><span class="toc-number">1.2.</span> <span class="toc-text">结构体数组指针</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数组指针"><span class="toc-number">2.</span> <span class="toc-text">数组指针</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义-1"><span class="toc-number">2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用"><span class="toc-number">2.2.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#一维数组"><span class="toc-number">2.2.1.</span> <span class="toc-text">一维数组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二维数组"><span class="toc-number">2.2.2.</span> <span class="toc-text">二维数组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二维数组控制一维数组"><span class="toc-number">2.2.3.</span> <span class="toc-text">二维数组控制一维数组</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#区别"><span class="toc-number">3.</span> <span class="toc-text">区别</span></a></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -460,13 +430,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/10/12/插入DLL和挂钩子/" title="上一篇: 插入DLL和挂钩子">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/10/11/内联钩子/" title="下一篇: 内联钩子">
+            <a href="/2020/05/05/C反汇编-结构体指针/" title="下一篇: C反汇编 - 结构体指针">
                 <i class="fa fa-angle-right"></i>
             </a>
         
