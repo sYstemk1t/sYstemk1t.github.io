@@ -3,28 +3,20 @@
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
-  <title>CrackMe009 | sYstemk1t&#39;s Blog</title>
+  <title>C反汇编 - 堆对象 | sYstemk1t&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
-<meta name="keywords" content="CrackMe">
+  <meta name="description" content="对象可以创建在全局变量区，也可以在栈区，也可以在堆区；">
+<meta name="keywords" content="Assembly">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CrackMe009">
-<meta property="og:url" content="https://systemk1t.github.io/2019/09/26/CrackMe009/index.html">
+<meta property="og:title" content="C反汇编 - 堆对象">
+<meta property="og:url" content="https://systemk1t.github.io/2020/05/08/C反汇编-堆对象/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
+<meta property="og:description" content="对象可以创建在全局变量区，也可以在栈区，也可以在堆区；">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/0.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/1.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/3.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/4.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/5.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/6.png">
-<meta property="og:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/7.png">
-<meta property="og:updated_time" content="2019-09-26T04:45:15.987Z">
+<meta property="og:updated_time" content="2020-05-08T06:59:59.565Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CrackMe009">
-<meta name="twitter:description" content="CrackMe009  爆破程序以登陆 追踪正确账号密码">
-<meta name="twitter:image" content="https://systemk1t.github.io/2019/09/26/CrackMe009/0.png">
+<meta name="twitter:title" content="C反汇编 - 堆对象">
+<meta name="twitter:description" content="对象可以创建在全局变量区，也可以在栈区，也可以在堆区；">
   
     <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
   
@@ -226,11 +218,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-CrackMe009" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-C反汇编-堆对象" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2019/09/26/CrackMe009/" class="article-date">
-      <time datetime="2019-09-26T04:22:28.000Z" itemprop="datePublished">2019-09-26</time>
+      <a href="/2020/05/08/C反汇编-堆对象/" class="article-date">
+      <time datetime="2020-05-08T02:38:04.000Z" itemprop="datePublished">2020-05-08</time>
 </a>
     </div>
   
@@ -243,7 +235,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      CrackMe009
+      C反汇编 - 堆对象
     </h1>
   
 
@@ -252,13 +244,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/160个CrackMe/">160个CrackMe</a>
+    <a class="article-category-link" href="/categories/反汇编/">反汇编</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CrackMe/">CrackMe</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Assembly/">Assembly</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -268,32 +260,20 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <hr>
-<p>CrackMe009</p>
-<ul>
-<li>爆破程序以登陆</li>
-<li>追踪正确账号密码</li>
-</ul>
+        <p>对象可以创建在全局变量区，也可以在栈区，也可以在堆区；</p>
 <a id="more"></a>
 
 
 
-<h2 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h2><p>使用PEiD查壳</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/0.png" alt></p>
-<h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h2><p>查找字符串，然后确定关键跳转点</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/1.png" alt></p>
-<p>然后往上翻，发现其实和CrackMe008相似，修改je的方法我们不用，我们用一个其他方法来修改</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/3.png" alt></p>
-<p>然后我们单步向下走，这个时候我设置的账号密码都是1</p>
-<p>上一次EAX寄存器的值都为0，那么这次我们都给它改为FFFFFFFF</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/4.png" alt></p>
-<p>修改：</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/5.png" alt></p>
-<p>然后继续单步向下走：</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/6.png" alt></p>
-<h2 id="追码"><a href="#追码" class="headerlink" title="追码"></a>追码</h2><p>继续上面的，我们可以看到，我们输入了两个1的时候，看变量</p>
-<p><img src="//systemk1t.github.io/2019/09/26/CrackMe009/7.png" alt></p>
-<p>但是这里没有直接显示，然后网上看了一下别人的解释，VB的变量类似于一个结构体。变量的前八个字节，存放该变量的数据类型，第九个字节开始存放的是该变量的地址。</p>
+<h1 id="堆对象"><a href="#堆对象" class="headerlink" title="堆对象"></a>堆对象</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>堆对象其实与malloc为结构体在堆中申请内存无疑，只是修改了关键字，C语言中使用malloc函数，C++中使用new函数；</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Base(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span><br><span class="line">	&#123;</span><br><span class="line">		x = a;</span><br><span class="line">		y = b;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Base构造函数"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	Base()</span><br><span class="line">	&#123;</span><br><span class="line">		;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	~Base()</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt;<span class="string">"析构函数调用了"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> y;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//在堆中创建一个对象</span></span><br><span class="line">	Base* b = <span class="keyword">new</span> Base(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">    <span class="comment">//释放堆中的对象</span></span><br><span class="line">	<span class="keyword">delete</span> b;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="C和C-分别堆申请"><a href="#C和C-分别堆申请" class="headerlink" title="C和C++分别堆申请"></a>C和C++分别堆申请</h2><h3 id="C申请数组"><a href="#C申请数组" class="headerlink" title="C申请数组"></a>C申请数组</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Array[<span class="number">10</span>];</span><br><span class="line">    <span class="keyword">int</span>* p = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>)*<span class="number">10</span>);		<span class="comment">//申请</span></span><br><span class="line">    <span class="built_in">free</span>(p);		<span class="comment">//释放</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="C-申请class类型数组"><a href="#C-申请class类型数组" class="headerlink" title="C++申请class类型数组"></a>C++申请class类型数组</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">int</span> y;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    Base* p = (Base*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(b)*<span class="number">10</span>);	<span class="comment">//C写法</span></span><br><span class="line">    Base* p1 = <span class="keyword">new</span> Base[<span class="number">10</span>];		<span class="comment">//C++写法</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果创建一个对象数组，那么可以使用malloc和free</strong></p>
+<p><strong>有多个对象数组的时候，删除使用delete[]，一个使用delete</strong></p>
 
       
       
@@ -349,13 +329,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2019/09/26/CrackMe009/">CrackMe009</a></p>
+        <p><span>本文标题:</span><a href="/2020/05/08/C反汇编-堆对象/">C反汇编 - 堆对象</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 sYstemk1t 的个人博客">sYstemk1t</a></p>
-        <p><span>发布时间:</span>2019年09月26日 - 12时22分</p>
-        <p><span>最后更新:</span>2019年09月26日 - 12时45分</p>
+        <p><span>发布时间:</span>2020年05月08日 - 10时38分</p>
+        <p><span>最后更新:</span>2020年05月08日 - 14时59分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/26/CrackMe009/" title="CrackMe009">https://systemk1t.github.io/2019/09/26/CrackMe009/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2019/09/26/CrackMe009/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/08/C反汇编-堆对象/" title="C反汇编 - 堆对象">https://systemk1t.github.io/2020/05/08/C反汇编-堆对象/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://systemk1t.github.io/2020/05/08/C反汇编-堆对象/　　作者: sYstemk1t" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -368,18 +348,9 @@
 
 <nav id="article-nav">
   
-    <a href="/2019/09/27/52pojie新手Crack/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          52pojie新手Crack
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/09/26/CrackMe008/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">CrackMe008</div>
+    <a href="/2020/05/07/C反汇编-继承/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">C反汇编 - 继承</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -390,7 +361,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#查壳"><span class="toc-number">1.</span> <span class="toc-text">查壳</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#爆破"><span class="toc-number">2.</span> <span class="toc-text">爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#追码"><span class="toc-number">3.</span> <span class="toc-text">追码</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#堆对象"><span class="toc-number">1.</span> <span class="toc-text">堆对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义"><span class="toc-number">1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C和C-分别堆申请"><span class="toc-number">1.2.</span> <span class="toc-text">C和C++分别堆申请</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#C申请数组"><span class="toc-number">1.2.1.</span> <span class="toc-text">C申请数组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-申请class类型数组"><span class="toc-number">1.2.2.</span> <span class="toc-text">C++申请class类型数组</span></a></li></ol></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -456,13 +427,11 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2019/09/27/52pojie新手Crack/" title="上一篇: 52pojie新手Crack">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2019/09/26/CrackMe008/" title="下一篇: CrackMe008">
+            <a href="/2020/05/07/C反汇编-继承/" title="下一篇: C反汇编 - 继承">
                 <i class="fa fa-angle-right"></i>
             </a>
         
