@@ -409,7 +409,7 @@
 <p>接下来继续按照书上的步骤，输入qqqqqqqqrst，他们的ascii码相差1，作者这么写是为了我们能够快速的在堆栈区中定位数据，当然你也可以随意改写。</p>
 <p>这里我们可以看到内存的排列方式</p>
 <p><img src="/2019/09/23/0day-Security%E6%A0%88%E6%BA%A2%E5%87%BA/13.png" alt></p>
-<p>然后对覆盖到authenticated变量的值进行修改，学过c语言应该知道，strcpy把含有<a href="https://baike.baidu.com/item/' target="_blank" rel="noopener"\0'/9931274">‘\0’</a>结束符的字符串复制到另一个地址空间，返回值的类型为char*。所以进入authenticated的值为0的时候，则表示验证成功。</p>
+<p>然后对覆盖到authenticated变量的值进行修改，学过c语言应该知道，strcpy把含有<a href="https://baike.baidu.com/item/' target=" _blank" rel="noopener" \0' 9931274">‘\0’</a>结束符的字符串复制到另一个地址空间，返回值的类型为char*。所以进入authenticated的值为0的时候，则表示验证成功。</p>
 <p><img src="/2019/09/23/0day-Security%E6%A0%88%E6%BA%A2%E5%87%BA/14.png" alt></p>
 <p>然后再输出8个q，就可以验证成功了。</p>
 <p>我们只要输入一个为8位字符的字符串，那么字符串中隐藏的第9个阶段符NULL就应该能够将authenticated低字节的1覆盖为0，从而绕过验证。</p>
