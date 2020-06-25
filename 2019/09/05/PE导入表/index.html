@@ -118,7 +118,9 @@
 			
 				<li><a href="/" target="_blank">技术笔记</a></li>
 			
-				<li><a href="/tags" target="_blank">随笔</a></li>
+				<li><a href="/archives/" target="_blank">归档</a></li>
+			
+				<li><a href="/tags/" target="_blank">随笔</a></li>
 			
 			</ul>
 		</nav>
@@ -202,6 +204,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -224,11 +228,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/">技术笔记</a></li>
+					<li style="width: 25%"><a href="/">技术笔记</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags">随笔</a></li>
+					<li style="width: 25%"><a href="/archives/">归档</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -705,6 +711,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#何谓导入表"><span class="toc-number">1.</span> <span class="toc-text">何谓导入表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#导入函数"><span class="toc-number">2.</span> <span class="toc-text">导入函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#invoke指令分解"><span class="toc-number">2.1.</span> <span class="toc-text">invoke指令分解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入函数地址"><span class="toc-number">2.2.</span> <span class="toc-text">导入函数地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入函数宿主"><span class="toc-number">2.3.</span> <span class="toc-text">导入函数宿主</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PE中的导入表"><span class="toc-number">3.</span> <span class="toc-text">PE中的导入表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#导入表定位"><span class="toc-number">3.1.</span> <span class="toc-text">导入表定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入表描述符"><span class="toc-number">3.2.</span> <span class="toc-text">导入表描述符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#OriginalFirstThunk"><span class="toc-number">3.2.1.</span> <span class="toc-text">OriginalFirstThunk</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TimeDateSramp"><span class="toc-number">3.2.2.</span> <span class="toc-text">TimeDateSramp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ForwarderChain"><span class="toc-number">3.2.3.</span> <span class="toc-text">ForwarderChain</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Name1"><span class="toc-number">3.2.4.</span> <span class="toc-text">Name1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FirstThunk"><span class="toc-number">3.2.5.</span> <span class="toc-text">FirstThunk</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入表的双桥结构"><span class="toc-number">3.3.</span> <span class="toc-text">导入表的双桥结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Hint"><span class="toc-number">3.3.1.</span> <span class="toc-text">Hint</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Name1-1"><span class="toc-number">3.3.2.</span> <span class="toc-text">Name1</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入函数地址表"><span class="toc-number">3.4.</span> <span class="toc-text">导入函数地址表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构造调用同一个DLL文件的多个函数的导入表"><span class="toc-number">3.5.</span> <span class="toc-text">构造调用同一个DLL文件的多个函数的导入表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#导入表编程"><span class="toc-number">4.</span> <span class="toc-text">导入表编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#导入表遍历的思路"><span class="toc-number">4.1.</span> <span class="toc-text">导入表遍历的思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编写函数-getlmportInfo"><span class="toc-number">4.2.</span> <span class="toc-text">编写函数 __getlmportInfo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行测试"><span class="toc-number">4.3.</span> <span class="toc-text">运行测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#绑定导入"><span class="toc-number">5.</span> <span class="toc-text">绑定导入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#绑定导入机制"><span class="toc-number">5.1.</span> <span class="toc-text">绑定导入机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#绑定导入数据定位"><span class="toc-number">5.2.</span> <span class="toc-text">绑定导入数据定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#绑定导入数据结构"><span class="toc-number">5.3.</span> <span class="toc-text">绑定导入数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TimeDataStamp"><span class="toc-number">5.3.1.</span> <span class="toc-text">TimeDataStamp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OffsetMoudleName"><span class="toc-number">5.3.2.</span> <span class="toc-text">OffsetMoudleName</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NumberOfMoudleForwarderRefs"><span class="toc-number">5.3.3.</span> <span class="toc-text">NumberOfMoudleForwarderRefs</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#绑定导入分析实例"><span class="toc-number">5.4.</span> <span class="toc-text">绑定导入分析实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手工重组导入表"><span class="toc-number">6.</span> <span class="toc-text">手工重组导入表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常用注册表API"><span class="toc-number">6.1.</span> <span class="toc-text">常用注册表API</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>

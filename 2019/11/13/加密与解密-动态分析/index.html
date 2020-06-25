@@ -84,7 +84,9 @@
 			
 				<li><a href="/" target="_blank">技术笔记</a></li>
 			
-				<li><a href="/tags" target="_blank">随笔</a></li>
+				<li><a href="/archives/" target="_blank">归档</a></li>
+			
+				<li><a href="/tags/" target="_blank">随笔</a></li>
 			
 			</ul>
 		</nav>
@@ -168,6 +170,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -190,11 +194,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/">技术笔记</a></li>
+					<li style="width: 25%"><a href="/">技术笔记</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags">随笔</a></li>
+					<li style="width: 25%"><a href="/archives/">归档</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -518,6 +524,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OllyDbg"><span class="toc-number">1.</span> <span class="toc-text">OllyDbg</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OD界面"><span class="toc-number">1.1.</span> <span class="toc-text">OD界面</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#反汇编面板"><span class="toc-number">1.1.1.</span> <span class="toc-text">反汇编面板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#信息面板窗口"><span class="toc-number">1.1.2.</span> <span class="toc-text">信息面板窗口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据面板窗口"><span class="toc-number">1.1.3.</span> <span class="toc-text">数据面板窗口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#寄存器面板窗口"><span class="toc-number">1.1.4.</span> <span class="toc-text">寄存器面板窗口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#栈面板窗口"><span class="toc-number">1.1.5.</span> <span class="toc-text">栈面板窗口</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OllyDbg配置"><span class="toc-number">1.2.</span> <span class="toc-text">OllyDbg配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#界面设置"><span class="toc-number">1.2.1.</span> <span class="toc-text">界面设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#调试设置"><span class="toc-number">1.2.2.</span> <span class="toc-text">调试设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#加载符号文件"><span class="toc-number">1.2.3.</span> <span class="toc-text">加载符号文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#关联到右键快捷菜单"><span class="toc-number">1.2.4.</span> <span class="toc-text">关联到右键快捷菜单</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本操作"><span class="toc-number">1.3.</span> <span class="toc-text">基本操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#准备工作"><span class="toc-number">1.3.1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#加载目标文件调试"><span class="toc-number">1.3.2.</span> <span class="toc-text">加载目标文件调试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单步跟踪"><span class="toc-number">1.3.3.</span> <span class="toc-text">单步跟踪</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#断点"><span class="toc-number">1.3.4.</span> <span class="toc-text">断点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分析"><span class="toc-number">1.3.5.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爆破"><span class="toc-number">1.3.6.</span> <span class="toc-text">爆破</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常用断点"><span class="toc-number">1.4.</span> <span class="toc-text">常用断点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#INT-3断点"><span class="toc-number">1.4.1.</span> <span class="toc-text">INT 3断点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#硬件断点"><span class="toc-number">1.4.2.</span> <span class="toc-text">硬件断点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#内存断点"><span class="toc-number">1.4.3.</span> <span class="toc-text">内存断点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#内存访问一次性断点"><span class="toc-number">1.4.4.</span> <span class="toc-text">内存访问一次性断点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#消息断点"><span class="toc-number">1.4.5.</span> <span class="toc-text">消息断点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#条件断点"><span class="toc-number">1.4.6.</span> <span class="toc-text">条件断点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#按寄存器条件中断"><span class="toc-number">1.4.6.1.</span> <span class="toc-text">按寄存器条件中断</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#按存储器条件中断"><span class="toc-number">1.4.6.2.</span> <span class="toc-text">按存储器条件中断</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#插件"><span class="toc-number">1.5.</span> <span class="toc-text">插件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MDebug"><span class="toc-number">2.</span> <span class="toc-text">MDebug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WinDbg"><span class="toc-number">3.</span> <span class="toc-text">WinDbg</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>

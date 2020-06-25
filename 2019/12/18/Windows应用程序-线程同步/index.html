@@ -78,7 +78,9 @@
 			
 				<li><a href="/" target="_blank">技术笔记</a></li>
 			
-				<li><a href="/tags" target="_blank">随笔</a></li>
+				<li><a href="/archives/" target="_blank">归档</a></li>
+			
+				<li><a href="/tags/" target="_blank">随笔</a></li>
 			
 			</ul>
 		</nav>
@@ -162,6 +164,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -184,11 +188,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/">技术笔记</a></li>
+					<li style="width: 25%"><a href="/">技术笔记</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags">随笔</a></li>
+					<li style="width: 25%"><a href="/archives/">归档</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -571,6 +577,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本原理"><span class="toc-number">1.</span> <span class="toc-text">基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#线程同步过程"><span class="toc-number">1.1.</span> <span class="toc-text">线程同步过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同步对象"><span class="toc-number">1.2.</span> <span class="toc-text">同步对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#等待函数"><span class="toc-number">1.3.</span> <span class="toc-text">等待函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#WaitForSingleObject"><span class="toc-number">1.3.1.</span> <span class="toc-text">WaitForSingleObject</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WaitForMultipleObjects"><span class="toc-number">1.3.2.</span> <span class="toc-text">WaitForMultipleObjects</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步对象-1"><span class="toc-number">2.</span> <span class="toc-text">同步对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用事件对象"><span class="toc-number">2.1.</span> <span class="toc-text">使用事件对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CreateEvent"><span class="toc-number">2.1.1.</span> <span class="toc-text">CreateEvent</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CreateEventEx"><span class="toc-number">2.1.2.</span> <span class="toc-text">CreateEventEx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SetEvnet"><span class="toc-number">2.1.3.</span> <span class="toc-text">SetEvnet</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ResetEvent"><span class="toc-number">2.1.4.</span> <span class="toc-text">ResetEvent</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OpenEvent"><span class="toc-number">2.1.5.</span> <span class="toc-text">OpenEvent</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用互斥对象"><span class="toc-number">2.2.</span> <span class="toc-text">使用互斥对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CreateMutex"><span class="toc-number">2.2.1.</span> <span class="toc-text">CreateMutex</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OpenMutex"><span class="toc-number">2.2.2.</span> <span class="toc-text">OpenMutex</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ReleaseMutex"><span class="toc-number">2.2.3.</span> <span class="toc-text">ReleaseMutex</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用信号量控制访问共享数据的线程数量"><span class="toc-number">2.3.</span> <span class="toc-text">使用信号量控制访问共享数据的线程数量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CreateSemaphore"><span class="toc-number">2.3.1.</span> <span class="toc-text">CreateSemaphore</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OpenSemaphore"><span class="toc-number">2.3.2.</span> <span class="toc-text">OpenSemaphore</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ReleaseSemapHore"><span class="toc-number">2.3.3.</span> <span class="toc-text">ReleaseSemapHore</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用可等待计时器"><span class="toc-number">2.4.</span> <span class="toc-text">使用可等待计时器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CreateWaitableTimer"><span class="toc-number">2.4.1.</span> <span class="toc-text">CreateWaitableTimer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SetWaitableTimer"><span class="toc-number">2.4.2.</span> <span class="toc-text">SetWaitableTimer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TimerAPCProc"><span class="toc-number">2.4.3.</span> <span class="toc-text">TimerAPCProc</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CancelWaitableTimer"><span class="toc-number">2.4.4.</span> <span class="toc-text">CancelWaitableTimer</span></a></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>

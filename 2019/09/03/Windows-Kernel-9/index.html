@@ -84,7 +84,9 @@
 			
 				<li><a href="/" target="_blank">技术笔记</a></li>
 			
-				<li><a href="/tags" target="_blank">随笔</a></li>
+				<li><a href="/archives/" target="_blank">归档</a></li>
+			
+				<li><a href="/tags/" target="_blank">随笔</a></li>
 			
 			</ul>
 		</nav>
@@ -168,6 +170,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -190,11 +194,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/">技术笔记</a></li>
+					<li style="width: 25%"><a href="/">技术笔记</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags">随笔</a></li>
+					<li style="width: 25%"><a href="/archives/">归档</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -705,6 +711,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#线程与内核对象的同步"><span class="toc-number">1.</span> <span class="toc-text">线程与内核对象的同步</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#等待函数"><span class="toc-number">1.1.</span> <span class="toc-text">等待函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#成功等待的副作用"><span class="toc-number">1.2.</span> <span class="toc-text">成功等待的副作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件内核对象"><span class="toc-number">1.3.</span> <span class="toc-text">事件内核对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#等待定时器内核对象"><span class="toc-number">1.4.</span> <span class="toc-text">等待定时器内核对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#让可等待的计时器添加APC调用"><span class="toc-number">1.4.1.</span> <span class="toc-text">让可等待的计时器添加APC调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#计时器的剩余问题"><span class="toc-number">1.4.2.</span> <span class="toc-text">计时器的剩余问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#信号内核对象"><span class="toc-number">1.5.</span> <span class="toc-text">信号内核对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#互斥量内核对象"><span class="toc-number">1.6.</span> <span class="toc-text">互斥量内核对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#释放问题"><span class="toc-number">1.6.1.</span> <span class="toc-text">释放问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#互斥对象与关键代码段的比较"><span class="toc-number">1.6.2.</span> <span class="toc-text">互斥对象与关键代码段的比较</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程同步对象速查表"><span class="toc-number">1.7.</span> <span class="toc-text">线程同步对象速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他的线程同步函数"><span class="toc-number">1.8.</span> <span class="toc-text">其他的线程同步函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#异步设备I-O"><span class="toc-number">1.8.1.</span> <span class="toc-text">异步设备I&#x2F;O</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitForInputIdle"><span class="toc-number">1.8.2.</span> <span class="toc-text">WaitForInputIdle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MsgWaitForMultipleObjects-Ex"><span class="toc-number">1.8.3.</span> <span class="toc-text">MsgWaitForMultipleObjects(Ex)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitForDebugEvent"><span class="toc-number">1.8.4.</span> <span class="toc-text">WaitForDebugEvent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SignalObjectAndWait函数"><span class="toc-number">1.8.5.</span> <span class="toc-text">SignalObjectAndWait函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用等待链遍历API来检测死锁"><span class="toc-number">1.8.6.</span> <span class="toc-text">使用等待链遍历API来检测死锁</span></a></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>

@@ -80,7 +80,9 @@
 			
 				<li><a href="/" target="_blank">技术笔记</a></li>
 			
-				<li><a href="/tags" target="_blank">随笔</a></li>
+				<li><a href="/archives/" target="_blank">归档</a></li>
+			
+				<li><a href="/tags/" target="_blank">随笔</a></li>
 			
 			</ul>
 		</nav>
@@ -164,6 +166,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -186,11 +190,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/">技术笔记</a></li>
+					<li style="width: 25%"><a href="/">技术笔记</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags">随笔</a></li>
+					<li style="width: 25%"><a href="/archives/">归档</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -671,6 +677,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#线程"><span class="toc-number">1.</span> <span class="toc-text">线程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#何时创建线程"><span class="toc-number">1.1.</span> <span class="toc-text">何时创建线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#何时不能创建线程"><span class="toc-number">1.2.</span> <span class="toc-text">何时不能创建线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编写第一个线程函数"><span class="toc-number">1.3.</span> <span class="toc-text">编写第一个线程函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CreateThread函数"><span class="toc-number">1.4.</span> <span class="toc-text">CreateThread函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#psa"><span class="toc-number">1.4.1.</span> <span class="toc-text">psa</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cbStack"><span class="toc-number">1.4.2.</span> <span class="toc-text">cbStack</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pfnStartAddr和pvParam"><span class="toc-number">1.4.3.</span> <span class="toc-text">pfnStartAddr和pvParam</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fdwCreate"><span class="toc-number">1.4.4.</span> <span class="toc-text">fdwCreate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pdwThreadID"><span class="toc-number">1.4.5.</span> <span class="toc-text">pdwThreadID</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的终止"><span class="toc-number">1.5.</span> <span class="toc-text">线程的终止</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#线程函数返回"><span class="toc-number">1.5.1.</span> <span class="toc-text">线程函数返回</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ExitThread函数"><span class="toc-number">1.5.2.</span> <span class="toc-text">ExitThread函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TerminateThread函数"><span class="toc-number">1.5.3.</span> <span class="toc-text">TerminateThread函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程终止运行时"><span class="toc-number">1.5.4.</span> <span class="toc-text">进程终止运行时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程终止运行时发生的操作"><span class="toc-number">1.5.5.</span> <span class="toc-text">线程终止运行时发生的操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的一些性质"><span class="toc-number">1.6.</span> <span class="toc-text">线程的一些性质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-C-运行期库的考虑"><span class="toc-number">1.7.</span> <span class="toc-text">C&#x2F;C++运行期库的考虑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oops"><span class="toc-number">1.8.</span> <span class="toc-text">oops</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#错误的调用了CreateThread"><span class="toc-number">1.8.1.</span> <span class="toc-text">错误的调用了CreateThread</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不应该调用的C-C-运行期函数"><span class="toc-number">1.8.2.</span> <span class="toc-text">不应该调用的C&#x2F;C++运行期函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对自己的ID概念应该有所了解"><span class="toc-number">1.9.</span> <span class="toc-text">对自己的ID概念应该有所了解</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>

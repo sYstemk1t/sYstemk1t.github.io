@@ -90,7 +90,9 @@
 			
 				<li><a href="/" target="_blank">技术笔记</a></li>
 			
-				<li><a href="/tags" target="_blank">随笔</a></li>
+				<li><a href="/archives/" target="_blank">归档</a></li>
+			
+				<li><a href="/tags/" target="_blank">随笔</a></li>
 			
 			</ul>
 		</nav>
@@ -174,6 +176,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -196,11 +200,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/">技术笔记</a></li>
+					<li style="width: 25%"><a href="/">技术笔记</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags">随笔</a></li>
+					<li style="width: 25%"><a href="/archives/">归档</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -608,6 +614,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#导出表的作用"><span class="toc-number">1.</span> <span class="toc-text">导出表的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分析动态链接库功能"><span class="toc-number">1.1.</span> <span class="toc-text">分析动态链接库功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获得到处函数地址"><span class="toc-number">1.2.</span> <span class="toc-text">获得到处函数地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构造含导出表的PE文件"><span class="toc-number">2.</span> <span class="toc-text">构造含导出表的PE文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DLL源代码"><span class="toc-number">2.1.</span> <span class="toc-text">DLL源代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编写def文件"><span class="toc-number">2.2.</span> <span class="toc-text">编写def文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译和链接"><span class="toc-number">2.3.</span> <span class="toc-text">编译和链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编写头文件"><span class="toc-number">2.4.</span> <span class="toc-text">编写头文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用导出函数"><span class="toc-number">2.5.</span> <span class="toc-text">使用导出函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#导出表数据结构"><span class="toc-number">3.</span> <span class="toc-text">导出表数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#导出表定位"><span class="toc-number">3.1.</span> <span class="toc-text">导出表定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导出目录-IMAGE-EXPORT-DIERCTORY"><span class="toc-number">3.2.</span> <span class="toc-text">导出目录 IMAGE_EXPORT_DIERCTORY</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#nName"><span class="toc-number">3.2.1.</span> <span class="toc-text">nName</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NumberOfFunctions"><span class="toc-number">3.2.2.</span> <span class="toc-text">NumberOfFunctions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NumberOfNanems"><span class="toc-number">3.2.3.</span> <span class="toc-text">NumberOfNanems</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AddressOfFunctions"><span class="toc-number">3.2.4.</span> <span class="toc-text">AddressOfFunctions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#nBase"><span class="toc-number">3.2.5.</span> <span class="toc-text">nBase</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AddressOfnameOrdinals"><span class="toc-number">3.2.6.</span> <span class="toc-text">AddressOfnameOrdinals</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#导出表实例分析"><span class="toc-number">3.2.7.</span> <span class="toc-text">导出表实例分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#导出表编程"><span class="toc-number">4.</span> <span class="toc-text">导出表编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#根据标号查询函数地址"><span class="toc-number">4.1.</span> <span class="toc-text">根据标号查询函数地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#根据名字查找函数地址"><span class="toc-number">4.2.</span> <span class="toc-text">根据名字查找函数地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#遍历导出表"><span class="toc-number">4.3.</span> <span class="toc-text">遍历导出表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#导出表的应用"><span class="toc-number">5.</span> <span class="toc-text">导出表的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#修改导出结构中的函数地址"><span class="toc-number">5.1.</span> <span class="toc-text">修改导出结构中的函数地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#覆盖函数地址部分的指令代码"><span class="toc-number">5.2.</span> <span class="toc-text">覆盖函数地址部分的指令代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导出私有函数"><span class="toc-number">5.3.</span> <span class="toc-text">导出私有函数</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
