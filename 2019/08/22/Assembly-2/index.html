@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=cn>
+<html lang=zh>
 <head>
   <meta charset="utf-8">
   
@@ -17,14 +17,14 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>Assembly-2 | Hexo</title>
+  <title>Assembly-2 | sYstemk1t&#39;s Blog</title>
   <meta name="description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Assembly-2">
 <meta property="og:url" content="https://systemk1t.github.io/2019/08/22/Assembly-2/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
 <meta property="og:description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip">
-<meta property="og:locale" content="cn">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/6.png">
 <meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/7.png">
 <meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/8.png">
@@ -65,10 +65,10 @@
       
       
       <div class="profile-block text-center">
-        <a id="avatar" href="https://github.com/cofess" target="_blank">
+        <a id="avatar" href="https://github.com/sYstemk1t" target="_blank">
           <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
         </a>
-        <h2 id="name" class="hidden-xs hidden-sm">昵称</h2>
+        <h2 id="name" class="hidden-xs hidden-sm">sYstemk1t</h2>
         <h3 id="title" class="hidden-xs hidden-sm hidden-md">Web Developer &amp; Designer</h3>
         <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shenzhen, China</small>
       </div>
@@ -77,7 +77,7 @@
 
     <form class="search-form sidebar-form">
         <div class="input-group">
-            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
             <span class="input-group-btn">
                 <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
             </span>
@@ -87,7 +87,7 @@
   <div class="ins-search-mask"></div>
   <div class="ins-search-container">
     <div class="ins-input-wrapper">
-      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
       <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
     </div>
     <div class="ins-section-wrapper">
@@ -106,7 +106,7 @@
       </button>
     </div>
     <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
-      <ul class="nav navbar-nav main-nav ">
+      <ul class="nav navbar-nav main-nav menu-highlight">
         
         
         <li class="menu-item menu-item-home">
@@ -114,7 +114,7 @@
             
             <i class="icon icon-home-fill"></i>
             
-            <span class="menu-title">Home</span>
+            <span class="menu-title">首页</span>
           </a>
         </li>
         
@@ -124,7 +124,7 @@
             
             <i class="icon icon-archives-fill"></i>
             
-            <span class="menu-title">Archives</span>
+            <span class="menu-title">归档</span>
           </a>
         </li>
         
@@ -134,7 +134,7 @@
             
             <i class="icon icon-folder"></i>
             
-            <span class="menu-title">Categories</span>
+            <span class="menu-title">分类</span>
           </a>
         </li>
         
@@ -144,7 +144,7 @@
             
             <i class="icon icon-tags"></i>
             
-            <span class="menu-title">Tags</span>
+            <span class="menu-title">标签</span>
           </a>
         </li>
         
@@ -154,7 +154,7 @@
             
             <i class="icon icon-project"></i>
             
-            <span class="menu-title">Repository</span>
+            <span class="menu-title">项目</span>
           </a>
         </li>
         
@@ -164,7 +164,7 @@
             
             <i class="icon icon-book-fill"></i>
             
-            <span class="menu-title">Books</span>
+            <span class="menu-title">书单</span>
           </a>
         </li>
         
@@ -174,7 +174,7 @@
             
             <i class="icon icon-friendship"></i>
             
-            <span class="menu-title">Links</span>
+            <span class="menu-title">友链</span>
           </a>
         </li>
         
@@ -184,7 +184,7 @@
             
             <i class="icon icon-cup-fill"></i>
             
-            <span class="menu-title">About</span>
+            <span class="menu-title">关于</span>
           </a>
         </li>
         
@@ -193,13 +193,9 @@
 	
     <ul class="social-links">
     	
-        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        <li><a href="https://github.com/sYstemk1t" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
         
-        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
-        
-        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
-        
-        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        <li><a href="http://weibo.com/sYstemk1t" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
         
         <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
         
@@ -214,7 +210,7 @@
   <div class="slimContent">
     
       <div class="widget">
-    <h3 class="widget-title">Board</h3>
+    <h3 class="widget-title">公告</h3>
     <div class="widget-body">
         <div id="board">
             <div class="content">
@@ -227,7 +223,7 @@
     
       
   <div class="widget">
-    <h3 class="widget-title">Categories</h3>
+    <h3 class="widget-title">分类</h3>
     <div class="widget-body">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/0day-Security/">0day-Security</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/0day%E5%AE%89%E5%85%A8%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">0day安全软件漏洞分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/160%E4%B8%AACrackMe/">160个CrackMe</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/">16位汇编</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/52Pojie/">52Pojie</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Bugku/">Bugku</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E6%8A%80%E6%9C%AF%E8%A7%A3%E5%AF%86/">C++反汇编与逆向技术解密</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/">C++黑客编程</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CrackMe/">CrackMe</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C%E4%B8%8E%E6%8C%87%E9%92%88/">C与指针</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80/">C程序设计语言</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Reverse/">Reverse</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows-PE%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/">Windows PE权威指南</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows-API%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/">Windows-API开发详解</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows32%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E8%AE%BE%E8%AE%A1/">Windows32汇编语言设计</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Windows内核原理与实现</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/">Windows核心编程</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86/">加密与解密</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/">汇编语言</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80-%E5%9F%BA%E4%BA%8Ex86%E5%A4%84%E7%90%86%E5%99%A8/">汇编语言-基于x86处理器</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/">逆向工程权威指南</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/">逆向工程核心原理</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/">黑客编程</a><span class="category-list-count">3</span></li></ul>
     </div>
@@ -237,7 +233,7 @@
     
       
   <div class="widget">
-    <h3 class="widget-title">Tags</h3>
+    <h3 class="widget-title">标签</h3>
     <div class="widget-body">
       <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/0day%E5%AE%89%E5%85%A8-%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90%E6%8A%80%E6%9C%AF/" rel="tag">0day安全:软件安全分析技术</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Assembly/" rel="tag">Assembly</a><span class="tag-list-count">36</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/" rel="tag">CTF</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Crack/" rel="tag">Crack</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CrackMe/" rel="tag">CrackMe</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HOOK/" rel="tag">HOOK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hacker/" rel="tag">Hacker</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reverse/" rel="tag">Reverse</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scoket/" rel="tag">Scoket</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulnerability/" rel="tag">Vulnerability</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Kernel/" rel="tag">Windows-Kernel</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-PE/" rel="tag">Windows-PE</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">8</span></li></ul>
     </div>
@@ -247,7 +243,7 @@
     
       
   <div class="widget">
-    <h3 class="widget-title">Tag Cloud</h3>
+    <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
       <a href="/tags/0day%E5%AE%89%E5%85%A8-%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90%E6%8A%80%E6%9C%AF/" style="font-size: 13px;">0day安全:软件安全分析技术</a> <a href="/tags/Assembly/" style="font-size: 14px;">Assembly</a> <a href="/tags/C/" style="font-size: 13px;">C++</a> <a href="/tags/CTF/" style="font-size: 13.17px;">CTF</a> <a href="/tags/Crack/" style="font-size: 13px;">Crack</a> <a href="/tags/CrackMe/" style="font-size: 13.5px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 13px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.33px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 13.83px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 13.17px;">Scoket</a> <a href="/tags/Vulnerability/" style="font-size: 13px;">Vulnerability</a> <a href="/tags/Windows-Kernel/" style="font-size: 13.67px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 13.17px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 13.33px;">c</a>
     </div>
@@ -256,9 +252,9 @@
     
       
   <div class="widget">
-    <h3 class="widget-title">Archive</h3>
+    <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -266,11 +262,21 @@
     
       
   <div class="widget">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">最新文章</h3>
     <div class="widget-body">
-      <ul class="recent-post-list list-unstyled no-thumbnail">
+      <ul class="recent-post-list list-unstyled ">
         
           <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/05/15/16%E4%BD%8D%E6%B1%87%E7%BC%96-%E5%A4%8D%E4%B9%A0/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
             
             <div class="item-inner">
               <p class="item-category">
@@ -287,6 +293,16 @@
           
           <li>
             
+            <div class="item-thumb">
+              <a href="/2020/05/12/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%A8%A1%E6%9D%BF/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
             <div class="item-inner">
               <p class="item-category">
                 <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
@@ -301,6 +317,16 @@
           </li>
           
           <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
             
             <div class="item-inner">
               <p class="item-category">
@@ -317,6 +343,16 @@
           
           <li>
             
+            <div class="item-thumb">
+              <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%BC%95%E7%94%A8/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
             <div class="item-inner">
               <p class="item-category">
                 <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
@@ -331,6 +367,16 @@
           </li>
           
           <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A0%86%E5%AF%B9%E8%B1%A1/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
             
             <div class="item-inner">
               <p class="item-category">
@@ -391,8 +437,15 @@
 
 
         
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/22/Assembly-2/#comments" class="article-comment-link">Comments</a></span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/22/Assembly-2/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
@@ -569,12 +622,12 @@
   <div class="panel-body">
     <figure class="media">
       <div class="media-left">
-        <a href="https://github.com/cofess" target="_blank" class="img-burn thumb-sm visible-lg">
+        <a href="https://github.com/sYstemk1t" target="_blank" class="img-burn thumb-sm visible-lg">
           <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
         </a>
       </div>
       <div class="media-body">
-        <h3 class="media-heading"><a href="https://github.com/cofess" target="_blank"><span class="text-dark">昵称</span><small class="ml-1x">Web Developer &amp; Designer</small></a></h3>
+        <h3 class="media-heading"><a href="https://github.com/sYstemk1t" target="_blank"><span class="text-dark">sYstemk1t</span><small class="ml-1x">Web Developer &amp; Designer</small></a></h3>
         <div>个人简介。</div>
       </div>
     </figure>
@@ -602,12 +655,12 @@
   <ul class="pager pull-left">
     
     <li class="prev">
-      <a href="/2019/08/24/Windows-Kernel-3/" title="Windows-Kernel-3"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+      <a href="/2019/08/24/Windows-Kernel-3/" title="Windows-Kernel-3"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
     </li>
     
     
     <li class="next">
-      <a href="/2019/08/22/Assembly-1/" title="Assembly-1"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2019/08/22/Assembly-1/" title="Assembly-1"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
@@ -615,7 +668,7 @@
   
   
   <!-- Button trigger modal -->
-  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
   <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
     <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
   </div> -->
@@ -637,31 +690,31 @@
       <div class="modal-body">
         <div class="donate-box">
           <div class="donate-head">
-            <p>Maybe you could buy me a cup of coffee.</p>
+            <p>感谢您的支持，我会继续努力的!</p>
           </div>
           <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade active in" id="alipay">
               <div class="donate-payimg">
-                <img src="/images/donate/alipayimg.png" alt="Scan Qrcode" title="Scan" />
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
               </div>
-              <p class="text-muted mv">Scan this qrcode</p>
-              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="wechatpay">
               <div class="donate-payimg">
-                <img src="/images/donate/wechatpayimg.png" alt="Scan Qrcode" title="Scan" />
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
               </div>
-              <p class="text-muted mv">Scan this qrcode</p>
-              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
             </div>
           </div>
           <div class="donate-footer">
             <ul class="nav nav-tabs nav-justified" role="tablist">
               <li role="presentation" class="active">
-                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
               </li>
               <li role="presentation" class="">
-                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
               </li>
             </ul>
           </div>
@@ -680,13 +733,9 @@
 	
     <ul class="social-links">
     	
-        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        <li><a href="https://github.com/sYstemk1t" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
         
-        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
-        
-        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
-        
-        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        <li><a href="http://weibo.com/sYstemk1t" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
         
         <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
         
@@ -714,11 +763,11 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 (function (window) {
     var INSIGHT_CONFIG = {
         TRANSLATION: {
-            POSTS: 'Posts',
-            PAGES: 'Pages',
-            CATEGORIES: 'Categories',
-            TAGS: 'Tags',
-            UNTITLED: '(Untitled)',
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
         },
         ROOT_URL: '/',
         CONTENT_URL: '/content.json',
@@ -735,6 +784,8 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
 
 
 
