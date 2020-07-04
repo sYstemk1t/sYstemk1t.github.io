@@ -50,6 +50,8 @@
   
   
   
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
   
 <meta name="generator" content="Hexo 4.2.0"></head>
 
@@ -151,16 +153,6 @@
             <i class="icon icon-project"></i>
             
             <span class="menu-title">项目</span>
-          </a>
-        </li>
-        
-        
-        <li class="menu-item menu-item-books">
-          <a href="/books">
-            
-            <i class="icon icon-book-fill"></i>
-            
-            <span class="menu-title">书单</span>
           </a>
         </li>
         
@@ -440,6 +432,13 @@
 		</span>
 	</span>
 
+
+	<span class="article-read hidden-xs">
+    	<i class="icon icon-eye-fill" aria-hidden="true"></i>
+    	<span id="/2019/12/20/CrackMe001/" class="leancloud_visitors"  data-flag-title="CrackMe001">
+			<span class="leancloud-visitors-count">0</span>
+		</span>
+    </span>
 
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/12/20/CrackMe001/#comments" class="article-comment-link">评论</a></span>
         
@@ -734,20 +733,49 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
   new Valine({
     el: '#vcomments',
     verify: false,
-    notify: false,
-    appId: '',
-    appKey: '',
-    placeholder: 'Just go go',
+    notify: true,
+    appId: 'JcSiFF2mDS0kpQsDOg0YX2Sl-gzGzoHsz',
+    appKey: 'Oeu4OhnUB7htmhvO7y01Qid0',
+    placeholder: '来都来了，写点什么吧！',
     avatar: 'mm',
     meta: meta,
     pageSize: '10' || 10,
-    visitor: false
+    visitor: true
   });
   </script>
 
      
 
 
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
 
 
 
