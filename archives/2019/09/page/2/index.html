@@ -1,564 +1,120 @@
-<!DOCTYPE html>
-<html lang=zh>
-<head>
-  <meta charset="utf-8">
-  
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="Cache-Control" content="no-transform" />
-  <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="format-detection" content="telephone=no,email=no,adress=no">
-  <!-- Color theme for statusbar -->
-  <meta name="theme-color" content="#000000" />
-  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
-  <meta http-equiv="window-target" content="_top" />
-  
-  
-  <title>归档: 2019/9 | sYstemk1t&#39;s Blog</title>
-  <meta property="og:type" content="website">
-<meta property="og:title" content="sYstemk1t&#39;s Blog">
-<meta property="og:url" content="https://systemk1t.github.io/archives/2019/09/page/2/index.html">
-<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="sYstemk1t">
-<meta name="twitter:card" content="summary">
-  <!-- Canonical links -->
-  <link rel="canonical" href="https://systemk1t.github.io/archives/2019/09/page/2/index.html">
-  
-    <link rel="alternate" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png" type="image/x-icon">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="generator" content="Hexo 4.2.0"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><meta name="keywords" content="null"><meta name="description" content="C++,技术分享,Win32,逆向工程,安卓,"><meta name="author" content="removeif"><title>归档: 2019/9 - sYstemk1t&#039;s Blog</title><meta description="C++,技术分享,Win32,逆向工程,安卓,"><meta property="og:type" content="website"><meta property="og:title" content="sYstemk1t"><meta property="og:url" content="https://systemk1t.github.io/"><meta property="og:site_name" content="sYstemk1t"><meta property="og:description" content="C++,技术分享,Win32,逆向工程,安卓,"><meta property="og:locale" content="zh_CN"><meta property="article:author" content="removeif"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://systemk1t.github.io/img/avatar.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://sYstemk1t.github.io/"},"headline":"sYstemk1t","image":["https://systemk1t.github.io/img/avatar.png"],"author":{"@type":"Person","name":"removeif"},"description":"C++,技术分享,Win32,逆向工程,安卓,"}</script><link rel="alternative" href="/atom.xml" title="sYstemk1t&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro|Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&amp;amp;subset=latin,latin-ext|Inconsolata|Itim|Lobster.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.12/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/pace/1.0.2/pace.min.js"></script><link rel="stylesheet" href="/css/style.css"><script src="https://cdnjs.loli.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="/js/globalUtils.js"></script><link rel="stylesheet" href="/live2d/waifu.css"><script type="text/javascript" async src="/live2d/autoload.js"></script></head><body class="is-3-column has-navbar-fixed-top"><nav class="navbar navbar-main is-fixed-top"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="sYstemk1t&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/media">影音</a><a class="navbar-item" href="/album">相册</a><a class="navbar-item" href="/friend">友链</a><a class="navbar-item" href="/self-talking">碎碎念</a><a class="navbar-item" href="/message">留言</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/sYstemk1t"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a><a class="navbar-item" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a></div></div></div></nav><script type="text/javascript" src="/js/theme-setting.js"></script><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><div style="post-calendar-pre"><div id="post-calendar"></div></div><script type="text/javascript" src="/js/echarts.min.js"></script><script type="text/javascript">function loadEchart(){
+            if($("#post-calendar").length <= 0){
+                return;
+            }
+            $.getScript('/js/echarts.min.js', function () { 
+            let myChart = echarts.init(document.getElementById('post-calendar'));
+            let option = {
+            title: {
+                top: 0,
+                text: '文章贡献',
+                left: '42%',
+                textStyle: {
+                    color: '#3C4858'
+                }
+            },
+            tooltip: {
+                padding: 10,
+                backgroundColor: '#555',
+                borderColor: '#777',
+                borderWidth: 1,
+                formatter: function (obj) {
+                    var value = obj.value;
+                    return '<div style="font-size: 14px;">' + value[0] + '：' + value[1] + '</div>';
+                }
+            },
+            visualMap: {
+                show: true,
+                showLabel: true,
+                categories: [0, 1, 2, 3, 4],
+                calculable: true,
+                inRange: {
+                    symbol: 'rect',
+                    color: ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196127']
+                },
+                itemWidth: 12,
+                itemHeight: 12,
+                orient: 'horizontal',
+                left: '35%',
+                bottom: 0
+            },
+            calendar: [{
+                left: 'center',
+                range: ["2019-11-22", "2020-07-22"],
+                cellSize: [13, 13],
+                splitLine: {
+                    show: false
+                },
+                itemStyle: {
+                    color: '#196127',
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                yearLabel: {
+                    show: false
+                },
+                monthLabel: {
+                    nameMap: 'cn',
+                    fontSize: 11
+                },
+                dayLabel: {
+                    formatter: '{start}  1st',
+                    nameMap: 'cn',
+                    fontSize: 11
+                }
+            }],
+            series: [{
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
+                calendarIndex: 0,
+                data: [["2019-11-22", 1], ["2019-11-23", 0], ["2019-11-24", 0], ["2019-11-25", 1], ["2019-11-26", 0], ["2019-11-27", 0], ["2019-11-28", 0], ["2019-11-29", 1], ["2019-11-30", 0], ["2019-12-01", 0], ["2019-12-02", 0], ["2019-12-03", 0], ["2019-12-04", 0], ["2019-12-05", 0], ["2019-12-06", 0], ["2019-12-07", 0], ["2019-12-08", 0], ["2019-12-09", 0], ["2019-12-10", 1], ["2019-12-11", 0], ["2019-12-12", 1], ["2019-12-13", 1], ["2019-12-14", 0], ["2019-12-15", 0], ["2019-12-16", 0], ["2019-12-17", 0], ["2019-12-18", 1], ["2019-12-19", 0], ["2019-12-20", 2], ["2019-12-21", 1], ["2019-12-22", 0], ["2019-12-23", 0], ["2019-12-24", 0], ["2019-12-25", 0], ["2019-12-26", 0], ["2019-12-27", 1], ["2019-12-28", 0], ["2019-12-29", 0], ["2019-12-30", 0], ["2019-12-31", 1], ["2020-01-01", 1], ["2020-01-02", 0], ["2020-01-03", 0], ["2020-01-04", 0], ["2020-01-05", 0], ["2020-01-06", 0], ["2020-01-07", 0], ["2020-01-08", 0], ["2020-01-09", 0], ["2020-01-10", 0], ["2020-01-11", 0], ["2020-01-12", 0], ["2020-01-13", 0], ["2020-01-14", 0], ["2020-01-15", 0], ["2020-01-16", 0], ["2020-01-17", 0], ["2020-01-18", 0], ["2020-01-19", 0], ["2020-01-20", 0], ["2020-01-21", 0], ["2020-01-22", 0], ["2020-01-23", 0], ["2020-01-24", 0], ["2020-01-25", 0], ["2020-01-26", 0], ["2020-01-27", 0], ["2020-01-28", 0], ["2020-01-29", 0], ["2020-01-30", 0], ["2020-01-31", 0], ["2020-02-01", 0], ["2020-02-02", 0], ["2020-02-03", 0], ["2020-02-04", 0], ["2020-02-05", 0], ["2020-02-06", 0], ["2020-02-07", 0], ["2020-02-08", 0], ["2020-02-09", 0], ["2020-02-10", 0], ["2020-02-11", 0], ["2020-02-12", 0], ["2020-02-13", 0], ["2020-02-14", 0], ["2020-02-15", 0], ["2020-02-16", 0], ["2020-02-17", 0], ["2020-02-18", 0], ["2020-02-19", 0], ["2020-02-20", 0], ["2020-02-21", 0], ["2020-02-22", 0], ["2020-02-23", 0], ["2020-02-24", 0], ["2020-02-25", 0], ["2020-02-26", 0], ["2020-02-27", 0], ["2020-02-28", 0], ["2020-02-29", 0], ["2020-03-01", 0], ["2020-03-02", 0], ["2020-03-03", 0], ["2020-03-04", 0], ["2020-03-05", 0], ["2020-03-06", 0], ["2020-03-07", 0], ["2020-03-08", 0], ["2020-03-09", 0], ["2020-03-10", 0], ["2020-03-11", 0], ["2020-03-12", 0], ["2020-03-13", 0], ["2020-03-14", 0], ["2020-03-15", 0], ["2020-03-16", 0], ["2020-03-17", 0], ["2020-03-18", 0], ["2020-03-19", 0], ["2020-03-20", 0], ["2020-03-21", 0], ["2020-03-22", 0], ["2020-03-23", 0], ["2020-03-24", 0], ["2020-03-25", 0], ["2020-03-26", 0], ["2020-03-27", 0], ["2020-03-28", 0], ["2020-03-29", 0], ["2020-03-30", 0], ["2020-03-31", 0], ["2020-04-01", 0], ["2020-04-02", 1], ["2020-04-03", 0], ["2020-04-04", 0], ["2020-04-05", 0], ["2020-04-06", 0], ["2020-04-07", 1], ["2020-04-08", 1], ["2020-04-09", 0], ["2020-04-10", 0], ["2020-04-11", 0], ["2020-04-12", 0], ["2020-04-13", 0], ["2020-04-14", 3], ["2020-04-15", 1], ["2020-04-16", 0], ["2020-04-17", 2], ["2020-04-18", 0], ["2020-04-19", 0], ["2020-04-20", 0], ["2020-04-21", 0], ["2020-04-22", 0], ["2020-04-23", 0], ["2020-04-24", 1], ["2020-04-25", 0], ["2020-04-26", 0], ["2020-04-27", 0], ["2020-04-28", 2], ["2020-04-29", 5], ["2020-04-30", 1], ["2020-05-01", 0], ["2020-05-02", 1], ["2020-05-03", 1], ["2020-05-04", 1], ["2020-05-05", 4], ["2020-05-06", 5], ["2020-05-07", 2], ["2020-05-08", 2], ["2020-05-09", 0], ["2020-05-10", 0], ["2020-05-11", 1], ["2020-05-12", 1], ["2020-05-13", 0], ["2020-05-14", 0], ["2020-05-15", 0], ["2020-05-16", 0], ["2020-05-17", 0], ["2020-05-18", 0], ["2020-05-19", 0], ["2020-05-20", 0], ["2020-05-21", 0], ["2020-05-22", 0], ["2020-05-23", 0], ["2020-05-24", 0], ["2020-05-25", 0], ["2020-05-26", 0], ["2020-05-27", 0], ["2020-05-28", 0], ["2020-05-29", 0], ["2020-05-30", 0], ["2020-05-31", 0], ["2020-06-01", 0], ["2020-06-02", 0], ["2020-06-03", 0], ["2020-06-04", 0], ["2020-06-05", 0], ["2020-06-06", 0], ["2020-06-07", 0], ["2020-06-08", 0], ["2020-06-09", 0], ["2020-06-10", 0], ["2020-06-11", 0], ["2020-06-12", 0], ["2020-06-13", 0], ["2020-06-14", 0], ["2020-06-15", 0], ["2020-06-16", 0], ["2020-06-17", 0], ["2020-06-18", 0], ["2020-06-19", 0], ["2020-06-20", 0], ["2020-06-21", 0], ["2020-06-22", 0], ["2020-06-23", 0], ["2020-06-24", 0], ["2020-06-25", 0], ["2020-06-26", 0], ["2020-06-27", 0], ["2020-06-28", 0], ["2020-06-29", 0], ["2020-06-30", 0], ["2020-07-01", 0], ["2020-07-02", 0], ["2020-07-03", 0], ["2020-07-04", 0], ["2020-07-05", 0], ["2020-07-06", 0], ["2020-07-07", 0], ["2020-07-08", 0], ["2020-07-09", 0], ["2020-07-10", 0], ["2020-07-11", 0], ["2020-07-12", 0], ["2020-07-13", 0], ["2020-07-14", 0], ["2020-07-15", 0], ["2020-07-16", 0], ["2020-07-17", 0], ["2020-07-18", 0], ["2020-07-19", 0], ["2020-07-20", 0], ["2020-07-21", 0], ["2020-07-22", 1]]
+            }]
 
-  
-  
-  
-    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
-  
-  
-<meta name="generator" content="Hexo 4.2.0"></head>
-
-
-<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
-  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-  <div class="slimContent">
-    <div class="navbar-header">
-      
-      
-      <div class="profile-block text-center">
-        <a id="avatar" href="https://github.com/sYstemk1t" target="_blank">
-          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
-        </a>
-        <h2 id="name" class="hidden-xs hidden-sm">sYstemk1t</h2>
-        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Web Developer &amp; Designer</h3>
-        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shenzhen, China</small>
-      </div>
-      
-      <div class="search" id="search-form-wrap">
-
-    <form class="search-form sidebar-form">
-        <div class="input-group">
-            <input type="text" class="search-form-input form-control" placeholder="搜索" />
-            <span class="input-group-btn">
-                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
-            </span>
-        </div>
-    </form>
-    <div class="ins-search">
-  <div class="ins-search-mask"></div>
-  <div class="ins-search-container">
-    <div class="ins-input-wrapper">
-      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
-      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-    </div>
-    <div class="ins-section-wrapper">
-      <div class="ins-section-container"></div>
-    </div>
-  </div>
-</div>
-
-
-</div>
-      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
-    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
-      <ul class="nav navbar-nav main-nav menu-highlight">
-        
-        
-        <li class="menu-item menu-item-home">
-          <a href="/.">
-            
-            <i class="icon icon-home-fill"></i>
-            
-            <span class="menu-title">首页</span>
-          </a>
-        </li>
-        
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives">
-            
-            <i class="icon icon-archives-fill"></i>
-            
-            <span class="menu-title">归档</span>
-          </a>
-        </li>
-        
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories">
-            
-            <i class="icon icon-folder"></i>
-            
-            <span class="menu-title">分类</span>
-          </a>
-        </li>
-        
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags">
-            
-            <i class="icon icon-tags"></i>
-            
-            <span class="menu-title">标签</span>
-          </a>
-        </li>
-        
-        
-        <li class="menu-item menu-item-repository">
-          <a href="/repository">
-            
-            <i class="icon icon-project"></i>
-            
-            <span class="menu-title">项目</span>
-          </a>
-        </li>
-        
-        
-        <li class="menu-item menu-item-links">
-          <a href="/links">
-            
-            <i class="icon icon-friendship"></i>
-            
-            <span class="menu-title">友链</span>
-          </a>
-        </li>
-        
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about">
-            
-            <i class="icon icon-cup-fill"></i>
-            
-            <span class="menu-title">关于</span>
-          </a>
-        </li>
-        
-      </ul>
-      
-	
-    <ul class="social-links">
-    	
-        <li><a href="https://github.com/sYstemk1t" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
-        
-        <li><a href="http://weibo.com/sYstemk1t" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
-        
-        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
-        
-    </ul>
-
-    </nav>
-  </div>
-</header>
-
-  
-    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
-  <div class="slimContent">
-    
-      <div class="widget">
-    <h3 class="widget-title">公告</h3>
-    <div class="widget-body">
-        <div id="board">
-            <div class="content">
-                <p>欢迎交流与分享经验!</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-    
-      
-  <div class="widget">
-    <h3 class="widget-title">分类</h3>
-    <div class="widget-body">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Bugku/">Bugku</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/">C++黑客编程</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CrackMe/">CrackMe</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C%E4%B8%8E%E6%8C%87%E9%92%88/">C与指针</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80/">C程序设计语言</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows-PE%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/">Windows PE权威指南</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows-API%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/">Windows-API开发详解</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows32%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E8%AE%BE%E8%AE%A1/">Windows32汇编语言设计</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Windows内核原理与实现</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/">Windows核心编程</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86/">加密与解密</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/">汇编语言</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80-%E5%9F%BA%E4%BA%8Ex86%E5%A4%84%E7%90%86%E5%99%A8/">汇编语言-基于x86处理器</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/">逆向工程权威指南</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/">逆向工程核心原理</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/">黑客编程</a><span class="category-list-count">3</span></li></ul>
-    </div>
-  </div>
-
-
-    
-      
-  <div class="widget">
-    <h3 class="widget-title">标签</h3>
-    <div class="widget-body">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Assembly/" rel="tag">Assembly</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/" rel="tag">CTF</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CrackMe/" rel="tag">CrackMe</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HOOK/" rel="tag">HOOK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hacker/" rel="tag">Hacker</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reverse/" rel="tag">Reverse</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scoket/" rel="tag">Scoket</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Kernel/" rel="tag">Windows-Kernel</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-PE/" rel="tag">Windows-PE</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">8</span></li></ul>
-    </div>
-  </div>
-
-
-    
-      
-  <div class="widget">
-    <h3 class="widget-title">标签云</h3>
-    <div class="widget-body tagcloud">
-      <a href="/tags/Assembly/" style="font-size: 14px;">Assembly</a> <a href="/tags/C/" style="font-size: 13px;">C++</a> <a href="/tags/CTF/" style="font-size: 13.2px;">CTF</a> <a href="/tags/CrackMe/" style="font-size: 13.4px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 13px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.6px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 13.8px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 13.2px;">Scoket</a> <a href="/tags/Windows-Kernel/" style="font-size: 13.8px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 13.2px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 13.6px;">c</a>
-    </div>
-  </div>
-
-    
-      
-  <div class="widget">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li></ul>
-    </div>
-  </div>
-
-
-    
-      
-  <div class="widget">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget-body">
-      <ul class="recent-post-list list-unstyled ">
-        
-          <li>
-            
-            <div class="item-thumb">
-              <a href="/2020/05/12/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%A8%A1%E6%9D%BF/" class="thumb">
-    
-    
-        <span class="thumb-image thumb-none"></span>
-    
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
-              </p>
-              <p class="item-title">
-                <a href="/2020/05/12/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%A8%A1%E6%9D%BF/" class="title">C反汇编 - 模板</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2020-05-12T06:39:06.000Z" itemprop="datePublished">2020-05-12</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-thumb">
-              <a href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" class="thumb">
-    
-    
-        <span class="thumb-image thumb-none"></span>
-    
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
-              </p>
-              <p class="item-title">
-                <a href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" class="title">C反汇编 - 多态</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2020-05-11T14:26:33.000Z" itemprop="datePublished">2020-05-11</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-thumb">
-              <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%BC%95%E7%94%A8/" class="thumb">
-    
-    
-        <span class="thumb-image thumb-none"></span>
-    
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
-              </p>
-              <p class="item-title">
-                <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%BC%95%E7%94%A8/" class="title">C反汇编 - 引用</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2020-05-08T07:07:58.000Z" itemprop="datePublished">2020-05-08</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-thumb">
-              <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A0%86%E5%AF%B9%E8%B1%A1/" class="thumb">
-    
-    
-        <span class="thumb-image thumb-none"></span>
-    
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
-              </p>
-              <p class="item-title">
-                <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A0%86%E5%AF%B9%E8%B1%A1/" class="title">C反汇编 - 堆对象</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2020-05-08T02:38:04.000Z" itemprop="datePublished">2020-05-08</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-thumb">
-              <a href="/2020/05/07/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E7%BB%A7%E6%89%BF/" class="thumb">
-    
-    
-        <span class="thumb-image thumb-none"></span>
-    
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
-              </p>
-              <p class="item-title">
-                <a href="/2020/05/07/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E7%BB%A7%E6%89%BF/" class="title">C反汇编 - 继承</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2020-05-07T06:59:15.000Z" itemprop="datePublished">2020-05-07</time>
-              </p>
-            </div>
-          </li>
-          
-      </ul>
-    </div>
-  </div>
-  
-
-    
-  </div>
-</aside>
-
-  
-  
-<main class="main" role="main">
-  	<article class="content article article-archives article-type-list" itemscope="">
-	    <header class="article-header">
-	      <h1 itemprop="title">归档: 2019/9</h1>
-	      <p class="text-muted">共 3 篇文章</p>
-	    </header>
-	    <div class="article-body">
-	      
-  
-  
-    
-    
-      
-      
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2019" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2019
-            </a>
-            <!-- <a href="/archives/2019" class="archive-year">2019</a> -->
-          </h3>
-        </div>
-        <div id="collapse2019" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2019">
-        <div class="panel-body">
-          <div class="collection">
-    
-    
-<a href="/2019/09/03/Windows-Kernel-8/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-09-03T02:02:55.000Z" itemprop="datePublished">2019-09-03</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Windows-Kernel-8
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/09/02/Assembly-x86-2/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-09-02T01:38:52.000Z" itemprop="datePublished">2019-09-02</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Assembly-x86-2
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/09/01/Assembly-x86-1/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-09-01T05:37:42.000Z" itemprop="datePublished">2019-09-01</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Assembly-x86-1
-</a>
-
-
-  
-  
-    </div></div></div></section>
-  
-
-	    </div>
-  	</article>
-  	
-    
-    <nav class="bar bar-footer clearfix" data-stick-bottom>
-        <div class="bar-inner">
-        <ul class="pager pull-left">
-            
-            <li class="prev">
-                <a href="/archives/2019/09/">
-                    <i class="icon icon-angle-left"></i>
-                    上一页
-                </a>
-            </li>
-            
-            
-            <li class="next disabled">
-                <a href="javascript:;">
-                    下一页
-                    <i class="icon icon-angle-right"></i>                    
-                </a>
-            </li>
-            
-        </ul>
-        <div class="total-article bar-right">Page 2 of 2</div>
-        </div>
-    </nav>
-    
- 	
-</main>
-
-  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
-	
-	
-    <ul class="social-links">
-    	
-        <li><a href="https://github.com/sYstemk1t" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
-        
-        <li><a href="http://weibo.com/sYstemk1t" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
-        
-        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
-        
-    </ul>
-
-    <div class="copyright">
-    	
-        <div class="publishby">
-        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
-        </div>
-    </div>
-</footer>
-  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
-<script>
-window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
-</script>
-
-<script src="/js/plugin.min.js"></script>
-
-
-<script src="/js/application.js"></script>
-
-
-    <script>
-(function (window) {
-    var INSIGHT_CONFIG = {
-        TRANSLATION: {
-            POSTS: '文章',
-            PAGES: '页面',
-            CATEGORIES: '分类',
-            TAGS: '标签',
-            UNTITLED: '(未命名)',
-        },
-        ROOT_URL: '/',
-        CONTENT_URL: '/content.json',
-    };
-    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-})(window);
-</script>
-
-<script src="/js/insight.js"></script>
-
-
-
-
-
-
-
-
-  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
-  <script>
-  //利用 FancyBox 实现点击图片放大
-  $(document).ready(function() {
-    $('article img').not('[hidden]').not('.panel-body img').each(function() {
-      var $image = $(this);
-      var imageCaption = $image.attr('alt');
-      var $imageWrapLink = $image.parent('a');
-      if ($imageWrapLink.length < 1) {
-        var src = this.getAttribute('src');
-        var idx = src.lastIndexOf('?');
-        if (idx != -1) {
-          src = src.substring(0, idx);
-        }
-        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
-      }
-      $imageWrapLink.attr('data-fancybox', 'images');
-      if (imageCaption) {
-        $imageWrapLink.attr('data-caption', imageCaption);
-      }
-    });
-    $().fancybox({
-      selector: '[data-fancybox="images"]',
-      hash: false,
-      loop: false,
-    });
-  });
-  </script>
-
-
-
-
-
-</body>
-</html>
+        };
+        myChart.setOption(option);})};loadEchart();</script><div><h3 class="tag is-primary">九月 2019</h3><div class="timeline"><article class="media"><div class="media-content size-small"><p><time dateTime="2019-09-03T02:02:55.000Z">2019-09-03</time></p><p class="title is-6"><a class="link-muted" href="/2019/09/03/Windows-Kernel-8/">Windows-Kernel-8</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/">Windows核心编程</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2019-09-02T01:38:52.000Z">2019-09-02</time></p><p class="title is-6"><a class="link-muted" href="/2019/09/02/Assembly-x86-2/">Assembly-x86-2</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80-%E5%9F%BA%E4%BA%8Ex86%E5%A4%84%E7%90%86%E5%99%A8/">汇编语言-基于x86处理器</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2019-09-01T05:37:42.000Z">2019-09-01</time></p><p class="title is-6"><a class="link-muted" href="/2019/09/01/Assembly-x86-1/">Assembly-x86-1</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80-%E5%9F%BA%E4%BA%8Ex86%E5%A4%84%E7%90%86%E5%99%A8/">汇编语言-基于x86处理器</a></p></div></article></div><br></div></div></div><nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/archives/2019/09/">上一页</a></div><div class="pagination-next is-invisible is-hidden-mobile"><a href="/archives/2019/09/page/3/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/archives/2019/09/">1</a></li><li><a class="pagination-link is-current" href="/archives/2019/09/page/2/">2</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><!--!--><div class="card widget"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="is-rounded" src="/img/avatar.png" alt="sYstemk1t"></figure><p class="title is-size-4 is-block line-height-inherit">sYstemk1t</p><p class="is-size-6 is-block">尚未执佩剑，转眼即江湖</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>阿尔及利亚</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">117</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">20</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">12</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://weibo.com/u/3050419984" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile"><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/removeif"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Weibo" href="https://weibo.com/u/3050419984"><i class="fab fa-weibo"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Email" href="mailto:removeif@163.com"><i class="fa fa-envelope"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Next" href="https://removeif.github.io/remove.io"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a></div><div><hr><p id="hitokoto">:D 一言句子获取中...</p><script type="text/javascript" defer>function getYiyan(){
+                                $.getJSON("https://v1.hitokoto.cn/", function (data) {
+                                if(data){
+                                    $('#hitokoto').html("");
+                                    $('#hitokoto').append("<strong style='color: #3273dc;'>"+data.hitokoto+"</strong>"+
+                                    "<p>"+"来源《"+data.from+"》</p><p>提供者-"+data.creator+"</p>");
+                                }});}
+                                $(function (){getYiyan();$('#hitokoto').click(function(){getYiyan();})});</script></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget"><div class="card-content"><h3 class="menu-label">最新评论</h3><span class="body_hot_comment">加载中，最新评论有1分钟缓存...</span></div></div><div class="card widget"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content size-small"><p><time dateTime="2020-07-21T18:47:28.000Z">2020-07-22</time></p><p class="title is-6"><a class="link-muted" href="/2020/07/22/C-%E6%9C%89%E5%8F%82%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">C++ - 有参构造函数</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91/">编程开发</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-12T06:39:06.000Z">2020-05-12</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/12/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%A8%A1%E6%9D%BF/">C反汇编 - 模板</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-11T14:26:33.000Z">2020-05-11</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/">C反汇编 - 多态</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-08T07:07:58.000Z">2020-05-08</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%BC%95%E7%94%A8/">C反汇编 - 引用</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-08T02:38:04.000Z">2020-05-08</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A0%86%E5%AF%B9%E8%B1%A1/">C反汇编 - 堆对象</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/categories/Bugku/"><span class="level-start"><span class="level-item">Bugku</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C-%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/"><span class="level-start"><span class="level-item">C++黑客编程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/CrackMe/"><span class="level-start"><span class="level-item">CrackMe</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C%E4%B8%8E%E6%8C%87%E9%92%88/"><span class="level-start"><span class="level-item">C与指针</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80/"><span class="level-start"><span class="level-item">C程序设计语言</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows-PE%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">Windows PE权威指南</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows-API%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/"><span class="level-start"><span class="level-item">Windows-API开发详解</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows32%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E8%AE%BE%E8%AE%A1/"><span class="level-start"><span class="level-item">Windows32汇编语言设计</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/"><span class="level-start"><span class="level-item">Windows内核原理与实现</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><a class="level is-mobile is-marginless" href="/categories/"><span class="level-start"><span class="level-item">查看全部&gt;&gt;</span></span></a></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/05/"><span class="level-start"><span class="level-item">五月 2020</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/04/"><span class="level-start"><span class="level-item">四月 2020</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/01/"><span class="level-start"><span class="level-item">一月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/12/"><span class="level-start"><span class="level-item">十二月 2019</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><a class="level is-mobile is-marginless" href="/archives/"><span class="level-start"><span class="level-item">查看全部&gt;&gt;</span></span></a></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Assembly/"><span class="tag">Assembly</span><span class="tag is-grey-lightest">35</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Reverse/"><span class="tag">Reverse</span><span class="tag is-grey-lightest">24</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows-Kernel/"><span class="tag">Windows-Kernel</span><span class="tag is-grey-lightest">24</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hacker/"><span class="tag">Hacker</span><span class="tag is-grey-lightest">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/c/"><span class="tag">c</span><span class="tag is-grey-lightest">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CrackMe/"><span class="tag">CrackMe</span><span class="tag is-grey-lightest">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CTF/"><span class="tag">CTF</span><span class="tag is-grey-lightest">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Scoket/"><span class="tag">Scoket</span><span class="tag is-grey-lightest">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows-PE/"><span class="tag">Windows-PE</span><span class="tag is-grey-lightest">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C-%E5%BC%80%E5%8F%91/"><span class="tag">C++开发</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/HOOK/"><span class="tag">HOOK</span><span class="tag is-grey-lightest">1</span></a></div></div></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=removeifFeedsId&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="removeifFeedsId" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button is-primary" type="submit" value="订阅"></div></div><p class="help">输入邮箱开始订阅，更博后邮件通知！</p></form></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="sYstemk1t&#039;s Blog" height="28"></a><p class="size-small"><span>&copy; 2020 sYstemk1t</span>  Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>,Modify by <a href="https://github.com/removeif/hexo-theme-amazing" target="_blank">removeif</a> <br><span>© 版权说明：[本网站所有内容均收集于互联网或自己创作,<br />&nbsp;&nbsp;&nbsp;&nbsp;方便于网友与自己学习交流，如有侵权，请<a href="/message" target="_blank">留言</a>，立即处理]<br /></span><span><span id="statistic-times">loading...</span><script>function createTime(time) {
+            var n = new Date(time);
+            now.setTime(now.getTime() + 250),
+                days = (now - n) / 1e3 / 60 / 60 / 24,
+                dnum = Math.floor(days),
+                hours = (now - n) / 1e3 / 60 / 60 - 24 * dnum,
+                hnum = Math.floor(hours),
+            1 == String(hnum).length && (hnum = "0" + hnum),
+                minutes = (now - n) / 1e3 / 60 - 1440 * dnum - 60 * hnum,
+                mnum = Math.floor(minutes),
+            1 == String(mnum).length && (mnum = "0" + mnum),
+                seconds = (now - n) / 1e3 - 86400 * dnum - 3600 * hnum - 60 * mnum,
+                snum = Math.round(seconds),
+            1 == String(snum).length && (snum = "0" + snum),
+                document.getElementById("statistic-times").innerHTML = "❤️本站自 <strong>"+time.split(" ")[0].replace(/\//g,".")+"</strong> 已运行 <strong>" + dnum + "</strong> 天 <strong>" + hnum + "</strong> 小时 <strong>" + mnum + "</strong> 分 <strong>" + snum + "</strong> 秒！❤️";
+        }var now = new Date();setInterval("createTime('2018/11/11 00:00:00')", 250,"");</script><br></span><div class="size-small"><span>❤️感谢 <strong><span id="busuanzi_value_site_uv">99+</span></strong> 小伙伴的 <strong><span id="busuanzi_value_site_pv">99+</span></strong> 次光临！❤️</span></div></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/removeif"><i class="fab fa-github"></i></a></p></div><div class="sideMusic"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="/js/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script><meting-js style="width: auto;height: 2000px;" server="netease" type="playlist" id="2364053447" theme="#2980b9" loop="all" autoplay="false" order="list" storageName="aplayer-setting" lrctype="0" list-max-height="400px" fixed="true"></meting-js></div></div></div></div></footer><script src="https://cdnjs.loli.net/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            site: {
+                url: 'https://systemk1t.github.io',
+                external_link: {"enable":true,"exclude":[]}
+            },
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="https://cdnjs.loli.net/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" defer></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back-to-top.js" defer></script><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.12/js/lightgallery-all.min.js" defer></script><script src="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><!--!--><!--!--><!--!--><script src="/js/toc.js" defer></script><script src="/js/main.js" defer></script><script>$.getScript('/js/comment-issue-data.js',function(){loadIssueData('46a9f3481b46ea0129d8','79c7c9cb847e141757d7864453bcbf89f0655b24','removeif','blog_comment',false);})</script><link rel="stylesheet" href="/css/insight.css"><div class="searchbox ins-search"><div class="searchbox-container ins-search-container"><div class="searchbox-input-wrapper"><input class="searchbox-input ins-search-input" type="text" placeholder="想要查找什么..."><span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span></div><div class="searchbox-result-wrapper ins-section-wrapper"><div class="ins-section-container"></div></div></div></div><script>(function (window) {
+            var INSIGHT_CONFIG = {
+                TRANSLATION: {
+                    POSTS: '文章',
+                    PAGES: '页面',
+                    CATEGORIES: '分类',
+                    TAGS: '标签',
+                    UNTITLED: '(无标题)',
+                },
+                CONTENT_URL: '/content.json',
+            };
+            window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+        })(window);</script><script src="/js/insight.js" defer></script></body></html>
