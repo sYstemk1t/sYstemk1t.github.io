@@ -1,5 +1,463 @@
-<!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="generator" content="Hexo 4.2.0"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><meta name="keywords" content="[object Object]"><meta name="description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip"><meta name="author" content="removeif"><title>Assembly-2 - sYstemk1t&#039;s Blog</title><meta description="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip"><meta property="og:type" content="article"><meta property="og:title" content="Assembly-2"><meta property="og:url" content="https://systemk1t.github.io/2019/08/22/Assembly-2/"><meta property="og:site_name" content="sYstemk1t"><meta property="og:description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip"><meta property="og:locale" content="zh_CN"><meta property="article:published_time" content="2019-08-22T00:14:21.000Z"><meta property="article:modified_time" content="2019-08-22T01:01:26.408Z"><meta property="article:author" content="removeif"><meta property="article:tag" content="Assembly"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://systemk1t.github.io/img/avatar.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://systemk1t.github.io/2019/08/22/Assembly-2/"},"headline":"Assembly-2","image":["https://systemk1t.github.io/img/avatar.png"],"datePublished":"2019-08-22T00:14:21.000Z","dateModified":"2019-08-22T01:01:26.408Z","author":{"@type":"Person","name":"removeif"},"description":"寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip"}</script><link rel="alternative" href="/atom.xml" title="sYstemk1t&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/img/favicon.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro|Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&amp;amp;subset=latin,latin-ext|Inconsolata|Itim|Lobster.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.12/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/pace/1.0.2/pace.min.js"></script><link rel="stylesheet" href="/css/style.css"><script src="https://cdnjs.loli.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="/js/globalUtils.js"></script><link rel="stylesheet" href="/live2d/waifu.css"><script type="text/javascript" async src="/live2d/autoload.js"></script></head><body class="is-3-column has-navbar-fixed-top"><nav class="navbar navbar-main is-fixed-top"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="sYstemk1t&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/media">影音</a><a class="navbar-item" href="/album">相册</a><a class="navbar-item" href="/friend">友链</a><a class="navbar-item" href="/self-talking">碎碎念</a><a class="navbar-item" href="/message">留言</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/sYstemk1t"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a><a class="navbar-item" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a></div></div></div></nav><script type="text/javascript" src="/js/theme-setting.js"></script><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><i class="far fa-calendar-plus"> </i>2019-08-22  <a class="commentCountImg" href="/2019/08/22/Assembly-2/#comment-container"><span class="display-none-class">0d8d6d0e3f711f05f221ec1f781b4c55</span><i class="far fa-comment-dots"></i> <span class="commentCount" id="0d8d6d0e3f711f05f221ec1f781b4c55">99+</span>  </a><span class="level-item"><i class="far fa-clock"> </i>20 分钟  <i class="fas fa-pencil-alt"> </i>3.0 k</span><span class="level-item" id="busuanzi_container_page_pv"><i class="far fa-eye"></i>&nbsp;&nbsp;<span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Assembly-2</h1><div class="content"><hr>
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Assembly-2 | sYstemk1t&#39;s Blog</title>
+  <meta name="description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Assembly-2">
+<meta property="og:url" content="https://systemk1t.github.io/2019/08/22/Assembly-2/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s Blog">
+<meta property="og:description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/6.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/7.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/8.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/9.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/10.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/11.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/12.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/13.png">
+<meta property="og:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/14.png">
+<meta property="article:published_time" content="2019-08-22T00:14:21.000Z">
+<meta property="article:modified_time" content="2019-08-22T01:01:26.408Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="Assembly">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://systemk1t.github.io/2019/08/22/Assembly-2/6.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://systemk1t.github.io/2019/08/22/Assembly-2/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="sYstemk1t&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/sYstemk1t" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">sYstemk1t</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Web Developer &amp; Designer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shenzhen, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/sYstemk1t" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/sYstemk1t" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Bugku/">Bugku</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/">C++黑客编程</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CrackMe/">CrackMe</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C%E4%B8%8E%E6%8C%87%E9%92%88/">C与指针</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80/">C程序设计语言</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows-PE%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/">Windows PE权威指南</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows-API%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/">Windows-API开发详解</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows32%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E8%AE%BE%E8%AE%A1/">Windows32汇编语言设计</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Windows内核原理与实现</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/">Windows核心编程</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86/">加密与解密</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/">汇编语言</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80-%E5%9F%BA%E4%BA%8Ex86%E5%A4%84%E7%90%86%E5%99%A8/">汇编语言-基于x86处理器</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91/">编程开发</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/">逆向工程权威指南</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/">逆向工程核心原理</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/">黑客编程</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Assembly/" rel="tag">Assembly</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-%E5%BC%80%E5%8F%91/" rel="tag">C++开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/" rel="tag">CTF</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CrackMe/" rel="tag">CrackMe</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HOOK/" rel="tag">HOOK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hacker/" rel="tag">Hacker</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reverse/" rel="tag">Reverse</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scoket/" rel="tag">Scoket</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Kernel/" rel="tag">Windows-Kernel</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-PE/" rel="tag">Windows-PE</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Assembly/" style="font-size: 14px;">Assembly</a> <a href="/tags/C/" style="font-size: 13px;">C++</a> <a href="/tags/C-%E5%BC%80%E5%8F%91/" style="font-size: 13px;">C++开发</a> <a href="/tags/CTF/" style="font-size: 13.2px;">CTF</a> <a href="/tags/CrackMe/" style="font-size: 13.4px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 13px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.6px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 13.8px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 13.2px;">Scoket</a> <a href="/tags/Windows-Kernel/" style="font-size: 13.8px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 13.2px;">Windows-PE</a> <a href="/tags/c/" style="font-size: 13.6px;">c</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled ">
+        
+          <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/07/22/C-%E6%9C%89%E5%8F%82%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91/">编程开发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/07/22/C-%E6%9C%89%E5%8F%82%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" class="title">C++ - 有参构造函数</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-07-21T18:47:28.000Z" itemprop="datePublished">2020-07-22</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/05/12/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%A8%A1%E6%9D%BF/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/05/12/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%A8%A1%E6%9D%BF/" class="title">C反汇编 - 模板</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-12T06:39:06.000Z" itemprop="datePublished">2020-05-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" class="title">C反汇编 - 多态</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-11T14:26:33.000Z" itemprop="datePublished">2020-05-11</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%BC%95%E7%94%A8/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%BC%95%E7%94%A8/" class="title">C反汇编 - 引用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-08T07:07:58.000Z" itemprop="datePublished">2020-05-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A0%86%E5%AF%B9%E8%B1%A1/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A0%86%E5%AF%B9%E8%B1%A1/" class="title">C反汇编 - 堆对象</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-08T02:38:04.000Z" itemprop="datePublished">2020-05-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Assembly-2" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Assembly-2
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/08/22/Assembly-2/" class="article-date">
+	  <time datetime="2019-08-22T00:14:21.000Z" itemprop="datePublished">2019-08-22</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/">汇编语言</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Assembly/" rel="tag">Assembly</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+	<span class="article-read hidden-xs">
+    	<i class="icon icon-eye-fill" aria-hidden="true"></i>
+    	<span id="/2019/08/22/Assembly-2/" class="leancloud_visitors"  data-flag-title="Assembly-2">
+			<span class="leancloud-visitors-count">0</span>
+		</span>
+    </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/22/Assembly-2/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.9k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 11(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <hr>
 <h2 id="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址-16-偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip"><a href="#寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址-16-偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip" class="headerlink" title="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip"></a>寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip</h2><a id="more"></a>
 
 <h1 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h1><p><strong>一个典型的CPU是由运算器、控制器、寄存器等器件构成，这些器件靠内部总线相连</strong></p>
@@ -147,67 +605,257 @@
 <p><img src="/2019/08/22/Assembly-2/14.png" alt></p>
 <h2 id="修改cs、ip指令"><a href="#修改cs、ip指令" class="headerlink" title="修改cs、ip指令"></a>修改cs、ip指令</h2><p>mov指令不能用于设置CS、IP的值。</p>
 <p>使用jmp指令修改CS、IP的值。</p>
-</div><ul class="post-copyright"><li><strong>本文标题：</strong><a href="https://systemk1t.github.io/2019/08/22/Assembly-2/">Assembly-2</a></li><li><strong>本文作者：</strong><a href="https://systemk1t.github.io">sYstemk1t</a></li><li><strong>本文链接：</strong><a href="https://systemk1t.github.io/2019/08/22/Assembly-2/">https://systemk1t.github.io/2019/08/22/Assembly-2/</a></li><li><strong>版权声明：</strong><span>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</span></li></ul><div><div class="recommend-post"><span class="is-size-6 has-text-grey has-mr-7"># 相关文章</span><br><span>  1.<a class="is-size-6" href="/2020/04/28/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80-jcc/" target="_blank">汇编语言 - jcc</a><br></span><span>  2.<a class="is-size-6" href="/2019/08/22/Assembly-1/" target="_blank">Assembly-1</a><br></span></div></div><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/social-share.js/1.0.16/css/share.min.css"><div class="social-share"></div><script src="https://cdnjs.loli.net/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button is-info donate"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="https://raw.githubusercontent.com/removeif/blog_image/master/img/2019/20190802135456.png" alt="支付宝"></span></a><a class="button is-success donate"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="https://raw.githubusercontent.com/removeif/blog_image/master/img/2019/20190802135550.png" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2019/08/24/Windows-Kernel-3/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Windows-Kernel-3</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2019/08/22/Assembly-1/"><span class="level-item">Assembly-1</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><div class="title is-5">评论</div><div id="comment-container"></div><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/gitalk/1.6.0/gitalk.css"><script> $.getScript('/js/gitalk.min.js', function () { 
-            var gitalk = new Gitalk({
-            language:'zh-CN',
-            id: '0d8d6d0e3f711f05f221ec1f781b4c55',
-            repo: 'blog_comment',
-            owner: 'removeif',
-            clientID: '46a9f3481b46ea0129d8',
-            clientSecret: '79c7c9cb847e141757d7864453bcbf89f0655b24',
-            admin: ["removeif"],
-            createIssueManually: true,
-            distractionFreeMode: false,
-            perPage: 10,
-            pagerDirection: 'last',
-            
-            
-            enableHotKey: true,
-            isLocked: false
-        })
-        gitalk.render('comment-container')});</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><!--!--><div class="card widget"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="is-rounded" src="/img/avatar.png" alt="sYstemk1t"></figure><p class="title is-size-4 is-block line-height-inherit">sYstemk1t</p><p class="is-size-6 is-block">尚未执佩剑，转眼即江湖</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>阿尔及利亚</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">117</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">20</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">12</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://weibo.com/u/3050419984" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile"><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/removeif"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Weibo" href="https://weibo.com/u/3050419984"><i class="fab fa-weibo"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Email" href="mailto:removeif@163.com"><i class="fa fa-envelope"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="Next" href="https://removeif.github.io/remove.io"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-white is-marginless" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a></div><div><hr><p id="hitokoto">:D 一言句子获取中...</p><script type="text/javascript" defer>function getYiyan(){
-                                $.getJSON("https://v1.hitokoto.cn/", function (data) {
-                                if(data){
-                                    $('#hitokoto').html("");
-                                    $('#hitokoto').append("<strong style='color: #3273dc;'>"+data.hitokoto+"</strong>"+
-                                    "<p>"+"来源《"+data.from+"》</p><p>提供者-"+data.creator+"</p>");
-                                }});}
-                                $(function (){getYiyan();$('#hitokoto').click(function(){getYiyan();})});</script></div></div></div><div class="card widget"><div class="card-content"><h3 class="menu-label">最新评论</h3><span class="body_hot_comment">加载中，最新评论有1分钟缓存...</span></div></div><div class="card widget"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content size-small"><p><time dateTime="2020-07-21T18:47:28.000Z">2020-07-22</time></p><p class="title is-6"><a class="link-muted" href="/2020/07/22/C-%E6%9C%89%E5%8F%82%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">C++ - 有参构造函数</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91/">编程开发</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-12T06:39:06.000Z">2020-05-12</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/12/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%A8%A1%E6%9D%BF/">C反汇编 - 模板</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-11T14:26:33.000Z">2020-05-11</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/">C反汇编 - 多态</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-08T07:07:58.000Z">2020-05-08</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%BC%95%E7%94%A8/">C反汇编 - 引用</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-08T02:38:04.000Z">2020-05-08</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/08/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A0%86%E5%AF%B9%E8%B1%A1/">C反汇编 - 堆对象</a></p><p class="is-uppercase"><i class="fas fa-folder-open has-text-grey"> </i><a class="link-muted" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a></p></div></article></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/categories/Bugku/"><span class="level-start"><span class="level-item">Bugku</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C-%E9%BB%91%E5%AE%A2%E7%BC%96%E7%A8%8B/"><span class="level-start"><span class="level-item">C++黑客编程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/CrackMe/"><span class="level-start"><span class="level-item">CrackMe</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C%E4%B8%8E%E6%8C%87%E9%92%88/"><span class="level-start"><span class="level-item">C与指针</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80/"><span class="level-start"><span class="level-item">C程序设计语言</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows-PE%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"><span class="level-start"><span class="level-item">Windows PE权威指南</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows-API%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/"><span class="level-start"><span class="level-item">Windows-API开发详解</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows32%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E8%AE%BE%E8%AE%A1/"><span class="level-start"><span class="level-item">Windows32汇编语言设计</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Windows%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/"><span class="level-start"><span class="level-item">Windows内核原理与实现</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><a class="level is-mobile is-marginless" href="/categories/"><span class="level-start"><span class="level-item">查看全部&gt;&gt;</span></span></a></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/05/"><span class="level-start"><span class="level-item">五月 2020</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/04/"><span class="level-start"><span class="level-item">四月 2020</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/01/"><span class="level-start"><span class="level-item">一月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/12/"><span class="level-start"><span class="level-item">十二月 2019</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><a class="level is-mobile is-marginless" href="/archives/"><span class="level-start"><span class="level-item">查看全部&gt;&gt;</span></span></a></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Assembly/"><span class="tag">Assembly</span><span class="tag is-grey-lightest">35</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Reverse/"><span class="tag">Reverse</span><span class="tag is-grey-lightest">24</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows-Kernel/"><span class="tag">Windows-Kernel</span><span class="tag is-grey-lightest">24</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hacker/"><span class="tag">Hacker</span><span class="tag is-grey-lightest">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/c/"><span class="tag">c</span><span class="tag is-grey-lightest">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CrackMe/"><span class="tag">CrackMe</span><span class="tag is-grey-lightest">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CTF/"><span class="tag">CTF</span><span class="tag is-grey-lightest">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Scoket/"><span class="tag">Scoket</span><span class="tag is-grey-lightest">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows-PE/"><span class="tag">Windows-PE</span><span class="tag is-grey-lightest">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C-%E5%BC%80%E5%8F%91/"><span class="tag">C++开发</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/HOOK/"><span class="tag">HOOK</span><span class="tag is-grey-lightest">1</span></a></div></div></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=removeifFeedsId&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="removeifFeedsId" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button is-primary" type="submit" value="订阅"></div></div><p class="help">输入邮箱开始订阅，更博后邮件通知！</p></form></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="sYstemk1t&#039;s Blog" height="28"></a><p class="size-small"><span>&copy; 2020 sYstemk1t</span>  Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>,Modify by <a href="https://github.com/removeif/hexo-theme-amazing" target="_blank">removeif</a> <br><span>© 版权说明：[本网站所有内容均收集于互联网或自己创作,<br />&nbsp;&nbsp;&nbsp;&nbsp;方便于网友与自己学习交流，如有侵权，请<a href="/message" target="_blank">留言</a>，立即处理]<br /></span><span><span id="statistic-times">loading...</span><script>function createTime(time) {
-            var n = new Date(time);
-            now.setTime(now.getTime() + 250),
-                days = (now - n) / 1e3 / 60 / 60 / 24,
-                dnum = Math.floor(days),
-                hours = (now - n) / 1e3 / 60 / 60 - 24 * dnum,
-                hnum = Math.floor(hours),
-            1 == String(hnum).length && (hnum = "0" + hnum),
-                minutes = (now - n) / 1e3 / 60 - 1440 * dnum - 60 * hnum,
-                mnum = Math.floor(minutes),
-            1 == String(mnum).length && (mnum = "0" + mnum),
-                seconds = (now - n) / 1e3 - 86400 * dnum - 3600 * hnum - 60 * mnum,
-                snum = Math.round(seconds),
-            1 == String(snum).length && (snum = "0" + snum),
-                document.getElementById("statistic-times").innerHTML = "❤️本站自 <strong>"+time.split(" ")[0].replace(/\//g,".")+"</strong> 已运行 <strong>" + dnum + "</strong> 天 <strong>" + hnum + "</strong> 小时 <strong>" + mnum + "</strong> 分 <strong>" + snum + "</strong> 秒！❤️";
-        }var now = new Date();setInterval("createTime('2018/11/11 00:00:00')", 250,"");</script><br></span><div class="size-small"><span>❤️感谢 <strong><span id="busuanzi_value_site_uv">99+</span></strong> 小伙伴的 <strong><span id="busuanzi_value_site_pv">99+</span></strong> 次光临！❤️</span></div></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/removeif"><i class="fab fa-github"></i></a></p></div><div class="sideMusic"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="/js/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script><meting-js style="width: auto;height: 2000px;" server="netease" type="playlist" id="2364053447" theme="#2980b9" loop="all" autoplay="false" order="list" storageName="aplayer-setting" lrctype="0" list-max-height="400px" fixed="true"></meting-js></div></div></div></div></footer><script src="https://cdnjs.loli.net/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
-            site: {
-                url: 'https://systemk1t.github.io',
-                external_link: {"enable":true,"exclude":[]}
-            },
-            article: {
-                highlight: {
-                    clipboard: true,
-                    fold: 'unfolded'
-                }
-            }
-        };</script><script src="https://cdnjs.loli.net/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" defer></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back-to-top.js" defer></script><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.12/js/lightgallery-all.min.js" defer></script><script src="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><!--!--><!--!--><!--!--><script src="/js/toc.js" defer></script><script src="/js/main.js" defer></script><script>$.getScript('/js/comment-issue-data.js',function(){loadIssueData('46a9f3481b46ea0129d8','79c7c9cb847e141757d7864453bcbf89f0655b24','removeif','blog_comment',false);})</script><link rel="stylesheet" href="/css/insight.css"><div class="searchbox ins-search"><div class="searchbox-container ins-search-container"><div class="searchbox-input-wrapper"><input class="searchbox-input ins-search-input" type="text" placeholder="想要查找什么..."><span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span></div><div class="searchbox-result-wrapper ins-section-wrapper"><div class="ins-section-container"></div></div></div></div><script>(function (window) {
-            var INSIGHT_CONFIG = {
-                TRANSLATION: {
-                    POSTS: '文章',
-                    PAGES: '页面',
-                    CATEGORIES: '分类',
-                    TAGS: '标签',
-                    UNTITLED: '(无标题)',
-                },
-                CONTENT_URL: '/content.json',
-            };
-            window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-        })(window);</script><script src="/js/insight.js" defer></script></body></html>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://systemk1t.github.io/2019/08/22/Assembly-2/" title="Assembly-2" target="_blank" rel="external">https://systemk1t.github.io/2019/08/22/Assembly-2/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/sYstemk1t" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/sYstemk1t" target="_blank"><span class="text-dark">sYstemk1t</span><small class="ml-1x">Web Developer &amp; Designer</small></a></h3>
+        <div>不断努力的二进制小白，曾经学习Web安全的菜鸡！</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/08/24/Windows-Kernel-3/" title="Windows-Kernel-3"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/08/22/Assembly-1/" title="Assembly-1"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/sYstemk1t" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/sYstemk1t" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: true,
+    appId: 'JcSiFF2mDS0kpQsDOg0YX2Sl-gzGzoHsz',
+    appKey: 'Oeu4OhnUB7htmhvO7y01Qid0',
+    placeholder: '来都来了，写点什么吧！',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: true
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+
+
+</body>
+</html>
