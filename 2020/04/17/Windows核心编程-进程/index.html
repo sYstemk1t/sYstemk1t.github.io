@@ -18,18 +18,25 @@
   
   
   <title>Windows核心编程 - 进程 | sYstemk1t&#39;s Blog</title>
-  <meta name="description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。">
+  <meta name="description" content="进程的创建标志着一个内核对象被创建，内核对象创建的目的是以便管理每个进程。以及说明如何使用相关的内核对象来对进程进行操作。 进程通常被定义为一个正在运行的程序的实例，它由两个部分组成：  一个是操作系统用来管理进程的内核对象。内核对象也是系统用来存放关于进程的统计信息的地方。 一个是地址空间，它包含所有可执行模块或DLL模块的代码和数据。它还包括动态内存分配的空间。  进程必须拥有一个在它环境中运">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows核心编程 - 进程">
 <meta property="og:url" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/index.html">
 <meta property="og:site_name" content="sYstemk1t&#39;s Blog">
-<meta property="og:description" content="进程是正在运行的程序的一个实例，它由两部分组成：  一个内核对象，操作系统用它来管理进程； 一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；  对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。">
+<meta property="og:description" content="进程的创建标志着一个内核对象被创建，内核对象创建的目的是以便管理每个进程。以及说明如何使用相关的内核对象来对进程进行操作。 进程通常被定义为一个正在运行的程序的实例，它由两个部分组成：  一个是操作系统用来管理进程的内核对象。内核对象也是系统用来存放关于进程的统计信息的地方。 一个是地址空间，它包含所有可执行模块或DLL模块的代码和数据。它还包括动态内存分配的空间。  进程必须拥有一个在它环境中运">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/1.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/2.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/3.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/4.png">
+<meta property="og:image" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/5.png">
 <meta property="article:published_time" content="2020-04-17T01:18:24.000Z">
-<meta property="article:modified_time" content="2020-04-17T02:55:23.387Z">
+<meta property="article:modified_time" content="2020-08-22T06:34:14.013Z">
 <meta property="article:author" content="sYstemk1t">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://systemk1t.github.io/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/index.html">
   
@@ -217,7 +224,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Assembly/" rel="tag">Assembly</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/" rel="tag">CTF</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CrackMe/" rel="tag">CrackMe</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HOOK/" rel="tag">HOOK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hacker/" rel="tag">Hacker</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reverse/" rel="tag">Reverse</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scoket/" rel="tag">Scoket</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Kernel/" rel="tag">Windows-Kernel</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-PE/" rel="tag">Windows-PE</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" rel="tag">Windows程序设计</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">8</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Assembly/" rel="tag">Assembly</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/" rel="tag">CTF</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CrackMe/" rel="tag">CrackMe</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HOOK/" rel="tag">HOOK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hacker/" rel="tag">Hacker</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reverse/" rel="tag">Reverse</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scoket/" rel="tag">Scoket</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Kernel/" rel="tag">Windows-Kernel</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-PE/" rel="tag">Windows-PE</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" rel="tag">Windows程序设计</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -227,7 +234,7 @@
   <div class="widget">
     <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
-      <a href="/tags/Assembly/" style="font-size: 14px;">Assembly</a> <a href="/tags/C/" style="font-size: 13.17px;">C++</a> <a href="/tags/CTF/" style="font-size: 13.33px;">CTF</a> <a href="/tags/CrackMe/" style="font-size: 13.5px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 13px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.67px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 13.83px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 13.33px;">Scoket</a> <a href="/tags/Windows-Kernel/" style="font-size: 13.83px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 13.33px;">Windows-PE</a> <a href="/tags/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13.17px;">Windows程序设计</a> <a href="/tags/c/" style="font-size: 13.67px;">c</a>
+      <a href="/tags/Assembly/" style="font-size: 14px;">Assembly</a> <a href="/tags/C/" style="font-size: 13.33px;">C++</a> <a href="/tags/CTF/" style="font-size: 13.33px;">CTF</a> <a href="/tags/CrackMe/" style="font-size: 13.5px;">CrackMe</a> <a href="/tags/HOOK/" style="font-size: 13px;">HOOK</a> <a href="/tags/Hacker/" style="font-size: 13.67px;">Hacker</a> <a href="/tags/Reverse/" style="font-size: 13.83px;">Reverse</a> <a href="/tags/Scoket/" style="font-size: 13.33px;">Scoket</a> <a href="/tags/Windows-Kernel/" style="font-size: 13.83px;">Windows-Kernel</a> <a href="/tags/Windows-PE/" style="font-size: 13.33px;">Windows-PE</a> <a href="/tags/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" style="font-size: 13.17px;">Windows程序设计</a> <a href="/tags/c/" style="font-size: 13.67px;">c</a>
     </div>
   </div>
 
@@ -236,7 +243,7 @@
   <div class="widget">
     <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -248,6 +255,31 @@
     <div class="widget-body">
       <ul class="recent-post-list list-unstyled ">
         
+          <li>
+            
+            <div class="item-thumb">
+              <a href="/2020/09/14/C-%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" class="thumb">
+    
+    
+        <span class="thumb-image thumb-none"></span>
+    
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/09/14/C-%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" class="title">C++ 拷贝构造函数</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-09-14T08:31:15.000Z" itemprop="datePublished">2020-09-14</time>
+              </p>
+            </div>
+          </li>
+          
           <li>
             
             <div class="item-thumb">
@@ -348,31 +380,6 @@
             </div>
           </li>
           
-          <li>
-            
-            <div class="item-thumb">
-              <a href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" class="thumb">
-    
-    
-        <span class="thumb-image thumb-none"></span>
-    
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E5%8F%8D%E6%B1%87%E7%BC%96/">反汇编</a>
-              </p>
-              <p class="item-title">
-                <a href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" class="title">C反汇编 - 多态</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2020-05-11T14:26:33.000Z" itemprop="datePublished">2020-05-11</time>
-              </p>
-            </div>
-          </li>
-          
       </ul>
     </div>
   </div>
@@ -384,6 +391,15 @@
 
   
   
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#编写Windows应用程序"><span class="toc-number">1.</span> <span class="toc-text">编写Windows应用程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#进程的实例句柄"><span class="toc-number">1.1.</span> <span class="toc-text">进程的实例句柄</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#前一个实例句柄"><span class="toc-number">1.2.</span> <span class="toc-text">前一个实例句柄</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程的命令行"><span class="toc-number">1.3.</span> <span class="toc-text">进程的命令行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程的环境变量"><span class="toc-number">1.4.</span> <span class="toc-text">进程的环境变量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#GetEnvironmentVariableW"><span class="toc-number">1.4.1.</span> <span class="toc-text">GetEnvironmentVariableW</span></a></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
 <main class="main" role="main">
   <div class="content">
   <article id="post-Windows核心编程-进程" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
@@ -437,43 +453,115 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 741(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.2k(字)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 2(分)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 9(分)</span>
 	
 
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>进程是正在运行的程序的一个实例，它由两部分组成：</p>
+        <p>进程的创建标志着一个内核对象被创建，内核对象创建的目的是以便管理每个进程。以及说明如何使用相关的内核对象来对进程进行操作。</p>
+<p>进程通常被定义为一个正在运行的程序的实例，它由两个部分组成：</p>
 <ul>
-<li>一个内核对象，操作系统用它来管理进程；</li>
-<li>一个地址空间，其中包含所有可执行文件或DLL模块的代码和数据；</li>
+<li>一个是操作系统用来管理进程的内核对象。内核对象也是系统用来存放关于进程的统计信息的地方。</li>
+<li>一个是地址空间，它包含所有可执行模块或DLL模块的代码和数据。它还包括动态内存分配的空间。</li>
 </ul>
-<p>对于进程的调度，所有要运行的现程，操作系统会轮流为每个现程调度一些CPU事件。它会采用轮盘的方式，为每个现程都分配时间片，从而营造出所有现程都在”并发”的假象。</p>
+<p><strong>进程必须拥有一个在它环境中运行的线程，该线程负责执行包含在进程的地址空间中的代码。</strong></p>
+<p>而实际上，一个进程可能包含若干个线程，所有这些线程都“同时”执行进程地址空间中的代码。<strong>每个进程至少拥有一个线程，且拥有它自己的一组CPU寄存器和它自己的堆栈。</strong>如果没有线程来为进程执行地址空间中代码，那么该进程将被销毁。</p>
+<p>若要使这些线程同时运行，操作系统必须为每个线程安排一定的CPU时间。它通过一种循环方式为线程提供时间片，造成一种假象，彷佛所有的线程都在运行。</p>
+<p><img src="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png" alt></p>
+<p>当一个进程被创建后，系统会自动为它创建一个线程，称为主线程，然后该线程可以创建其他的线程，这些线程又可以创建更多的线程。</p>
 <a id="more"></a>
 
-<h2 id="Windows程序"><a href="#Windows程序" class="headerlink" title="Windows程序"></a>Windows程序</h2><p>Windows应用程序必须有一个入口函数，应用程序在开始运行的时候，这个函数会被调用。C++程序员可以选择两种入口点函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> WINAPI _tWinMain(HINSTANCE hInstance,</span><br><span class="line">                    HINSTANCE,</span><br><span class="line">                    PTSTR pszCmdLine,</span><br><span class="line">                    <span class="keyword">int</span> nCmdShow);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc,TCHAR *argv[],TCHAR *envp[])</span><br></pre></td></tr></table></figure>
+<h2 id="编写Windows应用程序"><a href="#编写Windows应用程序" class="headerlink" title="编写Windows应用程序"></a>编写Windows应用程序</h2><p>Windows操作系统支持两种类型的应用程序：</p>
+<ul>
+<li>基于图形界面（GUI）的应用程序</li>
+<li>基于控制台界面的（CUI）的应用程序。</li>
+</ul>
+<p>当使用VS这样的IDE来创建应用程序的时候，这种集成开发环境就安装了许多不同的链接程序的开关，这样，链接程序就可以将相应的子程序嵌入产生的可执行文件中。</p>
+<ul>
+<li>用于CUI应用程序的链接程序开关是：/SUBSYSTEM:CONSOLE</li>
+<li>用于GUI应用程序的链接程序开关是：/SUBSYSTEM:WINDOWS</li>
+</ul>
+<p><img src="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/1.png" alt></p>
+<p>Windows应用程序必须拥有一个在应用程序启动运行时调用的入口函数，可以使用的入口函数有四个：</p>
+<ul>
+<li><pre><code class="c++"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(HINSTANCE hinstExe,</span></span>
+<span class="function"><span class="params">                   HINSTANCE , </span></span>
+<span class="function"><span class="params">                   PSTR pszCmdLine, </span></span>
+<span class="function"><span class="params">                   <span class="keyword">int</span> nCmdShow)</span></span>;
+&lt;!--￼<span class="number">0</span>--&gt;</code></pre>
+</li>
+<li><pre><code class="c++"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(</span></span>
+<span class="function"><span class="params">    <span class="keyword">int</span> argc,</span></span>
+<span class="function"><span class="params">    <span class="keyword">char</span> *argv[],</span></span>
+<span class="function"><span class="params">    <span class="keyword">char</span> *envp[]</span></span>
+<span class="function"><span class="params">)</span></span>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- &#96;&#96;&#96;c++</span><br><span class="line">  int __cdecl wmain(</span><br><span class="line">      int argc,</span><br><span class="line">      char *argv[],</span><br><span class="line">      char *envp[]</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
 
-<p>具体的符号取决于我们是否使用UNICODE字符串。操作系统并不会调用我们所定义的入口函数。</p>
-<h3 id="进程实例句柄"><a href="#进程实例句柄" class="headerlink" title="进程实例句柄"></a>进程实例句柄</h3><p>加载到进程地址空间的每一个可执行文件或DLL都被赋予了一个独一无二的实例句柄。可执行文件的实例被当作WinMain函数的第一个参数hInstanceExe传入。</p>
-<p><strong>HMODULE和HINSTANCE是完全一样的，之所以有两种数据类型，是由于在16位Windows中，它们两个表示不同类型的数据</strong></p>
-<p>WinMain的hInstance参数的实际值是一个内存基地址；系统将可执行文件的影响加载到进程的地址空间中的这个位置。</p>
-<p>可执行文件的映像具体到哪一个地址，是由链接器决定的。不同版本的链接器使用不同的基地址。由于历史原因，VS链接器使用的基地址是0x00400000，这是由于在Win98中，可执行文件的映像能加载到最低的一个地址。</p>
-<p>为了得到一个可执行文件或DLL文件被加载到进程地址空间的什么地方，我们使用<strong>GetModuleHandle</strong>或<strong>GetModuleHandleEx</strong>函数来获取；</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"windows.h"</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> <span class="keyword">const</span> IMAGE_DOS_HEADER _ImageBase;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DumpModule</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HMODULE hModule = GetModuleHandle(<span class="literal">NULL</span>);</span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With GetModuleHandle(NULL)=0x%x\r\n"</span>), hModule);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With _ImageBase=0x%x\r\n"</span>), (HINSTANCE)&amp;hModule);</span><br><span class="line"></span><br><span class="line">	hModule = <span class="literal">NULL</span>;</span><br><span class="line">	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (PCTSTR)DumpModule, &amp;hModule);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(TEXT(<span class="string">"With GetModuleHandleEx =0x%x\r\n"</span>), hModule);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DumpModule();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</code></pre>
+</li>
+</ul>
+<p><strong>所有C/C++运行期启动函数的作用是相同的，差别在于，它们到底处理的是ANCII还是UNICODE字符串。</strong></p>
+<p>启动函数的功能如下：</p>
+<ul>
+<li>检索指向新进程的完整命令行的指针。</li>
+<li>检索指向新进程的环境变量的指针。</li>
+<li>对C/C++运行期的全局变量进行初始化。</li>
+<li>对C运行期内存单位分配函数(malloc和calloc)和其他低层输入/输出例程使用的内存栈进行初始化。</li>
+<li>为全局的和静态的C++类对象调用构造函数。</li>
+</ul>
+<h3 id="进程的实例句柄"><a href="#进程的实例句柄" class="headerlink" title="进程的实例句柄"></a>进程的实例句柄</h3><p>加载到进程地址空间的每个执行文件或DLL文件都被赋予一个独一无二的实例句柄。可执行文件的实例作为(w)WinMain的第一个参数<strong>hinstExe</strong>来传递。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HICON <span class="title">LoadIconA</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HINSTANCE hInstance,	<span class="comment">//模块实例的句柄，其可执行文件包含要加载的图标</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPCSTR    lpIconName	<span class="comment">//要加载的图标资源的名称</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>有些函数需要HMODULE函数的一个类型：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">GetModuleFileName</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HMODULE hModule,		<span class="comment">//正在请求其路径的已加载模块的句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSTR   lpFilename,	<span class="comment">//指向缓冲区的指针，该缓冲区接收模块的标准路径</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD   nSize			<span class="comment">//返回的字符串将使用加载模块时指定的格式</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>HMODULE和HINSTANCE是完全相同的对象</strong></p>
+<p>(w)WinMain和hinstExe参数的实际值是系统将可执行文件的映象加载到进程的地址空间时使用的基本地址空间。可执行文件的映像加载到内存的基地址是由链接程序来决定的。不同的链接程序使用不同的默认基地址。VC6使用的默认基地址是0x00400000，这是因为在运行Windows98的时候可执行文件的映像可以加载到的最低地址。<strong>改变程序加载的基地址是由链接程序中的/BASE:address链接程序开关。</strong></p>
+<p>GetModuleHandle函数返回可执行文件加载内存地址空间时所用的句柄/基地址：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">wWinMain</span><span class="params">(HINSTANCE hinstExe,</span></span></span><br><span class="line"><span class="function"><span class="params">                   HINSTANCE , </span></span></span><br><span class="line"><span class="function"><span class="params">                   PSTR pszCmdLine, </span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">int</span> nCmdShow)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    HMODULE  Address = GetModuleHandle(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; Address &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/2.png" alt></p>
+<p>GetModuleHandle的两个重要特性：</p>
+<ul>
+<li>它只能查看调用进程的地址空间</li>
+<li>调用GetModuleHandle并传递NULL值，就会返回进程的地址空间中可执行文件的基地址。</li>
+</ul>
+<h3 id="前一个实例句柄"><a href="#前一个实例句柄" class="headerlink" title="前一个实例句柄"></a>前一个实例句柄</h3><p>在C/C++运行期启动代码总是将NULL传递给(w)WinMain的HinstExePrev参数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(HINSTANCE hinstExe, HINSTANCE, PSTR pszCmdLine, <span class="keyword">int</span> nShowCmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
 
 
-<h3 id="进程命令行"><a href="#进程命令行" class="headerlink" title="进程命令行"></a>进程命令行</h3><p>系统在创建一个新的进程时，会传一个命令行给它。这个命令行几乎总是非空的；</p>
-<p>C运行库的启动代码开始执行一个GUI应用程序时，会调用Windows函数<strong>GetCommandLine</strong>函数来获取进程的完整命令行，忽略可执行文件的名称，然后将指向命令行剩余部分的一个指针传递给WinMain的pszCommand参数。</p>
-<h3 id="进程的环境变量"><a href="#进程的环境变量" class="headerlink" title="进程的环境变量"></a>进程的环境变量</h3><p>每个进程都有与它自己相关的一个环境块，这是在进程地址空间内分配的一块内存；</p>
-<p>我们可以使用<strong>GetEnvironmentStrings</strong>函数来获取；</p>
+
+
+<h3 id="进程的命令行"><a href="#进程的命令行" class="headerlink" title="进程的命令行"></a>进程的命令行</h3><p>当一个新的进程被创建后，它要传递一个命令行。该命令行几乎永远不为空，至少用于创建新进程的可执行文件的名字是命令行的第一个标识符。当C/C++运行期的启动代码开始运行的时候，它要检索进程的命令行，跳过可执行文件的名字，并将指向命令行其余部分的指针传递给WinMain的pszCmdLine参数。</p>
+<p><strong>pszCmdLine参数指向一个ANSI字符串。</strong></p>
+<p>我们可以使用GetCommandLine函数获取一个指向进程的完整命令行的指针：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    LPSTR szCommand = GetCommandLineA();</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; szCommand &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/3.png" alt></p>
+<p>我们可以使用CommandLineToArgvW来访问命令行各个组成部分</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR lpCmdLine, <span class="keyword">int</span> nShowCmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> nNumArgs;</span><br><span class="line">    LPWSTR* szArglist = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    szArglist = CommandLineToArgvW(GetCommandLineW(), &amp;nNumArgs);</span><br><span class="line">    <span class="keyword">if</span> (szArglist == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; GetLastError() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; nNumArgs; i++)</span><br><span class="line">    &#123;</span><br><span class="line">       </span><br><span class="line">        MessageBox(<span class="literal">NULL</span>, szArglist[i], <span class="string">L"sYstmek1t"</span>, MB_OK);</span><br><span class="line">    &#125;</span><br><span class="line">    HeapFree(GetProcessHeap(), <span class="number">0</span>, szArglist);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/4.png" alt></p>
+<h3 id="进程的环境变量"><a href="#进程的环境变量" class="headerlink" title="进程的环境变量"></a>进程的环境变量</h3><p>每个进程都有一个与它相关的环境块。环境块是进程的地址空间中分配的一个内存块。每个环境块都包含一组字符串；</p>
+<p><strong>子进程可以继承一组与父进程相同的环境变量。但是父进程能够控制子进程继承什么环境变量，继承指的是子进程获取它自己的父进程的环境块拷贝，子进程与父进程并不共享相同的环境块。这意味着子进程可以随意增加或删除它自身环境块中的变量，而这个变化在父进程的环境块中却不会被修改。</strong></p>
+<h4 id="GetEnvironmentVariableW"><a href="#GetEnvironmentVariableW" class="headerlink" title="GetEnvironmentVariableW"></a>GetEnvironmentVariableW</h4><p>如果需要使用环境变量，那么可以使用以下函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/*DWORD GetEnvironmentVariableW(</span></span><br><span class="line"><span class="comment">        LPCWSTR lpName,</span></span><br><span class="line"><span class="comment">        LPWSTR  lpBuffer,</span></span><br><span class="line"><span class="comment">        DWORD   nSize</span></span><br><span class="line"><span class="comment">    );*/</span></span><br><span class="line">    TCHAR buffer[MAX_PATH];</span><br><span class="line"></span><br><span class="line">    DWORD dwVariable = GetEnvironmentVariable(<span class="string">L"WINDIR"</span>, buffer, MAX_PATH);</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"SYSTEMROOT"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"SYSTEMROOT:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"SYSTEMDRIVE"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"SYSTEMDRIVE:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"HOMEDRIVE"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"HOMEDRIVE:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"USERPROFILE"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"USERPROFILE:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"HOMEPATH"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"HOMEPATH:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"TMP"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"TMP:\t\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"TEMP"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"TEMP:\t\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"APPDATA"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"APPDATA:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"PROGRAMFILES"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"PROGRAMFILES:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"COMMONPROGRAMFILES"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"COMMONPROGRAMFILES:\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"USERNAME"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"USERNAME:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"ALLUSERSPROFILE"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"ALLUSERSPROFILE:\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"OS"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"OS:\t\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"COMPUTERNAME"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"COMPUTERNAME:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"NUMBER_OF_PROCESSORS"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"NUMBER_OF_PROCESSORS:\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"PROCESSOR_ARCHITECTURE"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"PROCESSOR_ARCHITECTURE:\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"PROCESSOR_LEVEL"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"PROCESSOR_LEVEL:\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"PROCESSOR_REVISION"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"PROCESSOR_REVISION:\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"USERDOMAIN"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"USERDOMAIN:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"COMSPEC"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"COMSPEC:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"PATHEXT"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"PATHEXT:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    GetEnvironmentVariable(<span class="string">L"PATH"</span>, buffer, MAX_PATH);</span><br><span class="line">    <span class="built_in">std</span>::wcout &lt;&lt; <span class="string">L"PATH:\t\t"</span> &lt;&lt; buffer &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/5.png" alt></p>
+<p>#### </p>
 
       
     </div>
@@ -538,6 +626,15 @@
       <a href="/2020/04/15/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E5%86%85%E6%A0%B8%E5%AF%B9%E8%B1%A1/" title="Windows核心编程 - 内核对象"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
     
   </ul>
   
