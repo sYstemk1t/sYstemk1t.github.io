@@ -3,25 +3,25 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Win32汇编-内存和文件操作 | sYstemk1t&#39;s blog</title>
+  <title>Win32汇编-内存和文件操作 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Win32汇编-内存和文件操作">
-<meta property="og:url" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/index.html">
-<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:url" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
-<meta property="og:image" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/1.png">
+<meta property="og:image" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
+<meta property="og:image" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/1.png">
 <meta property="article:published_time" content="2020-04-08T10:41:48.000Z">
 <meta property="article:modified_time" content="2020-04-09T15:00:13.861Z">
-<meta property="article:author" content="sYstemk1t">
+<meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
+<meta name="twitter:image" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
   
-    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s blog" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -357,8 +357,8 @@
         <p><span>发布时间:</span>2020年04月08日 - 18时41分</p>
         <p><span>最后更新:</span>2020年04月09日 - 23时00分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/" title="Win32汇编-内存和文件操作">http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/" title="Win32汇编-内存和文件操作">http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -502,7 +502,7 @@
     <div class="outer">
         <div id="footer-info">
             <div class="footer-left">
-                &copy; 2020 sYstemk1t
+                &copy; 2020 John Doe
             </div>
             <div class="footer-right">
                 <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman

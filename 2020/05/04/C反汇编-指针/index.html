@@ -3,26 +3,26 @@
 <head>
   <meta charset="utf-8">
   
-  <title>C反汇编 - 指针 | sYstemk1t&#39;s blog</title>
+  <title>C反汇编 - 指针 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="指针也就是内存地址，指针变量是用来存放内存地址的变量，不同类型的指针变量所占用的存储单元长度是相同的，而存放数据的变量因数据的类型不同，所占用的存储空间长度也不同">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C反汇编 - 指针">
-<meta property="og:url" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/index.html">
-<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:url" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/index.html">
+<meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="指针也就是内存地址，指针变量是用来存放内存地址的变量，不同类型的指针变量所占用的存储单元长度是相同的，而存放数据的变量因数据的类型不同，所占用的存储空间长度也不同">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
-<meta property="og:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/1.png">
-<meta property="og:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/2.png">
+<meta property="og:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
+<meta property="og:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/1.png">
+<meta property="og:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/2.png">
 <meta property="article:published_time" content="2020-05-04T08:44:27.000Z">
 <meta property="article:modified_time" content="2020-05-05T07:46:38.864Z">
-<meta property="article:author" content="sYstemk1t">
+<meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
+<meta name="twitter:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
   
-    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s blog" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -418,8 +418,8 @@
         <p><span>发布时间:</span>2020年05月04日 - 16时44分</p>
         <p><span>最后更新:</span>2020年05月05日 - 15时46分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/" title="C反汇编 - 指针">http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/" title="C反汇编 - 指针">http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -563,7 +563,7 @@
     <div class="outer">
         <div id="footer-info">
             <div class="footer-left">
-                &copy; 2020 sYstemk1t
+                &copy; 2020 John Doe
             </div>
             <div class="footer-right">
                 <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman

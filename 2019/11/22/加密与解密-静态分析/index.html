@@ -3,37 +3,37 @@
 <head>
   <meta charset="utf-8">
   
-  <title>加密与解密-静态分析 | sYstemk1t&#39;s blog</title>
+  <title>加密与解密-静态分析 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="高级语言编写的程序有两种形式。一种是被编译成机器语言在CPU上执行的，例如VC++，机器语言与汇编语言几乎是对应的，因此可以将机器语言转化为汇编语言，这个过程称为反汇编。另一种是一遍解释一遍执行，例如VB、Java。所谓静态分析，是通过反汇编、反编译手段获得程序汇编代码或源代码，然后根据程序清单分析程序执行流程。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="加密与解密-静态分析">
-<meta property="og:url" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/index.html">
-<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:url" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="高级语言编写的程序有两种形式。一种是被编译成机器语言在CPU上执行的，例如VC++，机器语言与汇编语言几乎是对应的，因此可以将机器语言转化为汇编语言，这个过程称为反汇编。另一种是一遍解释一遍执行，例如VB、Java。所谓静态分析，是通过反汇编、反编译手段获得程序汇编代码或源代码，然后根据程序清单分析程序执行流程。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/0.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/1.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/2.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/3.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/4.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/5.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/6.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/7.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/8.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/9.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/10.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/11.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/12.png">
-<meta property="og:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/13.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/0.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/1.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/2.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/3.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/4.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/5.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/6.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/7.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/8.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/9.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/10.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/11.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/12.png">
+<meta property="og:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/13.png">
 <meta property="article:published_time" content="2019-11-21T18:57:53.000Z">
 <meta property="article:modified_time" content="2019-11-22T09:08:39.844Z">
-<meta property="article:author" content="sYstemk1t">
+<meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Hacker">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/0.png">
+<meta name="twitter:image" content="http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/0.png">
   
-    <link rel="alternative" href="/atom.xml" title="sYstemk1t&#39;s blog" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -445,8 +445,8 @@
         <p><span>发布时间:</span>2019年11月22日 - 02时57分</p>
         <p><span>最后更新:</span>2019年11月22日 - 17时08分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/" title="加密与解密-静态分析">http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/" title="加密与解密-静态分析">http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/22/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -590,7 +590,7 @@
     <div class="outer">
         <div id="footer-info">
             <div class="footer-left">
-                &copy; 2020 sYstemk1t
+                &copy; 2020 John Doe
             </div>
             <div class="footer-right">
                 <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
