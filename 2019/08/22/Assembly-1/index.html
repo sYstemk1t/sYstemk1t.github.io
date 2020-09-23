@@ -8,21 +8,21 @@
   <meta name="description" content="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Assembly-1">
-<meta property="og:url" content="http://example.com/2019/08/22/Assembly-1/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/08/22/Assembly-1/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="机器指令、指令和数据、二进制和内存编号、cpu对存储器的读写、地址总线、数据总线、控制总线、总结、内存地址空间、主板、接口卡、各类存储器芯片、内存地址空间">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-1/Assembly-1/0.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-1/Assembly-1/1.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-1/Assembly-1/3.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-1/Assembly-1/4.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-1/Assembly-1/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-1/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-1/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-1/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-1/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-1/5.png">
 <meta property="article:published_time" content="2019-08-21T22:40:42.000Z">
 <meta property="article:modified_time" content="2019-08-22T00:32:52.488Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/08/22/Assembly-1/Assembly-1/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/08/22/Assembly-1/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -323,9 +323,9 @@
 <h1 id="数据总线"><a href="#数据总线" class="headerlink" title="数据总线"></a>数据总线</h1><p>8088CPU的数据总线宽度为8，8086CPU的数据总线宽度为16.</p>
 <p>例如传递数据为89D8H的时候，他就会把数据分开传输。</p>
 <p>8088CPU分两次传输，第一次传输D8，第二次传输89.</p>
-<p><img src="Assembly-1/0.png"></p>
+<p><img src="/2019/08/22/Assembly-1/0.png"></p>
 <p>8086CPU传输，他有16根数据线，可一次传输16位数据，所以可以一次性传输</p>
-<p><img src="Assembly-1/1.png"></p>
+<p><img src="/2019/08/22/Assembly-1/1.png"></p>
 <h1 id="控制总线"><a href="#控制总线" class="headerlink" title="控制总线"></a>控制总线</h1><p>CPU对外部器件的控制是通过控制总线来进行的</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>1.汇编指令是机器指令的助记符，同机器指令–对应</p>
 <p>2.每一种CPU都有自己的汇编指令集 比如intel amd arm</p>
@@ -345,16 +345,16 @@
 <h1 id="各类存储器芯片"><a href="#各类存储器芯片" class="headerlink" title="各类存储器芯片"></a>各类存储器芯片</h1><p>随机存储器：主随机存储器一般由两个位置上的RAM组成，装在主板上的RAM和插在扩展槽上的RAM。</p>
 <p>装有BIOS的ROM：例如主板上的ROM中存储着主板的BIOS（俗称BIOS芯片）</p>
 <p>接口卡上RAM：最典型的就是显卡上的RAM，一般称为显存，显卡的显存越大，一般来说，打游戏越流畅。</p>
-<p><img src="Assembly-1/3.png"></p>
+<p><img src="/2019/08/22/Assembly-1/3.png"></p>
 <h1 id="内存地址空间-1"><a href="#内存地址空间-1" class="headerlink" title="内存地址空间"></a>内存地址空间</h1><p>上述的存储器都是在物理上独立的器件。</p>
 <p><strong>都和cpu总线相连</strong></p>
 <p><strong>cpu对他们进行读写的时候通过控制线发出内存读写命令</strong></p>
 <p>这也就是说，cpu在操纵他们的时候，都是把他们当作内存来处理的，把他们看成一个由多个存储单元组成的逻辑存储器，这个逻辑存储器就是我们所属的内存地址空间。</p>
-<p><img src="Assembly-1/4.png"></p>
+<p><img src="/2019/08/22/Assembly-1/4.png"></p>
 <p>所有的物理存储器都被看做一个或多个存储单元组成的逻辑存储器，每个物理存储器在这个逻辑存储器中占有一个地址段，即一段地址空间。</p>
 <p>cpu在这段地址空间中读写数据，实际上就是在相对应的物理存储器中读写数据。</p>
 <p>8086PC机内存地址分配表</p>
-<p><img src="Assembly-1/5.png" alt="8086pc机内存地址分配表"></p>
+<p><img src="/2019/08/22/Assembly-1/5.png" alt="8086pc机内存地址分配表"></p>
 <p><strong>最终运行程序的是CPU，对CPU来说，系统中所有存储器中的存储单元都处于一个统计的逻辑存储器中，它的容量受CPU寻址能力的限制，这个逻辑存储器就是我们通常说的内存地址空间</strong></p>
 
       
@@ -416,8 +416,8 @@
         <p><span>发布时间:</span>2019年08月22日 - 06时40分</p>
         <p><span>最后更新:</span>2019年08月22日 - 08时32分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/22/Assembly-1/" title="Assembly-1">http://example.com/2019/08/22/Assembly-1/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/08/22/Assembly-1/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/22/Assembly-1/" title="Assembly-1">http://systemk1t.github.io/2019/08/22/Assembly-1/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/08/22/Assembly-1/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

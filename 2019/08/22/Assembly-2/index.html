@@ -8,25 +8,25 @@
   <meta name="description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Assembly-2">
-<meta property="og:url" content="http://example.com/2019/08/22/Assembly-2/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/08/22/Assembly-2/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="寄存器、通用寄存器、字在存储器中的存储、汇编指令、物理地址、16位CPU的结构、8086CPU给出物理地址的方法、段地址*16+偏移地址、段的概念、段寄存器、cs和ip、修改cs和ip">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/6.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/7.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/8.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/9.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/10.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/11.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/12.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/13.png">
-<meta property="og:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/14.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/9.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/10.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/11.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/12.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/13.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/14.png">
 <meta property="article:published_time" content="2019-08-22T00:14:21.000Z">
 <meta property="article:modified_time" content="2019-08-22T01:01:26.408Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/08/22/Assembly-2/Assembly-2/6.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/08/22/Assembly-2/6.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -281,7 +281,7 @@
 <p><strong>不同的cpu，寄存器的个数和结构是不同的</strong></p>
 <h2 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h2><p><strong>8086cpu的所有的寄存器都是16位，可以存放两个字节，AX、BX、CX、DX这四个寄存器通常用来存放一般性的数据，被称为通用寄存器</strong></p>
 <p>AX为例，寄存器的逻辑结构如图</p>
-<p><img src="Assembly-2/6.png"></p>
+<p><img src="/2019/08/22/Assembly-2/6.png"></p>
 <p>一个16位寄存器可以存储一个16位的数据。</p>
 <p>一个16位寄存器所能存储的数据最大值为2^16-1，即65535</p>
 <p>为了兼容上一代CPU，8086cpu的AX、BX、CX、DX这四个寄存器都可分为两个独立使用的8位寄存器</p>
@@ -301,7 +301,7 @@
 <p>0       0      0       0     0      0    0     0         0    0    0    1    0    0    1    0     8位寄存器中的数据表示</p>
 <p>AX的低八位(0<del>7)构成了AL存储器，高8位(8</del>15)构成了AH存储器。</p>
 <p>AH和AL寄存器都是可以独立使用的八位寄存器</p>
-<p><img src="Assembly-2/7.png"></p>
+<p><img src="/2019/08/22/Assembly-2/7.png"></p>
 <p>一个八位寄存器所能存储的数据最大值是255</p>
 <h2 id="字在存储器中的存储"><a href="#字在存储器中的存储" class="headerlink" title="字在存储器中的存储"></a>字在存储器中的存储</h2><p><strong>字节：记byte，一个字节由8个bit组成，可以存在8位寄存器中。</strong></p>
 <p><strong>字：记word，一个字由两个字节组成，这两个字节分别成为这个字的高位字节和低位字节</strong></p>
@@ -326,7 +326,7 @@
 <p>add ax,bx                                   044CH                                                      8226H</p>
 <p>问题2-1：</p>
 <p>因为ax为16位寄存器，只能存放4位16进制的数据，所以最高为1不能在ax中保存。</p>
-<p><img src="Assembly-2/8.png"></p>
+<p><img src="/2019/08/22/Assembly-2/8.png"></p>
 <p>这里其实有是有一个小坑的，ax和bx都是16位寄存器，al和bl都是八位寄存器。</p>
 <p>add al,bl     al = 1a,bl = 26    1a+26 = 40</p>
 <p>add ah,bl    ah = 0 + 26H = 26H;  al = 40H,  ah+bl = 2640H;</p>
@@ -349,7 +349,7 @@
 <h2 id="8086CPU给出物理地址的方法"><a href="#8086CPU给出物理地址的方法" class="headerlink" title="8086CPU给出物理地址的方法"></a>8086CPU给出物理地址的方法</h2><p>8086CPU有20位地址总线 ，可以传送20位地址，达到1MB的寻址能力。</p>
 <p>8086CPU又是16位的架构，在内部一次性处理、传输、暂时存储的地址为16位。</p>
 <p>从8086CPU的内部结构来看，如果将地址从内部简单发出，那么它只能送出16位地址，表现出的寻址空间只有64KB。</p>
-<p><img src="Assembly-2/9.png"></p>
+<p><img src="/2019/08/22/Assembly-2/9.png"></p>
 <p><strong>CPU中的相关部件提供两个16位的地址，一个称为段地址，另一个称为偏移地址。</strong></p>
 <p><strong>段地址和偏移地址通过内部总线送入一个称为地址加法器的部件。</strong></p>
 <p><strong>地址加法器将两个十六位地址合成一个二十位的物理地址</strong></p>
@@ -357,7 +357,7 @@
 <p><strong>输入输出控制电路将二十位物理地址送上地址总线</strong></p>
 <p><strong>二十位的物理地址被地址总线送到存储器</strong></p>
 <p>地址加法器采用物理地址=短地址*16+偏移地址的方法用段地址和偏移地址合成物理地址。</p>
-<p><img src="Assembly-2/10.png"></p>
+<p><img src="/2019/08/22/Assembly-2/10.png"></p>
 <p>段地址*16计算</p>
 <p>十六进制数字:2H    二进制形式为10，左移运算</p>
 <p>左移位数        二进制        十六进制        十进制</p>
@@ -381,7 +381,7 @@
 <p>200是段地址，826是偏移地址</p>
 <p>200(段地址)*10+826(偏移地址) = 2826(物理地址)</p>
 <h2 id="段的概念"><a href="#段的概念" class="headerlink" title="段的概念"></a>段的概念</h2><p>内存没有分段，段的划分来自于CPU，由于8086CPU用“基础地址(段地址*16)+偏移地址 = 物理地址”的方式给出内存单元的物理地址，使得我们可以用分段的方式来管理内存。</p>
-<p><img src="Assembly-2/11.png"></p>
+<p><img src="/2019/08/22/Assembly-2/11.png"></p>
 <p>比如途中的10000H~100FFH的内存单元组成一个段，该段的起始地址（基础地址）位10000H，段地址位1000H，大小为100H。</p>
 <p>将若干地址连续的内存单元看作一个段。</p>
 <p>两个需要注意的点：</p>
@@ -411,11 +411,11 @@
 <p>在win Xp上做的一个小实验</p>
 <p>cmd &gt;&gt; debug  </p>
 <p>用R命令改变、查看CPU寄存器的内容</p>
-<p><img src="Assembly-2/12.png"></p>
+<p><img src="/2019/08/22/Assembly-2/12.png"></p>
 <p>用D命令查看内存中的内容</p>
-<p><img src="Assembly-2/13.png"></p>
+<p><img src="/2019/08/22/Assembly-2/13.png"></p>
 <p>用E命令改写内存中的内容</p>
-<p><img src="Assembly-2/14.png"></p>
+<p><img src="/2019/08/22/Assembly-2/14.png"></p>
 <h2 id="修改cs、ip指令"><a href="#修改cs、ip指令" class="headerlink" title="修改cs、ip指令"></a>修改cs、ip指令</h2><p>mov指令不能用于设置CS、IP的值。</p>
 <p>使用jmp指令修改CS、IP的值。</p>
 
@@ -478,8 +478,8 @@
         <p><span>发布时间:</span>2019年08月22日 - 08时14分</p>
         <p><span>最后更新:</span>2019年08月22日 - 09时01分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/22/Assembly-2/" title="Assembly-2">http://example.com/2019/08/22/Assembly-2/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/08/22/Assembly-2/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/22/Assembly-2/" title="Assembly-2">http://systemk1t.github.io/2019/08/22/Assembly-2/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/08/22/Assembly-2/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

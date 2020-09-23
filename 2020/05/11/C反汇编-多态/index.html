@@ -8,20 +8,20 @@
   <meta name="description" content="如果将基类中的某个成员函数声明为虚函数，那么其子类中与该函数具有相同原型的成员函数就也是虚函数，并且对基类中的版本形成覆盖。这时，通过指向子类对象的基类指针，或者引用子类对象的基类引用，调用虚函数，实际被执行的将是子类中的覆盖版本，而非基类中的原始版本，这种语法现象被称为多态。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C反汇编 - 多态">
-<meta property="og:url" content="http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="如果将基类中的某个成员函数声明为虚函数，那么其子类中与该函数具有相同原型的成员函数就也是虚函数，并且对基类中的版本形成覆盖。这时，通过指向子类对象的基类指针，或者引用子类对象的基类引用，调用虚函数，实际被执行的将是子类中的覆盖版本，而非基类中的原始版本，这种语法现象被称为多态。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/0.png">
-<meta property="og:image" content="http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/1.png">
-<meta property="og:image" content="http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/2.png">
-<meta property="og:image" content="http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/3.png">
 <meta property="article:published_time" content="2020-05-11T14:26:33.000Z">
 <meta property="article:modified_time" content="2020-05-12T07:40:10.294Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -315,11 +315,11 @@
 
 
 
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/0.png"></p>
+<p><img src="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/0.png"></p>
 <p><strong>只要有虚函数的存在，就会多出来4字节</strong></p>
 <p>为什么会多出这四个字节，因为在我们的局部变量前面多了一个vfptr</p>
 <p>我们查看vfptr里面存放着什么</p>
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/1.png"></p>
+<p><img src="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/1.png"></p>
 <h3 id="虚表的位置"><a href="#虚表的位置" class="headerlink" title="虚表的位置"></a>虚表的位置</h3><p>存在于当前对象的开始位置；</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">	<span class="keyword">int</span> b;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">My_Print</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">My_Print1</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">My_Print2</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	A a;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,<span class="keyword">sizeof</span>(a));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -327,10 +327,10 @@
 
 
 
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/2.png"></p>
+<p><img src="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/2.png"></p>
 <h3 id="虚表的结构"><a href="#虚表的结构" class="headerlink" title="虚表的结构"></a>虚表的结构</h3><p>有几个虚函数，就写入几个虚函数地址</p>
 <h3 id="虚表的内容"><a href="#虚表的内容" class="headerlink" title="虚表的内容"></a>虚表的内容</h3><p>存放的是虚函数的地址；</p>
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/3.png"></p>
+<p><img src="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/3.png"></p>
 
       
       
@@ -391,8 +391,8 @@
         <p><span>发布时间:</span>2020年05月11日 - 22时26分</p>
         <p><span>最后更新:</span>2020年05月12日 - 15时40分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" title="C反汇编 - 多态">http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/" title="C反汇编 - 多态">http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/05/11/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%A4%9A%E6%80%81/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

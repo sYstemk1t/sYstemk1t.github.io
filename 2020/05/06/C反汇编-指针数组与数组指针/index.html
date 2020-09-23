@@ -8,19 +8,19 @@
   <meta name="description" content="数组指针与指针数组是完全不同的两个概念；">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C反汇编 - 指针数组与数组指针">
-<meta property="og:url" content="http://example.com/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="数组指针与指针数组是完全不同的两个概念；">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/0.png">
-<meta property="og:image" content="http://example.com/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/2.png">
-<meta property="og:image" content="http://example.com/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/1.png">
 <meta property="article:published_time" content="2020-05-06T03:03:31.000Z">
 <meta property="article:modified_time" content="2020-05-06T04:43:44.005Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -292,7 +292,7 @@
 
 
 
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/0.png"></p>
+<p><img src="/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/0.png"></p>
 <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="一维数组"><a href="#一维数组" class="headerlink" title="一维数组"></a>一维数组</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Array[]= &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span> (*px)[<span class="number">10</span>] = &amp;Array;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">10</span>;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,(*px)[i]);			<span class="comment">//取值办法，(*px)[i]是下标</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,px[<span class="number">0</span>][i]);			</span><br><span class="line">		px++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
@@ -305,10 +305,10 @@
 
 
 
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/2.png"></p>
+<p><img src="/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/2.png"></p>
 <h4 id="二维数组控制一维数组"><a href="#二维数组控制一维数组" class="headerlink" title="二维数组控制一维数组"></a>二维数组控制一维数组</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Array[] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">int</span> (*px)[<span class="number">2</span>][<span class="number">2</span>] = (<span class="keyword">int</span> (*)[<span class="number">2</span>][<span class="number">2</span>])Array;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d %d\r\n&quot;</span>,(*px)[<span class="number">0</span>][<span class="number">0</span>],(*px)[<span class="number">0</span>][<span class="number">1</span>]);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d %d\r\n&quot;</span>,(*px)[<span class="number">1</span>][<span class="number">0</span>],(*px)[<span class="number">1</span>][<span class="number">1</span>]);</span><br><span class="line">	px++;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d %d\r\n&quot;</span>,(*px)[<span class="number">1</span>][<span class="number">0</span>],(*px)[<span class="number">1</span>][<span class="number">1</span>]);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/1.png"></p>
+<p><img src="/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/1.png"></p>
 <h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p>int *p[5] 与 int (*p)[5]  有什么区别？</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[] 的优先级高于*  所以先组合成p[<span class="number">5</span>]数组 再由<span class="keyword">int</span> *说明 数组存储的类型 == <span class="keyword">int</span>* p[<span class="number">5</span>];</span><br><span class="line">() 的优先级高于[] 所以*先p先组合成指针 再由<span class="keyword">int</span>[<span class="number">5</span>]说明数组的宽度</span><br></pre></td></tr></table></figure>
       
@@ -370,8 +370,8 @@
         <p><span>发布时间:</span>2020年05月06日 - 11时03分</p>
         <p><span>最后更新:</span>2020年05月06日 - 12时43分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/" title="C反汇编 - 指针数组与数组指针">http://example.com/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/" title="C反汇编 - 指针数组与数组指针">http://systemk1t.github.io/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/05/06/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%B8%8E%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

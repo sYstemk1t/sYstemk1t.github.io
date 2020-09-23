@@ -8,23 +8,23 @@
   <meta name="description" content="指针、值和类型、指针变量的内容、间接访问操作符、未初始化指针和非法的指针、NULL指针、指针、间接访问和左值、指针常量、指针的指针、指针表达式、实例、指针运算">
 <meta property="og:type" content="article">
 <meta property="og:title" content="c与指针-第七章">
-<meta property="og:url" content="http://example.com/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="指针、值和类型、指针变量的内容、间接访问操作符、未初始化指针和非法的指针、NULL指针、指针、间接访问和左值、指针常量、指针的指针、指针表达式、实例、指针运算">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="d:/Learn/3Week/C/5/img/5.png">
-<meta property="og:image" content="d:/Learn/3Week/C/5/img/6.jpg">
-<meta property="og:image" content="d:/Learn/3Week/C/5/img/7.png">
-<meta property="og:image" content="d:/Learn/3Week/C/5/img/8.png">
-<meta property="og:image" content="d:/Learn/3Week/C/5/img/9.png">
-<meta property="og:image" content="d:/Learn/3Week/C/5/img/10.png">
-<meta property="og:image" content="d:/Learn/3Week/C/5/img/11.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/6.jpg">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/9.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/10.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/11.png">
 <meta property="article:published_time" content="2019-08-21T22:16:27.000Z">
 <meta property="article:modified_time" content="2019-08-22T00:45:59.922Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="c">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="d:/Learn/3Week/C/5/img/5.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn/3Week/C/5/img/5.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -290,20 +290,20 @@
 <p>执行完毕后</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">123</span>, b = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">float</span> c = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">int</span> *d = &amp;a;</span><br><span class="line"><span class="keyword">float</span> *e = &amp;c;</span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>, a);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>, b);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%f\r\n&quot;</span>, c);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>, *d);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%f\r\n&quot;</span>, *e);</span><br><span class="line">system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><img src="D:\Learn\3Week\C\5\img\5.png"></p>
+<p><img src="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn\3Week\C\5\img\5.png"></p>
 <p>为什么加了负号，但是还是正常打印了呢，默认的int是一个有无符号叔，但是可以通过unsigned这个参数来定义有无符号。</p>
 <p><strong>如果要打印指针所对应的变量的值，记得要加<em>，</em>在中指针中代表取内容</strong></p>
-<h2 id="间接访问操作符"><a href="#间接访问操作符" class="headerlink" title="间接访问操作符"></a>间接访问操作符</h2><p><img src="D:\Learn\3Week\C\5\img\6.jpg"></p>
+<h2 id="间接访问操作符"><a href="#间接访问操作符" class="headerlink" title="间接访问操作符"></a>间接访问操作符</h2><p><img src="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn\3Week\C\5\img\6.jpg"></p>
 <p>定义的时候是这样的，我们通过指针来修改变量a的值和变量b的值一样</p>
-<p><img src="D:\Learn\3Week\C\5\img\7.png"></p>
+<p><img src="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn\3Week\C\5\img\7.png"></p>
 <p><strong>如果要让一个指针等于一个变量中的值，那么必须加上&amp;，因为指针的操作都是在内存中，所以需要取地址符号</strong></p>
 <h2 id="未初始化指针和非法的指针"><a href="#未初始化指针和非法的指针" class="headerlink" title="未初始化指针和非法的指针"></a>未初始化指针和非法的指针</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *a;</span><br><span class="line">*a = <span class="number">12</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>上面就是一个常见的错误，这两行代码说明了定义个a指针变量，然后给a里赋值一个整形，但是为什么错了呢？没有考虑过a到底指向的是什么？</p>
-<p><img src="D:\Learn\3Week\C\5\img\8.png"></p>
+<p><img src="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn\3Week\C\5\img\8.png"></p>
 <p>在vs中调试，vs直接抛异常，证明了错误，这个时候vs的监视窗口也不知道a到底指向哪一块内存地址，而且代码中你还要为这一块不知道在哪里的内存赋值，所以报错了。</p>
 <p>正确的写法：</p>
-<p><img src="D:\Learn\3Week\C\5\img\9.png"></p>
+<p><img src="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn\3Week\C\5\img\9.png"></p>
 <h2 id="NULL指针"><a href="#NULL指针" class="headerlink" title="NULL指针"></a>NULL指针</h2><p>c语言标准中定义了NULL指针，它作为一个特别的指针变量，表示不知想任意东西。</p>
 <p><strong>你就是一个没人要的野指针…</strong></p>
 <p>如果定义一个指针，并且不给他进行初始化的时候，这个时候，这个指针就是一个野指针，因为没有任何人知道它指向的是什么。</p>
@@ -332,7 +332,7 @@
 <p>这个时候内存分配就是：</p>
 <p>变量a去开辟了一块内存，然后指针b指向变量a，这个时候，他们两个共同使用这块内存空间，然后这个时候c也来了，直接等于指针b指向的内存位置，这个内存位置里存储的是什么呢？就是12；</p>
 <p>他们三个变量都指向了同一块内存空间。</p>
-<p><img src="D:\Learn\3Week\C\5\img\10.png"></p>
+<p><img src="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn\3Week\C\5\img\10.png"></p>
 <p>可以简单的理解就说：指向指针的指针，就得是两个**，几级指针，就有几个星号</p>
 <h2 id="指针表达式"><a href="#指针表达式" class="headerlink" title="指针表达式"></a>指针表达式</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> ch = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line"><span class="keyword">char</span> *cp = &amp;ch;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -342,7 +342,7 @@
 
 <p><strong>指针是可以执行和变量一样的自增运算，但是得考虑优先级，（）的优先级比较高</strong></p>
 <p>上面的例子可能不太直观</p>
-<p><img src="D:\Learn\3Week\C\5\img\11.png"></p>
+<p><img src="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/Learn\3Week\C\5\img\11.png"></p>
 <p>看cp变量中的内容，存储的是一个地址。</p>
 <p>&amp;ch ：右值，表示ch的地址信息，ch的地址是0x033fd0f</p>
 <p>cp ：右值，表示cp中的内容，即ch的地址信息</p>
@@ -460,8 +460,8 @@
         <p><span>发布时间:</span>2019年08月22日 - 06时16分</p>
         <p><span>最后更新:</span>2019年08月22日 - 08时45分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/" title="c与指针-第七章">http://example.com/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/" title="c与指针-第七章">http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/08/22/c%E4%B8%8E%E6%8C%87%E9%92%88-%E7%AC%AC%E4%B8%83%E7%AB%A0/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

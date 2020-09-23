@@ -8,20 +8,20 @@
   <meta name="description" content="Windows下研究加密与解密技术，必须了解操作系统的一些基础知识，这样在分析过程中才可以有的放矢">
 <meta property="og:type" content="article">
 <meta property="og:title" content="加密与解密-基础知识">
-<meta property="og:url" content="http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Windows下研究加密与解密技术，必须了解操作系统的一些基础知识，这样在分析过程中才可以有的放矢">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/0.png">
-<meta property="og:image" content="http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/1.png">
-<meta property="og:image" content="http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/2.png">
-<meta property="og:image" content="http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/3.png">
 <meta property="article:published_time" content="2019-11-13T06:53:19.000Z">
 <meta property="article:modified_time" content="2019-11-13T10:14:04.222Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Hacker">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -281,17 +281,17 @@
 <h4 id="对关键部分进行跟踪"><a href="#对关键部分进行跟踪" class="headerlink" title="对关键部分进行跟踪"></a>对关键部分进行跟踪</h4><p>在对软件进行一定程序的粗跟踪之后，就能获取程序中我们所关心的模块或程序段，这样就可以有针对该模块进行具体而详细。在一般情况下，我们可能要进行多次关键代码的跟踪菜能读懂程序。<strong>在每次跟踪时把比较关键的中间结果或指令记录一下，会对下一次分析有很大的帮助</strong></p>
 <h2 id="文本字符"><a href="#文本字符" class="headerlink" title="文本字符"></a>文本字符</h2><p>计算机中存储的信息都是用二进制数值显示的，屏幕上显示的东西都是二进制数值转换之后的结果；</p>
 <h3 id="ASCII与UNICODE字符集"><a href="#ASCII与UNICODE字符集" class="headerlink" title="ASCII与UNICODE字符集"></a>ASCII与UNICODE字符集</h3><p>字符集是一个系统支持的所有抽象字符的集合。字符是各种文字和符号的总称，包括各种文字、标点符号、图形符号、数字等</p>
-<p><img src="%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/0.png"></p>
+<p><img src="/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/0.png"></p>
 <p>Unicode是对ASCII字符编码的一个扩展，只不过在Windows中用2字节对进行编码，因此也被称为宽字符集。</p>
 <p>Intel处理器在内存中将一个字存入存储器需要占用相继的2字节，这个字节按照小端方式存入，即低位字节存入低地址，高位字节存入高地址。</p>
-<p><img src="%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/1.png"></p>
+<p><img src="/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/1.png"></p>
 <h3 id="字节存储顺序"><a href="#字节存储顺序" class="headerlink" title="字节存储顺序"></a>字节存储顺序</h3><ul>
 <li>Big-endian：高位存入低地址，低位存入高地址</li>
 <li>Little-endian：低位存入低地址，高位存入高地址</li>
 </ul>
-<p><img src="%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/2.png"></p>
+<p><img src="/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/2.png"></p>
 <h2 id="Windows操作系统"><a href="#Windows操作系统" class="headerlink" title="Windows操作系统"></a>Windows操作系统</h2><h3 id="Win32-API函数"><a href="#Win32-API函数" class="headerlink" title="Win32 API函数"></a>Win32 API函数</h3><p>现在很多讲程序设计的书都是基于MFC库和OWL库的Windows设计，对Windows实现细节鲜有讨论，而调试程序是要和系统底层打交道的，所以有必要掌握一些API函数的知识</p>
-<p><img src="%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/3.png"></p>
+<p><img src="/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/3.png"></p>
 <p>Windows运转的核心是动态链接库。Windows提供了丰富的应用程序可利用的函数接口，这些函数采用动态链接库(DLL)实现。</p>
 <p>在早期，Windows的主要部分是由三个动态链接库实现，它们分别代表Windows的3个主要子系统，叫做Kernel、GDI、user</p>
 <h3 id="WOW64"><a href="#WOW64" class="headerlink" title="WOW64"></a>WOW64</h3><p>WOW64是64位Windows操作系统的子系统，可以使大多数32位应用程序在不进行修改的情况下运行在64位操作系统上</p>
@@ -397,8 +397,8 @@
         <p><span>发布时间:</span>2019年11月13日 - 14时53分</p>
         <p><span>最后更新:</span>2019年11月13日 - 18时14分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="加密与解密-基础知识">http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="加密与解密-基础知识">http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/13/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

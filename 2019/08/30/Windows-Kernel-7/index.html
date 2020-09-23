@@ -8,25 +8,25 @@
   <meta name="description" content="线程调度、优先级和亲缘性">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Kernel-7">
-<meta property="og:url" content="http://example.com/2019/08/30/Windows-Kernel-7/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="线程调度、优先级和亲缘性">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/0.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/1.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/2.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/3.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/4.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/5.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/6.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/7.png">
-<meta property="og:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/8.png">
 <meta property="article:published_time" content="2019-08-30T03:58:45.000Z">
 <meta property="article:modified_time" content="2019-09-02T00:46:22.892Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/08/30/Windows-Kernel-7/Windows-Kernel-7/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -373,7 +373,7 @@
 <h2 id="对优先级的抽象说明"><a href="#对优先级的抽象说明" class="headerlink" title="对优先级的抽象说明"></a>对优先级的抽象说明</h2><p>微软并未公开调度算法完整描述调度程序的行为。也不允许应用程序充分利用调度程序的特性。并明确告知用户调度算法会发生变化。</p>
 <p>微软在调度程序之上进行了一层抽象提供了一系列API，用户无法直接接触到底层的调度程序。</p>
 <p>Windows支持6个优先级类（priority class）：idle, below normal, normal, above normal, high 和 real-time</p>
-<p><img src="Windows-Kernel-7/0.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/0.png"></p>
 <p>idle优先级类非常适合只在系统什么都不做的时候运行的程序。例如屏幕保护程序。</p>
 <p>real-time 一般是执行延迟非常低的短任务-例如需要响应硬件事件。</p>
 <p>进程一般情况不能运行在Real-time优先级类下，除非用户有Increase Scheduling Priority特权。</p>
@@ -382,16 +382,16 @@
 <p>Windows有7个相对的线程优先级：idle, lowest, below normal, normal, above normal, highest 和 time-critical。这些是相对于进程优先级而言。</p>
 <p>大多数线程使用normal线程优先级。</p>
 <p>相对线程优先级</p>
-<p><img src="Windows-Kernel-7/1.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/1.png"></p>
 <p>也就是进程都属于某个优先级类，另外可以指定进程中线程的相对优先级。</p>
 <p>Vista系统上的进程优先级和相对线程优先级与优先级值的映射。</p>
-<p><img src="Windows-Kernel-7/2.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/2.png"></p>
 <p>优先级0 预留给页面清零线程了，系统不允许其他任何线程的优先级为0.</p>
 <p>还有一些优先级应用程序也无法获得，17~30.预留给内核模式的设备驱动程序。用户模式的应用程序是不能获得这些优先级的。</p>
 <p>Real-time优先级类的进程的线程的优先级不能低于16， 非Real-time进程的线程优先级也不可高于15.</p>
 <p>有些人常常搞不清进程优先级类的概念。他们认为这可能意味着进程是可以调<br>度的。但是进程是根本不能调度的，只有线程才能被调度。进程优先级类是个抽象概<br>念，M i c r o s o f t提出这个概念的目的，是为了帮助你将它与调度程序的内部运行情况区<br>分开来。它没有其他目的。<br>注意 一般来说，大多数时候高优先级的线程不应该处于可调度状态。当线程要进行<br>某种操作时，它能迅速获得C P U时间。这时线程应该尽可能少地执行 C P U指令，并返<br>回睡眠状态，等待再次变成可调度状态。相反，低优先级的线程可以保持可调度状态，<br>执行大量的C P U指令来进行它的操作。如果按照这些原则来办，整个操作系统就能正<br>确地对用户作出响应。</p>
 <h2 id="程序优先级"><a href="#程序优先级" class="headerlink" title="程序优先级"></a>程序优先级</h2><p>当调用CreateProcess时，可以在fdwCreate参数中传递需要的优先级类。</p>
-<p><img src="Windows-Kernel-7/3.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/3.png"></p>
 <p>父进程可以替想要创建的子进程选择其优先级类。子进程被创建以后可以通SetPriorityClass来修改自己的优先级类。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">SetPriorityClass(</span><br><span class="line">    _In_ HANDLE hProcess,</span><br><span class="line">    _In_ DWORD dwPriorityClass</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
 
@@ -410,7 +410,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">SetThreadPriority(</span><br><span class="line">    _In_ HANDLE hThread,</span><br><span class="line">    _In_ <span class="keyword">int</span> nPriority</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
 
 <p>nPriority参数如下表:</p>
-<p><img src="Windows-Kernel-7/4.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/4.png"></p>
 <p>获取线程优先级</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">WINAPI</span><br><span class="line">GetThreadPriority(</span><br><span class="line">    _In_ HANDLE hThread</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
 
@@ -446,7 +446,7 @@
 <h3 id="为前台进程调整调度算法"><a href="#为前台进程调整调度算法" class="headerlink" title="为前台进程调整调度算法"></a>为前台进程调整调度算法</h3><p>用户需要使用某个进程窗口（称为前台进程foreground process） 而所有其他的进程成为后台进程（background process）。</p>
 <p>前台进程处于Normal优先级下，windows会微调前台进程的调度算法。系统给前台进程的线程分配比一般情况下更多的时间片。</p>
 <p>系统属性-&gt;高级-&gt;性能计划 中可以进行微调</p>
-<p><img src="Windows-Kernel-7/5.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/5.png"></p>
 <h3 id="调度I-O请求优先级"><a href="#调度I-O请求优先级" class="headerlink" title="调度I/O请求优先级"></a>调度I/O请求优先级</h3><p>低优先级进程可以在一个时间片写入成百上千的IO请求入入列。会显著的影响高优先级线程的性能。（例如后台磁盘碎片整理，病毒扫描，内容索引程序）</p>
 <p>windows VISTA开始线程可以在进行I/O请求时设置优先级了。</p>
 <p>设置SetThreadPriority 并传入 THREAD_MODE_BACKGROUND_BEGIN来设置其IO请求优先级。这里是低优先级IO请求，同时会降低其CPU调度优先级</p>
@@ -462,7 +462,7 @@
 
 <p>SetFileInformationByHandle设置的优先级将覆盖SetPriorityClass或者SetThreadPriority设置的优先级。<br>应该尽量避免优先级逆转。</p>
 <p>优先级倒置，又称优先级反转、优先级逆转、优先级翻转，是一种不希望发生的任务调度状态。在该种状态下，一个高优先级任务间接被一个低优先级任务所抢先(preemtped)，使得两个任务的相对优先级被倒置。<br>这往往出现在一个高优先级任务等待访问一个被低优先级任务正在使用的临界资源，从而阻塞了高优先级任务；同时，该低优先级任务被一个次高优先级的任务所抢先，从而无法及时地释放该临界资源。这种情况下，该次高优先级任务获得执行权</p>
-<h3 id="Scheduling-Lab实例应用程序"><a href="#Scheduling-Lab实例应用程序" class="headerlink" title="Scheduling Lab实例应用程序"></a>Scheduling Lab实例应用程序</h3><p><img src="Windows-Kernel-7/6.png"></p>
+<h3 id="Scheduling-Lab实例应用程序"><a href="#Scheduling-Lab实例应用程序" class="headerlink" title="Scheduling Lab实例应用程序"></a>Scheduling Lab实例应用程序</h3><p><img src="/2019/08/30/Windows-Kernel-7/6.png"></p>
 <p>笔者开了一个实例发现cpu使用率在25%稳定</p>
 <p>开了4个实例cpu使用率实际只有66% 并不能使用完全部4核CPU的资源（笔者用的是4核心的i5-3470 CPU）</p>
 <p>再开了8个实例以后CPU的使用率达到了70%~84% 还是不能使用完全部的CPU资源，并且系统并无明显的卡顿感</p>
@@ -481,7 +481,7 @@
 
 <h2 id="亲缘性"><a href="#亲缘性" class="headerlink" title="亲缘性"></a>亲缘性</h2><p>默认情况下系统使用软关联（soft affinity）来给线程分配处理器：</p>
 <p>如果其他因素都一样。系统将使线程在上一次运行的处理器上运行。让线程始终在同一个处理器上运行有助于重用仍在处理器高速缓存中的数据。NUMA（Uon-Uniform Memory Access， 非统一内存访问）计算机体系结构，系统有多快系统板组成，每块系统板有自己的多个cpu和内存。如下图<br>————————————————</p>
-<p><img src="Windows-Kernel-7/7.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/7.png"></p>
 <p>NUMA在cpu只访问其所在主板上的内存时性能最佳，若访问其他主板上的内存性能下降的很厉害。因此希望cpu将同一进程的所有线程尽量运行在同一块主板的内存和cpu上。</p>
 <p>这就需要设置进程和线程的关联性（affinity）。可以设置让哪些CPU运行特定的线程。（硬关联）</p>
 <p>调用GetSystemInfo可以查询机器上cpu的数量。</p>
@@ -511,7 +511,7 @@
 <p>例如要限制3个线程只运行在CPU1， CPU2和CPU3上。可以这样</p>
 <p>x86系统启动是，系统将执行代码，检查主机上哪个PCU存在注明的Pentium FDIV bug。<br>方法是将一个线程关联性设置为该CPU，执行可能会出错的除法操作，然后比较结构是否与已知正确的结构相符。随后再采取同样步骤检查下一个CPU。</p>
 <p>书上给出的例子说明了cpu关联性将影响线程的调度和性能。</p>
-<p><img src="Windows-Kernel-7/8.png"></p>
+<p><img src="/2019/08/30/Windows-Kernel-7/8.png"></p>
 <p>当线程A被唤醒时，调度程序发现该线程可以在 CPU 0上运行，因此它被分配给CPU 0。然后线程B被唤醒，调度程序发现该线程可以被分配给 CPU 0或1，但是，由于CPU 0正在使用之中，因此调度程序将线程B分配给了CPU 1。至此，一切进行得都很顺利。<br>这时线程C被唤醒，调度程序发现它只能在CPU 1上运行。但是CPU 1正在被线程B使用着，它是个优先级为8的线程。由于线程C的优先级为6，因此它不能抢在线程B的前面运行。线程C可以抢在线程A的前面运行，因为线程A的优先级是4，但是调度程序不会使它抢在线程A的前面运行，因为线程C不能在CPU 0上运行。这显示出为线程设置硬亲缘性将会对调度程序的优先级设置方案产生什么样的影响。</p>
 <p>有时候强制一个线程只能使用特定的某个cpu并不是什么好主意。可能出现3个线程同时抢占cpu0，而cpu 1,2,3却无所事事。</p>
 <p>SetThreadIdealProcessor 给线程设置一个理想的CPU，但若有CPU空闲也可以将它移到另一个CPU上。</p>
@@ -583,8 +583,8 @@
         <p><span>发布时间:</span>2019年08月30日 - 11时58分</p>
         <p><span>最后更新:</span>2019年09月02日 - 08时46分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/30/Windows-Kernel-7/" title="Windows-Kernel-7">http://example.com/2019/08/30/Windows-Kernel-7/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/08/30/Windows-Kernel-7/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/30/Windows-Kernel-7/" title="Windows-Kernel-7">http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/08/30/Windows-Kernel-7/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

@@ -8,55 +8,55 @@
   <meta name="description" content="导入是PE数据组织中的一个重要组成部分，它是为实现代码重用而设计的。通过分析导入表数据，可以获取诸如PE文件的指令调用了多少外来函数，这些外来函数在哪些动态链接库中。在数据目录中一共有四种类型的数据与导入表有关。这四种数据依此为：  导入表 导入函数地址表 绑定导入表 延迟加载导入表">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PE导入表">
-<meta property="og:url" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="导入是PE数据组织中的一个重要组成部分，它是为实现代码重用而设计的。通过分析导入表数据，可以获取诸如PE文件的指令调用了多少外来函数，这些外来函数在哪些动态链接库中。在数据目录中一共有四种类型的数据与导入表有关。这四种数据依此为：  导入表 导入函数地址表 绑定导入表 延迟加载导入表">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/1.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/2.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/3.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/4.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/5.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/6.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/7.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/8.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/9.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/10.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/11.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/12.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/13.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/14.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/15.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/16.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/17.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/18.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/19.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/20.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/21.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/22.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/23.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/24.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/25.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/26.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/27.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/28.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/29.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/30.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/31.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/32.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/33.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/34.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/35.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/36.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/37.png">
-<meta property="og:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/38.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/9.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/10.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/11.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/12.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/13.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/14.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/15.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/16.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/17.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/18.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/19.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/20.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/21.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/22.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/23.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/24.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/25.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/26.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/27.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/28.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/29.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/30.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/31.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/32.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/33.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/34.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/35.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/36.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/37.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/38.png">
 <meta property="article:published_time" content="2019-09-05T02:41:03.000Z">
 <meta property="article:modified_time" content="2019-09-06T09:43:23.212Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-PE">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -316,10 +316,10 @@
 
 
 <p>当程序调用了动态链接库的相关的函数，在进行编译和链接的时候，编译程序和链接程序就会将调用的相关信息写入最终生成的PE文件中，以告诉操作系统这些函数的执行执行字节码从哪里获取。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png"></p>
 <h2 id="导入函数"><a href="#导入函数" class="headerlink" title="导入函数"></a>导入函数</h2><p>invoke指令调用用户自定义函数，或者从其他动态链接库中导入的函数。</p>
 <h3 id="invoke指令分解"><a href="#invoke指令分解" class="headerlink" title="invoke指令分解"></a>invoke指令分解</h3><p>连接器会对invoke指令进行分解。分解过后的指令将会包含指向导入函数的地址的操作数。当PE文件被装载到内存的时候，该操作数就变成导入函数所在虚拟地址空间的真实的VA</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/1.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/1.png"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">00401000 &gt;&#x2F;$  6A 00              push 0x0                            ; &#x2F;Style &#x3D; MB_OK|MB_APPLMODAL</span><br><span class="line">00401002  |.  68 00304000        push Hello.00403000                 ; |Title &#x3D; &quot;A MessageBox !&quot;</span><br><span class="line">00401007  |.  68 0F304000        push Hello.0040300F                 ; |Text &#x3D; &quot;Hello, World !&quot;</span><br><span class="line">0040100C  |.  6A 00              push 0x0                            ; |hOwner &#x3D; NULL</span><br><span class="line">0040100E  |.  E8 07000000        call &lt;jmp.&amp;user32.MessageBoxA&gt;      ; \MessageBoxA</span><br><span class="line">00401013  |.  6A 00              push 0x0                            ; &#x2F;ExitCode &#x3D; 0x0</span><br><span class="line">00401015  \.  E8 06000000        call &lt;jmp.&amp;kernel32.ExitProcess&gt;    ; \ExitProcess</span><br><span class="line">0040101A   $- FF25 08204000      jmp dword ptr ds:[&lt;&amp;user32.MessageB&gt;;  user32.MessageBoxA</span><br><span class="line">00401020   .- FF25 00204000      jmp dword ptr ds:[&lt;&amp;kernel32.ExitPr&gt;;  kernel32.ExitProcess</span><br><span class="line">00401026      00                 db 00</span><br><span class="line">00401027      00                 db 00</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
@@ -327,7 +327,7 @@
 <p>第一个调用语句被解释器解释为从地址0x00401000到0x0040100B反汇编代码。还有两处call，也是跳转语句。</p>
 <p><strong>文件偏移地址0x400处是代码段，其中存放程序指令。</strong></p>
 <p>装载前文件中的代码段字节如下：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/2.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/2.png"></p>
 <p>可以看到，装载前文件中和装载后内存中的指令字节码是完全一样的。</p>
 <p>invoke指令实施分解：</p>
 <ul>
@@ -337,15 +337,15 @@
 </ul>
 <h3 id="导入函数地址"><a href="#导入函数地址" class="headerlink" title="导入函数地址"></a>导入函数地址</h3><p><strong>虚拟地址VA，相对虚拟地址RVA</strong></p>
 <p>导入函数是从动态链接库引入的函数，所以，导入函数的地址位于被加载的进程地址空间中相应的动态链接库模块内。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/3.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/3.png"></p>
 <p>这个是导入表在文件中的：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/4.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/4.png"></p>
 <p>以下是内存中获取的导入表相关数据：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/5.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/5.png"></p>
 <p>在文件0x0608中，内存0x00402008处，内存映像中的值是77D507EAh（h代表16进制），而文件中此处的值为0000025ch。这意味着，文件被装载到内存后，这里的值发生了变化，真正表示MessageBoxA函数地址的应该是内存中此处的值。</p>
 <p><strong>文件中的值，它是相对虚拟地址。</strong></p>
 <p>使用一个工具查看：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/6.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/6.png"></p>
 <p>name：节的名称</p>
 <p>vitr：未对齐前节的长度</p>
 <p>virt Address：内存中的偏移（对齐后的）</p>
@@ -380,15 +380,15 @@
 
 
 <p>查看user32.dll模块的内存分配</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/7.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/7.png"></p>
 <p><strong>虚拟地址空间的0x77D10000处于user32的文件投；而user32的代码段范围是0x77D11000~0x77D71000，所以说跳转指令的地址0x0077d507EA恰好在user32.dll的代码段单位中</strong></p>
 <p>查看User32.dll的信息</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/8.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/8.png"></p>
 <p>使用PEdump查看user32.dll的代码段的字节码</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/9.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/9.png"></p>
 <p>在OD中打开Hello,然后命令，输入d 77d11000然后回车，显示如下：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/10.png"></p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/11.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/10.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/11.png"></p>
 <p>编译程序在编译汇编语言源文件的时候，会把程序中的invoke语句分解成三部分：</p>
 <ul>
 <li>将参数压入栈</li>
@@ -396,8 +396,8 @@
 <li>jmp指令</li>
 </ul>
 <p>call的操作数是jmp指令所在的地址；而jmp指令的操作数则是该导入函数在导入表的地址</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/12.png"></p>
-<h2 id="PE中的导入表"><a href="#PE中的导入表" class="headerlink" title="PE中的导入表"></a>PE中的导入表</h2><h3 id="导入表定位"><a href="#导入表定位" class="headerlink" title="导入表定位"></a>导入表定位</h3><p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/13.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/12.png"></p>
+<h2 id="PE中的导入表"><a href="#PE中的导入表" class="headerlink" title="PE中的导入表"></a>PE中的导入表</h2><h3 id="导入表定位"><a href="#导入表定位" class="headerlink" title="导入表定位"></a>导入表定位</h3><p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/13.png"></p>
 <p>红框部分为数据目录表中的导入表项，下方加框部分为导入函数地址表项目</p>
 <p>可以得到如下信息：</p>
 <ul>
@@ -407,13 +407,13 @@
 <li>导入函数地址表数据大小00000010</li>
 </ul>
 <p>使用PEinfo查看所有节的信息：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/14.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/14.png"></p>
 <p>根据RVA与FOA的换算关系：</p>
 <ul>
 <li>IAT数据所在文件的偏移地址0x00000600</li>
 <li>导入表数据所在文件的偏移地址0x00000610</li>
 </ul>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/15.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/15.png"></p>
 <p>其中下划线部分是导入表数据，共60字节。</p>
 <p>0x00000600~0x00000610处为IAT数据，共16字节</p>
 <h3 id="导入表描述符"><a href="#导入表描述符" class="headerlink" title="导入表描述符"></a>导入表描述符</h3><p>导入表数据的起始是一组导入表描述符结构。每个20个字节，例子中60个字节的导入表数据被分为3组。前两组为动态链接库，最后一组为全0结构，表示导入表描述符已经结束。</p>
@@ -433,19 +433,19 @@
 <h4 id="Name1"><a href="#Name1" class="headerlink" title="Name1"></a>Name1</h4><p>双字，这个字段的名称其实是一个RAV，它指向该结构所对应的DLL文件的名称，而这个名称是以’\0’结尾的Ansi字符串</p>
 <h4 id="FirstThunk"><a href="#FirstThunk" class="headerlink" title="FirstThunk"></a>FirstThunk</h4><p>双字，它指向这个链表定义了指针Name1这个动态链接库所引入的所有导入函数，简称桥2</p>
 <h3 id="导入表的双桥结构"><a href="#导入表的双桥结构" class="headerlink" title="导入表的双桥结构"></a>导入表的双桥结构</h3><p>桥1和桥2最终通向了同一个目的地，都指向了引入函数的“标号-名称”(Hint/Name)描述部分，而从桥2到目的地的过程中，还经过了一个IAT。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/16.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/16.png"></p>
 <p>导入表详细解析：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/17.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/17.png"></p>
 <p>桥1，最高位为0，这是一个RAV，表明函数是以字符类型的函数名导入的。将RAV转换为FOA，从文件位置开始读取，直接取出双字”0”结束。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">IMAGE_THUNK_DATA <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">    <span class="title">union</span> <span class="title">u1</span></span></span><br><span class="line"><span class="class">    	<span class="title">ForwarderString</span> <span class="title">dd</span> ?</span></span><br><span class="line"><span class="class">    	<span class="title">Function</span> <span class="title">dd</span> ?</span></span><br><span class="line"><span class="class">    	<span class="title">Ordinal</span>	<span class="title">dd</span> ?</span></span><br><span class="line"><span class="class">    	<span class="title">AddressOfData</span>	<span class="title">dd</span> ?</span></span><br><span class="line"><span class="class">    <span class="title">ends</span></span></span><br><span class="line"><span class="class"><span class="title">IMAGE_THUNK_DATA</span> <span class="title">ENDS</span></span></span><br></pre></td></tr></table></figure>
 
 
 
 <p>连续取出的数分别为：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/18.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/18.png"></p>
 <p>这组数中每一个都是一个RAV，不过这个RAV却指向了另外一个结构IMAGE_IMPORT_BY_NAME。这个结构大小不确定，是桥1最终的目的地。</p>
 <p>从文件偏移0x0000065C开始的数据直到”0”结束</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/19.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/19.png"></p>
 <p>详细描述如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IMAGE_IMPORT_BY_NAME <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">    <span class="title">Hint</span>	<span class="title">dw</span>	?	;</span>函数编号</span><br><span class="line">    Name1	db	?	;函数名的字符串</span><br><span class="line">IMAGE_IMPORT_BY_NAME ENDS</span><br></pre></td></tr></table></figure>
 
@@ -453,46 +453,46 @@
 
 <h4 id="Hint"><a href="#Hint" class="headerlink" title="Hint"></a>Hint</h4><p>双字，函数的编号，在DLL中对每个函数都进行了编号，访问函数时可以通过名称访问，也可以通过编号访问</p>
 <h4 id="Name1-1"><a href="#Name1-1" class="headerlink" title="Name1"></a>Name1</h4><p>大小不确定，函数名字符串的具体内容，以”\0”结尾。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/20.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/20.png"></p>
 <p>时间戳，这里为0</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/21.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/21.png"></p>
 <p>链表的前一个结构，这里为0</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/22.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/22.png"></p>
 <p>RAV，这里指向动态链接库user32.dll的名字字符串</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/23.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/23.png"></p>
 <p>桥2</p>
 <p>每一个结构IMAGE_INPORT_DESCRIPORT都对应一个唯一的动态链接库文件，以及引用了该动态链接库的多个函数，每个函数的最终”值-名称”描述均可以沿着桥1或者桥2找到，这种导入表结构被称为双桥结构</p>
 <p><strong>单桥的导入表是无法执行绑定导入操作的</strong></p>
 <h3 id="导入函数地址表"><a href="#导入函数地址表" class="headerlink" title="导入函数地址表"></a>导入函数地址表</h3><p>PE文件中所有导入函数jmp指令操作数的集合，组成了另外一个数据结构，这个就是导入函数地址表（IAT）。</p>
 <p>导入函数地址表是一个双字的数组，每个双字代表的是一个导入函数的AV，该地址称为导入函数地址（IA）。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/24.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/24.png"></p>
 <p>通过桥2即可定位到IAT，在内存中，桥1可以找到调用的函数名称或函数的索引编号，桥2可以帮助找到函数指令代码在内存空间中的地址。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/25.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/25.png"></p>
 <p>当PE文件被加载到虚拟地址孔家你以后，IAT的内容会被操作系统修改为函数的VA。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/26.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/26.png"></p>
 <h3 id="构造调用同一个DLL文件的多个函数的导入表"><a href="#构造调用同一个DLL文件的多个函数的导入表" class="headerlink" title="构造调用同一个DLL文件的多个函数的导入表"></a>构造调用同一个DLL文件的多个函数的导入表</h3><p>使用PEinfo查看</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/27.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/27.png"></p>
 <p>程序中共使用了user32.dll的三个API函数，依次为EnableWindow、FindWindow、ShowWindow</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/28.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/28.png"></p>
 <p>桥1，最高位为0，表示这是一个RAV，表示函数是以字符串类型的函数名导入的。</p>
 <p>从0x0000065C处取出的值应该是一组IMAGE_THUNK_DATA，一直找到双字0为止</p>
 <p> 取出的这些IMAGE_THUNK_DATA结构依此是：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/29.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/29.png"></p>
 <p>前三个RAV分别指向了IMAGE_IMPORT_BY_NAME结构，代表调用的三个函数：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/30.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/30.png"></p>
 <p>指向user32.dll\0字符串</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/31.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/31.png"></p>
 <p>桥2分析法：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/32.png"></p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/33.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/32.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/33.png"></p>
 <p><strong>定位导入函数地址表的两种方法：</strong></p>
 <ul>
 <li>从导入表的最后一个导入项IMAGE_IMPORT_DESCRIPORT结构中的字段IMAGE_IMPORT_DESCRIPORT.FirstThunk定位IAT</li>
 <li>通过数据目录第13个数据项的描述直接定位IAT</li>
 </ul>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/34.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/34.png"></p>
 <p>如图所示：</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/35.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/35.png"></p>
 <h2 id="导入表编程"><a href="#导入表编程" class="headerlink" title="导入表编程"></a>导入表编程</h2><h3 id="导入表遍历的思路"><a href="#导入表遍历的思路" class="headerlink" title="导入表遍历的思路"></a>导入表遍历的思路</h3><ul>
 <li>将导入表的第一个IMAGE_IMPORT_DESCRIPTOR的起始地址给edi</li>
 <li>获取导入表所处节的名称，并显示</li>
@@ -504,11 +504,11 @@
 
 
 
-<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/36.png"></p>
+<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/36.png"></p>
 <h2 id="绑定导入"><a href="#绑定导入" class="headerlink" title="绑定导入"></a>绑定导入</h2><h3 id="绑定导入机制"><a href="#绑定导入机制" class="headerlink" title="绑定导入机制"></a>绑定导入机制</h3><p>双桥结构的导入表中，桥2是指向IAT的，WIndows加载程序负责IAT中地址的修正工作。</p>
 <p><strong>不同的系统中，动态链接库的基地址是不一样的</strong></p>
 <h3 id="绑定导入数据定位"><a href="#绑定导入数据定位" class="headerlink" title="绑定导入数据定位"></a>绑定导入数据定位</h3><p>本节中的例子须使用32位系统下的Notepad.exe，打开Win10下的看到的结果是不同的。</p>
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/37.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/37.png"></p>
 <p>从以上字节码可以看出：</p>
 <ul>
 <li>绑定导入数据RVA = 0x0000250</li>
@@ -526,7 +526,7 @@
 
 
 
-<p><img src="PE%E5%AF%BC%E5%85%A5%E8%A1%A8/38.png"></p>
+<p><img src="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/38.png"></p>
 <h3 id="绑定导入分析实例"><a href="#绑定导入分析实例" class="headerlink" title="绑定导入分析实例"></a>绑定导入分析实例</h3><h2 id="手工重组导入表"><a href="#手工重组导入表" class="headerlink" title="手工重组导入表"></a>手工重组导入表</h2><p>{HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run&quot;NewValue=C:\PE\4\.LockTray.exe”}</p>
 <h3 id="常用注册表API"><a href="#常用注册表API" class="headerlink" title="常用注册表API"></a>常用注册表API</h3>
       
@@ -588,8 +588,8 @@
         <p><span>发布时间:</span>2019年09月05日 - 10时41分</p>
         <p><span>最后更新:</span>2019年09月06日 - 17时43分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/" title="PE导入表">http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/" title="PE导入表">http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/09/05/PE%E5%AF%BC%E5%85%A5%E8%A1%A8/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

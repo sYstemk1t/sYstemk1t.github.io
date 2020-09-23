@@ -8,19 +8,19 @@
   <meta name="description" content="X86指令中有一个LOOP指令。LOOP指令检测ECX寄存器得值，如果它不是0则将其递减，并将操作权交给操作符所指定得标签处(跳转); C&#x2F;C++语句得循环控制语句主要分为for()、while()、do&#x2F;while()语句；">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逆向工程权威指南-循环">
-<meta property="og:url" content="http://example.com/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="X86指令中有一个LOOP指令。LOOP指令检测ECX寄存器得值，如果它不是0则将其递减，并将操作权交给操作符所指定得标签处(跳转); C&#x2F;C++语句得循环控制语句主要分为for()、while()、do&#x2F;while()语句；">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/0.png">
-<meta property="og:image" content="http://example.com/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/1.png">
-<meta property="og:image" content="http://example.com/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/2.png">
 <meta property="article:published_time" content="2019-10-30T00:39:54.000Z">
 <meta property="article:modified_time" content="2019-10-30T09:04:58.889Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Reverse">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -282,12 +282,12 @@
 
 <h3 id="X86-OllyDbg"><a href="#X86-OllyDbg" class="headerlink" title="X86:OllyDbg"></a>X86:OllyDbg</h3><p>使用OD来调试我们生成得程序，程序生成得时候使用了/Ox、/Ob0选项生成；</p>
 <p>首先我们来到for循环得地方；</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/0.png"></p>
+<p><img src="/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/0.png"></p>
 <p>可以看到ESI寄存器得值当前为2，对应c语言得i=2；</p>
 <p>然后我们继续执行，直到ESI寄存器得值等于9；</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/1.png"></p>
+<p><img src="/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/1.png"></p>
 <p>当ESI寄存器得值等于A(10)的时候，不会触发条件转移指令jl，所以我们看到跳转为实现，结束循环；</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/2.png"></p>
+<p><img src="/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/2.png"></p>
 <h3 id="X86跟踪调试工具：tracer"><a href="#X86跟踪调试工具：tracer" class="headerlink" title="X86跟踪调试工具：tracer"></a>X86跟踪调试工具：tracer</h3><p>这个调试器网上没有找到；</p>
 <h2 id="内存块复制"><a href="#内存块复制" class="headerlink" title="内存块复制"></a>内存块复制</h2><p>目前计算机多采用了SIMD和矢量化技术，在内存中复制数据得时候，能够在每次迭代中复制4~8个字节。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">my_memcpy</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *<span class="built_in">std</span>,<span class="keyword">unsigned</span> <span class="keyword">char</span> *src,<span class="keyword">sizt_t</span> cnt)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">size_t</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;con;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        dst[i] = src[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -352,8 +352,8 @@
         <p><span>发布时间:</span>2019年10月30日 - 08时39分</p>
         <p><span>最后更新:</span>2019年10月30日 - 17时04分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/" title="逆向工程权威指南-循环">http://example.com/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/" title="逆向工程权威指南-循环">http://systemk1t.github.io/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/10/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BE%AA%E7%8E%AF/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

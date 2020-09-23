@@ -8,21 +8,21 @@
   <meta name="description" content="一步步尝试将160个CrackMe全部破解，如果可以，通过任何方式写出一个类似于注册机的东西。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CrackMe001">
-<meta property="og:url" content="http://example.com/2019/12/20/CrackMe001/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/12/20/CrackMe001/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="一步步尝试将160个CrackMe全部破解，如果可以，通过任何方式写出一个类似于注册机的东西。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/12/20/CrackMe001/CrackMe001/0.png">
-<meta property="og:image" content="http://example.com/2019/12/20/CrackMe001/CrackMe001/1.png">
-<meta property="og:image" content="http://example.com/2019/12/20/CrackMe001/CrackMe001/2.png">
-<meta property="og:image" content="http://example.com/2019/12/20/CrackMe001/CrackMe001/3.png">
-<meta property="og:image" content="http://example.com/2019/12/20/CrackMe001/CrackMe001/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/12/20/CrackMe001/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/12/20/CrackMe001/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/12/20/CrackMe001/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/12/20/CrackMe001/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/12/20/CrackMe001/4.png">
 <meta property="article:published_time" content="2019-12-20T01:28:51.000Z">
 <meta property="article:modified_time" content="2019-12-20T19:11:02.842Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="CrackMe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/12/20/CrackMe001/CrackMe001/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/12/20/CrackMe001/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -289,9 +289,9 @@
 <p>点击Check it Baby！它辉弹出一个对话框提示：Sorry，The Serial is incorrent！</p>
 <p>然后继续随意输入几个，发现只有这一种情况，不会判断输入的长度。</p>
 <p>将程序载入至OllyDbg，输入我们的伪码，不要点确定，返回OD中，点击暂停按钮(F12)，然后查看堆栈(Ctrl+k)，或者点击小图标k。</p>
-<p><img src="CrackMe001/0.png"></p>
+<p><img src="/2019/12/20/CrackMe001/0.png"></p>
 <p>堆栈情况如下：</p>
-<p><img src="CrackMe001/1.png"></p>
+<p><img src="/2019/12/20/CrackMe001/1.png"></p>
 <p>查看堆栈内情况，有两个MessageBox函数，第一个的地址是77D50550，这个明显不是，因为地址差的太远了，第二个为0042A1AE，和我们的入口点00400000比较接近，我们进去看一下。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0042</span>A170  /$  <span class="number">55</span>            push ebp</span><br><span class="line"><span class="number">0042</span>A171  |.  <span class="number">8B</span>EC          mov ebp,esp</span><br><span class="line"><span class="number">0042</span>A173  |.  <span class="number">83</span>C4 F4       add esp,<span class="number">-0xC</span></span><br><span class="line"><span class="number">0042</span>A176  |.  <span class="number">53</span>            push ebx</span><br><span class="line"><span class="number">0042</span>A177  |.  <span class="number">56</span>            push esi</span><br><span class="line"><span class="number">0042</span>A178  |.  <span class="number">57</span>            push edi</span><br><span class="line"><span class="number">0042</span>A179  |.  <span class="number">8B</span>F9          mov edi,ecx</span><br><span class="line"><span class="number">0042</span>A17B  |.  <span class="number">8B</span>F2          mov esi,edx</span><br><span class="line"><span class="number">0042</span>A17D  |.  <span class="number">8B</span>D8          mov ebx,eax</span><br><span class="line"><span class="number">0042</span>A17F  |.  E8 <span class="number">7</span>CB4FDFF   call &lt;jmp.&amp;user32.GetActiveWindow&gt;       ; [GetActiveWindow</span><br><span class="line"><span class="number">0042</span>A184  |.  <span class="number">8945</span> F8       mov [local<span class="number">.2</span>],eax</span><br><span class="line"><span class="number">0042</span>A187  |.  <span class="number">33</span>C0          <span class="keyword">xor</span> eax,eax</span><br><span class="line"><span class="number">0042</span>A189  |.  E8 <span class="number">12</span>A0FFFF   call Acid_bur<span class="number">.004241</span>A0</span><br><span class="line"><span class="number">0042</span>A18E  |.  <span class="number">8945</span> F4       mov [local<span class="number">.3</span>],eax</span><br><span class="line"><span class="number">0042</span>A191  |.  <span class="number">33</span>C0          <span class="keyword">xor</span> eax,eax</span><br><span class="line"><span class="number">0042</span>A193  |.  <span class="number">55</span>            push ebp</span><br><span class="line"><span class="number">0042</span>A194  |.  <span class="number">68</span> D0A14200   push Acid_bur<span class="number">.0042</span>A1D0</span><br><span class="line"><span class="number">0042</span>A199  |.  <span class="number">64</span>:FF30       push dword ptr fs:[eax]</span><br><span class="line"><span class="number">0042</span>A19C  |.  <span class="number">64</span>:<span class="number">8920</span>       mov dword ptr fs:[eax],esp</span><br><span class="line"><span class="number">0042</span>A19F  |.  <span class="number">8B</span>45 <span class="number">08</span>       mov eax,[arg<span class="number">.1</span>]</span><br><span class="line"><span class="number">0042</span>A1A2  |.  <span class="number">50</span>            push eax                                 ; /Style = MB_OK|<span class="number">50</span>|MB_DEFBUTTON3|MB_APPLMODAL|<span class="number">5B</span>0400</span><br><span class="line"><span class="number">0042</span>A1A3  |.  <span class="number">57</span>            push edi                                 ; |Title = <span class="literal">NULL</span></span><br><span class="line"><span class="number">0042</span>A1A4  |.  <span class="number">56</span>            push esi                                 ; |Text = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="number">0042</span>A1A5  |.  <span class="number">8B</span>43 <span class="number">24</span>       mov eax,dword ptr ds:[ebx+<span class="number">0x24</span>]          ; |</span><br><span class="line"><span class="number">0042</span>A1A8  |.  <span class="number">50</span>            push eax                                 ; |hOwner = <span class="number">005B</span>0650</span><br><span class="line"><span class="number">0042</span>A1A9  |.  E8 FAB5FDFF   call &lt;jmp.&amp;user32.MessageBoxA&gt;           ; \MessageBoxA</span><br></pre></td></tr></table></figure>
 
@@ -305,9 +305,9 @@
 
 <p>其实到了这里，我们也可以分辨哪个是关键跳转了，因为OD已经自动帮我们解析出了文本，最近的两个跳转jnz和jmp，jnz会通过上一行的call 004039FC，判断我们输入的伪码是否正确，判断结果存在EAX寄存器当中，我们的目的是实现无论输入错误或者正确都提示验证通过，那我们就可以将jnz这行汇编代码以nop填充，然后重新执行。这个时候提示Good Job，通过了！</p>
 <p>可以对比MessageBoxA和堆栈最后一个调用，然后你们就会发现他们两个的地址是一样的！</p>
-<p><img src="CrackMe001/2.png"></p>
+<p><img src="/2019/12/20/CrackMe001/2.png"></p>
 <h1 id="注册机"><a href="#注册机" class="headerlink" title="注册机"></a>注册机</h1><p>我们继续回到刚才那个可疑跳转那里，jnz 0040FB03这个地址，</p>
-<p><img src="CrackMe001/3.png"></p>
+<p><img src="/2019/12/20/CrackMe001/3.png"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0042FAF8  |.  8B55 F0       mov edx,[local.4]                        ;  123</span><br><span class="line">0042FAFB  |.  8B45 F4       mov eax,[local.3]                        ;  CW-9430-CRACKED</span><br><span class="line">0042FAFE  |.  E8 F93EFDFF   call Acid_bur.004039FC                   ;  判断是否正确</span><br></pre></td></tr></table></figure>
 
 
@@ -337,7 +337,7 @@
 
 
 
-<p><img src="CrackMe001/4.png"></p>
+<p><img src="/2019/12/20/CrackMe001/4.png"></p>
 <p>取第一个字母的ASCI的数字，如systemk1t的第一个字符对应的数字就是0x73，然后乘以0x29，结果再自增一倍，得到的数字转为10进制的字符串，再前面加上”CW-“，后加上”-CRACKED”，就组成了对应的注册码。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CrackMe.cpp : 定义控制台应用程序的入口点。</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;stdafx.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;请输入用户名&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">int</span> cName = getchar();				<span class="comment">//取得用户第一个输入</span></span><br><span class="line">	<span class="keyword">if</span> (cName &gt; <span class="number">0x21</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		cName *= <span class="number">0x29</span>;					<span class="comment">//乘以0x29</span></span><br><span class="line">		cName *= <span class="number">2</span>;						<span class="comment">//然后乘以2</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Serial: CW-%4d-CRACKED\r\n&quot;</span>,cName);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Error&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -402,8 +402,8 @@
         <p><span>发布时间:</span>2019年12月20日 - 09时28分</p>
         <p><span>最后更新:</span>2019年12月21日 - 03时11分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/12/20/CrackMe001/" title="CrackMe001">http://example.com/2019/12/20/CrackMe001/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/12/20/CrackMe001/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/12/20/CrackMe001/" title="CrackMe001">http://systemk1t.github.io/2019/12/20/CrackMe001/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/12/20/CrackMe001/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

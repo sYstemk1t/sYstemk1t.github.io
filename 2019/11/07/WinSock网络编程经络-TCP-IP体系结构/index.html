@@ -8,24 +8,24 @@
   <meta name="description" content="TCP&#x2F;IP得名字来自互联网协议簇中最重要得协议：传输控制协议(TCP)和网络协议(IP)。它们分别位于TCP&#x2F;IP模型得第三层和第四层，互联网协议簇中得许多关键特征都是在 这两层中实现得。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="WinSock网络编程经络-TCP&#x2F;IP体系结构">
-<meta property="og:url" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="TCP&#x2F;IP得名字来自互联网协议簇中最重要得协议：传输控制协议(TCP)和网络协议(IP)。它们分别位于TCP&#x2F;IP模型得第三层和第四层，互联网协议簇中得许多关键特征都是在 这两层中实现得。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/0.png">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/1.png">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/2.png">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/3.png">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/4.png">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/5.png">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/6.png">
-<meta property="og:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/7.png">
 <meta property="article:published_time" content="2019-11-07T11:50:34.000Z">
 <meta property="article:modified_time" content="2019-11-08T11:42:50.468Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Scoket">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -273,7 +273,7 @@
 <a id="more"></a>
 
 <h1 id="TCP-IP体系结构"><a href="#TCP-IP体系结构" class="headerlink" title="TCP/IP体系结构"></a>TCP/IP体系结构</h1><h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><p>TCP/IP得名字来自互联网协议簇中最重要得协议：传输控制协议(TCP)和网络协议(IP)。它们分别位于TCP/IP模型得第三层和第四层，互联网协议簇中得许多关键特征都是在 这两层中实现得。</p>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/0.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/0.png"></p>
 <p>当应用程序需要发送数据时，它把数据交给TCP/IP协议，数据在向下层传递过程中，每一层都要对数据进行封装，增加一些头部或尾部信息。这些网络协议中传输得数据一般得称呼是<strong>报文</strong>。</p>
 <p>数据在不同层中时得常用称呼：</p>
 <ul>
@@ -298,11 +298,11 @@
 </ul>
 </li>
 </ul>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/1.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/1.png"></p>
 <h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>OSI参考模型定义了计算机互联标准，它根据不同功能把网络划分为7个层次。在OSI参考模型之前，用于网络互连得TCP/IP协议已经被广泛使用了。</p>
 <p>TCP/IP模型包含了四层：应用层、传输层、网络层、网络接口层。</p>
 <h3 id="网络接口层"><a href="#网络接口层" class="headerlink" title="网络接口层"></a>网络接口层</h3><p>网络接口层是TCP/IP协议于底层硬件得接口，负责网络层与屋里设备之间得数据交换，在TCP/IP中主要为IP协议发送和接受数据。</p>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/2.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/2.png"></p>
 <p>TCP/IP模型对网络接口层定义得比较宽松，即可以座位单独得得协议实现；</p>
 <h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><p>网络层是提供主机到主机之间得数据传送服务，它是不可卡得，知识把上层交给它数据”尽力投递”给下一节点。<strong>网络层是TCP/IP协议得基础，所有其他协议得功能都是建立在它基础之上得，数据得发送和接受都是通过网络层进行处理得。</strong></p>
 <p><strong>网络层主要包括三个协议：互相网协议(IP)、互联网控制报文协议(ICMP)、互联网组管理协议(IGMP)</strong></p>
@@ -315,21 +315,21 @@
 <p>常用的应用层协议有：超文本传输协议HTTP、文件传输协议FTP、邮件协议SMTP、远程终端Telnet、动态主机配置协议DHCP、域名系统DNS等</p>
 <h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>TCP/IP网络架构在实现中，应用程序是调用socket接口使用底层协议，而不是直接与底层协议打交道。TCP/IP协议簇中，应用层协议是最多的。</p>
 <p>TCP是面向连接的传输层协议，里面是字节流，它按照应用程序交给它的顺序依此发送数据，不区分数据的边界。</p>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/3.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/3.png"></p>
 <p>UDP是不可靠的，不能保证应用程序的数据可靠地到达目的地，它也是无连接的，不需要维护连接所带来的负担，它只是把应用程序交给它的苏剧进行简单的封装，然后发出去，因此数据传输速度较快。</p>
 <p><strong>IP是网络层的重要协议，TCP和UDP都使用IP传输数据。应用层协议也可以调用原始的socket，直接访问ip层</strong></p>
 <h2 id="数据的一生"><a href="#数据的一生" class="headerlink" title="数据的一生"></a>数据的一生</h2><p>TCP/IP的数据传输过程与发信相似。发信时，外面是信封，里面放上写的内容；TCP/IP发送数据时，前面放上协议首部，后面是应用程序的数据；</p>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/4.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/4.png"></p>
 <h3 id="数据封装"><a href="#数据封装" class="headerlink" title="数据封装"></a>数据封装</h3><p>应用程序与另一台主机上的程序通信时，它们之间会有一系列的数据交换，对于任何一端，发送数据时，会把对方的IP地址、端口号和数据交给TCP/IP协议。TCP/IP协议对数据进行封装，每一层都在前面加上本层的首部，紧接着是上一层传递给它的数据，一些链路层协议还会在最后追加尾部；</p>
 <p>TCP层并不是在应用层数据前面简单地增加首部，而是根据建立连接时与对方协防出的参数最大段大小(MSS)，把数据分为TCP段，每个TCP段的前面是首部，后面是数据。<strong>如果应用层数据太大，就会被分为多个TCP段，TCP把这些段交给IP去传输</strong></p>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/5.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/5.png"></p>
 <p><strong>IP协议一次能处理的数据长度是有限制的，由IP首部的16位长度字段决定，最大值65535</strong></p>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/6.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/6.png"></p>
 <p>数据到达网络接口，会被封装成适合屋里硬件传输的帧，增加首部，有的追加尾部；</p>
 <p><strong>数据被封装为帧后，就发送到屋里地址上，向目的地传送</strong></p>
 <h3 id="数据分用"><a href="#数据分用" class="headerlink" title="数据分用"></a>数据分用</h3><p>数据帧到达目的主机的时候，数据沿着协议栈自底向上传递，每一层都会对数据做一些检查，确定无误后，就去掉本层协议的首部；</p>
 <p>IP收到数据后，如果数据是分片的，并不会立即把数据传给上层协议，而是保存在IP队列中，等所有的片到达后，执行重组，再交给其他协议处理；</p>
-<p><img src="WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/7.png"></p>
+<p><img src="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/7.png"></p>
 <p><strong>UDP收到数据报后，执行简单的验证后就交给应用程序了；而TCP会检查收到的TCP段是否前面有数据丢失，如果有它也会先保留收到的段，等对方把丢失的段全部发送过来后，再一起交给应用程序</strong></p>
 
       
@@ -391,8 +391,8 @@
         <p><span>发布时间:</span>2019年11月07日 - 19时50分</p>
         <p><span>最后更新:</span>2019年11月08日 - 19时42分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" title="WinSock网络编程经络-TCP/IP体系结构">http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" title="WinSock网络编程经络-TCP/IP体系结构">http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/07/WinSock%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%BB%8F%E7%BB%9C-TCP-IP%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

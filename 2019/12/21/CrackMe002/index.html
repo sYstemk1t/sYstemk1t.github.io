@@ -8,18 +8,18 @@
   <meta name="description" content="一步步尝试将160个CrackMe全部破解，如果可以，通过任何方式写出一个类似于注册机的东西">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CrackMe002">
-<meta property="og:url" content="http://example.com/2019/12/21/CrackMe002/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/12/21/CrackMe002/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="一步步尝试将160个CrackMe全部破解，如果可以，通过任何方式写出一个类似于注册机的东西">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/12/21/CrackMe002/CrackMe002/0.png">
-<meta property="og:image" content="http://example.com/2019/12/21/CrackMe002/CrackMe002/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/12/21/CrackMe002/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/12/21/CrackMe002/2.png">
 <meta property="article:published_time" content="2019-12-21T10:13:45.000Z">
 <meta property="article:modified_time" content="2019-12-20T20:54:21.670Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="CrackMe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/12/21/CrackMe002/CrackMe002/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/12/21/CrackMe002/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -279,7 +279,7 @@
 <p>点击Ok，弹出You Get Wrong，Try Again。</p>
 <p>然后继续随意输入几个，发现只有这一种情况，不会判断输入的长度。</p>
 <h1 id="具体分析"><a href="#具体分析" class="headerlink" title="具体分析"></a>具体分析</h1><p>将程序载入OD中，输入我们的伪码，回到OD中，点击暂停按钮，F12，然后查看堆栈</p>
-<p><img src="CrackMe002/0.png"></p>
+<p><img src="/2019/12/21/CrackMe002/0.png"></p>
 <p>因为VB编写的程序我也不懂，看地址的话，只有一个地址相对比较近，我们进入这个地址，显示调用，进入了这个地址，然后往上翻，距离上一个retn有点远，然后我们主要找向上中存在的跳转。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">004025E3   . &#x2F;EB 56         jmp short Afkayas_.0040263B              ;  jmp跳转到正确的注册点</span><br><span class="line">004025E5   &gt; |68 C81B4000   push Afkayas_.00401BC8                   ;  You Get Wrong</span><br><span class="line">004025EA   . |68 9C1B4000   push Afkayas_.00401B9C                   ;  \r\n</span><br><span class="line">004025EF   . |FFD7          call edi</span><br><span class="line">004025F1   . |8BD0          mov edx,eax</span><br><span class="line">004025F3   . |8D4D E8       lea ecx,dword ptr ss:[ebp-0x18]</span><br><span class="line">004025F6   . |FFD3          call ebx</span><br><span class="line">004025F8   . |50            push eax</span><br><span class="line">004025F9   . |68 E81B4000   push Afkayas_.00401BE8                   ;  Try Again</span><br><span class="line">004025FE   . |FFD7          call edi</span><br><span class="line">00402600   . |8945 CC       mov dword ptr ss:[ebp-0x34],eax</span><br><span class="line">00402603   . |8D45 94       lea eax,dword ptr ss:[ebp-0x6C]</span><br><span class="line">00402606   . |8D4D A4       lea ecx,dword ptr ss:[ebp-0x5C]</span><br><span class="line">00402609   . |50            push eax</span><br><span class="line">0040260A   . |8D55 B4       lea edx,dword ptr ss:[ebp-0x4C]</span><br><span class="line">0040260D   . |51            push ecx</span><br><span class="line">0040260E   . |52            push edx</span><br><span class="line">0040260F   . |8D45 C4       lea eax,dword ptr ss:[ebp-0x3C]</span><br><span class="line">00402612   . |6A 00         push 0x0</span><br><span class="line">00402614   . |50            push eax</span><br><span class="line">00402615   . |C745 C4 08000&gt;mov dword ptr ss:[ebp-0x3C],0x8</span><br><span class="line">0040261C   . |FF15 10414000 call dword ptr ds:[&lt;&amp;MSVBVM50.#rtcMsgBox&gt;;  msvbvm50.rtcMsgBox</span><br><span class="line">00402622   . |8D4D E8       lea ecx,dword ptr ss:[ebp-0x18]</span><br><span class="line">00402625   . |FF15 80414000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaFreeS&gt;;  msvbvm50.__vbaFreeStr</span><br><span class="line">0040262B   . |8D4D 94       lea ecx,dword ptr ss:[ebp-0x6C]</span><br><span class="line">0040262E   . |8D55 A4       lea edx,dword ptr ss:[ebp-0x5C]</span><br><span class="line">00402631   . |51            push ecx</span><br><span class="line">00402632   . |8D45 B4       lea eax,dword ptr ss:[ebp-0x4C]</span><br><span class="line">00402635   . |52            push edx</span><br><span class="line">00402636   . |8D4D C4       lea ecx,dword ptr ss:[ebp-0x3C]</span><br><span class="line">00402639   . |50            push eax</span><br><span class="line">0040263A   . |51            push ecx</span><br><span class="line">0040263B   &gt; \6A 04         push 0x4</span><br></pre></td></tr></table></figure>
 
@@ -296,7 +296,7 @@
 
 
 <p>我们首先尝试一下，将je修改为jne，然后让程序跑起来查看一下</p>
-<p><img src="CrackMe002/2.png"></p>
+<p><img src="/2019/12/21/CrackMe002/2.png"></p>
 <h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1><p>然后我们在je往上继续翻，开始逐步分析算法，生成注册机</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">00402412   .  50            push eax                                 ; &#x2F;eax&#x3D;systemk1t</span><br><span class="line">00402413   .  8B1A          mov ebx,dword ptr ds:[edx]               ; |</span><br><span class="line">00402415   .  FF15 E4404000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaLenBs&gt;; \__vbaLenBstr</span><br><span class="line">0040241B   .  8BF8          mov edi,eax                              ;  eax&#x3D;9</span><br><span class="line">0040241D   .  8B4D E8       mov ecx,dword ptr ss:[ebp-0x18]</span><br><span class="line">00402420   .  69FF FB7C0100 imul edi,edi,0x17CFB                     ;  0x09*0x17CFB</span><br><span class="line">00402426   .  51            push ecx                                 ; &#x2F;String &#x3D; &quot;?&quot;</span><br><span class="line">00402427   .  0F80 91020000 jo Afkayas_.004026BE                     ; |</span><br><span class="line">0040242D   .  FF15 F8404000 call dword ptr ds:[&lt;&amp;MSVBVM50.#rtcAnsiVa&gt;; \rtcAnsiValueBstr</span><br><span class="line">00402433   .  0FBFD0        movsx edx,ax</span><br><span class="line">00402436   .  03FA          add edi,edx                              ;  edi&#x3D;edi+edx（此为用户名第一个字符的ANSI码）</span><br><span class="line">00402438   .  0F80 80020000 jo Afkayas_.004026BE</span><br><span class="line">0040243E   .  57            push edi</span><br><span class="line">0040243F   .  FF15 E0404000 call dword ptr ds:[&lt;&amp;MSVBVM50.__vbaStrI4&gt;;  msvbvm50.__vbaStrI4</span><br><span class="line">00402445   .  8BD0          mov edx,eax                              ;  eax&#x3D;877894</span><br></pre></td></tr></table></figure>
 
@@ -364,8 +364,8 @@
         <p><span>发布时间:</span>2019年12月21日 - 18时13分</p>
         <p><span>最后更新:</span>2019年12月21日 - 04时54分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/12/21/CrackMe002/" title="CrackMe002">http://example.com/2019/12/21/CrackMe002/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/12/21/CrackMe002/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/12/21/CrackMe002/" title="CrackMe002">http://systemk1t.github.io/2019/12/21/CrackMe002/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/12/21/CrackMe002/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

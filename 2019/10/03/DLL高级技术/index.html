@@ -8,19 +8,19 @@
   <meta name="description" content="我们还可以使用DLL来进行更多的工作，熟练大多数应用不一定需要这些方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DLL高级技术">
-<meta property="og:url" content="http://example.com/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="我们还可以使用DLL来进行更多的工作，熟练大多数应用不一定需要这些方法">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/0.png">
-<meta property="og:image" content="http://example.com/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png">
-<meta property="og:image" content="http://example.com/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png">
 <meta property="article:published_time" content="2019-10-03T02:04:34.000Z">
 <meta property="article:modified_time" content="2019-10-12T06:38:44.254Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -271,7 +271,7 @@
 <a id="more"></a>
 
 <h2 id="DLL高级技术"><a href="#DLL高级技术" class="headerlink" title="DLL高级技术"></a>DLL高级技术</h2><h3 id="DLL模块的显式加载和符号链接"><a href="#DLL模块的显式加载和符号链接" class="headerlink" title="DLL模块的显式加载和符号链接"></a>DLL模块的显式加载和符号链接</h3><p>如果线程需要调用DLL模板中的函数，那么DLL的文件映像必须映射到调用线程的进程地址空间中。</p>
-<p><img src="DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/0.png"></p>
+<p><img src="/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/0.png"></p>
 <p>创造DLL ：</p>
 <ol>
 <li>建立带有输出原型/结构/符号的头文件。</li>
@@ -400,9 +400,9 @@
 <p>Dll可能阻止进程的终止，只有当每个dll处理完此通知之后，进程才会终止</p>
 <p>TerminateProcess 不会触发此通知调用dll的DllMain，从而没有机会进行清理共工作，所以应该避免使用此函数终止进程</p>
 <p>LoadLibrary：</p>
-<p><img src="DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png"></p>
+<p><img src="/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png"></p>
 <p>FreeLibrary：</p>
-<p><img src="DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png"></p>
+<p><img src="/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png"></p>
 <h4 id="DLL-THREAD-ATTACH"><a href="#DLL-THREAD-ATTACH" class="headerlink" title="DLL_THREAD_ATTACH"></a>DLL_THREAD_ATTACH</h4><p>进程创建线程时，映射到此进程的所有dll文件，会触发此通知调用DllMain，执行线程相关的初始化，而之后映射的dll（在创建线程之后）不会再触发此通知</p>
 <p>另外，主线程不会调用此通知</p>
 <h4 id="DLL-THREAD-DETACH"><a href="#DLL-THREAD-DETACH" class="headerlink" title="DLL_THREAD_DETACH"></a>DLL_THREAD_DETACH</h4><p>ExitThread中止线程前会触发此通知执行与线程相关的清理工作</p>
@@ -503,8 +503,8 @@
         <p><span>发布时间:</span>2019年10月03日 - 10时04分</p>
         <p><span>最后更新:</span>2019年10月12日 - 14时38分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/" title="DLL高级技术">http://example.com/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/" title="DLL高级技术">http://systemk1t.github.io/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/10/03/DLL%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

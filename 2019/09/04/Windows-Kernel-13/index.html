@@ -8,28 +8,28 @@
   <meta name="description" content="Windows的内存结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Kernel-13">
-<meta property="og:url" content="http://example.com/2019/09/04/Windows-Kernel-13/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Windows的内存结构">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/0.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/1.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/2.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/3.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/4.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/5.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/6.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/7.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-kernel-13/8.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-kernel-13/9.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-kernel-13/10.png">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-kernel-13/11.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/9.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/10.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/11.png">
 <meta property="article:published_time" content="2019-09-03T19:07:49.000Z">
 <meta property="article:modified_time" content="2019-09-04T06:23:14.741Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/09/04/Windows-Kernel-13/Windows-Kernel-13/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -282,7 +282,7 @@
 <p>由于每个进程都可以接收它自己的私有的地址空概念，因此当进程中的一个线程正在运行时，该线程可以访问只属于它的进程的内存。属于其它进程的内存则隐藏着，并且不能被正在运行的线程访问</p>
 <p><strong>虚拟地址空不同于物理空间，该地址空间只是内存地址的一个范围，在你能够访问数据而不会出现违规访问之前，必须赋予物理存储器，或者将物理存储器映射到各个部分的地址空间。</strong></p>
 <h2 id="虚拟地址空间如何区分"><a href="#虚拟地址空间如何区分" class="headerlink" title="虚拟地址空间如何区分"></a>虚拟地址空间如何区分</h2><p>每个进程的虚拟地址空间都要划分成各个分区，地址空间的分区是根据操作系统的基本实现方法来进行的。</p>
-<p><img src="Windows-Kernel-13/0.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/0.png"></p>
 <h3 id="NULL指针分配的分区"><a href="#NULL指针分配的分区" class="headerlink" title="NULL指针分配的分区"></a>NULL指针分配的分区</h3><p>进程地址空间的这个分区的设置是为了帮助程序员掌握NULL指针的分配情况，如果你的进程空间中的线程试图读取该分区的地址空间的数据，那么就会引起CPU的异常访问</p>
 <p>C/C++中通常不会进行严格的错误检查</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *p = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">*p = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
@@ -321,7 +321,7 @@
 <h2 id="提交地址空间区域中的物理存储器"><a href="#提交地址空间区域中的物理存储器" class="headerlink" title="提交地址空间区域中的物理存储器"></a>提交地址空间区域中的物理存储器</h2><p>如需要使用已保留的地址空间区域，必须分配物理存储器，然后将该物理存储器映射到已保留的区域空间，这个操作称为<strong>提交物理存储器</strong>。</p>
 <p>物理存储器总是以页面的形式来提交的。若要将物理存储器提交给一个保留的地址空间，<strong>也要调用VirtualAlloc函数</strong></p>
 <p>当我们调拨物理存储器给区域的时候，并不需要给整个区域都调拨物理存储器。例如可以预定一块大小为64KB的区域，然后把物理存储区调拨给该区域中的第二个页面和第四个页面。如下图：</p>
-<p><img src="Windows-Kernel-13/1.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/1.png"></p>
 <p><strong>撤销调拨（decommitting）</strong>当程序不再需要访问所预定区域中已调拨的物理存储器时，应该释放物理存储器。通过调用<strong>VirtualFree</strong>函数来完成</p>
 <h2 id="物理存储器与页文件"><a href="#物理存储器与页文件" class="headerlink" title="物理存储器与页文件"></a>物理存储器与页文件</h2><p>磁盘上有一种称为页交换文件(paging file) 其中包含虚拟内存，可供任何进程使用。</p>
 <p>当线程试图访问存储器的一个字节时，cpu必须知道该字节是在内存还是在磁盘上。</p>
@@ -329,7 +329,7 @@
 <p>最好把物理存储器看成是保存在磁盘（通常是硬盘）上的页交换文件中的数据，当应用程序调用VirtualAlloc函数来把物理存储器调拨给地址空间区域时，</p>
 <p>该空间实际上是从硬盘上的页交换文件分配得到的。</p>
 <p>当一个线程试图访问所属进程的地址空间中的一块数据（17章介绍的内存映射文件之外）时，可能会有两种情况。</p>
-<p><img src="Windows-Kernel-13/2.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/2.png"></p>
 <ul>
 <li>线程要访问的数据就在内存中。cpu会把数据的虚拟内存地址映射到内存（RAM）的物理地址，接下来就可以访问内存中的数据。</li>
 <li>线程要访问的数据不在内存，而是位于页交换文件（pagefile）中的某处。这次不成功的访问会成为页错误。</li>
@@ -346,11 +346,11 @@
 <p>当载入一个exe或dll，系统会自动预定地址空间区域并把文件映像映射到该区域。</p>
 <p>windows可以使用多个页交换文件。（如果多个页交换文件位于不同的物理硬盘上）系统可以运行更快，因为系统能同时写入多个磁盘。</p>
 <p>设定页交换文件：</p>
-<p><img src="Windows-Kernel-13/3.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/3.png"></p>
 <p><strong>当. e x e或D L L文件从软盘加载时，Windows 98和Windows 2000都能将整个文件从软盘拷贝到系统的 R A M中。此外，系统将从页文件中分配足够的内存，以便存放该文件的映像。如果系统选择对当前包含该文件的一部分映像的 R A M页面进行裁剪，那么该内存属于只能写入的内存。如果系统 R A M上的负载比较小，那么文件始终都可以直接从R A M来运行。</strong></p>
 <h2 id="保护属性"><a href="#保护属性" class="headerlink" title="保护属性"></a>保护属性</h2><p>x86处理器和Alpha CPU不执行“执行”保护模式，不过操作系统软件却支持这个属性，这些CPU将度访问视为执行访问。</p>
 <p>页面保护属性：</p>
-<p><img src="Windows-Kernel-13/4.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/4.png"></p>
 <h3 id="Copy-On-Write访问"><a href="#Copy-On-Write访问" class="headerlink" title="Copy-On-Write访问"></a>Copy-On-Write访问</h3><p>操作系统给内存区域赋予了Copy-On-Write保护属性，当一个.exe或者DLL模块被映射到一个内存地址的时候，系统将计算有多少页是可以写入的（通常包含代码的页面标为PAGE_EXECUTE_READ，而包含数据的页面则被标为PAGE_READWRITE）。</p>
 <p>当一个进程中的线程试图将数据写入一个共享内存块的时候，系统会主动进行干预，并执行以下步骤：</p>
 <ul>
@@ -364,14 +364,14 @@
 <p>PA G E _ G U A R D：可以在页面上写入一个字节时使应用程序收到一个通知（通过一个异常条件）。</p>
 <h2 id="综合使用所有的元素"><a href="#综合使用所有的元素" class="headerlink" title="综合使用所有的元素"></a>综合使用所有的元素</h2><p>地址是从0x00000000的区域开始观察进程的地址空间的，并在可用地址空闲的最后一个区域结束，该区域的起始地址是0x7FFE0000.</p>
 <p>非空闲区域的所有基地址几乎都是从6 4 K B的倍数上开始的。</p>
-<p><img src="Windows-Kernel-13/5.png"></p>
-<p><img src="Windows-Kernel-13/6.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/5.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/6.png"></p>
 <p><strong>区域类型共有 4个值，即空闲，私有，映像或映射。</strong></p>
-<p><img src="Windows-Kernel-13/7.png"></p>
-<h3 id="区域的内部情况"><a href="#区域的内部情况" class="headerlink" title="区域的内部情况"></a>区域的内部情况</h3><p><img src="Windows-kernel-13/8.png"></p>
-<p><img src="Windows-kernel-13/9.png"></p>
-<p><img src="Windows-kernel-13/10.png"></p>
-<p><img src="Windows-kernel-13/11.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/7.png"></p>
+<h3 id="区域的内部情况"><a href="#区域的内部情况" class="headerlink" title="区域的内部情况"></a>区域的内部情况</h3><p><img src="/2019/09/04/Windows-Kernel-13/8.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/9.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/10.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-13/11.png"></p>
 <h2 id="数据对其的重要性"><a href="#数据对其的重要性" class="headerlink" title="数据对其的重要性"></a>数据对其的重要性</h2><p>当C P U访问正确对齐的数据时，它的运行效率最高。当数据大小的数据模数的内存地址是0时，数据是对齐的。</p>
 
       
@@ -433,8 +433,8 @@
         <p><span>发布时间:</span>2019年09月04日 - 03时07分</p>
         <p><span>最后更新:</span>2019年09月04日 - 14时23分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/04/Windows-Kernel-13/" title="Windows-Kernel-13">http://example.com/2019/09/04/Windows-Kernel-13/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/09/04/Windows-Kernel-13/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/04/Windows-Kernel-13/" title="Windows-Kernel-13">http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/09/04/Windows-Kernel-13/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

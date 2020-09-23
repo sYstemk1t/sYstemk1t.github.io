@@ -7,22 +7,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Assembly-1">
-<meta property="og:url" content="http://example.com/2019/08/29/Windows-Assembly-1/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C0.png">
-<meta property="og:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1/2.png">
-<meta property="og:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1/3.png">
-<meta property="og:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1/4.png">
-<meta property="og:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C5.png">
-<meta property="og:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C6.png">
-<meta property="og:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/7.png">
 <meta property="article:published_time" content="2019-08-29T11:26:01.000Z">
 <meta property="article:modified_time" content="2019-09-02T02:36:56.604Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -303,24 +303,24 @@
 <p>80386处理器的寻址范围达到了4GB，利用XMS驱动程序可以访问到所有的4GB地址空间。</p>
 <p>但16位的段寄存器限制DOS程序，“可见”的内存范围还是停留在0000h到FFFF0h+64KB的范围中。</p>
 <h4 id="80386的内存寻址机制"><a href="#80386的内存寻址机制" class="headerlink" title="80386的内存寻址机制"></a>80386的内存寻址机制</h4><p>实模式下的内存寻址方式：</p>
-<p><img src="Windows-Assembly-1%5C0.png"></p>
+<p><img src="/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C0.png"></p>
 <p>80386的保护模式寻址方式：</p>
 <p>80386中引入了两个新的寄存器来管理段描述符表；<strong>一个是48位的全局描述符表寄存器GDTR，一个是16位的局部描述符表段寄存器LDTR。</strong></p>
 <p>GFTR：指向的描述符表位全局描述符表。它包含系统中所有任务都可用的段描述符，通常包含描述操作系统使用的代码段、数据段和堆栈段中的描述符以及各任务的LDT段等；全局描述符表只有一个。</p>
 <p>LDTR：只想局部描述符表LDT。80386处理器设置成每个任务都有一个独立的DTL。它包含每个任务私有的代码段、数据段和堆栈段的描述符，也包含该任务所使用的一些门描述符。</p>
 <p>不同任务的局部描述符号表分别组成不同的内存段，描述这些内存段的描述符当作系统描述符放在全局描述符表中。</p>
-<p><img src="Windows-Assembly-1/2.png"></p>
+<p><img src="/2019/08/29/Windows-Assembly-1/2.png"></p>
 <h4 id="80386内存的分页机制"><a href="#80386内存的分页机制" class="headerlink" title="80386内存的分页机制"></a>80386内存的分页机制</h4><p>在实模式下寻址的时候，“段寄存器+偏移地址”经过转换计算以后得到的地址是“物理地址”，也就是操作系统中的实际地址。而保护模式下“段选择器+偏移地址”转换后的地址成为“线性地址”而不是“物理地址”。</p>
-<p><img src="Windows-Assembly-1/3.png"></p>
+<p><img src="/2019/08/29/Windows-Assembly-1/3.png"></p>
 <p>在单任务的DOS中，一个应用程序可以使用所有的空间内存。程序退出后，操作系统回收所有的碎片内存并且组成一个大内存提供给下一个程序使用。</p>
 <p>对于一个多任务的操作系统，内存的碎片化是不能容忍的，否则在系统运行一段时间以后，即使空间内存的总和很大，也可能出现任何一片内存都小到无法装入执行程序的独步。</p>
 <p>80386处理器的分页机制就解决了这个问题，<strong>80386处理器把4KB大小的一块内存当作一“页”内存，每页物理内存可以根据“页目录”和“也表”，随意映射到不同的线性地址上。这样就可以将物理地址不连续的内存的映射连接到一起，在线性地址上视为连续。</strong></p>
 <p><strong>内存分页管理只能在保护模式下才可以实现，实模式不支持分页内存机制。但不管在哪种模式下，所有寻址指令使用的都是线性地址，程序不用关心数据最后究竟存储到了物理内存的哪个地方。</strong></p>
 <p><strong>页表规定的不仅是地址的映射，同时还规定了页的访问属性，如是否可写、可读和执行等。比如把代码所在的内存页可读与执行，那么权限不够的代码向它写数据就会引发保护异常。利用这个机制可以在硬件层次上支持虚拟内存的实现</strong></p>
-<p><img src="Windows-Assembly-1/4.png"></p>
+<p><img src="/2019/08/29/Windows-Assembly-1/4.png"></p>
 <h4 id="Windows内存的安排"><a href="#Windows内存的安排" class="headerlink" title="Windows内存的安排"></a>Windows内存的安排</h4><p>Windows操作系统一般在硬盘上建立大小为物理地址内存地址两倍的交换空间（文件名在Windows9x的Win386.awp，Windows NT下位PageFile.sys）用做虚拟内存。</p>
 <p>利用80386下的内存分页机制，交换文件在寻址上可以很方便的作为内存使用。只需要在真正访问到的时候将硬盘文件的内容读入物理空间，然后重新将线性地址映射到这块物理内存就可以了。<strong>同样道理，被执行的可执行文件也不必真正装入内存，只要在页表中建立应映射管理，以后真正运行到某处代码的时候再将它调入物理内存即可</strong></p>
-<p><img src="Windows-Assembly-1%5C5.png"></p>
+<p><img src="/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C5.png"></p>
 <p>Win32变成中的重要概念：</p>
 <ul>
 <li>每个应用程序都有自己的4GB的寻址空间。该控件可以存放操作系统、系统DLL和用户DLL的代码，它们之中有各种函数提供给应用程序调用。再除去其他的一些空间，余下的应用程序的代码、数据和可分配的地址空间</li>
@@ -332,13 +332,13 @@
 <p>Windows系统位用户程序分配好了一切工作。具体表在为用户程序的代码段、数据段和堆栈段全局预定义好了段描述符。这些段的起始地址为0，限制长度位FFFFFFFF，所以用它们可以直接寻址全部的4GB地址空间。<strong>程序开始的时候，CS、DS、ES、SS都已经只想了正常的描述符。</strong></p>
 <h3 id="Windows的特权保护"><a href="#Windows的特权保护" class="headerlink" title="Windows的特权保护"></a>Windows的特权保护</h3><h4 id="80386的中断和异常"><a href="#80386的中断和异常" class="headerlink" title="80386的中断和异常"></a>80386的中断和异常</h4><p>中断指当程序执行过程中有更重要的事情需要实时处理时，硬件通过中断控制器通知处理器。处理器暂时挂起当前运行的程序，转移到中断处理程序中：当中断处理程序处理完毕后，通过iret指令回到原先被打断的程序中断继续执行。</p>
 <p>实模式下的中断和异常的处理过程：</p>
-<p><img src="Windows-Assembly-1%5C6.png"></p>
+<p><img src="/2019/08/29/Windows-Assembly-1/Windows-Assembly-1%5C6.png"></p>
 <p><strong>中断向量表位于物理内存00000h开始的400h字节中，共支持100h个中断向量：每一个向量中断是一个xxxx：yyyy格式的地址，共占用4字节</strong></p>
 <p>在保护模式下，中断或异常处理往往从用户代码切换到操作系统代码中执行。</p>
 <p><strong>保护模式下增加了“门”的概念。“门”指向某个优先级高的程序所规定的入口点，所有优先级低的程序调用优先级高的程序只能通过门重定向，进入门所规定的入口点</strong></p>
 <p><strong>80386的门分为中断门、自陷门和任务门</strong></p>
 <p><strong>在保护模式下要表示一个中断或异常服务程序的信息需要用8个字节，包括门的种类以及xxxx：yyyyyyyy格式的入口地址等。这组信息叫做“中断描述符”。</strong></p>
-<p><img src="Windows-Assembly-1/7.png"></p>
+<p><img src="/2019/08/29/Windows-Assembly-1/7.png"></p>
 <h4 id="80386的保护机制"><a href="#80386的保护机制" class="headerlink" title="80386的保护机制"></a>80386的保护机制</h4><p><strong>80386共支持4个优先级：0~3级：0级是最高级（特权级）、3级是最低级（用户级）</strong></p>
 <p>80386采用保护机制的组成：</p>
 <ul>
@@ -416,8 +416,8 @@
         <p><span>发布时间:</span>2019年08月29日 - 19时26分</p>
         <p><span>最后更新:</span>2019年09月02日 - 10时36分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/29/Windows-Assembly-1/" title="Windows-Assembly-1">http://example.com/2019/08/29/Windows-Assembly-1/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/08/29/Windows-Assembly-1/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/29/Windows-Assembly-1/" title="Windows-Assembly-1">http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/08/29/Windows-Assembly-1/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

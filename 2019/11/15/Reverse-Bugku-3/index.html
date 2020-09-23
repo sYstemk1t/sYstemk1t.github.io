@@ -8,20 +8,20 @@
   <meta name="description" content="记录一下学习Reverse经历，从基础开始做起">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Reverse-Bugku-3">
-<meta property="og:url" content="http://example.com/2019/11/15/Reverse-Bugku-3/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="记录一下学习Reverse经历，从基础开始做起">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/11/15/Reverse-Bugku-3/Reverse-Bugku-3/0.png">
-<meta property="og:image" content="http://example.com/2019/11/15/Reverse-Bugku-3/Reverse-Bugku-3/1.png">
-<meta property="og:image" content="http://example.com/2019/11/15/Reverse-Bugku-3/Reverse-Bugku-3/3.png">
-<meta property="og:image" content="http://example.com/2019/11/15/Reverse-Bugku-3/Reverse-Bugku-3/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/4.png">
 <meta property="article:published_time" content="2019-11-15T09:05:34.000Z">
 <meta property="article:modified_time" content="2019-11-15T12:30:00.551Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/11/15/Reverse-Bugku-3/Reverse-Bugku-3/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -277,10 +277,10 @@
 <p>OllyDbg(52破解)</p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>首先查壳，然后将程序载入到IDA中，IDA中没有搜索到字符串，然后将程序载入到x64dbg中，所搜字符串第一个就是flag值(有点取巧)</p>
 <h3 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h3><p> 使用PEID查看程序有没有壳 </p>
-<p><img src="Reverse-Bugku-3/0.png"></p>
+<p><img src="/2019/11/15/Reverse-Bugku-3/0.png"></p>
 <h3 id="Ida"><a href="#Ida" class="headerlink" title="Ida"></a>Ida</h3><p>这道题目用不到IDA，所以留个坑，可能是我比较菜</p>
 <h3 id="OllyDbg"><a href="#OllyDbg" class="headerlink" title="OllyDbg"></a>OllyDbg</h3><p>将程序载入到OD，然后我们搜索Ascii码</p>
-<p><img src="Reverse-Bugku-3/1.png"></p>
+<p><img src="/2019/11/15/Reverse-Bugku-3/1.png"></p>
 <p>我们接下来找到关键跳转往上翻</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">00AF1038   .  E8 3E020000   call re1.00AF127B</span><br><span class="line">00AF103D   .  68 603EB000   push re1.00B03E60                        ;  这是一道很可爱很简单的逆向题呦\n</span><br><span class="line">00AF1042   .  E8 34020000   call re1.00AF127B</span><br><span class="line">00AF1047   .  68 803EB000   push re1.00B03E80                        ;  输入flag吧:</span><br><span class="line">00AF104C   .  E8 2A020000   call re1.00AF127B</span><br><span class="line">00AF1051   .  8D45 DC       lea eax,dword ptr ss:[ebp-0x24]</span><br><span class="line">00AF1054   .  50            push eax</span><br><span class="line">00AF1055   .  68 8C3EB000   push re1.00B03E8C                        ;  %s</span><br><span class="line">00AF105A   .  E8 72000000   call re1.00AF10D1</span><br><span class="line">00AF105F   .  83C4 14       add esp,0x14</span><br><span class="line">00AF1062   .  8D45 DC       lea eax,dword ptr ss:[ebp-0x24]</span><br><span class="line">00AF1065   .  8D4D BC       lea ecx,dword ptr ss:[ebp-0x44]</span><br><span class="line">00AF1068   &gt;  8A11          mov dl,byte ptr ds:[ecx]</span><br><span class="line">00AF106A   .  3A10          cmp dl,byte ptr ds:[eax]</span><br><span class="line">00AF106C   .  75 1A         jnz short re1.00AF1088</span><br><span class="line">00AF106E   .  84D2          test dl,dl</span><br><span class="line">00AF1070   .  74 12         je short re1.00AF1084</span><br><span class="line">00AF1072   .  8A51 01       mov dl,byte ptr ds:[ecx+0x1]</span><br><span class="line">00AF1075   .  3A50 01       cmp dl,byte ptr ds:[eax+0x1]</span><br><span class="line">00AF1078      75 0E         jnz short re1.00AF1088</span><br><span class="line">00AF107A   .  83C1 02       add ecx,0x2</span><br><span class="line">00AF107D   .  83C0 02       add eax,0x2</span><br><span class="line">00AF1080   .  84D2          test dl,dl</span><br><span class="line">00AF1082   .^ 75 E4         jnz short re1.00AF1068</span><br><span class="line">00AF1084   &gt;  33C0          xor eax,eax</span><br><span class="line">00AF1086   .  EB 05         jmp short re1.00AF108D</span><br><span class="line">00AF1088   &gt;  1BC0          sbb eax,eax</span><br><span class="line">00AF108A   .  83C8 01       or eax,0x1</span><br><span class="line">00AF108D   &gt;  85C0          test eax,eax</span><br><span class="line">00AF108F      75 07         jnz short re1.00AF1098</span><br><span class="line">00AF1091   .  68 903EB000   push re1.00B03E90                        ;  flag get√\n</span><br><span class="line">00AF1096   .  EB 05         jmp short re1.00AF109D</span><br><span class="line">00AF1098   &gt;  68 9C3EB000   push re1.00B03E9C                        ;  flag不太对呦，再试试呗，加油呦\n</span><br><span class="line">00AF109D   &gt;  E8 D9010000   call re1.00AF127B</span><br><span class="line">00AF10A2   .  83C4 04       add esp,0x4</span><br><span class="line">00AF10A5   .  68 BC3EB000   push re1.00B03EBC                        ;  pause</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -288,9 +288,9 @@
 
 
 
-<p><img src="Reverse-Bugku-3/3.png"></p>
+<p><img src="/2019/11/15/Reverse-Bugku-3/3.png"></p>
 <p>至此，我们得flag拿到了，其实更简单得方法有：</p>
-<p><img src="Reverse-Bugku-3/4.png"></p>
+<p><img src="/2019/11/15/Reverse-Bugku-3/4.png"></p>
 <p>搜索ascii码，第一个就是了！</p>
 <h2 id="flag"><a href="#flag" class="headerlink" title="flag"></a>flag</h2><p>DUTCTF{We1c0met0DUTCTF}</p>
 
@@ -353,8 +353,8 @@
         <p><span>发布时间:</span>2019年11月15日 - 17时05分</p>
         <p><span>最后更新:</span>2019年11月15日 - 20时30分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/15/Reverse-Bugku-3/" title="Reverse-Bugku-3">http://example.com/2019/11/15/Reverse-Bugku-3/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/15/Reverse-Bugku-3/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/15/Reverse-Bugku-3/" title="Reverse-Bugku-3">http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/15/Reverse-Bugku-3/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

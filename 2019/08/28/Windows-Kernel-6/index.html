@@ -7,18 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Kernel-6">
-<meta property="og:url" content="http://example.com/2019/08/28/Windows-Kernel-6/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/08/28/Windows-Kernel-6/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/08/28/Windows-Kernel-6/Windows-Kernel-6%5C0.png">
-<meta property="og:image" content="http://example.com/2019/08/28/Windows-Kernel-6/Windows-Kernel-6/1.png">
-<meta property="og:image" content="http://example.com/2019/08/28/Windows-Kernel-6/Windows-Kernel-6/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/28/Windows-Kernel-6/Windows-Kernel-6%5C0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/28/Windows-Kernel-6/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/28/Windows-Kernel-6/2.png">
 <meta property="article:published_time" content="2019-08-27T18:43:50.000Z">
 <meta property="article:modified_time" content="2019-08-27T21:12:50.657Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/08/28/Windows-Kernel-6/Windows-Kernel-6%5C0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/08/28/Windows-Kernel-6/Windows-Kernel-6%5C0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -350,7 +350,7 @@
 
 
 
-<p><img src="Windows-Kernel-6%5C0.png"></p>
+<p><img src="/2019/08/28/Windows-Kernel-6/Windows-Kernel-6%5C0.png"></p>
 <p>在主线程中创建了子线程SecondThread， 在SecondThread的栈上创建了对象A。实际调试发现。</p>
 <p>A的析构函数永远不会被调用。因为TerminateThread不会销毁目标线程的栈。</p>
 <h3 id="进程终止运行时"><a href="#进程终止运行时" class="headerlink" title="进程终止运行时"></a>进程终止运行时</h3><p><strong>ExitProcess</strong>和<strong>TerminateProces</strong>也可以用于终止线程的运行。该函数会使终止的进程中的所有线程都终止，由于整个进程都会被关闭，所以线程的所有资源肯定会被清理。</p>
@@ -368,7 +368,7 @@
 
 <p>退出代码的值在pdwExitProcess指向的DOWRD中返回。</p>
 <p>如果调用GetExitCodeThread时线程尚未终止运行，该函数就用 STILI_ACTLIVE标识符（定义为0 x 1 0 3）填入DWORD。</p>
-<h2 id="线程的一些性质"><a href="#线程的一些性质" class="headerlink" title="线程的一些性质"></a>线程的一些性质</h2><p><img src="Windows-Kernel-6/1.png"></p>
+<h2 id="线程的一些性质"><a href="#线程的一些性质" class="headerlink" title="线程的一些性质"></a>线程的一些性质</h2><p><img src="/2019/08/28/Windows-Kernel-6/1.png"></p>
 <ul>
 <li>调用CreateThread可使系统创建一个线程内核对象。该对象的使用技术是2（<strong>在线程停止运行和从CreateThread返回的句柄关闭之前，线程内核对象不会撤销</strong>。</li>
 <li>一旦创建了线程内核对象，系统就分配内存，供线程的堆栈使用。（内存是进程的地址空间内分配的）在其堆栈上写入两个值（从高位到地位：pvParam参数值 和pfnStartAddr线程函数入口地址）</li>
@@ -399,7 +399,7 @@
 <p>在main函数返回以后C/C++的启动代码再调用ExitProcess。</p>
 <p>主线程永远都不会返回RtlUserThreadStart函数</p>
 <h2 id="C-C-运行期库的考虑"><a href="#C-C-运行期库的考虑" class="headerlink" title="C/C++运行期库的考虑"></a>C/C++运行期库的考虑</h2><p>VC++配有6个C/C++运行期库：</p>
-<p><img src="Windows-Kernel-6/2.png"></p>
+<p><img src="/2019/08/28/Windows-Kernel-6/2.png"></p>
 <p>例如在早期标准C库中多个线程同时会访问一个全局变量，errno。对其访问的值未必是当前线程执行了系统函数的正确反映值。（该值不具备Thread Local Storage特性）</p>
 <p>还有_doserrno, strtok, _wcstok, strerror, _strerror, tmpnam, tmpfile, asctime, _wasctime, gmtime,_ecvt 和 _fcvt等。</p>
 <p>因此有了_beginthreadex函数，该函数内部调用的CRT library会维护（TLS）变量和函数的初始化工作。</p>
@@ -452,7 +452,7 @@
 <p>(*_errno())这样写是很有必要的。</p>
 <p>因为在实际代码中可能会这样使用errno  </p>
 <p>c++运行库还维护了同步对象，例如两个线程同时调用malloc堆就会损坏。需要进行线程同步控制访问。</p>
-<h2 id="oops"><a href="#oops" class="headerlink" title="oops"></a>oops</h2><h3 id="错误的调用了CreateThread"><a href="#错误的调用了CreateThread" class="headerlink" title="错误的调用了CreateThread"></a>错误的调用了CreateThread</h3><h2 id=""><a href="#" class="headerlink" title=""></a></h2><p>如果在CreateThread创建的线程中调用C++标准库函数会发生什么呢？</p>
+<h2 id="oops"><a href="#oops" class="headerlink" title="oops"></a>oops</h2><h3 id="错误的调用了CreateThread"><a href="#错误的调用了CreateThread" class="headerlink" title="错误的调用了CreateThread"></a>错误的调用了CreateThread</h3><h2 id><a href="#" class="headerlink" title></a></h2><p>如果在CreateThread创建的线程中调用C++标准库函数会发生什么呢？</p>
 <p>C++运行库会通过TlsGetValue尝试获取_tiddata块，返回NULL。 这时C++库函数会为主调线程初始化并分配一个_tiddata块。</p>
 <p>然后这个块会与线程关联。以后运行的任何C++库函数都可以使用这个块。</p>
 <p>但是！若线程使用了signal函数，整个进程都会终止，因为没有准备SHE帧。</p>
@@ -553,8 +553,8 @@
         <p><span>发布时间:</span>2019年08月28日 - 02时43分</p>
         <p><span>最后更新:</span>2019年08月28日 - 05时12分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/28/Windows-Kernel-6/" title="Windows-Kernel-6">http://example.com/2019/08/28/Windows-Kernel-6/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/08/28/Windows-Kernel-6/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/28/Windows-Kernel-6/" title="Windows-Kernel-6">http://systemk1t.github.io/2019/08/28/Windows-Kernel-6/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/08/28/Windows-Kernel-6/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

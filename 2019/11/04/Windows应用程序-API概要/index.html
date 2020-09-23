@@ -8,18 +8,18 @@
   <meta name="description" content="Windows程序设计的一些基本概念，包括在WIndows程序设计中所使用到的一些特有数据类型；还有将Windows众多的API进行了分类，初步介绍Windows API与动态链接的原理，以及Windows应用程序所使用的字符集等;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows应用程序-API概要">
-<meta property="og:url" content="http://example.com/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Windows程序设计的一些基本概念，包括在WIndows程序设计中所使用到的一些特有数据类型；还有将Windows众多的API进行了分类，初步介绍Windows API与动态链接的原理，以及Windows应用程序所使用的字符集等;">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/0.png">
-<meta property="og:image" content="http://example.com/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/WIndows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/1.png">
 <meta property="article:published_time" content="2019-11-04T10:43:14.000Z">
 <meta property="article:modified_time" content="2019-11-04T13:19:27.682Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -276,8 +276,8 @@
 
 <p><strong>LPSTR类型的数据是字符串，也就是字符数组，相当于C语言中的char</strong></p>
 <h4 id="为什么要使用WIndows数据类型"><a href="#为什么要使用WIndows数据类型" class="headerlink" title="为什么要使用WIndows数据类型"></a>为什么要使用WIndows数据类型</h4><p>Windows API函数、数据结构等都是采用Windows数据类型</p>
-<h4 id="查看Windows数据类型的定义"><a href="#查看Windows数据类型的定义" class="headerlink" title="查看Windows数据类型的定义"></a>查看Windows数据类型的定义</h4><p><img src="Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/0.png"></p>
-<p><img src="WIndows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/1.png"></p>
+<h4 id="查看Windows数据类型的定义"><a href="#查看Windows数据类型的定义" class="headerlink" title="查看Windows数据类型的定义"></a>查看Windows数据类型的定义</h4><p><img src="/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/0.png"></p>
+<p><img src="/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/1.png"></p>
 <h4 id="Windows数据类型命名的规律"><a href="#Windows数据类型命名的规律" class="headerlink" title="Windows数据类型命名的规律"></a>Windows数据类型命名的规律</h4><p><strong>指针类型的命名方式一般是在其指向的数据类型前加“LP”或“p”</strong></p>
 <p><strong>各种句柄类型的命名方式一般都是在其对象名前加“H”</strong></p>
 <p><strong>无符号类型一般以“U”开头</strong></p>
@@ -328,7 +328,7 @@
 <h3 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h3><p>系统管理是Windows系统中很重要的内容。Windows系统提供一下方面的API供应用程序开发使用，包括：<strong>管理控制台接口、程序安装、系统恢复、任务调度、Windows远程管理</strong></p>
 <h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><p>用户利用Windows API可以开发基于各种网络协议的应用程序，例如TCP、UDP、HTTP、DHCP、RPC等；</p>
 <p>网络API还可以进行网络管理，包括网络的基本信息，使用IP Hlper库可以获取网络配置和网络信息、进行网络监控等</p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h2 id="Windows-API-核心-DLL"><a href="#Windows-API-核心-DLL" class="headerlink" title="Windows API 核心 DLL"></a>Windows API 核心 DLL</h2><p>在Windows操作系统中，存在着很多动态链接文件(DLL文件)。这些DLL文件中包含了Windows API函数可执行程序。<strong>DLL将各函数“导出”，这样应用程序就可以找到DLL中的函数地址，当程序调用API的时候，程序会运行到DLL</strong></p>
+<h3 id><a href="#" class="headerlink" title></a></h3><h2 id="Windows-API-核心-DLL"><a href="#Windows-API-核心-DLL" class="headerlink" title="Windows API 核心 DLL"></a>Windows API 核心 DLL</h2><p>在Windows操作系统中，存在着很多动态链接文件(DLL文件)。这些DLL文件中包含了Windows API函数可执行程序。<strong>DLL将各函数“导出”，这样应用程序就可以找到DLL中的函数地址，当程序调用API的时候，程序会运行到DLL</strong></p>
 <p><strong>API函数主要存在于几个核心的动态链接文件中。Kernel32.dll、User32.dll、GDI32.dll</strong></p>
 <h3 id="Kernel32"><a href="#Kernel32" class="headerlink" title="Kernel32"></a>Kernel32</h3><p>kernel32中包含了系统基本服务中的API函数，如文件系统、进程与线程、内存管理等。Windows Xp SP2中，Kernel32有949个导出函数；</p>
 <h3 id="user32"><a href="#user32" class="headerlink" title="user32"></a>user32</h3><p>user32是Windows图形用户界面的主要支持</p>
@@ -395,8 +395,8 @@
         <p><span>发布时间:</span>2019年11月04日 - 18时43分</p>
         <p><span>最后更新:</span>2019年11月04日 - 21时19分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/" title="Windows应用程序-API概要">http://example.com/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/" title="Windows应用程序-API概要">http://systemk1t.github.io/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/04/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-API%E6%A6%82%E8%A6%81/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

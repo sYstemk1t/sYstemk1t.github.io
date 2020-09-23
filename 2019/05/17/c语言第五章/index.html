@@ -8,20 +8,20 @@
   <meta name="description" content="指针与数组、地址算术运算、字符指针和函数、指针数据以及指向指针的指针、多维数组、指针数组的初始化、命令行参数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="c语言第五章">
-<meta property="og:url" content="http://example.com/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="指针与数组、地址算术运算、字符指针和函数、指针数据以及指向指针的指针、多维数组、指针数组的初始化、命令行参数">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="f:/Learn/3Week/C/5/img/1.png">
-<meta property="og:image" content="f:/Learn/3Week/C/5/img/2.png">
-<meta property="og:image" content="f:/Learn/3Week/C/5/img/3.png">
-<meta property="og:image" content="f:/Learn/3Week/C/5/img/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn/3Week/C/5/img/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn/3Week/C/5/img/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn/3Week/C/5/img/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn/3Week/C/5/img/4.png">
 <meta property="article:published_time" content="2019-05-17T10:39:03.000Z">
 <meta property="article:modified_time" content="2019-08-22T00:45:01.938Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="c">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="f:/Learn/3Week/C/5/img/1.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn/3Week/C/5/img/1.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -334,7 +334,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;Hello Wolrd&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>查看一下他的函数实现</p>
-<p><img src="F:\Learn\3Week\C\5\img\1.png"></p>
+<p><img src="/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn\3Week\C\5\img\1.png"></p>
 <p>可以看到，他最后也是通过一个char指针访问字符串的。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> amessage[] = <span class="string">&quot;nw is the time&quot;</span>;</span><br><span class="line"><span class="keyword">char</span> *pmessage = <span class="string">&quot;now is teh time&quot;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -379,9 +379,9 @@
 <p>指针数组的好处就是：数组的每一行长度可以不同，b的每个元素不必指向具有常量的具体个数。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> *name = &#123;<span class="string">&quot;zhang&quot;</span>,<span class="string">&quot;wang&quot;</span>,<span class="string">&quot;li&quot;</span>,<span class="string">&quot;zhao&quot;</span>&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><img src="F:\Learn\3Week\C\5\img\2.png"></p>
+<p><img src="/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn\3Week\C\5\img\2.png"></p>
 <p>如果使用二维数组就是这样的</p>
-<p><img src="F:\Learn\3Week\C\5\img\3.png"></p>
+<p><img src="/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn\3Week\C\5\img\3.png"></p>
 <p>有没有发现，如果二维数组每一个元素都是同等大小的话，中间就不会有任何填充</p>
 <h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>main函数一般有两个参数，第一个参数argc，一个argv</p>
 <p><strong>argc用于参数计数，表示运行程序时命令行中参数数目；</strong></p>
@@ -400,7 +400,7 @@
 <p>程序echo的第一个版本将argv看成一个字符指针数组</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span> *argv[])</span>	</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//默认的默认的argc为1</span></span><br><span class="line">    <span class="keyword">int</span> i;	</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;argc;i++)	<span class="comment">//i=1；1不小于1，所以不执行，直接跳出循环	</span></span><br><span class="line">        				<span class="comment">//这个程序中的argv为D</span></span><br><span class="line">    &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%s%s&quot;</span>,argv[i],(i&lt;argc<span class="number">-1</span>)? <span class="string">&quot; &quot;</span>: <span class="string">&quot; &quot;</span>);        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><img src="F:\Learn\3Week\C\5\img\4.png"></p>
+<p><img src="/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/Learn\3Week\C\5\img\4.png"></p>
 <p>这样就实现了一个echo，其实这个echo我也没懂，正常的逻辑应该进入程序，不满足条件，只打印一个换行</p>
 <p>因为argv是一个指向指针的数组，所以可以通过指针而非数组下标的方式处理命令行参数。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">/* echo command-line arguments; 2nd version */</span></span><br><span class="line">main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">while</span> (--argc &gt; <span class="number">0</span>)</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s%s&quot;</span>, *++argv, (argc &gt; <span class="number">1</span>) ? <span class="string">&quot; &quot;</span> : <span class="string">&quot;&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -470,8 +470,8 @@
         <p><span>发布时间:</span>2019年05月17日 - 18时39分</p>
         <p><span>最后更新:</span>2019年08月22日 - 08时45分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/" title="c语言第五章">http://example.com/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/" title="c语言第五章">http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/05/17/c%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%BA%94%E7%AB%A0/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

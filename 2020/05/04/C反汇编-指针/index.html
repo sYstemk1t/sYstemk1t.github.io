@@ -8,19 +8,19 @@
   <meta name="description" content="指针也就是内存地址，指针变量是用来存放内存地址的变量，不同类型的指针变量所占用的存储单元长度是相同的，而存放数据的变量因数据的类型不同，所占用的存储空间长度也不同">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C反汇编 - 指针">
-<meta property="og:url" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="指针也就是内存地址，指针变量是用来存放内存地址的变量，不同类型的指针变量所占用的存储单元长度是相同的，而存放数据的变量因数据的类型不同，所占用的存储空间长度也不同">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
-<meta property="og:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/1.png">
-<meta property="og:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/2.png">
 <meta property="article:published_time" content="2020-05-04T08:44:27.000Z">
 <meta property="article:modified_time" content="2020-05-05T07:46:38.864Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -293,19 +293,19 @@
 <h3 id="指针自增减"><a href="#指针自增减" class="headerlink" title="指针自增减"></a>指针自增减</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span>**** c;</span><br><span class="line">	<span class="keyword">int</span>**** i;</span><br><span class="line">	<span class="keyword">short</span>**** s;</span><br><span class="line"></span><br><span class="line">	c = <span class="number">100</span>;</span><br><span class="line">	i = <span class="number">100</span>;</span><br><span class="line">	s = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">	c++;</span><br><span class="line">	i++;</span><br><span class="line">	s++;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,c);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,i);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,s);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>输出结果：</p>
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png"></p>
+<p><img src="/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/0.png"></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* c;</span><br><span class="line">	<span class="keyword">int</span>* i;</span><br><span class="line">	<span class="keyword">short</span>* s;</span><br><span class="line"></span><br><span class="line">	c = <span class="number">100</span>;</span><br><span class="line">	i = <span class="number">100</span>;</span><br><span class="line">	s = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">	c++;</span><br><span class="line">	i++;</span><br><span class="line">	s++;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,c);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,i);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,s);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/1.png"></p>
+<p><img src="/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/1.png"></p>
 <p>*<em>不带”</em>“类型的变量，每次自增或自减都是操作为1**</p>
 <p>*<em>带”</em>“类型的变量，++或–的数量是去掉一个””后变量的宽度**</p>
 <h3 id="指针运算"><a href="#指针运算" class="headerlink" title="指针运算"></a>指针运算</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* a;</span><br><span class="line">	<span class="keyword">short</span>* b;</span><br><span class="line">	<span class="keyword">int</span>* c;</span><br><span class="line"></span><br><span class="line">	a = (<span class="keyword">char</span>*)<span class="number">100</span>;</span><br><span class="line">	b = (<span class="keyword">short</span>*)<span class="number">100</span>;</span><br><span class="line">	c = (<span class="keyword">int</span>*)<span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">	a = a+<span class="number">5</span>;</span><br><span class="line">	b = b+<span class="number">5</span>;</span><br><span class="line">	c = c+<span class="number">5</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,a);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,b);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\r\n&quot;</span>,c);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/2.png"></p>
+<p><img src="/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/2.png"></p>
 <pre><code>总结：                                        
 
 1、带*类型的变量可以加、减一个整数，但不能乘或者除.                                        
@@ -418,8 +418,8 @@
         <p><span>发布时间:</span>2020年05月04日 - 16时44分</p>
         <p><span>最后更新:</span>2020年05月05日 - 15时46分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/" title="C反汇编 - 指针">http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/" title="C反汇编 - 指针">http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/05/04/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E6%8C%87%E9%92%88/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

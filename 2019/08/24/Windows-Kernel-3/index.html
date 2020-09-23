@@ -8,21 +8,21 @@
   <meta name="description" content="内核对象">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Kernel-3">
-<meta property="og:url" content="http://example.com/2019/08/24/Windows-Kernel-3/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="内核对象">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/08/24/Windows-Kernel-3/Windows-Kernel-3/0.png">
-<meta property="og:image" content="http://example.com/2019/08/24/Windows-Kernel-3/Windows-Kernel-3/1.png">
-<meta property="og:image" content="http://example.com/2019/08/24/Windows-Kernel-3/Windows-Kernel-3/2.png">
-<meta property="og:image" content="http://example.com/2019/08/24/Windows-Kernel-3/Windows-Kernel-3/3.png">
-<meta property="og:image" content="http://example.com/2019/08/24/Windows-Kernel-3/Windows-Kernel-3/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/4.png">
 <meta property="article:published_time" content="2019-08-24T01:00:20.000Z">
 <meta property="article:modified_time" content="2019-08-24T01:04:41.275Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/08/24/Windows-Kernel-3/Windows-Kernel-3/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -275,7 +275,7 @@
 <p><strong>内核知道有多少进程正在使用某个内核对象，因为每个对象包含一个使用计数。使用计数是所有内核对象类型常用的数据类型之一。</strong></p>
 <p><strong>当一个对象被创建的时候，它的计数被置为1，当另外一个进程访问内核对象的时候，使用计数就递增1，当进程终止的时候，内核对象就自动确定该进程打开的所有内核对象的使用计数。当内核对象的使用计数为0，内核就撤销该对象</strong></p>
 <p>使用Winobj查看内核对象</p>
-<p><img src="Windows-Kernel-3/0.png"></p>
+<p><img src="/2019/08/24/Windows-Kernel-3/0.png"></p>
 <h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p><strong>内核对象能够得到安全描述符的保护。安全描述符用于描述谁创建了对象，谁能够访问或操作该对象。</strong></p>
 <p>用于创建内核对象的函数几乎都有一个指向<strong>SECURITY_ATTRIBUTES</strong>结构的指针作为其参数；</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">HANDLE CreateFileMapping&#123;</span><br><span class="line">    HANDLE hFile,</span><br><span class="line">    PSECURITY_ATTRIBUTES,</span><br><span class="line">    DWORD flProtect,</span><br><span class="line">    DWORD dwMaximumSizeHigh,</span><br><span class="line">    DWORD dwMaximumSizeLow,</span><br><span class="line">    PCTSTR pszName</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -325,7 +325,7 @@
 <p>SECURITY_ATTRIBUTES</p>
 <p>结构参数为NULL返回的句柄是不可继承的，这个标志位为0.</p>
 <p>将bInheritHandle成员设置为TRUE，将导致这个标志位被设为1.</p>
-<p><img src="Windows-Kernel-3/1.png"></p>
+<p><img src="/2019/08/24/Windows-Kernel-3/1.png"></p>
 <p>以上句柄表中，索引号为3的内核对象可以被继承。索引号为1的内核对象不可继承，索引号为2的内核对象不可用。</p>
 <ul>
 <li>为了使对象句柄继承，接下来是生成子进程。通过CreateProcess函数完成</li>
@@ -336,7 +336,7 @@
 <p>并且复制项的位置和他在父进程表中的位置是完全一样的。主进程中的Handle值在子进程中仍然可用。</p>
 <p>同时会增加被复制的内核对象的引用计数器。</p>
 <p>表3是一个子进程的句柄表</p>
-<p><img src="Windows-Kernel-3/2.png"></p>
+<p><img src="/2019/08/24/Windows-Kernel-3/2.png"></p>
 <p>1,2 项未初始化不可用</p>
 <p>第三项是从父进程复制过来的内核对象，地址完全相同索引号也一致，并且标志是可继承。</p>
 <p>内核对象的内容被保存在内核地址空间中–系统上所有运行的进程共享这个空间。（内核模式分区）</p>
@@ -364,7 +364,7 @@
 <p>HANDLE_FLAG_PROTECT_FROM_CLOSE</p>
 <p>告知系统不允许关闭句柄</p>
 <p>以下例子会触发一个异常（在调试器下）在运行模式下CloseHandle返回FALSE</p>
-<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SetHandleInformation(<span class="name">hObj</span>, HANDLE_FLAG_PROTECT_FROM_CLOSE,HANDLE_FLAG_PROTECT_FROM_CLOSE)<span class="comment">;</span></span><br><span class="line">CloseHandle(<span class="name">hObj</span>)<span class="comment">;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SetHandleInformation(hObj, HANDLE_FLAG_PROTECT_FROM_CLOSE,HANDLE_FLAG_PROTECT_FROM_CLOSE);</span><br><span class="line">CloseHandle(hObj);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -391,7 +391,7 @@
 <p>所有这些Create函数有一个Name参数，传入NULL表示匿名内核对象。可以使用继承技术</p>
 <p>或者使用DuplicateHandle来实现进程间的对象共享。</p>
 <p>所有的命名内核对象共享一个命名空间。以下例子CreateSemaphore函数会返回NULL </p>
-<p><img src="Windows-Kernel-3/3.png"></p>
+<p><img src="/2019/08/24/Windows-Kernel-3/3.png"></p>
 <p>通过命名对象共享的一个例子</p>
 <p>在进程A中创建了一个名字为“JeffMutex”的互斥量对象</p>
 <p>HANDLE hMutexProcessA = CreateMutex(NULL, FALSE, TEXT(“JeffMutex”));</p>
@@ -406,7 +406,7 @@
 
 
 
-<p><img src="Windows-Kernel-3/4.png"></p>
+<p><img src="/2019/08/24/Windows-Kernel-3/4.png"></p>
 <p>为了实现具名内核对象的共享，还可以使用一系列Open*函数</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenMutexW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpName</span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenEventW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpName</span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenSemaphoreW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpName</span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenWaitableTimerW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpTimerName</span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenFileMappingW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpName</span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">OpenJobObjectW(</span><br><span class="line">    _In_ DWORD dwDesiredAccess,</span><br><span class="line">    _In_ BOOL bInheritHandle,</span><br><span class="line">    _In_ LPCWSTR lpName</span><br><span class="line">    );</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -568,8 +568,8 @@
         <p><span>发布时间:</span>2019年08月24日 - 09时00分</p>
         <p><span>最后更新:</span>2019年08月24日 - 09时04分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/08/24/Windows-Kernel-3/" title="Windows-Kernel-3">http://example.com/2019/08/24/Windows-Kernel-3/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/08/24/Windows-Kernel-3/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/24/Windows-Kernel-3/" title="Windows-Kernel-3">http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/08/24/Windows-Kernel-3/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

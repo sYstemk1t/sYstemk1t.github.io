@@ -8,17 +8,17 @@
   <meta name="description" content="在应用程序中使用虚拟内存">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Kernel-15">
-<meta property="og:url" content="http://example.com/2019/09/04/Windows-Kernel-15/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-15/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="在应用程序中使用虚拟内存">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/09/04/Windows-Kernel-15/Windows-Kernel-15/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-15/0.png">
 <meta property="article:published_time" content="2019-09-04T06:40:45.000Z">
 <meta property="article:modified_time" content="2019-09-04T10:32:44.586Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/09/04/Windows-Kernel-15/Windows-Kernel-15/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/09/04/Windows-Kernel-15/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -287,7 +287,7 @@
 <p>flAllocationType 告知所分配的区域是否需要调拨物理存储器（这种区分是必要的，因为VirtualAlloc也可以用于调拨物理存储器）<br>要预定地址空间必须传 MEM_RESERVE</p>
 <p>如果想预定尽可能高的地址（因为要使用很长一段时间，防止引起内存碎片）传NULL给lpAddress 同时传 MEM_TOP_DOWN |MEM_RESERVE 给flAllocationType</p>
 <p>flProtect给区域指定保护属性。区域的保护属性对于调拨给该区域的物理存储器不起任何作用。无论区域指定什么保护属性，只要还没给它调拨物理内存，试图访问区域内的任何内存地址都会引发访问违规。</p>
-<p><img src="Windows-Kernel-15/0.png"></p>
+<p><img src="/2019/09/04/Windows-Kernel-15/0.png"></p>
 <p>看一上例子，使用VirtualAlloc预定了一块区域但是还没有调拨物理内存，试图写入整型数据直接导致异常。</p>
 <p>在预定区域并制定保护属性时，应该考虑在调拨物理内存时最常用的保护属性。例如：PAGE_READWRITE保护属性来调拨物理存储器，则使用PAGE_READWRITE来预定区域。当区域和物理存储器的保护属性一致时，系统内部处理的效率会更高。<br>可以使用以下保护属性。<br>PAGE_NOACCESS, PAGE_READWRITE, PAGE_READONLY,PAGE_EXECUTE,PAGE_EXECUTE_READ,或PAGE_EXECUTE_READWRITE.<br>不能使用PAGE_WRITECOPY和PAGE_EXECUTE_WRITECOPY(否则VirtualAlloc不会预定区域而直接返回NULL）<br>同时也不能使用PAGE_GUARD, PAGE_NOCACHE或PAGE_WRITECOMBINE(也会返回NULL）<br>这些都只能用来调拨物理存储器。</p>
 <h2 id="在保留区域中提交存储区"><a href="#在保留区域中提交存储区" class="headerlink" title="在保留区域中提交存储区"></a>在保留区域中提交存储区</h2><p>当保留一个区域后，必须将物理存储器提交给该区域人，然后才能访问该区域中包含的内存地址。系统从它的页文件中将已提交的物理存储器分配给一个区域。</p>
@@ -441,8 +441,8 @@
         <p><span>发布时间:</span>2019年09月04日 - 14时40分</p>
         <p><span>最后更新:</span>2019年09月04日 - 18时32分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/04/Windows-Kernel-15/" title="Windows-Kernel-15">http://example.com/2019/09/04/Windows-Kernel-15/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/09/04/Windows-Kernel-15/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/04/Windows-Kernel-15/" title="Windows-Kernel-15">http://systemk1t.github.io/2019/09/04/Windows-Kernel-15/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/09/04/Windows-Kernel-15/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

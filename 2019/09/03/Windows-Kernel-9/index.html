@@ -8,21 +8,21 @@
   <meta name="description" content="线程与内核对象的同步">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows-Kernel-9">
-<meta property="og:url" content="http://example.com/2019/09/03/Windows-Kernel-9/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="线程与内核对象的同步">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/09/03/Windows-Kernel-9/Windows-Kernel-9/0.png">
-<meta property="og:image" content="http://example.com/2019/09/03/Windows-Kernel-9/Windows-Kernel-9/1.png">
-<meta property="og:image" content="http://example.com/2019/09/03/Windows-Kernel-9/Windows-Kernel-9/2.png">
-<meta property="og:image" content="http://example.com/2019/09/03/Windows-Kernel-9/Windows-Kernel-9/3.png">
-<meta property="og:image" content="http://example.com/2019/09/03/Windows-Kernel-9/Windows-Kernel-9/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/4.png">
 <meta property="article:published_time" content="2019-09-03T06:12:32.000Z">
 <meta property="article:modified_time" content="2019-09-03T09:56:05.154Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/09/03/Windows-Kernel-9/Windows-Kernel-9/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -331,7 +331,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">_Ret_maybenull_</span><br><span class="line">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line">CreateEventExW(</span><br><span class="line">    _In_opt_ LPSECURITY_ATTRIBUTES lpEventAttributes,</span><br><span class="line">    _In_opt_ LPCWSTR lpName,</span><br><span class="line">    _In_ DWORD dwFlags,</span><br><span class="line">    _In_ DWORD dwDesiredAccess</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
 
 <p>dwFlags参数可以接受两个位的掩码</p>
-<p><img src="Windows-Kernel-9/0.png"></p>
+<p><img src="/2019/09/03/Windows-Kernel-9/0.png"></p>
 <p>打开这个内核对象：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">OpenEvent</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	DWORD fdwAccess,</span></span></span><br><span class="line"><span class="function"><span class="params">    BOOL fInherit,</span></span></span><br><span class="line"><span class="function"><span class="params">    PCTSTR pszName</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
 
@@ -406,7 +406,7 @@
 
 
 
-<p><img src="Windows-Kernel-9/1.png"></p>
+<p><img src="/2019/09/03/Windows-Kernel-9/1.png"></p>
 <h3 id="让可等待的计时器添加APC调用"><a href="#让可等待的计时器添加APC调用" class="headerlink" title="让可等待的计时器添加APC调用"></a>让可等待的计时器添加APC调用</h3><p>APC异步过程调用（asynchronous procedure call）</p>
 <p>SetWaitableTimer允许传入一个APC过程，触发了计时器会调用该过程。</p>
 <p>当计时器触发时，当且仅当SetWaitableTimer调用的线程处于可提醒状态（Alertable stabe）（SleepEx, WaitForSingleObjectEx, WaitForMultipleObjectEx, MsgWaitForMultipleObjectEx,SignalObjectAndWait而进入的状态）</p>
@@ -415,7 +415,7 @@
 
 
 
-<p><img src="Windows-Kernel-9/2.png"></p>
+<p><img src="/2019/09/03/Windows-Kernel-9/2.png"></p>
 <p>不应该同时使用等待函数又同时以可提醒的方式等待一个计时器。</p>
 <p>例如</p>
 <p>SetWaitableTimer(hTimer,…, TimerAPCRountine,…);</p>
@@ -484,9 +484,9 @@
 <p>如果占用互斥量的线程在释放互斥量之前终止（ExitThread ，TerminateThread ，ExitProcess 或TerminateProcess）</p>
 <p>系统认为互斥量被遗弃（abandoned） 此时会自动将互斥量线程ID设为0，递归计数器设为0，并检查有没有正在等待该互斥量的线程。</p>
 <p>等待函数返回WAIT_ABANDONED(只适用互斥量）</p>
-<h3 id="互斥对象与关键代码段的比较"><a href="#互斥对象与关键代码段的比较" class="headerlink" title="互斥对象与关键代码段的比较"></a>互斥对象与关键代码段的比较</h3><p><img src="Windows-Kernel-9/3.png"></p>
+<h3 id="互斥对象与关键代码段的比较"><a href="#互斥对象与关键代码段的比较" class="headerlink" title="互斥对象与关键代码段的比较"></a>互斥对象与关键代码段的比较</h3><p><img src="/2019/09/03/Windows-Kernel-9/3.png"></p>
 <p>互斥量的任意时间长度等待修正为： WaitForSingleObject(hmtx, dwMilliseconds);</p>
-<h2 id="线程同步对象速查表"><a href="#线程同步对象速查表" class="headerlink" title="线程同步对象速查表"></a>线程同步对象速查表</h2><p><img src="Windows-Kernel-9/4.png"></p>
+<h2 id="线程同步对象速查表"><a href="#线程同步对象速查表" class="headerlink" title="线程同步对象速查表"></a>线程同步对象速查表</h2><p><img src="/2019/09/03/Windows-Kernel-9/4.png"></p>
 <h2 id="其他的线程同步函数"><a href="#其他的线程同步函数" class="headerlink" title="其他的线程同步函数"></a>其他的线程同步函数</h2><p>Wa i t F o r S i n g l e O b j e c t和Wa i t F o r M u l t i p l e O b j e c t s是进行线程同步时使用得最多的函数。但是，Wi n d o w s还提供了另外几个稍有不同的函数。</p>
 <h3 id="异步设备I-O"><a href="#异步设备I-O" class="headerlink" title="异步设备I/O"></a>异步设备I/O</h3><p>步设备IO（asynchronous device I/O）允许线程开始读取操作或写入操作，但不必等待读取操作或写入操作完成。</p>
 <p>设备对象是是可同步的内核对象，可以调用WaitForSingleObject并传入句柄，套接字，通信端口等。</p>
@@ -588,8 +588,8 @@
         <p><span>发布时间:</span>2019年09月03日 - 14时12分</p>
         <p><span>最后更新:</span>2019年09月03日 - 17时56分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/03/Windows-Kernel-9/" title="Windows-Kernel-9">http://example.com/2019/09/03/Windows-Kernel-9/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/09/03/Windows-Kernel-9/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/03/Windows-Kernel-9/" title="Windows-Kernel-9">http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/09/03/Windows-Kernel-9/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

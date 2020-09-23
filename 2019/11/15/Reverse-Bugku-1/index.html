@@ -8,19 +8,19 @@
   <meta name="description" content="记录一下学习Reverse经历，从基础开始做起">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Reverse-Bugku-1">
-<meta property="og:url" content="http://example.com/2019/11/15/Reverse-Bugku-1/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-1/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="记录一下学习Reverse经历，从基础开始做起">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/11/15/Reverse-Bugku-1/Reverse-Bugku-1/0.png">
-<meta property="og:image" content="http://example.com/2019/11/15/Reverse-Bugku-1/Reverse-Bugku-1/1.png">
-<meta property="og:image" content="http://example.com/2019/11/15/Reverse-Bugku-1/Reverse-Bugku-1/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-1/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-1/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-1/2.png">
 <meta property="article:published_time" content="2019-11-15T03:41:20.000Z">
 <meta property="article:modified_time" content="2019-11-15T03:57:41.827Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/11/15/Reverse-Bugku-1/Reverse-Bugku-1/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/15/Reverse-Bugku-1/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -273,14 +273,14 @@
 <p>X64Dbg</p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>首先查壳，然后将程序载入到IDA64中， 因为这个程序是控制台项目并且是64位得，需要64位环境打开，转换伪代码，查看作者得出题思路，然后得到Falg</p>
 <h3 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h3><p>使用PEID查看程序有没有壳</p>
-<p><img src="Reverse-Bugku-1/0.png"></p>
-<h3 id="使用IDA64"><a href="#使用IDA64" class="headerlink" title="使用IDA64"></a>使用IDA64</h3><p><img src="Reverse-Bugku-1/1.png"></p>
+<p><img src="/2019/11/15/Reverse-Bugku-1/0.png"></p>
+<h3 id="使用IDA64"><a href="#使用IDA64" class="headerlink" title="使用IDA64"></a>使用IDA64</h3><p><img src="/2019/11/15/Reverse-Bugku-1/1.png"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">.text:0040147A                 mov     byte ptr [esp+2Fh], &#39;f&#39;</span><br><span class="line">.text:0040147F                 mov     byte ptr [esp+2Eh], &#39;l&#39;</span><br><span class="line">.text:00401484                 mov     byte ptr [esp+2Dh], &#39;a&#39;</span><br><span class="line">.text:00401489                 mov     byte ptr [esp+2Ch], &#39;g&#39;</span><br><span class="line">.text:0040148E                 mov     byte ptr [esp+2Bh], &#39;&#123;&#39;</span><br><span class="line">.text:00401493                 mov     byte ptr [esp+2Ah], &#39;R&#39;</span><br><span class="line">.text:00401498                 mov     byte ptr [esp+29h], &#39;e&#39;</span><br><span class="line">.text:0040149D                 mov     byte ptr [esp+28h], &#39;_&#39;</span><br><span class="line">.text:004014A2                 mov     byte ptr [esp+27h], &#39;1&#39;</span><br><span class="line">.text:004014A7                 mov     byte ptr [esp+26h], &#39;s&#39;</span><br><span class="line">.text:004014AC                 mov     byte ptr [esp+25h], &#39;_&#39;</span><br><span class="line">.text:004014B1                 mov     byte ptr [esp+24h], &#39;S&#39;</span><br><span class="line">.text:004014B6                 mov     byte ptr [esp+23h], &#39;0&#39;</span><br><span class="line">.text:004014BB                 mov     byte ptr [esp+22h], &#39;_&#39;</span><br><span class="line">.text:004014C0                 mov     byte ptr [esp+21h], &#39;C&#39;</span><br><span class="line">.text:004014C5                 mov     byte ptr [esp+20h], &#39;0&#39;</span><br><span class="line">.text:004014CA                 mov     byte ptr [esp+1Fh], &#39;O&#39;</span><br><span class="line">.text:004014CF                 mov     byte ptr [esp+1Eh], &#39;L&#39;</span><br><span class="line">.text:004014D4                 mov     byte ptr [esp+1Dh], &#39;&#125;&#39;</span><br></pre></td></tr></table></figure>
 
 
 
 <p>然后在IDA中，选中每一行mov指令，然后按R，就会把这些字符写入，我们就得到了flag；</p>
-<p><img src="Reverse-Bugku-1/2.png"></p>
+<p><img src="/2019/11/15/Reverse-Bugku-1/2.png"></p>
 <h2 id="flag"><a href="#flag" class="headerlink" title="flag"></a>flag</h2><p>flag{Re_1s_S0_C0Ol}</p>
 
       
@@ -342,8 +342,8 @@
         <p><span>发布时间:</span>2019年11月15日 - 11时41分</p>
         <p><span>最后更新:</span>2019年11月15日 - 11时57分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/15/Reverse-Bugku-1/" title="Reverse-Bugku-1">http://example.com/2019/11/15/Reverse-Bugku-1/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/15/Reverse-Bugku-1/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/15/Reverse-Bugku-1/" title="Reverse-Bugku-1">http://systemk1t.github.io/2019/11/15/Reverse-Bugku-1/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/15/Reverse-Bugku-1/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

@@ -8,19 +8,19 @@
   <meta name="description" content="《C++ Primer》第五版引入了11标准相关内容，本文是阅读第一章”C++基础”时所做的笔记；">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++ Primer - 基础">
-<meta property="og:url" content="http://example.com/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="《C++ Primer》第五版引入了11标准相关内容，本文是阅读第一章”C++基础”时所做的笔记；">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/c-Primer-%E5%9F%BA%E7%A1%80/0.png">
-<meta property="og:image" content="http://example.com/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/c-Primer-%E5%9F%BA%E7%A1%80/1.png">
-<meta property="og:image" content="http://example.com/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/c-primer-%E5%9F%BA%E7%A1%80/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/2.png">
 <meta property="article:published_time" content="2020-07-22T06:46:07.000Z">
 <meta property="article:modified_time" content="2020-08-21T10:26:32.932Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/c-Primer-%E5%9F%BA%E7%A1%80/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -503,7 +503,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> value;</span><br><span class="line">    <span class="keyword">double</span> *p = &amp;value;		<span class="comment">//正确，初始值就是一个double类型的变量，对变量取地址</span></span><br><span class="line">    <span class="keyword">double</span> *p1 = p;			<span class="comment">//正确，初始值就是指向double类型的指针</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> *p2 = (<span class="keyword">int</span> *)p1;			</span><br><span class="line">    p2 = (<span class="keyword">int</span> *)&amp;value;			</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; &amp;value &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; p &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; p1 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; p2 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>结果：</p>
-<p><img src="c-Primer-%E5%9F%BA%E7%A1%80/0.png"></p>
+<p><img src="/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/0.png"></p>
 <h4 id="指针值"><a href="#指针值" class="headerlink" title="指针值"></a>指针值</h4><p>指针的值(地址)应该输入下列四种状态之一：</p>
 <ul>
 <li>指向一个对象</li>
@@ -530,7 +530,7 @@
 
 
 
-<p><img src="c-Primer-%E5%9F%BA%E7%A1%80/1.png"></p>
+<p><img src="/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/1.png"></p>
 <h4 id="其他指针操作"><a href="#其他指针操作" class="headerlink" title="其他指针操作"></a>其他指针操作</h4><p>只要指针拥有一个合法值，就可以将它使用再表达式中；</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> value = <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">int</span> *p = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> *p1 = &amp;value;</span><br><span class="line">    <span class="keyword">if</span> (p != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; *p &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p1 != <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; *p1 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -552,7 +552,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> value = <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">int</span>* p = &amp;value;</span><br><span class="line">    <span class="keyword">int</span>** p1 = &amp;p;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; value &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; *p &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; **p1 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>结果：</p>
-<p><img src="c-primer-%E5%9F%BA%E7%A1%80/2.png"></p>
+<p><img src="/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/2.png"></p>
 <h4 id="指向指针的引用"><a href="#指向指针的引用" class="headerlink" title="指向指针的引用"></a>指向指针的引用</h4><p><strong>引用本身不是一个对象，因此不能定义指向引用的指针，但指针是对象，所以存在对指针的引用</strong></p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">42</span>;</span><br><span class="line"><span class="keyword">int</span>* p;</span><br><span class="line"><span class="keyword">int</span>*&amp; r = p;</span><br><span class="line"></span><br><span class="line">r = &amp;i;</span><br><span class="line">*r = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
 
@@ -650,7 +650,7 @@
 <li>(d): 十进制整型，十进制无符号整型，double, double</li>
 </ul>
 <h3 id="练习2-6"><a href="#练习2-6" class="headerlink" title="练习2.6"></a>练习2.6</h3><p>下面两组定义是否有区别，如果有，请叙述之：</p>
-<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> month = <span class="number">9</span>, day = <span class="number">7</span>;			<span class="comment">//十进制</span></span><br><span class="line"><span class="built_in">int</span> month = <span class="number">09</span>, day = <span class="number">07</span>;		<span class="comment">//八进制，并且八进制不能写9</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int month &#x3D; 9, day &#x3D; 7;			&#x2F;&#x2F;十进制</span><br><span class="line">int month &#x3D; 09, day &#x3D; 07;		&#x2F;&#x2F;八进制，并且八进制不能写9</span><br></pre></td></tr></table></figure>
 
 
 
@@ -721,7 +721,7 @@
 <p>c) int &amp;ravle = ival;    //合法</p>
 <p>d) int &rva13;        //引用必须赋初值 </p>
 <h3 id="练习2-15"><a href="#练习2-15" class="headerlink" title="练习2.15"></a>练习2.15</h3><p>考察下面的所有赋值然后回答：哪些赋值是不合法的？为什么？哪些赋值是合法的？它们执行了哪些操作？</p>
-<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> i = <span class="number">0</span>, &amp;r1 = i; </span><br><span class="line"><span class="built_in">double</span> d = <span class="number">0</span>, &amp;r2 = d;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 0, &amp;r1 &#x3D; i; </span><br><span class="line">double d &#x3D; 0, &amp;r2 &#x3D; d;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>(a) r2 = 3.14159;</li>
@@ -879,8 +879,8 @@
         <p><span>发布时间:</span>2020年07月22日 - 14时46分</p>
         <p><span>最后更新:</span>2020年08月21日 - 18时26分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/" title="C++ Primer - 基础">http://example.com/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/" title="C++ Primer - 基础">http://systemk1t.github.io/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/07/22/C-Primer-%E5%9F%BA%E7%A1%80/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

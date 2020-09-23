@@ -8,18 +8,18 @@
   <meta name="description" content="Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Win32汇编-内存和文件操作">
-<meta property="og:url" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Windows操作系统中有一个新的概念：内存映射文件。通过这个功能将文件的内容映射到内存中，并使用读写内存的方式对文件进行读写，内存映射文件是内存管理函数的一种，但它必须配合文件操作函数配合使用。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
-<meta property="og:image" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/1.png">
 <meta property="article:published_time" content="2020-04-08T10:41:48.000Z">
 <meta property="article:modified_time" content="2020-04-09T15:00:13.861Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -271,7 +271,7 @@
 <h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><h3 id="内存管理基础"><a href="#内存管理基础" class="headerlink" title="内存管理基础"></a>内存管理基础</h3><p>Win32中的内存是分层次的，系统提供了几组不同层次的函数来管理内存，它们分别是标准内存管理、堆管理、虚拟内存管理和内存映射文件。</p>
 <p><strong>Windows使用了一个以页为基础的虚拟内存系统。Windows充分利用了8086CPU保护模式下的线性寻址机制和分页机制，这些机制是Win32内存管理的基础。</strong>Win32提供了一组虚拟内存管理函数来管理虚拟内存，主要用于保留、提交、释放虚拟内存，在虚拟内存页上改变保护方式、锁定虚拟内存页，以及查询一个进程的虚拟内存等操作。</p>
 <p>堆管理函数就是有效地管理内存和进程的地址空间。</p>
-<p><img src="Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png"></p>
+<p><img src="/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/0.png"></p>
 <p>在Win32中，进程可以使用的整个地址空间就是一个堆。并且”堆”被分为了两种：</p>
 <ul>
 <li>默认堆：默认堆只有一个，指的就是可以使用的整个地址空间；</li>
@@ -279,7 +279,7 @@
 </ul>
 <p>标准内存管理函数总是在默认堆中分配和释放内存，这组函数就是常规意义上的内存管理函数。</p>
 <p>内存映射文件函数比较独立，它是为了文件操作的方便而设立的，当对文件进行操作的时候，一般总是先打开文件，然后申请一块内存做缓冲区，再将文件数据循环读入并处理，当文件长度大于缓冲区的时候需要多次读入，每次读入后缓冲区边界位置的数据是个麻烦。<strong>内存映射文件使用同样的方法将一个文件直接映射到进程的地址空间中，这样可以通过内存指针用读写内存的方式直接存取文件内容。</strong></p>
-<p><img src="Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/1.png"></p>
+<p><img src="/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/1.png"></p>
 <h3 id="内存状态"><a href="#内存状态" class="headerlink" title="内存状态"></a>内存状态</h3><p>一个进程可寻址的地址空间是4GB，但用户可以直接管理的空间只有2GB，其中高2GB是供操作系统内核使用的。</p>
 <p>既然用户可以使用的地址空间又2GB，但是用户并不可以将这2GB地址空间全部占用，因为用户可申请的2GB内存是可以使用的”地址”空间，而表示可以使用的”内存”空间，可分配内存的大小还受制于物理内存和磁盘文件的大小。</p>
 <p>Win32设计了一个预先得到系统的配置情况的API:GlobalMemoryStatus</p>
@@ -357,8 +357,8 @@
         <p><span>发布时间:</span>2020年04月08日 - 18时41分</p>
         <p><span>最后更新:</span>2020年04月09日 - 23时00分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/" title="Win32汇编-内存和文件操作">http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/" title="Win32汇编-内存和文件操作">http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/04/08/Win32%E6%B1%87%E7%BC%96-%E5%86%85%E5%AD%98%E5%92%8C%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

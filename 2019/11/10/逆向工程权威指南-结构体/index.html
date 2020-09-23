@@ -8,18 +8,18 @@
   <meta name="description" content="C&#x2F;C++的结构体可以这么定义：它是一组存储在内存中的变量的集合，变量成员类型不要求相同">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逆向工程权威指南-结构体">
-<meta property="og:url" content="http://example.com/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="C&#x2F;C++的结构体可以这么定义：它是一组存储在内存中的变量的集合，变量成员类型不要求相同">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/0.png">
-<meta property="og:image" content="http://example.com/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/1.png">
 <meta property="article:published_time" content="2019-11-10T08:08:04.000Z">
 <meta property="article:modified_time" content="2019-11-10T09:24:21.996Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Reverse">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -280,7 +280,7 @@
 
 <p>在本地栈上程序喂这个结构体分配了16个字节：这正是sizeof(WORD)*8的大小。请注意结构体是从wYear开始，我们即可以说这是传给”GetSystemTime()函数的”，GetSystemTime函数会把当前的年份写入WORD指针中，然后把指针向后移两个字节；</p>
 <h3 id="Ollydbg"><a href="#Ollydbg" class="headerlink" title="Ollydbg"></a>Ollydbg</h3><p>我们使用MSVC(指定/GS-/MD选项)编译上述程序，并用OllyDbg打开MSVC生成的可执行文件。</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/0.png"></p>
+<p><img src="/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/0.png"></p>
 <p>在栈窗口中可以看到的指与此相同，不过栈窗口以32位数据的格式组织数据</p>
 <h3 id="以数组替代结构体"><a href="#以数组替代结构体" class="headerlink" title="以数组替代结构体"></a>以数组替代结构体</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	WORD <span class="built_in">array</span>[<span class="number">8</span>];</span><br><span class="line">	GetSystemTime (<span class="built_in">array</span>);</span><br><span class="line">	<span class="built_in">printf</span> (<span class="string">&quot;%04d-%02d-%02d %02d:%02d:%02d&quot;</span>,</span><br><span class="line">		<span class="built_in">array</span>[<span class="number">0</span>] <span class="comment">/* wYear */</span>, <span class="built_in">array</span>[<span class="number">1</span>] <span class="comment">/* wMonth */</span>, <span class="built_in">array</span>[<span class="number">3</span>] <span class="comment">/*</span></span><br><span class="line"><span class="comment">		wDay */</span>,</span><br><span class="line">		<span class="built_in">array</span>[<span class="number">4</span>] <span class="comment">/* wHour */</span>, <span class="built_in">array</span>[<span class="number">5</span>] <span class="comment">/* wMinute */</span>, <span class="built_in">array</span>[<span class="number">6</span>] </span><br><span class="line">		<span class="comment">/* wSecond */</span>);</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
@@ -339,7 +339,7 @@
 
 <p><strong>结构的嵌套并不会影响我们的阅读，我们看汇编代码并不能看到它的体内有另一个结构体！因此，我们可以给，嵌套的结构体最终都会转换为线性的或者一维的结构</strong></p>
 <h2 id="结构体中的位"><a href="#结构体中的位" class="headerlink" title="结构体中的位"></a>结构体中的位</h2><h3 id="CPUID的例子"><a href="#CPUID的例子" class="headerlink" title="CPUID的例子"></a>CPUID的例子</h3><p>C/C++中云溪给结构体的每一个成员都定义一个准确的位域。如果我们需要节省空间的话，这个对我们来说很有用；</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/1.png"></p>
+<p><img src="/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/1.png"></p>
 
       
       
@@ -400,8 +400,8 @@
         <p><span>发布时间:</span>2019年11月10日 - 16时08分</p>
         <p><span>最后更新:</span>2019年11月10日 - 17时24分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/" title="逆向工程权威指南-结构体">http://example.com/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/" title="逆向工程权威指南-结构体">http://systemk1t.github.io/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/10/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E7%BB%93%E6%9E%84%E4%BD%93/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

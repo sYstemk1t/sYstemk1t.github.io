@@ -8,17 +8,17 @@
   <meta name="description" content="钩子可以广泛用于输入监控、API拦截、消息捕获等方面，一些杀毒软件会钩一些API函数，病毒使用钩子会捕获键盘得输入记录从而盗号，这些都属于HOOK得范围。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="内联钩子">
-<meta property="og:url" content="http://example.com/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="钩子可以广泛用于输入监控、API拦截、消息捕获等方面，一些杀毒软件会钩一些API函数，病毒使用钩子会捕获键盘得输入记录从而盗号，这些都属于HOOK得范围。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/0.png">
 <meta property="article:published_time" content="2019-10-11T06:03:33.000Z">
 <meta property="article:modified_time" content="2019-10-11T06:28:50.017Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="HOOK">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -270,7 +270,7 @@
 <h2 id="Inline-Hook"><a href="#Inline-Hook" class="headerlink" title="Inline Hook"></a>Inline Hook</h2><h3 id="Inline-Hook原理"><a href="#Inline-Hook原理" class="headerlink" title="Inline Hook原理"></a>Inline Hook原理</h3><p>API函数保存在操作系统提供得DLL中，在程序中使用某个API得时候，在运行程序以后，程序会隐式得将API所在得DLL加载进入进程。</p>
 <p>API函数也是由编译而成得，也由其相对应得二进制代码，既然是代码，那么就可以修改，通过一些“野蛮”得方式来修改API函数在内存得映像，从而对API函数进行HOOK。在汇编中，我们前面学习得方法，可以将je修改为jne，从而实现对程序流程得修改。</p>
 <p>假设我们现在需要对进程得Kernel32.dll得CreateFile()函数进行HOOK，那么我们需要在进程得内存中找到CreateFile()得函数地址，然后修改CreateFile()函数得首地址得代码为jmp myProc得指令，这样我们调用CreateFile()函数得时候，就首先会跳转到我们得函数流程中去执行，这样就完成了HOOK，如图5-2</p>
-<p><img src="%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/0.png"></p>
+<p><img src="/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/0.png"></p>
 <h3 id="Inline-HooK得实现"><a href="#Inline-HooK得实现" class="headerlink" title="Inline HooK得实现"></a>Inline HooK得实现</h3><p>对于代码来说，都是CPU可以用来执行得机器码，机器码和汇编指令是一一对应得，Inline Hook是在程序中嵌入了jmp指令然后跳转到我们得程序流程中继续执行得，jmp指令得用法是jmp 目的地址，jmp在汇编中是无条件跳转，我们可以随意打开一个程序，来尝试。</p>
 <p><strong>jmp后的偏移量 =  目的地址  -   源地址   -  5</strong></p>
 <p>梳理一下我们内联钩子的流程：</p>
@@ -343,8 +343,8 @@
         <p><span>发布时间:</span>2019年10月11日 - 14时03分</p>
         <p><span>最后更新:</span>2019年10月11日 - 14时28分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/" title="内联钩子">http://example.com/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/" title="内联钩子">http://systemk1t.github.io/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/10/11/%E5%86%85%E8%81%94%E9%92%A9%E5%AD%90/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

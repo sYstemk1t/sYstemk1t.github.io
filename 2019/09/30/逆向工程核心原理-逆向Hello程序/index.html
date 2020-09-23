@@ -8,30 +8,30 @@
   <meta name="description" content="通过调试Hello World来学习Ollydbg调试器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逆向工程核心原理-逆向Hello程序">
-<meta property="og:url" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="通过调试Hello World来学习Ollydbg调试器">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/0.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/1.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/2.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/3.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/4.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/5.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/6.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/7.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/8.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/9.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/10.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/11.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/12.png">
-<meta property="og:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/13.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/9.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/10.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/11.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/12.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/13.png">
 <meta property="article:published_time" content="2019-09-30T01:19:52.000Z">
 <meta property="article:modified_time" content="2019-09-30T03:10:26.652Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Reverse">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -284,9 +284,9 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> _tmain()</span><br><span class="line">&#123;</span><br><span class="line">	MessageBox(<span class="literal">NULL</span>,<span class="string">&quot;Hello World&quot;</span>,<span class="string">&quot;sYstem1kt&quot;</span>,MB_OK);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>然后进行编译链接，选择Release模式进行生成</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/0.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/0.png"></p>
 <h2 id="使用Ollydbg调试"><a href="#使用Ollydbg调试" class="headerlink" title="使用Ollydbg调试"></a>使用Ollydbg调试</h2><h3 id="Ollydbg简介"><a href="#Ollydbg简介" class="headerlink" title="Ollydbg简介"></a>Ollydbg简介</h3><p>将程序拖入Ollydbg中</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/1.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/1.png"></p>
 <ul>
 <li>代码窗口：默认用于显示反汇编代码，还显示各种标签、注释、分析代码时显示循环、跳转等信息</li>
 <li>寄存器窗口：实时显示CPU寄存器得值，可用于修改特定得寄存器</li>
@@ -305,7 +305,7 @@
 <p>Step Into    F7            执行一句，遇到调用命令(call)，进入函数代码内部</p>
 <p>Step Over    F8            执行一句，遇到调用命令(call)，仅执行函数本身，不跟随进入函数内部</p>
 <p>Execute till Returm    Ctrl+F9    一直在函数内部运行，直到遇到Retn命令，跳出函数</p>
-<h2 id="熟悉调试器"><a href="#熟悉调试器" class="headerlink" title="熟悉调试器"></a>熟悉调试器</h2><h3 id="调试器指令"><a href="#调试器指令" class="headerlink" title="调试器指令"></a>调试器指令</h3><p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/2.png"></p>
+<h2 id="熟悉调试器"><a href="#熟悉调试器" class="headerlink" title="熟悉调试器"></a>熟悉调试器</h2><h3 id="调试器指令"><a href="#调试器指令" class="headerlink" title="调试器指令"></a>调试器指令</h3><p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/2.png"></p>
 <h3 id="断点"><a href="#断点" class="headerlink" title="断点"></a>断点</h3><ul>
 <li>Goto命令</li>
 </ul>
@@ -323,31 +323,31 @@
 </ul>
 <p>键盘上得“：”可以在执行地址处添加标签</p>
 <h2 id="快速找到指定代码得方法"><a href="#快速找到指定代码得方法" class="headerlink" title="快速找到指定代码得方法"></a>快速找到指定代码得方法</h2><h3 id="代码执行法"><a href="#代码执行法" class="headerlink" title="代码执行法"></a>代码执行法</h3><p>我们可以不停得F8，从程序得入口开始，直到什么时候弹出Hello得窗口，然后记住这个地址，这个地址所对应得函数就是main函数</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/3.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/3.png"></p>
 <p>我们去查看一下00401000得内容</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/4.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/4.png"></p>
 <h3 id="字符串检索"><a href="#字符串检索" class="headerlink" title="字符串检索"></a>字符串检索</h3><p>我使用得52pojie得Ollydbg，查找字符串得方法有很多，通常使用Search for-&gt; All referenced strings</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/5.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/5.png"></p>
 <p>然后再数据窗口中打开</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/6.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/6.png"></p>
 <h3 id="API检索法-在调用代码中设置断点"><a href="#API检索法-在调用代码中设置断点" class="headerlink" title="API检索法:在调用代码中设置断点"></a>API检索法:在调用代码中设置断点</h3><p>鼠标右键-&gt;Search for -&gt; All intermodular calls</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/7.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/7.png"></p>
 <h3 id="API检索法-在API代码中设置断点"><a href="#API检索法-在API代码中设置断点" class="headerlink" title="API检索法:在API代码中设置断点"></a>API检索法:在API代码中设置断点</h3><p>鼠标右键-&gt;Search for -&gt; Name in all calls</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/8.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/8.png"></p>
 <p>然后打开内存窗口，查看内存</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/9.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/9.png"></p>
 <p>然后我们可以知道MessageBox使用得是user32.dll这个库，然后我们去查看这个库</p>
 <p>进入这个函数库得调用，下断点，然后让程序跑到这里，查看ESP</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/10.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/10.png"></p>
 <p>然后我们去ESP指向得地址查看进程栈得地址</p>
 <p>在上图中我们可以看到，所有得地址都出来了</p>
 <h2 id="修改字符串"><a href="#修改字符串" class="headerlink" title="修改字符串"></a>修改字符串</h2><h3 id="修改缓冲区"><a href="#修改缓冲区" class="headerlink" title="修改缓冲区"></a>修改缓冲区</h3><p>我们可以直接修改buffer这个缓冲区得内容，也可以直接更粗暴一些，修改它在内存中得指向</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/11.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/11.png"></p>
 <p>修改一下</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/12.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/12.png"></p>
 <p>修换缓冲区同理，修改内存中得字符</p>
 <h3 id="在其他内存区域创建新字符传递给函数消息"><a href="#在其他内存区域创建新字符传递给函数消息" class="headerlink" title="在其他内存区域创建新字符传递给函数消息"></a>在其他内存区域创建新字符传递给函数消息</h3><p>找一块空白得内存空间，在这块空间中写入你想要显示得字符，然后修改汇编指令</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/13.png"></p>
+<p><img src="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/13.png"></p>
 
       
       
@@ -408,8 +408,8 @@
         <p><span>发布时间:</span>2019年09月30日 - 09时19分</p>
         <p><span>最后更新:</span>2019年09月30日 - 11时10分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/" title="逆向工程核心原理-逆向Hello程序">http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/" title="逆向工程核心原理-逆向Hello程序">http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/09/30/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-%E9%80%86%E5%90%91Hello%E7%A8%8B%E5%BA%8F/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

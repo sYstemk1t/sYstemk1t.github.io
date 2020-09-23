@@ -8,17 +8,17 @@
   <meta name="description" content="函数在高级语言中就是一串指令的集合；">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C反汇编 - 函数">
-<meta property="og:url" content="http://example.com/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="函数在高级语言中就是一串指令的集合；">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/0.png">
 <meta property="article:published_time" content="2020-04-28T11:43:39.000Z">
 <meta property="article:modified_time" content="2020-04-29T03:01:52.193Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -292,7 +292,7 @@
 
 
 <h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><p><strong>参数的传递方式通常使用栈传递，并且使用stdcall调用方式；</strong></p>
-<p><img src="C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/0.png"></p>
+<p><img src="/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/0.png"></p>
 <p>vc6编译器有一个特点：call函数进入并不是真正的函数，而是一个jmp，jmp到我们真正的函数体中；</p>
 <h3 id="汇编下的函数"><a href="#汇编下的函数" class="headerlink" title="汇编下的函数"></a>汇编下的函数</h3><p>​<br>​                            </p>
 <p>计算机的函数，是一个固定的一个程序段，或称其为一个子程序，它在可以实现固定运算功能的同时还带有一入口和一个出口，所谓的入口，就是函数所带的各个参数，我们可以通过这个入口，把函数的参数值代入子程序，供计算机处理，所谓出口，就是指函数的计算结果,也称为返回值，在计算机求得之后，由此口带回给调用它的程序。                            </p>
@@ -375,8 +375,8 @@
         <p><span>发布时间:</span>2020年04月28日 - 19时43分</p>
         <p><span>最后更新:</span>2020年04月29日 - 11时01分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/" title="C反汇编 - 函数">http://example.com/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/" title="C反汇编 - 函数">http://systemk1t.github.io/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2020/04/28/C%E5%8F%8D%E6%B1%87%E7%BC%96-%E5%87%BD%E6%95%B0/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

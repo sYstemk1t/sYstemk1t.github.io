@@ -8,17 +8,17 @@
   <meta name="description" content="Delay Load Import Table（延迟加载导入表）是PE中引入的专门用来描述与动态链接库延迟加载相关的数据，延迟加载导入表和导入表是相互分离的。与导入表不同的是，它记录的这些动态链接库并不会被操作系统的PE加载器加载。只有等到它登记的相关函数被应用程序调用时，PE中注册的延迟加载函数才会根据延迟加载导入表中对该函数的描述，动态加载相关链接并修正函数的AV地址，实现对函数调用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PE延迟加载导入表">
-<meta property="og:url" content="http://example.com/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Delay Load Import Table（延迟加载导入表）是PE中引入的专门用来描述与动态链接库延迟加载相关的数据，延迟加载导入表和导入表是相互分离的。与导入表不同的是，它记录的这些动态链接库并不会被操作系统的PE加载器加载。只有等到它登记的相关函数被应用程序调用时，PE中注册的延迟加载函数才会根据延迟加载导入表中对该函数的描述，动态加载相关链接并修正函数的AV地址，实现对函数调用">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
 <meta property="article:published_time" content="2019-09-11T03:53:21.000Z">
 <meta property="article:modified_time" content="2019-09-11T13:11:13.058Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-PE">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -314,7 +314,7 @@
 
 <p>7C 20 40 00</p>
 <p>IMAGE_DELAY_IMPORT_DESCRIPOR.DelayINT指向了延迟加载导入的INT，位于文件偏移0x0000087c位置处，该段位于.rdata段。</p>
-<p><img src="PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png"></p>
+<p><img src="/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/0.png"></p>
 <p>90 20 40 00</p>
 <p>IMAGE_DELAY_IMPORT_DESCRIPOR.BoundDelatIT指向了绑定延迟架子啊导入表，位于文件的偏移0x00000890位置处。该位置位于.rdata段</p>
 <h2 id="延迟加载导入机制详解"><a href="#延迟加载导入机制详解" class="headerlink" title="延迟加载导入机制详解"></a>延迟加载导入机制详解</h2><p>系统开始运行程序时指定的延迟加载的DLL是不被载入的，只有等到程序调用了该动态链接库的函数时，系统才将该链接库载入内存空间，并执行相关函数代码。</p>
@@ -392,8 +392,8 @@
         <p><span>发布时间:</span>2019年09月11日 - 11时53分</p>
         <p><span>最后更新:</span>2019年09月11日 - 21时11分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/" title="PE延迟加载导入表">http://example.com/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/" title="PE延迟加载导入表">http://systemk1t.github.io/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/09/11/PE%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E5%AF%BC%E5%85%A5%E8%A1%A8/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

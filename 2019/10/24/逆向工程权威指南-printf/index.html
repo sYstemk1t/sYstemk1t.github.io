@@ -8,17 +8,17 @@
   <meta name="description" content="主要为了学习printf的参数传递的过程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逆向工程权威指南-printf">
-<meta property="og:url" content="http://example.com/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="主要为了学习printf的参数传递的过程">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/0.png">
 <meta property="article:published_time" content="2019-10-24T07:56:04.000Z">
 <meta property="article:modified_time" content="2019-10-25T03:35:42.815Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Reverse">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -281,7 +281,7 @@
 
 
 <p>printf调试：</p>
-<p><img src="%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/0.png"></p>
+<p><img src="/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/0.png"></p>
 <h3 id="Gcc编译后的printf"><a href="#Gcc编译后的printf" class="headerlink" title="Gcc编译后的printf"></a>Gcc编译后的printf</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">; int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">public _main</span><br><span class="line">_main proc near</span><br><span class="line"></span><br><span class="line">argc&#x3D; dword ptr  8</span><br><span class="line">argv&#x3D; dword ptr  0Ch</span><br><span class="line">envp&#x3D; dword ptr  10h</span><br><span class="line"></span><br><span class="line">push    ebp</span><br><span class="line">mov     ebp, esp</span><br><span class="line">and     esp, 0FFFFFFF0h</span><br><span class="line">sub     esp, 10h</span><br><span class="line">call    ___main</span><br><span class="line">mov     dword ptr [esp+0Ch], 3</span><br><span class="line">mov     dword ptr [esp+8], 2</span><br><span class="line">mov     dword ptr [esp+4], 1</span><br><span class="line">mov     dword ptr [esp], offset aADBDCD ; &quot;a&#x3D;%d,b&#x3D;%d,c&#x3D;%d&quot;</span><br><span class="line">call    _printf</span><br><span class="line">mov     eax, 0</span><br><span class="line">leave</span><br><span class="line">retn</span><br><span class="line">_main endp</span><br></pre></td></tr></table></figure>
 
 <p><strong>相比于MSVC的编译，GCC生成的程序仅在参数入栈的方式有区别，</strong></p>
@@ -354,8 +354,8 @@
         <p><span>发布时间:</span>2019年10月24日 - 15时56分</p>
         <p><span>最后更新:</span>2019年10月25日 - 11时35分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/" title="逆向工程权威指南-printf">http://example.com/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/" title="逆向工程权威指南-printf">http://systemk1t.github.io/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/10/24/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-printf/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

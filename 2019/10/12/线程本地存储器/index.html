@@ -8,17 +8,17 @@
   <meta name="description" content="C&#x2F;C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="线程本地存储器">
-<meta property="og:url" content="http://example.com/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="C&#x2F;C++运行期库要使用线程本地存储器。每个线程均被赋予自己的字符串指针，如果你的程序严重依赖全局变量或者静态变量，那么TLS能够解决它遇到的问题。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/0.png">
 <meta property="article:published_time" content="2019-10-12T06:39:37.000Z">
 <meta property="article:modified_time" content="2019-10-12T11:41:44.352Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -268,7 +268,7 @@
 
 <h2 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h2><h3 id="动态TLS"><a href="#动态TLS" class="headerlink" title="动态TLS"></a>动态TLS</h3><p>如需要使用动态TLS，应用程序可以调用一组4个函数。这些函数实际上是DLL用的最多的函数。</p>
 <p>Windows用来管理TLS的内部数据结构：</p>
-<p><img src="%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/0.png"></p>
+<p><img src="/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/0.png"></p>
 <p>每个标志均可设置为FREE或者INUSE，表示TLS时隙(slot)是否正在使用。微软保证至少TLS_MINIMUM_AVAILBLE位标志是可供使用的。<strong>TLS_MINIMUM_AVAILBLE再WinNT.h中被定为64。</strong></p>
 <p>如果需要使用动态TLS，必须使用TlsAlloc函数：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">TlsAlloc</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
@@ -360,8 +360,8 @@
         <p><span>发布时间:</span>2019年10月12日 - 14时39分</p>
         <p><span>最后更新:</span>2019年10月12日 - 19时41分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/" title="线程本地存储器">http://example.com/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/" title="线程本地存储器">http://systemk1t.github.io/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/10/12/%E7%BA%BF%E7%A8%8B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%99%A8/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

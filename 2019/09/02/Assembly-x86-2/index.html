@@ -8,25 +8,25 @@
   <meta name="description" content="X86处理器架构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Assembly-x86-2">
-<meta property="og:url" content="http://example.com/2019/09/02/Assembly-x86-2/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="X86处理器架构">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/0.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/1.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/2.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/3.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/4.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/6.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/7.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/8.png">
-<meta property="og:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/9.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/9.png">
 <meta property="article:published_time" content="2019-09-02T01:38:52.000Z">
 <meta property="article:modified_time" content="2019-09-21T10:24:17.437Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Assembly">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/09/02/Assembly-x86-2/Assembly-x86-2/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/09/02/Assembly-x86-2/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -272,14 +272,14 @@
           
         <h1 id="X86处理器架构"><a href="#X86处理器架构" class="headerlink" title="X86处理器架构"></a>X86处理器架构</h1><a id="more"></a>
 
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="基本微机设计"><a href="#基本微机设计" class="headerlink" title="基本微机设计"></a>基本微机设计</h3><p><img src="Assembly-x86-2/0.png"></p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="基本微机设计"><a href="#基本微机设计" class="headerlink" title="基本微机设计"></a>基本微机设计</h3><p><img src="/2019/09/02/Assembly-x86-2/0.png"></p>
 <ul>
 <li>时钟对CPU内部操作与系统其他组件进行同步</li>
 <li>控制单元（CU）协调参与机器指令控制的步骤序列</li>
 <li>算术逻辑单元（ALU）执行算术单元</li>
 </ul>
 <p><strong>时钟</strong>与cpu和系统相关的每一个操作都是由一个恒定速率的内部时钟脉冲来进行同步。机器指令的基本时间单位是机器周期或时钟周期。一个时钟周期的时长是一个完整时钟脉冲所需的时间。</p>
-<p><img src="Assembly-x86-2/1.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/1.png"></p>
 <p><strong>执行一条指令最少需要一个时钟周期</strong></p>
 <h3 id="执行指令周期"><a href="#执行指令周期" class="headerlink" title="执行指令周期"></a>执行指令周期</h3><p>CPU在执行一条机器指令时，需要经过一系列预先设定好的步骤，这些步骤称为指令周星周期。</p>
 <ul>
@@ -314,16 +314,16 @@
 <p><strong>系统管理模式：</strong>系统管理模式是操作系统提供了实现诸如电源管理和系统安全等功能的机制。</p>
 <h3 id="基本执行环境"><a href="#基本执行环境" class="headerlink" title="基本执行环境"></a>基本执行环境</h3><p>1.地址空间</p>
 <p>在32位保护模式下，一个任务或程序最大寻址4GB线性内存空间。从P6（P6架构，外部地址总线扩展至36位，处理器的直接寻址能力64GB。采用动态执行技术。），<strong>一种称为扩展物理寻址的技术使得可以被寻址的物理内存空间增加到64GB。</strong>与之相反，实地址模式程序只能寻址1MB，如果处理器在保护模式下运行多个虚拟8086程序，那么每个程序只能拥有自己的1mb内存空间。</p>
-<p><img src="Assembly-x86-2/2.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/2.png"></p>
 <p>2.基本程序执行寄存器</p>
 <p>寄存器是直接位于CPU内部的高速存储位置，其设置访问速度高于传统存储器。</p>
 <p><strong>32下有8个通用寄存器，6个段寄存器，1个处理器状态标志寄存器(eflag)和1个指令指针寄存器(eip)</strong></p>
 <p><strong>通用寄存器：</strong>主要用于算术运算和数据传输，一些通用寄存器的组成部分可以处理8位的值。</p>
-<p><img src="Assembly-x86-2/3.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/3.png"></p>
 <p>可以拆分的寄存器：</p>
-<p><img src="Assembly-x86-2/4.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/4.png"></p>
 <p>不可以拆分的寄存器：</p>
-<p><img src="Assembly-x86-2/6.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/6.png"></p>
 <p>某些通用寄存器特殊用法：</p>
 <ul>
 <li>乘除指令默认使用EAX。它常常被称为扩展累加器寄存器。</li>
@@ -357,7 +357,7 @@
 <p>XMM寄存器</p>
 <p>x86结构还包括了8个128XMM寄存器，它们被用于SIMD流扩展指令集。</p>
 <p><strong>浮点单元：浮点单元执行告诉浮点算术运算。之前为了这个目的，需要一个独立的协处理器芯片。FPU中有8个浮点数寄存器，分别命名为ST(0),ST(1),ST(2)…..。</strong></p>
-<p><img src="Assembly-x86-2/7.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/7.png"></p>
 <h3 id="x86内存管理"><a href="#x86内存管理" class="headerlink" title="x86内存管理"></a>x86内存管理</h3><p>在实地址模式中，只能寻址1MB内存，地址从00000H到FFFFFH。处理器一次只能运行一个程序，但是可能暂时中断程序来处理来自外围设备的请求(称为中断(intertupt))。应用程序被访问允许访问内存的任意位置，包含哪些直接与系统硬件相关的地址。</p>
 <p><strong>MS-DOS操作系统在实地址模式下运行</strong></p>
 <p>在保护模式中，处理器可以同时运行多个程序，它的每个进程（运行中的程序）分配总共4GB的内存。每个程序都有分配有自己的保留内存区域，程序之间禁止以外访问其他程序的代码和数据。</p>
@@ -385,8 +385,8 @@
 </ul>
 <p>64位模式下，操作数的默认大小为32位，并且只有8个通用寄存器，但是给每条指令加上REX（扩展寄存器）前缀后，操作数可以达到64位</p>
 <p>通用寄存器：</p>
-<p><img src="Assembly-x86-2/8.png"></p>
-<p><img src="Assembly-x86-2/9.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/8.png"></p>
+<p><img src="/2019/09/02/Assembly-x86-2/9.png"></p>
 <p>还有一些细节：</p>
 <ul>
 <li>64位模式下，单挑指令不能访问寄存器高字节，如AH、BH、CH、DH，以及新字节寄存器下的低字节（如DIL）</li>
@@ -454,8 +454,8 @@
         <p><span>发布时间:</span>2019年09月02日 - 09时38分</p>
         <p><span>最后更新:</span>2019年09月21日 - 18时24分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/09/02/Assembly-x86-2/" title="Assembly-x86-2">http://example.com/2019/09/02/Assembly-x86-2/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/09/02/Assembly-x86-2/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/09/02/Assembly-x86-2/" title="Assembly-x86-2">http://systemk1t.github.io/2019/09/02/Assembly-x86-2/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/09/02/Assembly-x86-2/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

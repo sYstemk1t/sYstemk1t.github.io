@@ -8,20 +8,20 @@
   <meta name="description" content="文件系统是操作系统的重要组成部分。支持操作系统运行的系统可执行文件本身也位于文件系统中。几乎所有的应用程序都要靠操作文件，文件系统应用程序开发接口是系统提供的最重要、最基本的API集合之一，也是Windows开发应用程序最常用到的接口">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows应用程序-文件系统">
-<meta property="og:url" content="http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="文件系统是操作系统的重要组成部分。支持操作系统运行的系统可执行文件本身也位于文件系统中。几乎所有的应用程序都要靠操作文件，文件系统应用程序开发接口是系统提供的最重要、最基本的API集合之一，也是Windows开发应用程序最常用到的接口">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/0.png">
-<meta property="og:image" content="http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/1.png">
-<meta property="og:image" content="http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/2.png">
-<meta property="og:image" content="http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/3.png">
 <meta property="article:published_time" content="2019-11-29T07:32:07.000Z">
 <meta property="article:modified_time" content="2019-12-09T23:47:03.806Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Windows-Kernel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/0.png">
+<meta name="twitter:image" content="http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/0.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -427,10 +427,10 @@
 
 
 
-<p><img src="Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/0.png"></p>
-<p><img src="Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/1.png"></p>
-<p><img src="Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/2.png"></p>
-<p><img src="Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/3.png"></p>
+<p><img src="/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/0.png"></p>
+<p><img src="/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/1.png"></p>
+<p><img src="/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/2.png"></p>
+<p><img src="/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/3.png"></p>
 <p>返回HANDLE数据类型值，标识文件的句柄。</p>
 <h5 id="ReadFile"><a href="#ReadFile" class="headerlink" title="ReadFile"></a>ReadFile</h5><p>ReadFile是从文件中读出数据</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">ReadFile</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE hFile,				<span class="comment">//读取数据的文件对象</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpBuffer,			<span class="comment">//指向文件读取存储的内存缓冲区</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD nNumberOfBytesToRead,	<span class="comment">//指明需要从文件中读取的数据大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPDWORD lpNumberOfBytesRead,	<span class="comment">//指向存储实际独处的数据大小的DWORD变量</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPOVERLAPPED lpOverlapped		<span class="comment">//如果CreateFile调用的时候设置了FILE_FLAG_OVERLAPPED标志，则需要使用该参数，否则可以设置为null</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
@@ -645,8 +645,8 @@
         <p><span>发布时间:</span>2019年11月29日 - 15时32分</p>
         <p><span>最后更新:</span>2019年12月10日 - 07时47分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="Windows应用程序-文件系统">http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://example.com/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="Windows应用程序-文件系统">http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://systemk1t.github.io/2019/11/29/Windows%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>

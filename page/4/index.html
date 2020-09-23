@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/page/4/index.html">
+<meta property="og:url" content="http://systemk1t.github.io/page/4/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="John Doe">
@@ -576,7 +576,7 @@
 <p><strong>进程必须拥有一个在它环境中运行的线程，该线程负责执行包含在进程的地址空间中的代码。</strong></p>
 <p>而实际上，一个进程可能包含若干个线程，所有这些线程都“同时”执行进程地址空间中的代码。<strong>每个进程至少拥有一个线程，且拥有它自己的一组CPU寄存器和它自己的堆栈。</strong>如果没有线程来为进程执行地址空间中代码，那么该进程将被销毁。</p>
 <p>若要使这些线程同时运行，操作系统必须为每个线程安排一定的CPU时间。它通过一种循环方式为线程提供时间片，造成一种假象，彷佛所有的线程都在运行。</p>
-<p><img src="Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png"></p>
+<p><img src="/2020/04/17/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png"></p>
 <p>当一个进程被创建后，系统会自动为它创建一个线程，称为主线程，然后该线程可以创建其他的线程，这些线程又可以创建更多的线程。</p>
           
       
