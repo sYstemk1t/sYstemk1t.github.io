@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows核心编程 - 用户方式中线程同步">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%94%A8%E6%88%B7%E6%96%B9%E5%BC%8F%E4%B8%AD%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-19T04:30:34.000Z">
+<meta property="article:modified_time" content="2021-06-19T05:24:01.376Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="Windows核心编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%94%A8%E6%88%B7%E6%96%B9%E5%BC%8F%E4%B8%AD%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Windows核心编程 - 用户方式中线程同步 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%94%A8%E6%88%B7%E6%96%B9%E5%BC%8F%E4%B8%AD%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows核心编程 - 用户方式中线程同步
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-19 12:30:34 / 修改时间：13:24:01" itemprop="dateCreated datePublished" datetime="2021-06-19T12:30:34+08:00">2021-06-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Windows核心编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《Windows核心编程》一书总结而来；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Visual Studio 2019</li>
+</ul>
+<h1 id="用户方式下线程同步"><a href="#用户方式下线程同步" class="headerlink" title="用户方式下线程同步"></a>用户方式下线程同步</h1><p>当所有线程在互相之间不需要进行通信的情况下就可以顺利运行时，Windows的运行性能最好。但是线程很少能够独立进行操作。</p>
+<p>线程需要在下面两种情况需要进行通信：</p>
+<ul>
+<li>当有多个线程访问共享资源而不使资源被破坏时；</li>
+<li>当一个线程需要将某个任务已经完成的情况通知另外一个或多个线程时；</li>
+</ul>
+<h2 id="原子锁"><a href="#原子锁" class="headerlink" title="原子锁"></a>原子锁</h2><p>线程同步问题再很大程度上与原子访问有关，所谓源自访问，是指线程在访问资源时能够确保所有其他线程都不在同一时间内访问相同资源；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> g_x = <span class="number">0</span>;			<span class="comment">//定义全局变量</span></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc1</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	g_x++;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;FirstThread g_x = %d\n&quot;</span>, g_x);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc2</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	g_x++;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;SecondThread g_x = %d\n&quot;</span>, g_x);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThread[<span class="number">2</span>];</span><br><span class="line">	hThread[<span class="number">0</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc1, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	hThread[<span class="number">1</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc2, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	CloseHandle(hThread[<span class="number">0</span>]);</span><br><span class="line">	CloseHandle(hThread[<span class="number">1</span>]);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为Windows是抢占式操作系统，所以线程并不一定会按照我们期许的那样执行，有可能执行完结果为1，因为我们不知道CPU在什么会中断我们的线程；</p>
+<p>我们需要一种手段来保证值的递增能够以原子操作来进行，也就是不中断运行；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LONG <span class="title">InterlockedExchangeAdd</span> <span class="params">(  LPLONG <span class="keyword">volatile</span> Addend,  <span class="comment">// addend</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LONG Value               <span class="comment">// increment value);</span></span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>修改代码为以下的方式：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;process.h&gt;</span></span></span><br><span class="line">LONG g_x = <span class="number">0</span>;				<span class="comment">//这里需要定义为长整型</span></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc1</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	InterlockedExchangeAdd(&amp;g_x, <span class="number">1</span>); </span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;FirstThread g_x = %d\n&quot;</span>, g_x);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc2</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	InterlockedExchangeAdd(&amp;g_x, <span class="number">1</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;SecondThread g_x = %d\n&quot;</span>, g_x);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThread[<span class="number">2</span>];</span><br><span class="line">	hThread[<span class="number">0</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc1, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	hThread[<span class="number">1</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc2, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	CloseHandle(hThread[<span class="number">0</span>]);</span><br><span class="line">	CloseHandle(hThread[<span class="number">1</span>]);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>互斥锁是如何运行的，对于x86平台来说，互锁函数会对总线发出一个硬件信号，防止另一个CPU访问同一个内存地址。</p>
+<p>也可以使用InterlockedExchange 或InterlockedExchangePointer函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PVOID <span class="title">InterlockedExchangePointer</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  PVOID <span class="keyword">volatile</span> *Target,   <span class="comment">// value to exchange</span></span></span></span><br><span class="line"><span class="function"><span class="params">  PVOID Value               <span class="comment">// new value);</span></span></span></span><br><span class="line"><span class="function"><span class="params">    </span></span></span><br><span class="line"><span class="function"><span class="params">LONG InterlockedExchange( </span></span></span><br><span class="line"><span class="function"><span class="params">	LPLONG Target, </span></span></span><br><span class="line"><span class="function"><span class="params">	LONG Value );</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="临界区同步"><a href="#临界区同步" class="headerlink" title="临界区同步"></a>临界区同步</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> g_dwTickets = <span class="number">10</span>;</span><br><span class="line">CRITICAL_SECTION cs;			<span class="comment">//创建全局临界资源</span></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">MyFirstThread1</span><span class="params">(LPVOID lpParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	EnterCriticalSection(&amp;cs);</span><br><span class="line">	<span class="keyword">while</span> (g_dwTickets &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;剩余:%d\n&quot;</span>, g_dwTickets);</span><br><span class="line">		g_dwTickets--;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;卖出一张剩余:%d\n&quot;</span>, g_dwTickets);</span><br><span class="line">	&#125;</span><br><span class="line">	LeaveCriticalSection(&amp;cs);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">MyFirstThread2</span><span class="params">(LPVOID lpParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	InitializeCriticalSection(&amp;cs);</span><br><span class="line">	DWORD dwResult1;</span><br><span class="line">	DWORD dwResult2;</span><br><span class="line">	HANDLE aThreadHandles[<span class="number">2</span>];</span><br><span class="line">	aThreadHandles[<span class="number">0</span>] = CreateThread(<span class="literal">NULL</span>,</span><br><span class="line">		<span class="number">0</span>,</span><br><span class="line">		MyFirstThread1,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		<span class="number">0</span>,</span><br><span class="line">		<span class="literal">NULL</span></span><br><span class="line">	);</span><br><span class="line">	aThreadHandles[<span class="number">1</span>] = CreateThread(<span class="literal">NULL</span>,</span><br><span class="line">		<span class="number">0</span>,</span><br><span class="line">		MyFirstThread1,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		<span class="number">0</span>,</span><br><span class="line">		<span class="literal">NULL</span></span><br><span class="line">	);</span><br><span class="line">	WaitForMultipleObjects(<span class="number">2</span>, aThreadHandles, TRUE, INFINITE);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;线程执行完成\n&quot;</span>);</span><br><span class="line">	DWORD dwResults[<span class="number">2</span>];</span><br><span class="line">	GetExitCodeThread(aThreadHandles[<span class="number">0</span>], &amp;dwResults[<span class="number">0</span>]);</span><br><span class="line">	GetExitCodeThread(aThreadHandles[<span class="number">1</span>], &amp;dwResults[<span class="number">1</span>]);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d %d &quot;</span>, dwResults[<span class="number">1</span>], dwResults[<span class="number">2</span>]);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%94%A8%E6%88%B7%E6%96%B9%E5%BC%8F%E4%B8%AD%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Windows核心编程 - 用户方式中线程同步">http://systemk1t.github.io/2021/06/19/Windows核心编程-用户方式中线程同步/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" rel="tag"># Windows核心编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/" rel="prev" title="Windows核心编程 - 线程调度">
+      <i class="fa fa-chevron-left"></i> Windows核心编程 - 线程调度
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%86%85%E6%A0%B8%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%90%8C%E6%AD%A5/" rel="next" title="Windows核心编程 - 线程与内核对象的同步">
+      Windows核心编程 - 线程与内核对象的同步 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%96%B9%E5%BC%8F%E4%B8%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">1.</span> <span class="nav-text">用户方式下线程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E9%94%81"><span class="nav-number">1.1.</span> <span class="nav-text">原子锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%90%8C%E6%AD%A5"><span class="nav-number">1.2.</span> <span class="nav-text">临界区同步</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

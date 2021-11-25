@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8086指令基础 - 寄存器">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/8.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/11.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/10.png">
+<meta property="article:published_time" content="2021-06-03T06:31:27.000Z">
+<meta property="article:modified_time" content="2021-06-06T19:28:10.045Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="16汇编">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/1.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>8086指令基础 - 寄存器 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          8086指令基础 - 寄存器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-03 14:31:27" itemprop="dateCreated datePublished" datetime="2021-06-03T14:31:27+08:00">2021-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-07 03:28:10" itemprop="dateModified" datetime="2021-06-07T03:28:10+08:00">2021-06-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">16位汇编</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Windows XP Debug</li>
+</ul>
+<h1 id="8086寄存器"><a href="#8086寄存器" class="headerlink" title="8086寄存器"></a>8086寄存器</h1><p>计算机的指令系统是指该计算机能够执行的全部指令的集合，每种计算机都有它支持的指令集合。16位8086指令系统是Intel 80x86系列微处理器指令系统的基础</p>
+<h2 id="debug使用"><a href="#debug使用" class="headerlink" title="debug使用"></a>debug使用</h2><ul>
+<li>何为Denug？<br>Dubug是Window和Dos下都提供的实模式调试工具。</li>
+<li>Debug的使用。<br>cmd下Debug就可以进入调试，<strong>注意64位系统下已经没有Debug了，Xp下才有，并且Xp下面的Debug也是虚拟出来的。</strong></li>
+<li>Debug命令</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">? 显示 Debug 命令列表。 </span><br><span class="line">a 汇编 8086/8087/8088 记忆码。 </span><br><span class="line">d 显示部分内存的内容。 </span><br><span class="line">c 比较内存的两个部分。 </span><br><span class="line">e 从指定地址开始，将数据输入到内存。 </span><br><span class="line">f 使用指定值填充一段内存。 </span><br><span class="line">g 运行在内存中的可执行文件。 </span><br><span class="line">h 执行十六进制运算。 </span><br><span class="line">i 显示来自特定端口的 1 字节值。 </span><br><span class="line">l 将文件或磁盘扇区内容加载到内存。 </span><br><span class="line">m 复制内存块中的内容 </span><br><span class="line">/n 为 l 或 w 命令指定文件，或者指定正在测试的文件的参数。 </span><br><span class="line">o 向输出端口发送 1 个字节的值。 </span><br><span class="line">p 执行循环、重复的字符串指令、软件中断或子例程。 </span><br><span class="line">q 停止 Debug 会话。 </span><br><span class="line">r 显示或改变一个或多个寄存器。 </span><br><span class="line">s 在部分内存中搜索一个或多个字节值的模式。 </span><br><span class="line">t 执行一条指令，然后显示所有寄存器的内容、所有标志的状态和 Debug 下一步要执行的指令的解码形式。 </span><br><span class="line">u 反汇编字节并显示相应的原语句。 </span><br><span class="line">w 将被测试文件写入磁盘。 </span><br><span class="line">xa 分配扩展内存。 </span><br><span class="line">xd 释放扩展内存。 </span><br><span class="line">xm 映射扩展内存页。 </span><br><span class="line">xs 显示扩展内存的状态。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="寄存器组"><a href="#寄存器组" class="headerlink" title="寄存器组"></a>寄存器组</h2><p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/1.png"></p>
+<h3 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h3><h4 id="通用寄存器-1"><a href="#通用寄存器-1" class="headerlink" title="通用寄存器"></a>通用寄存器</h4><ul>
+<li>8086的16位通用寄存器是：<ul>
+<li>AX    BX    CX    DX</li>
+<li>SI      DI     BP    SP</li>
+</ul>
+</li>
+<li>其中前四个数据寄存器还可以分为高八位和低八位<ul>
+<li>AH    BH    CH    DH</li>
+<li>AL     BL     CL     DL</li>
+</ul>
+</li>
+<li>对其八位的操作，并不影响对象八位的数据</li>
+</ul>
+<p>数据寄存器用来存放计算的结果和操作数，也可以存放地址</p>
+<p>每个寄存器又用它们各自的专用目的</p>
+<ul>
+<li>AX    -    累加器，使用频度最高，用于算数、逻辑运算以及外设传递信息等</li>
+<li>BX    -    基址寄存器，常用作存放寄存器地址</li>
+<li>CX    -    计数器，作为循环和串操作等指令中隐含计数器</li>
+<li>DX   -     数据寄存器，长用来存放双字长数据的高16位，或存放外设端口地址</li>
+</ul>
+<h4 id="变址寄存器"><a href="#变址寄存器" class="headerlink" title="变址寄存器"></a>变址寄存器</h4><p>变址寄存器常用于存储器寻址时提供地址</p>
+<ul>
+<li>SI是源变址寄存器</li>
+<li>DI是目的变址寄存器</li>
+</ul>
+<p>串操作类指令中，SI和DI具有特别的功能</p>
+<h4 id="指针寄存器"><a href="#指针寄存器" class="headerlink" title="指针寄存器"></a>指针寄存器</h4><ul>
+<li>指针寄存器用于寻址内存堆栈内的数据</li>
+<li>SP为堆栈指针寄存器，指示栈顶的偏移地址</li>
+<li>SP不能用于其他目的，具有专用性</li>
+<li>BP为基址指针寄存器，表示数据在堆栈段中的基地址</li>
+<li>SP和BP寄存器与SS段寄存器联合使用以确定堆栈段中的存储单元地址</li>
+</ul>
+<h3 id="指令指针寄存器"><a href="#指令指针寄存器" class="headerlink" title="指令指针寄存器"></a>指令指针寄存器</h3><ul>
+<li>指令指针寄存器IP，指示代码段中指令的偏移地址</li>
+<li>它与代码段寄存器CS联用，确定下一条指令的物理地址</li>
+<li>计算机通过CS:IP寄存器来控制指令序列的执行流程</li>
+<li>IP寄存器是专用寄存器</li>
+</ul>
+<h3 id="标志寄存器"><a href="#标志寄存器" class="headerlink" title="标志寄存器"></a>标志寄存器</h3><ul>
+<li>标志寄存器用于反映指令执行结果或控制指令执行形式</li>
+<li>8086处理器的各种标志形成了一个16位的标志寄存器flags</li>
+</ul>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/2.png"></p>
+<ul>
+<li><strong>状态标志</strong><br>作用:用来记录程序运行结果的状态信息，许多指令的执行都将相应地设置它。<br>CF ZF SF PF OF AF</li>
+<li><strong>控制标志</strong><br>作用:可由程序根据需要用指令设置，用于控制处理器执行指令的方式<br>DF IF TF</li>
+</ul>
+<h4 id="标志寄存器各位实验"><a href="#标志寄存器各位实验" class="headerlink" title="标志寄存器各位实验"></a>标志寄存器各位实验</h4><ul>
+<li>首先先来介绍以下debug中各标志位的意义</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">OF(ov/nv)：Over  溢出 标志位           溢出               OV（overflow溢出）                NV（no overflow未溢出）</span><br><span class="line"></span><br><span class="line">DF(dn/up)：Direction    方向 标志位          方向                     DN（Down减少）                    UP（UP增加）</span><br><span class="line"></span><br><span class="line">IF(ei/di)：Enable  允许中断 标志位            中断                    EI（enable interrupt许可）     DI（disable interrupt 禁止）</span><br><span class="line"></span><br><span class="line">SF(ng/pl)：Symbol 符号 标志位                 符号位                 NG（negative）负                     PL（plus 正）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ZF(zr/nz)：Zero  零   标志位                      零位                    ZF（zero等于零）                      NZ（no  zero不等于零）</span><br><span class="line"></span><br><span class="line">AF(ac/na)：Auxiliary  辅助进位 标志位       辅助进位            AC（assistant carry进位）          NA（no assistant carry 无进位）</span><br><span class="line"></span><br><span class="line">PF(pe/po)：Parity  奇偶 标志位                奇偶标志              PE（parity even偶）                 PO（parity odd奇）</span><br><span class="line"></span><br><span class="line">CF(cy/nc)：Carry  进位 标志位                进位                    CY（carry Yes进位）                  NC（No carry无进位）</span><br><span class="line"></span><br><span class="line">TF ( Trap Flag ) 追踪标志:             当追踪标志TF被置为1时，CPU进入单步执行方式，即每执行一条指令，产生一个单步中断请求。这种方式主要用于程序的调试。指令系统中没有专门的指令来改变标志位TF的值，但程序员可用其它办法来改变其值。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<ul>
+<li>进位标志CF(Carry Flag)<ul>
+<li>作用:当运算结果的最高有效位有进位（加法）或借位（减法）时，进位标志置1，即CF = 1；否则CF = 0。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-u 100</span><br><span class="line">0B26:0100 B444          MOV     AH,44</span><br><span class="line">0B26:0102 B7FF          MOV     BH,FF</span><br><span class="line">0B26:0104 01D8          ADD     AX,BX</span><br><span class="line">0B26:0106 C3            RET</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/3.png"></p>
+<p>可以看到Debug中<strong>最后一位由NC变为了CY</strong>，表示了计算结果进位;</p>
+<ul>
+<li>零标志ZF（Zero Flag）<ul>
+<li>作用:若运算结果为0，则ZF = 1；否则ZF = 0</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/4.png"></p>
+<p>可以看到Debug中的<strong>ZF标志位由NC变为ZR，表示指令计算结果为0</strong>.</p>
+<ul>
+<li>符号标志SF（Sign Flag)<ul>
+<li>作用:运算结果二进制最高位为1，则SF = 1；否则SF = 0.<br>Debug中进行实验，计算4000+4000的结果</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/5.png"></p>
+<ul>
+<li>奇偶标志PF（Parity Flag）<ul>
+<li>作用:当运算结果最低字节中“1”的个数为零或偶数时，PF = 1；否则PF = 0</li>
+</ul>
+</li>
+</ul>
+<p>Debug中进行实验，计算3A+7A的值。</p>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/6.png"></p>
+<p>由于3AH+7AH=B4H=10110100B，二进制中总共有4个1，所以为偶数个1，<strong>奇偶标志位PF由PO变为PE</strong></p>
+<ul>
+<li><p>溢出标志OF（Overflow Flag）</p>
+<ul>
+<li>作用:若算术运算的结果有溢出，则OF＝1；否则 OF＝0</li>
+</ul>
+<p>由于计算结果最高位为1，计算结果为负数明显是错误的结果，<strong>产生溢出，OF标志位由NV变为OV</strong></p>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/7.png"></p>
+</li>
+</ul>
+<ul>
+<li>辅助进位标志AF（Auxiliary Carry Flag）<ul>
+<li>作用:运算时D3位（低半字节）有进位或借位时，AF = 1；否则AF = 0。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/8.png"></p>
+<p>由于低半字节存在进位，<strong>所以AF标志位由NA变为了AC</strong></p>
+<ul>
+<li>方向标志DF（Direction Flag)<ul>
+<li>作用:用于串操作指令中，控制地址的变化方向<br>设置DF＝0，存储器地址自动增加；<br>设置DF＝1，存储器地址自动减少。</li>
+</ul>
+</li>
+</ul>
+<p><strong>输入指令CLD（复位指令），输入STD(置位指令)</strong></p>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/11.png"></p>
+<p>可以观察出<strong>CLD将DF标志位置为UP，而STD将DF标志位置为DN</strong>。</p>
+<ul>
+<li>中断允许标志IF（Interrupt-enable Flag）<ul>
+<li>作用:用于控制外部可屏蔽中断是否可以被处理器响应：<br>设置IF＝1，则允许中断；<br>设置IF＝0，则禁止中断。</li>
+</ul>
+</li>
+</ul>
+<p>Debug中进行实验，<strong>输入指令CLI（中断复位指令），输入STI（中断置位指令）</strong></p>
+<p><img src="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/10.png"></p>
+<p>可以观察出<strong>CLI将IF标志位置为DI，而STI将ID标志位置为EI</strong>。</p>
+<ul>
+<li>陷阱标志TF（Trap Flag）<ul>
+<li>作用:用于控制处理器进入单步操作方式：<br>设置TF＝0，处理器正常工作；<br>设置TF＝1，处理器单步执行指令。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>进位和溢出的区别</li>
+</ul>
+<p><strong>溢出标志OF和进位标志CF是两个意义不同的标志</strong></p>
+<ul>
+<li>进位标志表示<strong>无符号数</strong>运算结果是否超出范围，运算结果<strong>仍然正确；</strong></li>
+<li>溢出标志表示<strong>有符号数</strong>运算结果是否超出范围，运算结果<strong>已经不正确。</strong></li>
+</ul>
+<h3 id="段寄存器"><a href="#段寄存器" class="headerlink" title="段寄存器"></a>段寄存器</h3><ul>
+<li>8086CPU有20条地址线<ul>
+<li>最大可寻址空间位x^2^ = 1MB</li>
+<li>物理地址范围从00000H~FFFFFH</li>
+</ul>
+</li>
+<li>8086CPU将1MB空间分成许多逻辑段(Segment)<ul>
+<li>每个段最大限制为64KB</li>
+<li>段地址的低四位为0000B</li>
+</ul>
+</li>
+<li>一个逻辑存储单位将具有一个唯一的物理地址外，还具有多个逻辑地址</li>
+</ul>
+<h4 id="物理地址与逻辑地址"><a href="#物理地址与逻辑地址" class="headerlink" title="物理地址与逻辑地址"></a>物理地址与逻辑地址</h4><ul>
+<li>对应每个物理存储单元都有一个唯一的20位编号，就是物理地址，从00000H~FFFFFH。</li>
+<li>分段后在用户编程时，采用逻辑地址，形式为：<ul>
+<li>段基地址：段内偏移地址</li>
+</ul>
+</li>
+</ul>
+<p>cs:ip  ==&gt;  20位物理地址</p>
+<p>cs&lt;&lt;4 + ip            //cs左移四位+偏移</p>
+<h4 id="段寄存器和逻辑段"><a href="#段寄存器和逻辑段" class="headerlink" title="段寄存器和逻辑段"></a>段寄存器和逻辑段</h4><ul>
+<li>8086有4个16位段寄存器<ul>
+<li>CS(代码段)指明代码段的起始位置</li>
+<li>SS（堆栈段）指明堆栈段的起始地址</li>
+<li>DS（数据段）指明数据段的起始地址</li>
+<li>ES（附加段）指明附加段的起始地址</li>
+</ul>
+</li>
+<li>每个段寄存器用来确定一个逻辑段的起始地址，每种逻辑段均有各自的用途</li>
+</ul>
+<h4 id="段超越前缀"><a href="#段超越前缀" class="headerlink" title="段超越前缀"></a>段超越前缀</h4><ul>
+<li><p>没用段超越前缀的指令实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov ax,[2000];			ax-ds:[2000]</span><br><span class="line">;从默认的DS数据段取出数据</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>采用段超越前缀的指令实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov ax,ES:[2000];		dx-es:[2000]</span><br><span class="line">;从指定的ES附加段取出数据</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+</li>
+</ul>
+<h4 id="存储器分段"><a href="#存储器分段" class="headerlink" title="存储器分段"></a>存储器分段</h4><ul>
+<li><p>8086对逻辑段要求：</p>
+<ul>
+<li>段地址低4位均为0</li>
+<li>每段最大不超过64KB</li>
+</ul>
+</li>
+<li><p>8086对逻辑段并不要求：</p>
+<ul>
+<li>必须是64kB</li>
+<li>各段之间必须完全分开</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/" title="8086指令基础 - 寄存器">http://systemk1t.github.io/2021/06/03/8086指令基础-寄存器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/16%E6%B1%87%E7%BC%96/" rel="tag"># 16汇编</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/" rel="prev" title="Windows核心编程 - 进程">
+      <i class="fa fa-chevron-left"></i> Windows核心编程 - 进程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F/" rel="next" title="8086指令基础 - 寻址方式">
+      8086指令基础 - 寻址方式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#8086%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">8086寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#debug%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">debug使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E7%BB%84"><span class="nav-number">1.2.</span> <span class="nav-text">寄存器组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.1.</span> <span class="nav-text">通用寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8-1"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">通用寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E5%9D%80%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">变址寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">指针寄存器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E6%8C%87%E9%92%88%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">指令指针寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.3.</span> <span class="nav-text">标志寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8%E5%90%84%E4%BD%8D%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">标志寄存器各位实验</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.4.</span> <span class="nav-text">段寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E4%B8%8E%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">物理地址与逻辑地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8%E5%92%8C%E9%80%BB%E8%BE%91%E6%AE%B5"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">段寄存器和逻辑段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AE%B5%E8%B6%85%E8%B6%8A%E5%89%8D%E7%BC%80"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">段超越前缀</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8%E5%88%86%E6%AE%B5"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">存储器分段</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

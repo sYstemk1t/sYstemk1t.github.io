@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows核心编程 - 线程调度">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/0.png">
+<meta property="article:published_time" content="2021-06-18T21:13:33.000Z">
+<meta property="article:modified_time" content="2021-06-18T22:24:49.526Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="Windows核心编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Windows核心编程 - 线程调度 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows核心编程 - 线程调度
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-19 05:13:33 / 修改时间：06:24:49" itemprop="dateCreated datePublished" datetime="2021-06-19T05:13:33+08:00">2021-06-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Windows核心编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《Windows核心编程》一书总结而来；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Visual Studio 2019</li>
+</ul>
+<h1 id="线程调度"><a href="#线程调度" class="headerlink" title="线程调度"></a>线程调度</h1><p>进程有提过，Windows是一个抢占式操作系统，Windows必须使用某种算法来确定那些线程应该在合适运行多久。</p>
+<p>实际情况是，Windows中大多数线程是不可调度的。</p>
+<h2 id="线程暂停与恢复"><a href="#线程暂停与恢复" class="headerlink" title="线程暂停与恢复"></a>线程暂停与恢复</h2><p>在线程内核对象的内部有一个值，用于指明线程的暂停计数。当调用创建进程或线程函数时，就创建了线程的内核对象，并且它的暂停计数被初始化为1。这可以方式线程被调度到CPU中。</p>
+<p>当线程初始化完成后，CreateProcess或CreateThread要查看是否传递了<strong>CREATE_SUSPENDED</strong>标志，如果尚未传递，线程的暂停计数为0；当线程暂停计数为0，那么线程是可以被调度的；</p>
+<p>暂停状态中创建一个线程，就能够在线程有机会执行任何代码之前改变线程的运行环境。一旦改变了线程的环境，必须使线程成为可调度线程。可以ResumeThread，将句柄传递给它；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">ResumeThread</span><span class="params">( HANDLE hThread)</span></span>; </span><br></pre></td></tr></table></figure>
+
+<p><strong>如果ResumeThread函数运行成功，它将返回线程的前一个暂停计数，否则返回0xFFFFFFFF</strong></p>
+<p>单个线程可以暂停若干次，但暂停多少次，就必须恢复多少次，然后它才会被分配CPU时间片。可以使用SuspendedThread来暂停线程运行；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">SuspendThread</span><span class="params">(HANDLE hThread)</span></span>; </span><br></pre></td></tr></table></figure>
+
+<h2 id="暂停和恢复进程运行"><a href="#暂停和恢复进程运行" class="headerlink" title="暂停和恢复进程运行"></a>暂停和恢复进程运行</h2><p>Windows下，不存在暂停或恢复进程的概念，因为进程永远不会被安排CPU时间片；但是Windows允许一个进程暂停另外一个进程中所有线程的运行；但是从事暂停的进程必须是调试程序。特别是调用是WaitForDebugEvent和ContinueDebugEvent等函数；</p>
+<p>由于竞争关系，Windows没有提供其他方法来暂停进程中所有线程的运行；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tlhelp32.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PROCESSENTRY32 pe32;</span><br><span class="line">	<span class="comment">//在使用这个结构前，先设置它的大小</span></span><br><span class="line">	pe32.dwSize = <span class="keyword">sizeof</span>(pe32);</span><br><span class="line">	<span class="comment">//给系统内所有的进程拍个快照</span></span><br><span class="line">	HANDLE hProcessSnap = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span> (hProcessSnap == INVALID_HANDLE_VALUE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateToolhelp32Snapshot 调用失败.\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	BOOL bMore = ::Process32First(hProcessSnap, &amp;pe32);</span><br><span class="line">	<span class="keyword">while</span> (bMore)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;进程名称：%ls\n&quot;</span>, pe32.szExeFile); <span class="comment">//这里得到的应该是宽字符，用%ls,不然无法正常打印</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;进程ID：%u\n\n&quot;</span>, pe32.th32ProcessID);</span><br><span class="line">		bMore = ::Process32Next(hProcessSnap, &amp;pe32);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//不要忘记清除掉snapshot对象</span></span><br><span class="line">	::CloseHandle(hProcessSnap);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>有bug版本：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tlhelp32.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SuspendProcess</span><span class="params">(DWORD dwProcessID, BOOL fSuspend)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PROCESSENTRY32 pe32;</span><br><span class="line">	<span class="comment">//在使用这个结构前，先设置它的大小</span></span><br><span class="line">	pe32.dwSize = <span class="keyword">sizeof</span>(pe32);</span><br><span class="line">	HANDLE hSnapshot;</span><br><span class="line">	hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, dwProcessID);</span><br><span class="line">	<span class="keyword">if</span> (hSnapshot != INVALID_HANDLE_VALUE)</span><br><span class="line">	&#123;</span><br><span class="line">		THREADENTRY32 te = &#123; <span class="keyword">sizeof</span>(te) &#125;;</span><br><span class="line">		BOOL fOk = Thread32First(hSnapshot, &amp;te);</span><br><span class="line">		<span class="keyword">for</span> (; fOk; fOk = Thread32Next(hSnapshot,&amp;te))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (te.th32OwnerProcessID == dwProcessID)</span><br><span class="line">			&#123;</span><br><span class="line">				HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, te.th32OwnerProcessID);</span><br><span class="line">				<span class="keyword">if</span> (hThread != <span class="literal">NULL</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="keyword">if</span> (fSuspend)</span><br><span class="line">					&#123;</span><br><span class="line">						SuspendThread(hThread);</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span></span><br><span class="line">					&#123;</span><br><span class="line">						ResumeThread(hThread);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				CloseHandle(hThread);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		CloseHandle(hSnapshot);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;------&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dThreadID;</span><br><span class="line">	STARTUPINFO si;</span><br><span class="line">	PROCESS_INFORMATION pi;</span><br><span class="line">	ZeroMemory(&amp;si, <span class="keyword">sizeof</span>(si));</span><br><span class="line">	ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(pi));</span><br><span class="line">	si.cb = <span class="keyword">sizeof</span>(si);</span><br><span class="line">	TCHAR szCmdLineName[] = TEXT(<span class="string">&quot;CMD&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (!CreateProcess(<span class="literal">NULL</span>,</span><br><span class="line">		szCmdLineName,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		FALSE,</span><br><span class="line">		<span class="number">0</span>, <span class="literal">NULL</span>,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		&amp;si,</span><br><span class="line">		&amp;pi))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateProcess Error = %d\n&quot;</span>, GetLastError());</span><br><span class="line">	&#125;</span><br><span class="line">	SuspendProcess(pi.dwProcessId, FALSE);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="睡眠方式"><a href="#睡眠方式" class="headerlink" title="睡眠方式"></a>睡眠方式</h2><p>线程也可以告诉操作系统，它不想在某个时间段内被调度，通过Sleep函数来实现</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Sleep</span><span class="params">(DWORD dwMilliseconds)</span></span>; </span><br></pre></td></tr></table></figure>
+
+<p><strong>调用Sleep可以放弃CPU时间片，但是唤醒的时候并不一定能直接唤醒，却决于子进程中是否还有操作在运行</strong></p>
+<h2 id="切换线程"><a href="#切换线程" class="headerlink" title="切换线程"></a>切换线程</h2><p>系统提供了一个SwitchToThread函数，使得另一个可调度线程运行；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">SwitchToThread</span><span class="params">(VOID)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc1</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;-------\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc2</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;+++++++\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	HANDLE hThread2;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc1, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	SwitchToThread();</span><br><span class="line">	hThread2 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc2, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	</span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	CloseHandle(hThread2);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="环境结构"><a href="#环境结构" class="headerlink" title="环境结构"></a>环境结构</h2><p>环境结构使得系统能够记忆线程的状态，这样，下次当线程拥有CPU时间片的时候，它就可以找到上次中断运行的地方；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">DECLSPEC_NOINITALL</span> _<span class="title">CONTEXT</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// The flags values within this flag control the contents of</span></span><br><span class="line">    <span class="comment">// a CONTEXT record.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// If the context record is used as an input parameter, then</span></span><br><span class="line">    <span class="comment">// for each portion of the context record controlled by a flag</span></span><br><span class="line">    <span class="comment">// whose value is set, it is assumed that that portion of the</span></span><br><span class="line">    <span class="comment">// context record contains valid context. If the context record</span></span><br><span class="line">    <span class="comment">// is being used to modify a threads context, then only that</span></span><br><span class="line">    <span class="comment">// portion of the threads context will be modified.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// If the context record is used as an IN OUT parameter to capture</span></span><br><span class="line">    <span class="comment">// the context of a thread, then only those portions of the thread&#x27;s</span></span><br><span class="line">    <span class="comment">// context corresponding to set flags will be returned.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// The context record is never used as an OUT only parameter.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    DWORD ContextFlags;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This section is specified/returned if CONTEXT_DEBUG_REGISTERS is</span></span><br><span class="line">    <span class="comment">// set in ContextFlags.  Note that CONTEXT_DEBUG_REGISTERS is NOT</span></span><br><span class="line">    <span class="comment">// included in CONTEXT_FULL.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    DWORD   Dr0;</span><br><span class="line">    DWORD   Dr1;</span><br><span class="line">    DWORD   Dr2;</span><br><span class="line">    DWORD   Dr3;</span><br><span class="line">    DWORD   Dr6;</span><br><span class="line">    DWORD   Dr7;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This section is specified/returned if the</span></span><br><span class="line">    <span class="comment">// ContextFlags word contians the flag CONTEXT_FLOATING_POINT.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    FLOATING_SAVE_AREA FloatSave;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This section is specified/returned if the</span></span><br><span class="line">    <span class="comment">// ContextFlags word contians the flag CONTEXT_SEGMENTS.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    DWORD   SegGs;</span><br><span class="line">    DWORD   SegFs;</span><br><span class="line">    DWORD   SegEs;</span><br><span class="line">    DWORD   SegDs;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This section is specified/returned if the</span></span><br><span class="line">    <span class="comment">// ContextFlags word contians the flag CONTEXT_INTEGER.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    DWORD   Edi;</span><br><span class="line">    DWORD   Esi;</span><br><span class="line">    DWORD   Ebx;</span><br><span class="line">    DWORD   Edx;</span><br><span class="line">    DWORD   Ecx;</span><br><span class="line">    DWORD   Eax;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This section is specified/returned if the</span></span><br><span class="line">    <span class="comment">// ContextFlags word contians the flag CONTEXT_CONTROL.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    DWORD   Ebp;</span><br><span class="line">    DWORD   Eip;</span><br><span class="line">    DWORD   SegCs;              <span class="comment">// MUST BE SANITIZED</span></span><br><span class="line">    DWORD   EFlags;             <span class="comment">// MUST BE SANITIZED</span></span><br><span class="line">    DWORD   Esp;</span><br><span class="line">    DWORD   SegSs;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This section is specified/returned if the ContextFlags word</span></span><br><span class="line">    <span class="comment">// contains the flag CONTEXT_EXTENDED_REGISTERS.</span></span><br><span class="line">    <span class="comment">// The format and contexts are processor specific</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    BYTE    ExtendedRegisters[MAXIMUM_SUPPORTED_EXTENSION];</span><br><span class="line"></span><br><span class="line">&#125; CONTEXT;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>Demo:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc1</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;-------\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc2</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;+++++++\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	HANDLE hThread2;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc1, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	</span><br><span class="line">	hThread2 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc2, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	SuspendThread(hThread1);</span><br><span class="line">	CONTEXT co;</span><br><span class="line">	co.ContextFlags = CONTEXT_FULL;			<span class="comment">//标识整数寄存器</span></span><br><span class="line">	GetThreadContext(hThread1, &amp;co);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%x %x %x %x\n&quot;</span>, co.Eax, co.Ebx, co.Ecx, co.Edx);</span><br><span class="line">	SetThreadContext(hThread1,&amp;co);</span><br><span class="line">	co.Eax = <span class="number">0x100</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%x %x %x %x\n&quot;</span>, co.Eax, co.Ebx, co.Ecx, co.Edx);</span><br><span class="line">	ResumeThread(hThread1);</span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	CloseHandle(hThread2);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/0.png"></p>
+<p>我们可以通过SetThreadContext函数来设置上下文；</p>
+<h2 id="线程优先级"><a href="#线程优先级" class="headerlink" title="线程优先级"></a>线程优先级</h2>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/" title="Windows核心编程 - 线程调度">http://systemk1t.github.io/2021/06/19/Windows核心编程-线程调度/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" rel="tag"># Windows核心编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="prev" title="Windows核心编程 - 线程">
+      <i class="fa fa-chevron-left"></i> Windows核心编程 - 线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%94%A8%E6%88%B7%E6%96%B9%E5%BC%8F%E4%B8%AD%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" rel="next" title="Windows核心编程 - 用户方式中线程同步">
+      Windows核心编程 - 用户方式中线程同步 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text">线程调度</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%9A%82%E5%81%9C%E4%B8%8E%E6%81%A2%E5%A4%8D"><span class="nav-number">1.1.</span> <span class="nav-text">线程暂停与恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E5%81%9C%E5%92%8C%E6%81%A2%E5%A4%8D%E8%BF%9B%E7%A8%8B%E8%BF%90%E8%A1%8C"><span class="nav-number">1.2.</span> <span class="nav-text">暂停和恢复进程运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9D%A1%E7%9C%A0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">睡眠方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">切换线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E7%BB%93%E6%9E%84"><span class="nav-number">1.5.</span> <span class="nav-text">环境结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">1.6.</span> <span class="nav-text">线程优先级</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

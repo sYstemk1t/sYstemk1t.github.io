@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在C++中，结构体和类都具有构造函数、析构函数和成员函数，两者只有一个区别，结构体访问控制默认为public，而类的默认访问控制为private。而对C++的结构来说，访问控制是在编译期间进行的，在编译成功后，是不会在访问控制层面做任何检查和限制，所以本质来说，C++的结构与类并无区别；两者原理相同，只是类型名称不同；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++反汇编与逆向分析 - 类">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="在C++中，结构体和类都具有构造函数、析构函数和成员函数，两者只有一个区别，结构体访问控制默认为public，而类的默认访问控制为private。而对C++的结构来说，访问控制是在编译期间进行的，在编译成功后，是不会在访问控制层面做任何检查和限制，所以本质来说，C++的结构与类并无区别；两者原理相同，只是类型名称不同；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/1.png">
+<meta property="article:published_time" content="2021-07-15T20:28:14.000Z">
+<meta property="article:modified_time" content="2021-07-17T15:14:07.954Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="反汇编与逆向分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++反汇编与逆向分析 - 类 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++反汇编与逆向分析 - 类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-16 04:28:14" itemprop="dateCreated datePublished" datetime="2021-07-16T04:28:14+08:00">2021-07-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-17 23:14:07" itemprop="dateModified" datetime="2021-07-17T23:14:07+08:00">2021-07-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">逆向分析</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在C++中，结构体和类都具有构造函数、析构函数和成员函数，两者只有一个区别，结构体访问控制默认为public，而类的默认访问控制为private。而对C++的结构来说，访问控制是在编译期间进行的，在编译成功后，是不会在访问控制层面做任何检查和限制，所以本质来说，C++的结构与类并无区别；两者原理相同，只是类型名称不同；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 7家庭版</li>
+<li>编译器：VC6 VS2013</li>
+</ul>
+<h1 id="类"><a href="#类" class="headerlink" title="类"></a>类</h1><h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>由于类和结构体都是抽象概念，当两个类的特征相同时，它们之间应该是相等的关系。而对象是实际存在的，即使它们之间包含的数据相同，也不能视为同一个类；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class CNumber</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	CNumber();</span><br><span class="line"></span><br><span class="line">	int GetNumberOne()</span><br><span class="line">	&#123;</span><br><span class="line">		return m_nOne;</span><br><span class="line">	&#125;</span><br><span class="line">	int GetNumberTwo()		;类成员函数</span><br><span class="line">	&#123;</span><br><span class="line">		return m_nTwo;</span><br><span class="line">	&#125;</span><br><span class="line">private:</span><br><span class="line">	int m_nOne;				;类成员数据</span><br><span class="line">	int m_nTwo;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CNumber::CNumber()</span><br><span class="line">&#123;</span><br><span class="line">	m_nOne &#x3D; 1;</span><br><span class="line">	m_nTwo &#x3D; 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CNumber Number;</span><br><span class="line">	printf(&quot;%d\n&quot;, sizeof(Number));			&#x2F;&#x2F;8字节</span><br><span class="line">	getchar();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对象的大小只包含数据成员，类成员函数属于执行代码，不属于对象的数据；</p>
+<p><strong>类对象不可以定义包含自身的对象，因为类在申请内存时需要计算自身的实际大小，用于实例化；</strong></p>
+<p>类的不是简单的sizeof(数据成员1)+sizeof(数据成员2)，即使类中没有继承和虚函数的定义；</p>
+<p>有三种特殊情况使用公式计算的对象长度与实际长度不相符：</p>
+<ul>
+<li><p>空类</p>
+<ul>
+<li><p>空类中没有任何数据成员，根据公式得出对象长度为0字节，类型长度为0，则此类的对象真的不占用空间嘛？而实际情况是，空类长度为1。如果对象完全不占用内存，那么空类永远无法实例化对象的地址，this指针失效，因此不能被实例化；</p>
+<p><img src="/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/0.png"></p>
+</li>
+</ul>
+</li>
+<li><p>内存对齐</p>
+<ul>
+<li><p>在VC6中，类和结构体中的数据成员是根据它们在类或结构中出现的顺序依次来申请内存空间，尤其内存对齐的原因，它们不一定会像数组那样连续排列，由于数组类型的不同，因此占用的内存空间大小也不同；</p>
+<p><img src="/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/1.png"></p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>编译器默认对齐为8字节对齐，所以最终的结果一定要除8为0</strong></p>
+<ul>
+<li>结构体嵌套<ul>
+<li>当结构体中出现结构体类型的数据成员时，不会讲嵌套的结构体类型的整体长度参与到对齐值计算中，而是以嵌套定义的结构体所使用的对齐值对齐；</li>
+</ul>
+</li>
+<li>静态数据成员<ul>
+<li>当类中的数据被修饰为静态时，对象的长度计算又会发生变化，虽然静态数据成员在类中被定义，但它与静态局部变量类似，存放的位置和全局变量一直，只是增加了作用域检查，在作用域外不可见；</li>
+</ul>
+</li>
+</ul>
+<p><strong>当对象为全局对象时，其内存布局与局部对象相同，只是所在内存地址，以及构造函数和析构函数触发时机不同。全局对象所在的内存地址空间为全局数据区，而局部对象的内存地址在栈中</strong></p>
+<h2 id="this指针"><a href="#this指针" class="headerlink" title="this指针"></a>this指针</h2><p>类中并没有this指针的定义，但是在成员函数却可以使用，由于this指针在使用过程中被编译器隐藏了，我们可以理解为this指针就是指针类型，在32位环境下占4字节，保存的数据位地址信息；<strong>this指针保存了所属对象的首地址</strong></p>
+<p>debug版本下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">class CTest</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	void SetNumber(int nNumber);</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">	int m_nInt;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void CTest::SetNumber(int nNumber)</span><br><span class="line">&#123;</span><br><span class="line">	m_nInt &#x3D; nNumber;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CTest Test;</span><br><span class="line">	Test.SetNumber(10);</span><br><span class="line">	printf(&quot;%d\n&quot;, Test.m_nInt);</span><br><span class="line">	</span><br><span class="line">	getchar();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	CTest Test;</span><br><span class="line">	Test.SetNumber(10);</span><br><span class="line">010B143E  push        0Ah  					;压入参数10</span><br><span class="line">010B1440  lea         ecx,[Test]  			;取出Test首地址传入ECX中</span><br><span class="line">010B1443  call        CTest::SetNumber (010B10F0h)  </span><br><span class="line">	printf(&quot;%d\n&quot;, Test.m_nInt);</span><br><span class="line">00221448  mov         esi,esp  </span><br><span class="line">0022144A  mov         eax,dword ptr [Test]  ;取出Test首地址放入EAX中</span><br><span class="line">0022144D  push        eax  					;将eax中保存的数据成员m_nInt香成员函数传参</span><br><span class="line">0022144E  push        225858h  </span><br><span class="line">00221453  call        dword ptr ds:[229110h]  ;printf</span><br><span class="line">00221459  add         esp,8  </span><br><span class="line"></span><br><span class="line">010B13D0  push        ebp  </span><br><span class="line">010B13D1  mov         ebp,esp  </span><br><span class="line">010B13D3  sub         esp,0CCh  </span><br><span class="line">010B13D9  push        ebx  </span><br><span class="line">010B13DA  push        esi  </span><br><span class="line">010B13DB  push        edi  </span><br><span class="line">010B13DC  push        ecx  				;注意ECX寄存器，这里没有任何赋值，直接使用，ECX中保存Test首地址</span><br><span class="line">010B13DD  lea         edi,[ebp-0CCh]  </span><br><span class="line">010B13E3  mov         ecx,33h  </span><br><span class="line">010B13E8  mov         eax,0CCCCCCCCh  </span><br><span class="line">010B13ED  rep stos    dword ptr es:[edi]  </span><br><span class="line">010B13EF  pop         ecx  				;还原ECX寄存器</span><br><span class="line">010B13F0  mov         dword ptr [this],ecx  	;将ecx的值存入ebp-4的位置，因为我使用了高版本编译器，这里直接解析了this，该地址处保存了调用对象的首地址，即this指针</span><br><span class="line">	m_nInt &#x3D; nNumber;</span><br><span class="line">010B13F3  mov         eax,dword ptr [this] 	;取出首对象地址存入EAX </span><br><span class="line">010B13F6  mov         ecx,dword ptr [nNumber]  	;取出参数中的数据保存到ECX中</span><br><span class="line">010B13F9  mov         dword ptr [eax],ecx  		;给成员m_nInt赋值，由于eax是对象的首地址，成员m_nInt的偏移量为0，这么书写更容易辨别：	mov dword ptr [eax + 0],ecx</span><br><span class="line">&#125;</span><br><span class="line">010B13FB  pop         edi  </span><br><span class="line">010B13FC  pop         esi  </span><br><span class="line">010B13FD  pop         ebx  </span><br><span class="line">010B13FE  mov         esp,ebp  </span><br><span class="line">010B1400  pop         ebp  </span><br><span class="line">010B1401  ret         4  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">00401020   push        ebp</span><br><span class="line">00401021   mov         ebp,esp</span><br><span class="line">00401023   sub         esp,44h</span><br><span class="line">00401026   push        ebx</span><br><span class="line">00401027   push        esi</span><br><span class="line">00401028   push        edi</span><br><span class="line">00401029   push        ecx			;注意ECX寄存器，这里没有赋值，直接使用，ECX保存了Test首地址</span><br><span class="line">0040102A   lea         edi,[ebp-44h]</span><br><span class="line">0040102D   mov         ecx,11h</span><br><span class="line">00401032   mov         eax,0CCCCCCCCh</span><br><span class="line">00401037   rep stos    dword ptr [edi]</span><br><span class="line">00401039   pop         ecx</span><br><span class="line">0040103A   mov         dword ptr [ebp-4],ecx	;ecx中存放调用地址受对象，即this指针</span><br><span class="line">23:       m_nInt &#x3D; nNumber;</span><br><span class="line">0040103D   mov         eax,dword ptr [ebp-4]	;取出对象首地址放入eax中</span><br><span class="line">00401040   mov         ecx,dword ptr [ebp+8]	;取出参数中的数据放入ecx中</span><br><span class="line">00401043   mov         dword ptr [eax],ecx		;给成员赋值，由于eax是对象的首地址，成员m_nInt偏移量为0</span><br><span class="line">24:   &#125;</span><br><span class="line">00401045   pop         edi</span><br><span class="line">00401046   pop         esi</span><br><span class="line">00401047   pop         ebx</span><br><span class="line">00401048   mov         esp,ebp</span><br><span class="line">0040104A   pop         ebp</span><br><span class="line">0040104B   ret         4</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>在调用成员函数时，编译器进行了”微处理”，利用寄存器ecx保存了对象的首地址，并以寄存器传参的方式传递到成员函数中，这便是this指针；</p>
+<p>在成员函数中访问数据成员也是通过this指针间接访问，这便是为什么字成员函数中可以直接使用数据成员的原因；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class CTest</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	void Show()</span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;%d\n&quot;,GetNumber());</span><br><span class="line">	&#125;</span><br><span class="line">	int GetNumber()</span><br><span class="line">	&#123;</span><br><span class="line">		return m_nInt;</span><br><span class="line">	&#125;</span><br><span class="line">protected:</span><br><span class="line">private:</span><br><span class="line">	int m_nInt;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CTest Test;</span><br><span class="line">	Test.Show();</span><br><span class="line">	printf(&quot;Hello World!\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">24:       CTest Test;</span><br><span class="line">25:       Test.Show();</span><br><span class="line">00401048   lea         ecx,[ebp-4]</span><br><span class="line">0040104B   call        @ILT+10(CTest::Show) (0040100f)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">00401080   push        ebp</span><br><span class="line">00401081   mov         ebp,esp</span><br><span class="line">00401083   sub         esp,44h</span><br><span class="line">00401086   push        ebx</span><br><span class="line">00401087   push        esi</span><br><span class="line">00401088   push        edi</span><br><span class="line">00401089   push        ecx</span><br><span class="line">0040108A   lea         edi,[ebp-44h]</span><br><span class="line">0040108D   mov         ecx,11h</span><br><span class="line">00401092   mov         eax,0CCCCCCCCh</span><br><span class="line">00401097   rep stos    dword ptr [edi]</span><br><span class="line">00401099   pop         ecx</span><br><span class="line">0040109A   mov         dword ptr [ebp-4],ecx		;ebp-4存放对象首地址，也就是this指针</span><br><span class="line">11:           printf(&quot;%d\n&quot;,GetNumber());</span><br><span class="line">0040109D   mov         ecx,dword ptr [ebp-4]</span><br><span class="line">004010A0   call        @ILT+5(CTest::GetNumber) (0040100a)</span><br><span class="line">004010A5   push        eax</span><br><span class="line">004010A6   push        offset string &quot;%d\n&quot; (0042202c)</span><br><span class="line">004010AB   call        printf (00401120)</span><br><span class="line">004010B0   add         esp,8</span><br><span class="line">12:       &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>代码定式：</p>
+<ul>
+<li>默认使用thiscall调用约定（此约定可以更改）</li>
+<li>如果是thiscall，参数、所声明的函数参数、参数的传递方式、顺序、传输媒介、平栈，使用ecx传递this指针，thiscall和stdcall的唯一区别：多一个this指针</li>
+<li>如果一个函数，传递了this指针，但是没有对类成员的间接访问，从面向对象的理念中应该不属于这个类的成员函数，应该还原成全局函数</li>
+</ul>
+<p>VC++中，识别this指针的关键点是在函数的调用过程中使用了ECX寄存器作为一个参数，并在ECX中保存了数据为对象的首地址，但并非所有的this指针传递都是如此。</p>
+<h3 id="Release版本识别类"><a href="#Release版本识别类" class="headerlink" title="Release版本识别类"></a>Release版本识别类</h3><ul>
+<li>如果成员函数被内联了，可以酌情考虑还原成全局函数</li>
+<li>任何语言、任何平台只要支持stdcall，this指针就是第一个入栈的指针</li>
+</ul>
+<p>Release版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">.text:00401010 var_4           &#x3D; dword ptr -4</span><br><span class="line">.text:00401010</span><br><span class="line">.text:00401010                 push    ebp</span><br><span class="line">.text:00401011                 mov     ebp, esp</span><br><span class="line">.text:00401013                 push    ecx</span><br><span class="line">.text:00401014                 push    0Ah</span><br><span class="line">.text:00401016                 lea     ecx, [ebp+var_4]		</span><br><span class="line">.text:00401019                 call    unknown_libname_1 ; Microsoft VisualC 2-14&#x2F;net runtime</span><br><span class="line">.text:0040101E                 push    [ebp+var_4]</span><br><span class="line">.text:00401021                 push    offset Format   ; &quot;%d\n&quot;</span><br><span class="line">.text:00401026                 call    ds:printf</span><br><span class="line">.text:0040102C                 add     esp, 8</span><br><span class="line">.text:0040102F                 call    ds:getchar</span><br><span class="line">.text:00401035                 xor     eax, eax</span><br><span class="line">.text:00401037                 mov     esp, ebp</span><br><span class="line">.text:00401039                 pop     ebp</span><br><span class="line">.text:0040103A                 retn</span><br><span class="line">.text:0040103A _wmain          endp</span><br><span class="line">.text:0040103A</span><br><span class="line"></span><br><span class="line">.text:00401000 unknown_libname_1 proc near             ; CODE XREF: _wmain+9↓p</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000 arg_0           &#x3D; dword ptr  8</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000                 push    ebp</span><br><span class="line">.text:00401001                 mov     ebp, esp</span><br><span class="line">.text:00401003                 mov     eax, [ebp+arg_0]	</span><br><span class="line">.text:00401006                 mov     [ecx], eax</span><br><span class="line">.text:00401008                 pop     ebp</span><br><span class="line">.text:00401009                 retn    4</span><br><span class="line">.text:00401009 unknown_libname_1 endp</span><br><span class="line">.text:00401009</span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用thiscall调用方式的成员函数要点分析：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lea	ecx,[mem]			;取对象首地址存入ecx中，观察内存</span><br><span class="line"></span><br><span class="line">call FUN_ADDRESS		;调用成语函数</span><br><span class="line">		</span><br><span class="line">mov XXX,eax				;发现函数内使用ecx数据，说明函数调用前对ecx赋值了，实际在传递参数</span><br><span class="line"></span><br><span class="line">mov [reg+i],xxx			;发现了寄存器相对间接寻址，如果能排除数组访问，那就说明reg中保存的是结构体或对象的首地址</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<h2 id="静态数据成员"><a href="#静态数据成员" class="headerlink" title="静态数据成员"></a>静态数据成员</h2><p>由于静态数据成员和静态变量原理相同(是一个含有作用域的特殊全局变量)，因此静态数据成员的初值会被写入编译连接后的执行文件中。当程序被加载时，操作系统将执行文件中数据读到对应的内存单元中，静态数据成员便已存在，而这时类并没有实例对象；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class CStatic					;类定义</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	static int m_nStatic;		;静态数据成员</span><br><span class="line">	int m_nInt;					;普通数据成员</span><br><span class="line">protected:</span><br><span class="line">private:</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int CStatic::m_nStatic &#x3D; 0;		;静态数据成员赋值</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CStatic Static;				;第一个局部变量  </span><br><span class="line">	int nSize &#x3D; sizeof(Static);	;计算长度</span><br><span class="line">	printf(&quot;%d\n&quot;,nSize);</span><br><span class="line">	printf(&quot;Hello World!\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">20:       int nSize &#x3D; sizeof(Static);</span><br><span class="line">00401028   mov         dword ptr [ebp-8],4		;常量折叠		</span><br><span class="line">21:       printf(&quot;%d\n&quot;,nSize);</span><br></pre></td></tr></table></figure>
+
+<p>通过sizeof获得对象Static所占的内存长度为4，静态数据成员m_nStatic没有参与对象Static的长度计算。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">22:       printf(&quot;%08X\n&quot;,&amp;Static.m_nStatic);					;对象直接调用静态数据成员</span><br><span class="line">0040D740   push        offset CStatic::m_nStatic (00427c48)		;静态数据成员所在地址0x00427c48</span><br><span class="line">0040D745   push        offset string &quot;%08X\n&quot; (00422fb4)</span><br><span class="line">0040D74A   call        printf (00401080)</span><br><span class="line">0040D74F   add         esp,8</span><br><span class="line">23:       printf(&quot;%08X\n&quot;,&amp;Static.m_nInt);</span><br><span class="line">0040D752   lea         ecx,[ebp-4]								;获取对象首地址存入ecx中，将ecx压入栈</span><br><span class="line">0040D755   push        ecx</span><br><span class="line">0040D756   push        offset string &quot;%08X\n&quot; (00422fb4)</span><br><span class="line">0040D75B   call        printf (00401080)</span><br><span class="line">0040D760   add         esp,8</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>普通数据成员的地址是在ebp-4中，是一个栈空间地址；在使用中，静态数据成员是常量，可以通过立即数寻址，普通数据成员只有在类产生之后才能产生，地址值无法确定，只能以寄存器相对间接寻址的方式访问。</p>
+<p>debug版本下的在成员函数中使用静态数据成员与普通数据成员：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">27:       Static.m_nInt &#x3D; 10;</span><br><span class="line">00401098   mov         dword ptr [ebp-4],0Ah			;普通数据成员</span><br><span class="line">28:       Static.m_SnInt &#x3D; 2;</span><br><span class="line">0040109F   mov         dword ptr [CStatic::m_SnInt (00427c48)],2	;静态数据成员</span><br><span class="line">29:       Static.ShowNumber();</span><br><span class="line">004010A9   lea         ecx,[ebp-4]					;传递this指针</span><br><span class="line">004010AC   call        @ILT+0(CStatic::ShowNumber) (00401005)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">19:   void CStatic :: ShowNumber()</span><br><span class="line">20:   &#123;</span><br><span class="line">00401020   push        ebp</span><br><span class="line">00401021   mov         ebp,esp</span><br><span class="line">00401023   sub         esp,44h</span><br><span class="line">00401026   push        ebx</span><br><span class="line">00401027   push        esi</span><br><span class="line">00401028   push        edi</span><br><span class="line">00401029   push        ecx</span><br><span class="line">0040102A   lea         edi,[ebp-44h]</span><br><span class="line">0040102D   mov         ecx,11h</span><br><span class="line">00401032   mov         eax,0CCCCCCCCh</span><br><span class="line">00401037   rep stos    dword ptr [edi]</span><br><span class="line">00401039   pop         ecx</span><br><span class="line">0040103A   mov         dword ptr [ebp-4],ecx				;获取this指针</span><br><span class="line">21:       printf(&quot;m_nInt &#x3D; %d SnInt &#x3D; %d\n&quot;,m_nInt,m_SnInt);</span><br><span class="line">0040103D   mov         eax,[CStatic::m_SnInt (00427c48)]		;直接访问静态数据成员</span><br><span class="line">00401042   push        eax					;</span><br><span class="line">00401043   mov         ecx,dword ptr [ebp-4]		;获取this指针</span><br><span class="line">00401046   mov         edx,dword ptr [ecx]			;通过this指针访问数据成员</span><br><span class="line">00401048   push        edx</span><br><span class="line">00401049   push        offset string &quot;m_nInt &#x3D; %d SnInt &#x3D; %d\n&quot; (0042201c)</span><br><span class="line">0040104E   call        printf (004010f0)</span><br><span class="line">00401053   add         esp,0Ch</span><br><span class="line">22:   &#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>Release版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">;为了直观，我们增加一个新的数据成员</span><br><span class="line">.text:00401020 ; int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">.text:00401020 _main           proc near               ; CODE XREF: start+AF↓p</span><br><span class="line">.text:00401020</span><br><span class="line">.text:00401020 var_8           &#x3D; dword ptr -8</span><br><span class="line">.text:00401020 var_4           &#x3D; dword ptr -4</span><br><span class="line">.text:00401020 argc            &#x3D; dword ptr  4</span><br><span class="line">.text:00401020 argv            &#x3D; dword ptr  8</span><br><span class="line">.text:00401020 envp            &#x3D; dword ptr  0Ch</span><br><span class="line">.text:00401020</span><br><span class="line">.text:00401020                 sub     esp, 8			;给局部变量拉开空间</span><br><span class="line">.text:00401023                 lea     ecx, [esp+8+var_8]	;首地址放入ecx中</span><br><span class="line">.text:00401027                 mov     dword_4098F8, 0Ah	;静态局部变量</span><br><span class="line">.text:00401031                 mov     [esp+8+var_8], 2		;第二个普通数据成员</span><br><span class="line">.text:00401039                 mov     [esp+8+var_4], 0Bh	;第一个数据成员</span><br><span class="line">.text:00401041                 call    sub_401000			;成员函数</span><br><span class="line">.text:00401046                 push    offset aHelloWorld ; &quot;Hello World!\n&quot;</span><br><span class="line">.text:0040104B                 call    sub_401060</span><br><span class="line">.text:00401050                 xor     eax, eax</span><br><span class="line">.text:00401052                 add     esp, 0Ch</span><br><span class="line">.text:00401055                 retn</span><br><span class="line">.text:00401055 _main           endp</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="对象做函数参数"><a href="#对象做函数参数" class="headerlink" title="对象做函数参数"></a>对象做函数参数</h2><h3 id="普通对象"><a href="#普通对象" class="headerlink" title="普通对象"></a>普通对象</h3><p>对象作为函数参数时，其传递过程较为复杂，传递方式比较独特。传参过程与数组不同；数组变量的名称代表数组首地址，而对象的变量名却不能代替对象的首地址。<strong>传参时先将对象中的所有数据备份，然后将复制好的数组作为形参传递到调用函数中使用</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">20:   int main(int argc, char* argv[])</span><br><span class="line">21:   &#123;</span><br><span class="line">00401060   push        ebp</span><br><span class="line">00401061   mov         ebp,esp</span><br><span class="line">00401063   sub         esp,48h</span><br><span class="line">00401066   push        ebx</span><br><span class="line">00401067   push        esi</span><br><span class="line">00401068   push        edi</span><br><span class="line">00401069   lea         edi,[ebp-48h]</span><br><span class="line">0040106C   mov         ecx,12h</span><br><span class="line">00401071   mov         eax,0CCCCCCCCh</span><br><span class="line">00401076   rep stos    dword ptr [edi]</span><br><span class="line">22:       CFunTest FunTest;</span><br><span class="line">23:       FunTest.m_nOne &#x3D; 10;</span><br><span class="line">00401078   mov         dword ptr [ebp-8],0Ah			;数据成员m_nOne所在的地址为ebp-8</span><br><span class="line">24:       FunTest.m_nTwo &#x3D; 123;</span><br><span class="line">0040107F   mov         dword ptr [ebp-4],7Bh			;数据成员m_nOne所在的地址为ebp-4</span><br><span class="line">25:       ShowFunTest(FunTest);</span><br><span class="line">00401086   mov         eax,dword ptr [ebp-4]			;传入数据成员m_nOne</span><br><span class="line">00401089   push        eax</span><br><span class="line">0040108A   mov         ecx,dword ptr [ebp-8]			;传入数据成员m_nTwo</span><br><span class="line">0040108D   push        ecx</span><br><span class="line">0040108E   call        @ILT+5(ShowFunTest) (0040100a)</span><br><span class="line">00401093   add         esp,8</span><br><span class="line">26:       return 0;</span><br><span class="line">00401096   xor         eax,eax</span><br><span class="line">27:   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">00401020   push        ebp</span><br><span class="line">00401021   mov         ebp,esp</span><br><span class="line">00401023   sub         esp,40h</span><br><span class="line">00401026   push        ebx</span><br><span class="line">00401027   push        esi</span><br><span class="line">00401028   push        edi</span><br><span class="line">00401029   lea         edi,[ebp-40h]</span><br><span class="line">0040102C   mov         ecx,10h</span><br><span class="line">00401031   mov         eax,0CCCCCCCCh</span><br><span class="line">00401036   rep stos    dword ptr [edi]</span><br><span class="line">17:       printf(&quot;m_nOne &#x3D; %d m_nTwo &#x3D; %d\n&quot;,FunTest.m_nOne,FunTest.m_nTwo);</span><br><span class="line">00401038   mov         eax,dword ptr [ebp+0Ch]		;取出数据成员m_nTwo作为printf的第三个参数</span><br><span class="line">0040103B   push        eax</span><br><span class="line">0040103C   mov         ecx,dword ptr [ebp+8]		;取出数据成员m_nOne作为printf的第二个参数</span><br><span class="line">0040103F   push        ecx</span><br><span class="line">00401040   push        offset string &quot;m_nOne &#x3D; %d m_nTwo &#x3D; %d\n&quot; (0042201c)</span><br><span class="line">00401045   call        printf (004010b0)</span><br><span class="line">0040104A   add         esp,0Ch</span><br><span class="line">18:   &#125;</span><br><span class="line">0040104D   pop         edi</span><br><span class="line">0040104E   pop         esi</span><br><span class="line">0040104F   pop         ebx</span><br><span class="line">00401050   add         esp,40h</span><br><span class="line">00401053   cmp         ebp,esp</span><br><span class="line">00401055   call        __chkesp (00401130)</span><br><span class="line">0040105A   mov         esp,ebp</span><br><span class="line">0040105C   pop         ebp</span><br><span class="line">0040105D   ret</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>类数据成员的传参顺序：最先定义的数据成员最后压栈，最后定义的数据成员最先压栈</strong></p>
+<p>当拥有多个数据成员或类的体积过大</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">21:   int main(int argc, char* argv[])</span><br><span class="line">22:   &#123;</span><br><span class="line">0040D790   push        ebp</span><br><span class="line">0040D791   mov         ebp,esp</span><br><span class="line">0040D793   sub         esp,88h</span><br><span class="line">0040D799   push        ebx</span><br><span class="line">0040D79A   push        esi</span><br><span class="line">0040D79B   push        edi</span><br><span class="line">0040D79C   lea         edi,[ebp-88h]</span><br><span class="line">0040D7A2   mov         ecx,22h</span><br><span class="line">0040D7A7   mov         eax,0CCCCCCCCh</span><br><span class="line">0040D7AC   rep stos    dword ptr [edi]</span><br><span class="line">23:       CFunTest FunTest;</span><br><span class="line">24:       FunTest.m_nOne &#x3D; 10;</span><br><span class="line">0040D7AE   mov         dword ptr [ebp-48h],0Ah		;数据成员m_nOne所在地址为ebp-48</span><br><span class="line">25:       FunTest.m_nTwo &#x3D; 123;</span><br><span class="line">0040D7B5   mov         dword ptr [ebp-44h],7Bh		;数据成员m_nTwo所在地址为ebp-44</span><br><span class="line">26:       strcpy(FunTest.szName,&quot;sYstemk1t&quot;);</span><br><span class="line">0040D7BC   push        offset string &quot;m_nOne &#x3D; %d m_nTwo &#x3D; %d\n&quot; (0042201c)</span><br><span class="line">0040D7C1   lea         eax,[ebp-40h]				;数据成员szName所在地址为ebp-40</span><br><span class="line">0040D7C4   push        eax</span><br><span class="line">0040D7C5   call        strcpy (00407050)</span><br><span class="line">27:       ShowFunTest(FunTest);</span><br><span class="line">0040D7CA   add         esp,0C0h						;调整栈帧，抬高64字节</span><br><span class="line">0040D7CD   mov         ecx,12h						;设置循环次数18次</span><br><span class="line">0040D7D2   lea         esi,[ebp-48h]				;获取对象的首地址并放入esi中</span><br><span class="line">0040D7D5   mov         edi,esp						;设置edi为栈顶</span><br><span class="line">0040D7D7   rep movs    dword ptr [edi],dword ptr [esi]		;执行18次4字节内存复制，将esi指向的数组复制到edi中，类似memcpy</span><br><span class="line">0040D7D9   call        @ILT+5(ShowFunTest) (0040100a)</span><br><span class="line">0040D7DE   add         esp,48h</span><br><span class="line">28:       return 0;</span><br><span class="line">0040D7E1   xor         eax,eax</span><br><span class="line">29:   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">16:   void ShowFunTest(CFunTest FunTest)</span><br><span class="line">17:   &#123;</span><br><span class="line">0040D740   push        ebp</span><br><span class="line">0040D741   mov         ebp,esp</span><br><span class="line">0040D743   sub         esp,40h</span><br><span class="line">0040D746   push        ebx</span><br><span class="line">0040D747   push        esi</span><br><span class="line">0040D748   push        edi</span><br><span class="line">0040D749   lea         edi,[ebp-40h]</span><br><span class="line">0040D74C   mov         ecx,10h</span><br><span class="line">0040D751   mov         eax,0CCCCCCCCh</span><br><span class="line">0040D756   rep stos    dword ptr [edi]</span><br><span class="line">18:       printf(&quot;m_nOne &#x3D; %d m_nTwo &#x3D; %d szName &#x3D; %s\n&quot;,FunTest.m_nOne,FunTest.m_nTwo,FunTest.szName);</span><br><span class="line">0040D758   lea         eax,[ebp+10h]	;取数组成员szName的地址</span><br><span class="line">0040D75B   push        eax				;做printf参数</span><br><span class="line">0040D75C   mov         ecx,dword ptr [ebp+0Ch]	;取数据成员m_nTwo</span><br><span class="line">0040D75F   push        ecx</span><br><span class="line">0040D760   mov         edx,dword ptr [ebp+8]	;取数据成员m_nOne</span><br><span class="line">0040D763   push        edx</span><br><span class="line">0040D764   push        offset string &quot;m_nOne &#x3D; %d m_nTwo &#x3D; %d szName &#x3D;&quot;... (00422fbc)</span><br><span class="line">0040D769   call        printf (004010b0)</span><br><span class="line">0040D76E   add         esp,10h</span><br><span class="line">19:   &#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>当对象作为函数的参数时，由于重新复制了对象，等同于又定义了一个对象，在某些情况会调用特殊的构造函数-拷贝构造函数。当函数退出时，复制的对象作为函数内的局部变量，将会被销毁。当析构函数存在时，则会调用析构函数；</p>
+<p>问题代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Test08.cpp : 定义控制台应用程序的入口点。</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line"></span><br><span class="line">class CMyString</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line"></span><br><span class="line">	CMyString();</span><br><span class="line">	~CMyString();</span><br><span class="line">	char * GetString();</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">	char *m_PString;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CMyString::CMyString()</span><br><span class="line">&#123;</span><br><span class="line">	m_PString &#x3D; new char[10];</span><br><span class="line">	if (m_PString &#x3D;&#x3D; NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		return;			&#x2F;&#x2F;堆空间申请失败</span><br><span class="line">	&#125;</span><br><span class="line">	strcpy(m_PString, &quot;sYstemk1t&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CMyString::~CMyString()</span><br><span class="line">&#123;</span><br><span class="line">	if (m_PString !&#x3D; NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		delete[] m_PString;</span><br><span class="line">		m_PString &#x3D; NULL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">char * CMyString::GetString()</span><br><span class="line">&#123;</span><br><span class="line">	return m_PString;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void ShowString(CMyString String)</span><br><span class="line">&#123;</span><br><span class="line">	printf(String.GetString());</span><br><span class="line">&#125;</span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CMyString MyString;</span><br><span class="line">	ShowString(MyString);</span><br><span class="line">	getchar();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">01131610  push        ebp  </span><br><span class="line">01131611  mov         ebp,esp  </span><br><span class="line">01131613  push        0FFFFFFFFh  </span><br><span class="line">01131615  push        1134E98h  </span><br><span class="line">0113161A  mov         eax,dword ptr fs:[00000000h]  </span><br><span class="line">01131620  push        eax  </span><br><span class="line">01131621  sub         esp,0D8h  </span><br><span class="line">01131627  push        ebx  </span><br><span class="line">01131628  push        esi  </span><br><span class="line">01131629  push        edi  </span><br><span class="line">0113162A  lea         edi,[ebp-0E4h]  </span><br><span class="line">01131630  mov         ecx,36h  </span><br><span class="line">01131635  mov         eax,0CCCCCCCCh  </span><br><span class="line">0113163A  rep stos    dword ptr es:[edi]  </span><br><span class="line">0113163C  mov         eax,dword ptr ds:[01139000h]  </span><br><span class="line">01131641  xor         eax,ebp  </span><br><span class="line">01131643  push        eax  </span><br><span class="line">01131644  lea         eax,[ebp-0Ch]  </span><br><span class="line">01131647  mov         dword ptr fs:[00000000h],eax  </span><br><span class="line">	CMyString MyString;</span><br><span class="line">0113164D  lea         ecx,[MyString]  				;获取对象首地址，装入ecx中作为this指针</span><br><span class="line">01131650  call        CMyString::CMyString (011310DCh)  	;调用构造函数</span><br><span class="line">01131655  mov         dword ptr [ebp-4],0  			;记录同一作用域中该类对象个数</span><br><span class="line">	ShowString(MyString);</span><br><span class="line">0113165C  mov         eax,dword ptr [MyString]  	;MyString对象长度为4，一个寄存器单元存放</span><br><span class="line">0113165F  push        eax  							;eax获取对象首地址处4字节数据，即数据成员m_pString</span><br><span class="line">01131660  call        ShowString (0113112Ch)  		;调用ShowString函数</span><br><span class="line">01131665  add         esp,4  </span><br><span class="line">	getchar();</span><br><span class="line">01131668  mov         esi,esp  			</span><br><span class="line">0113166A  call        dword ptr ds:[113A11Ch]  </span><br><span class="line">01131670  cmp         esi,esp  </span><br><span class="line">01131672  call        __RTC_CheckEsp (01131159h)  </span><br><span class="line">	return 0;</span><br><span class="line">01131677  mov         dword ptr [ebp-0E0h],0  </span><br><span class="line">01131681  mov         dword ptr [ebp-4],0FFFFFFFFh 	;由于对象被释放，修改对象个数 </span><br><span class="line">01131688  lea         ecx,[MyString]  				;获取对象首地址，作为ecx传入this指针</span><br><span class="line">0113168B  call        CMyString::~CMyString (01131172h)  ;调用析构函数</span><br><span class="line">01131690  mov         eax,dword ptr [ebp-0E0h]  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;ShowString函数讲解</span><br><span class="line"></span><br><span class="line">void ShowString(CMyString String)</span><br><span class="line">&#123;</span><br><span class="line">01131560  push        ebp  </span><br><span class="line">01131561  mov         ebp,esp  </span><br><span class="line">&#x2F;&#x2F;异常处理</span><br><span class="line">01131563  push        0FFFFFFFFh  </span><br><span class="line">01131565  push        1134E68h  </span><br><span class="line">0113156A  mov         eax,dword ptr fs:[00000000h]  </span><br><span class="line">01131570  push        eax  </span><br><span class="line">&#x2F;&#x2F;异常处理过程</span><br><span class="line">01131571  sub         esp,0C0h  </span><br><span class="line">01131577  push        ebx  </span><br><span class="line">01131578  push        esi  </span><br><span class="line">01131579  push        edi  </span><br><span class="line">0113157A  lea         edi,[ebp-0CCh]  </span><br><span class="line">01131580  mov         ecx,30h  </span><br><span class="line">01131585  mov         eax,0CCCCCCCCh  </span><br><span class="line">0113158A  rep stos    dword ptr es:[edi]  </span><br><span class="line">0113158C  mov         eax,dword ptr ds:[01139000h]  </span><br><span class="line">01131591  xor         eax,ebp  </span><br><span class="line">01131593  push        eax  </span><br><span class="line">01131594  lea         eax,[ebp-0Ch]  </span><br><span class="line">01131597  mov         dword ptr fs:[00000000h],eax  </span><br><span class="line">0113159D  mov         dword ptr [ebp-4],0  	;作用域内对象的个数</span><br><span class="line">	printf(String.GetString());</span><br><span class="line">011315A4  lea         ecx,[String]  				;获取对象首地址保存到ecx寄存器中作为this指针</span><br><span class="line">011315A7  call        CMyString::GetString (01131028h)  ;调用成员方法</span><br><span class="line">011315AC  mov         esi,esp  </span><br><span class="line">011315AE  push        eax  						;返回eax的的值压栈</span><br><span class="line">011315AF  call        dword ptr ds:[113A118h]  </span><br><span class="line">011315B5  add         esp,4  					</span><br><span class="line">011315B8  cmp         esi,esp  </span><br><span class="line">011315BA  call        __RTC_CheckEsp (01131159h)  </span><br><span class="line">&#125;</span><br><span class="line">011315BF  mov         dword ptr [ebp-4],0FFFFFFFFh	;修改对象个数	  </span><br><span class="line">011315C6  lea         ecx,[String]  				;获取对象首地址保存到ecx寄存器中，作为this指针</span><br><span class="line">011315C9  call        CMyString::~CMyString (01131172h)  ;析构函数</span><br><span class="line">011315CE  mov         ecx,dword ptr [ebp-0Ch]  		;</span><br><span class="line">011315D1  mov         dword ptr fs:[0],ecx  </span><br><span class="line">011315D8  pop         ecx  </span><br><span class="line">011315D9  pop         edi  </span><br><span class="line">011315DA  pop         esi  </span><br><span class="line">011315DB  pop         ebx  </span><br><span class="line">011315DC  add         esp,0CCh  </span><br><span class="line">011315E2  cmp         ebp,esp  </span><br><span class="line">011315E4  call        __RTC_CheckEsp (01131159h)  </span><br><span class="line">011315E9  mov         esp,ebp  </span><br><span class="line">011315EB  pop         ebp  </span><br><span class="line">011315EC  ret  </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<h2 id="对象做返回值"><a href="#对象做返回值" class="headerlink" title="对象做返回值"></a>对象做返回值</h2><p>对象作为函数的返回值时，与基本数据类型不同。基本数据类型大都通过eax寄存器来保存返回的数据。而对象属自定义类型，寄存器eax无法保存对象中的所有数据，所以在函数返回时，寄存器eax并不能满足需求；</p>
+<p>对象作为返回值与对象作为参数的处理方式类似，对象作为参数时，进入函数前预先将对象使用的栈空间留出来，并将实参对象的数据复制到栈空间中。该栈空间作为函数参数，用于函数内部处理；同理，对象作为返回值，返回这个临时栈空间的首地址作为返回值；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">01311490  push        ebp  </span><br><span class="line">01311491  mov         ebp,esp  </span><br><span class="line">01311493  sub         esp,160h  				;预留返回对象的栈空间</span><br><span class="line">01311499  push        ebx  </span><br><span class="line">0131149A  push        esi  </span><br><span class="line">0131149B  push        edi  </span><br><span class="line">0131149C  lea         edi,[ebp-160h]  </span><br><span class="line">013114A2  mov         ecx,58h  </span><br><span class="line">013114A7  mov         eax,0CCCCCCCCh  </span><br><span class="line">013114AC  rep stos    dword ptr es:[edi]  </span><br><span class="line">013114AE  mov         eax,dword ptr ds:[01318000h]  </span><br><span class="line">013114B3  xor         eax,ebp  </span><br><span class="line">013114B5  mov         dword ptr [ebp-4],eax  </span><br><span class="line">	CReturn ObjA;</span><br><span class="line">	ObjA &#x3D; GetCreturn();</span><br><span class="line">013114B8  lea         eax,[ebp-128h]  		;获取返回对象的栈空间首地址</span><br><span class="line">013114BE  push        eax  					;将返回对象的首地址压入栈中，用于保存返回对象的数据</span><br><span class="line">013114BF  call        GetCreturn (01311037h)  ;调用函数GetCreturn</span><br><span class="line">013114C4  add         esp,4  				;函数调用结束后，eax中保存着地址ebp-128.即返回对象的首地址</span><br><span class="line">013114C7  mov         ecx,0Bh  				;设置循环次数</span><br><span class="line">013114CC  mov         esi,eax  				;将返回对象的首地址放入esi中</span><br><span class="line">013114CE  lea         edi,[ebp-15Ch]  		;获取临时对象的首地址</span><br><span class="line">013114D4  rep movs    dword ptr es:[edi],dword ptr [esi]  	;每次从返回对象中复制4字节数据到临时对象的地址中，共复制11次</span><br><span class="line">013114D6  mov         ecx,0Bh  				;设置循环次数11次</span><br><span class="line">013114DB  lea         esi,[ebp-15Ch]  		;获取返回对象的首地址</span><br><span class="line">013114E1  lea         edi,[ObjA]  			;获取局部对象的首地址</span><br><span class="line">013114E4  rep movs    dword ptr es:[edi],dword ptr [esi]  ;将局部对象RetObj中的数据复制到返回对象中</span><br><span class="line">	getchar();</span><br><span class="line">013114E6  mov         esi,esp  </span><br><span class="line">013114E8  call        dword ptr ds:[1319114h]  </span><br><span class="line">013114EE  cmp         esi,esp  </span><br><span class="line">013114F0  call        __RTC_CheckEsp (01311145h)  </span><br><span class="line">	return 0;</span><br><span class="line">013114F5  xor         eax,eax  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">CReturn GetCreturn()</span><br><span class="line">&#123;</span><br><span class="line">013113C0  push        ebp  </span><br><span class="line">013113C1  mov         ebp,esp  </span><br><span class="line">013113C3  sub         esp,104h  		;调整栈空间，预留临时返回对象与局部变量的内存空间</span><br><span class="line">013113C9  push        ebx  </span><br><span class="line">013113CA  push        esi  </span><br><span class="line">013113CB  push        edi  </span><br><span class="line">013113CC  lea         edi,[ebp-104h]  </span><br><span class="line">013113D2  mov         ecx,41h  </span><br><span class="line">013113D7  mov         eax,0CCCCCCCCh  </span><br><span class="line">013113DC  rep stos    dword ptr es:[edi]  </span><br><span class="line">013113DE  mov         eax,dword ptr ds:[01318000h]  </span><br><span class="line">013113E3  xor         eax,ebp  </span><br><span class="line">013113E5  mov         dword ptr [ebp-4],eax  </span><br><span class="line">	CReturn RetObj;</span><br><span class="line">	RetObj.m_nNumber &#x3D; 0;</span><br><span class="line">013113E8  mov         dword ptr [RetObj],0  	;为对象首地址变量nNumber赋值为0</span><br><span class="line">	for (size_t i &#x3D; 0; i &lt; 10; i++)</span><br><span class="line">013113EF  mov         dword ptr [ebp-40h],0  	;局部变量赋值</span><br><span class="line">013113F6  jmp         GetCreturn+41h (01311401h)  </span><br><span class="line">013113F8  mov         eax,dword ptr [ebp-40h]  </span><br><span class="line">013113FB  add         eax,1  </span><br><span class="line">013113FE  mov         dword ptr [ebp-40h],eax  </span><br><span class="line">01311401  cmp         dword ptr [ebp-40h],0Ah  </span><br><span class="line">01311405  jae         GetCreturn+75h (01311435h)  </span><br><span class="line">	&#123;</span><br><span class="line">		RetObj.m_nArray[i] &#x3D; i + 1;</span><br><span class="line">01311407  mov         eax,dword ptr [ebp-40h]  </span><br><span class="line">0131140A  add         eax,1  </span><br><span class="line">0131140D  mov         ecx,dword ptr [ebp-40h]  </span><br><span class="line">01311410  mov         dword ptr [ebp+ecx*4-30h],eax  </span><br><span class="line">		printf(&quot;%d\n&quot;, RetObj.m_nArray[i]);</span><br><span class="line">01311414  mov         esi,esp  </span><br><span class="line">01311416  mov         eax,dword ptr [ebp-40h]  </span><br><span class="line">01311419  mov         ecx,dword ptr [ebp+eax*4-30h]  </span><br><span class="line">0131141D  push        ecx  </span><br><span class="line">0131141E  push        13158A8h  </span><br><span class="line">01311423  call        dword ptr ds:[1319118h]  </span><br><span class="line">01311429  add         esp,8  </span><br><span class="line">0131142C  cmp         esi,esp  </span><br><span class="line">0131142E  call        __RTC_CheckEsp (01311145h)  </span><br><span class="line">	&#125;</span><br><span class="line">01311433  jmp         GetCreturn+38h (013113F8h)  </span><br><span class="line">	return RetObj;</span><br><span class="line">01311435  mov         ecx,0Bh  		;设置循环次数11次</span><br><span class="line">0131143A  lea         esi,[RetObj]  	;获取局部对象首地址</span><br><span class="line">0131143D  mov         edi,dword ptr [ebp+8]  	;获取返回对象的首地址</span><br><span class="line">01311440  rep movs    dword ptr es:[edi],dword ptr [esi]  	;将局部变量RetObj中的数据复制到返回对象中</span><br><span class="line">01311442  mov         eax,dword ptr [ebp+8]  ;返回对象的首地址并保存到eax中</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在调用GetCreturn前，编译器将在main函数中社区宁的返回对象的首地址作为参数压栈，在函数GetCReturn调用结束后进行了数据复制，将GetCreturn函数中定义的局部对象RetObj的数据复制到这个返回对象的空间中，再将这个返回地对象复制给目标对象objA，从而达到返回对象的目的；</p>
+<p>虽然使用了临时对象对数据进行了复制，但还说存在出错的风险，这与对象作为参数时遇到的情况一样，由于使用了临时对象进行数据复制，但临时对象被销毁时，会调用析构函数。</p>
+<p><strong>通常情况下，VC++ 6.0编译的代码默认以thiscall方式调用成员函数，因此会使用ecx来保存this指针， 从而进行参数传递，但并非使用使用ecx传参的函数一定是成员函数。</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/" title="C++反汇编与逆向分析 - 类">http://systemk1t.github.io/2021/07/16/C-反汇编与逆向分析-类/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" rel="tag"># 反汇编与逆向分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/15/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%93%E6%9E%84%E4%BD%93/" rel="prev" title="C++反汇编与逆向分析 - 结构体">
+      <i class="fa fa-chevron-left"></i> C++反汇编与逆向分析 - 结构体
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/" rel="next" title="C++反汇编与逆向分析 - 构造析构">
+      C++反汇编与逆向分析 - 构造析构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">1.1.</span> <span class="nav-text">对象的内存布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this%E6%8C%87%E9%92%88"><span class="nav-number">1.2.</span> <span class="nav-text">this指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Release%E7%89%88%E6%9C%AC%E8%AF%86%E5%88%AB%E7%B1%BB"><span class="nav-number">1.2.1.</span> <span class="nav-text">Release版本识别类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="nav-number">1.3.</span> <span class="nav-text">静态数据成员</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%81%9A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-number">1.4.</span> <span class="nav-text">对象做函数参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.4.1.</span> <span class="nav-text">普通对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%81%9A%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">1.5.</span> <span class="nav-text">对象做返回值</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

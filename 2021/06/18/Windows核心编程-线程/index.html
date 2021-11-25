@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows核心编程 - 线程">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/0.png">
+<meta property="article:published_time" content="2021-06-18T12:13:41.000Z">
+<meta property="article:modified_time" content="2021-06-18T19:45:27.910Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="Windows核心编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Windows核心编程 - 线程 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows核心编程 - 线程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-18 20:13:41" itemprop="dateCreated datePublished" datetime="2021-06-18T20:13:41+08:00">2021-06-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-19 03:45:27" itemprop="dateModified" datetime="2021-06-19T03:45:27+08:00">2021-06-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Windows核心编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《Windows核心编程》一书总结而来；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Visual Studio 2019</li>
+</ul>
+<h1 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h1><p>每个进程至少拥有一个线程，与进程内核对象一样，线程内核对象也拥有属性；</p>
+<p>线程由两个部分组成：</p>
+<ul>
+<li>一个是线程的内核对象，操作系统用它对线程实施管理；</li>
+<li>另一个是线程堆栈，它用于维护线程在执行代码时所需要的所有函数参数和局部变量；</li>
+</ul>
+<p>进程是不活泼的，进程从不执行任何执行，它只是线程的容器。线程总是在某个进程环境中创建的，而它的整个寿命期都在这个进程中。这意味着线程在它的进程地址中执行代码，并且在进程的地址空间中对数据进行操作；</p>
+<p><strong>线程只有一个内核对象和堆栈</strong>，所以线程的开销比进程少；</p>
+<h2 id="何时创建线程"><a href="#何时创建线程" class="headerlink" title="何时创建线程"></a>何时创建线程</h2><p>线程用于描述进程中的运行路径。每当进程被初始化，系统就要创建一个主线程。</p>
+<p>每个进程至少拥有一个线程；</p>
+<h2 id="第一个线程函数"><a href="#第一个线程函数" class="headerlink" title="第一个线程函数"></a>第一个线程函数</h2><p>每个线程必须拥有一个进入点函数，线程从这个进入点开始运行。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc</span><span class="params">(  LPVOID lpParameter   <span class="comment">// thread data);</span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>MSDN给我们提供的模板，你的线程函数可以执行你想要它做的任务任务。最终，线程函数到达它的结尾处并返回。这时，线程终止运行，该堆栈的内存被释放，同时，线程的内核对象的使用计数被递减。如果为0，线程则会被撤销；</p>
+<p>需要注意的点：</p>
+<ul>
+<li>主线程的入口函数必须是main之类的函数，线程函数可以是任意名字；</li>
+<li>线程函数必须返回一个值，它将成为该线程的退出代码；</li>
+<li>线程函数应尽量使用函数参数和局部变量。当使用静态变量和全局变量时，多个线程可以访问，这可能会破坏变量内容；</li>
+</ul>
+<h2 id="CreateThread"><a href="#CreateThread" class="headerlink" title="CreateThread"></a>CreateThread</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateThread</span><span class="params">(  LPSECURITY_ATTRIBUTES lpThreadAttributes, <span class="comment">// SD</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwStackSize,                       <span class="comment">// initial stack size</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPTHREAD_START_ROUTINE lpStartAddress,    <span class="comment">// thread function</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpParameter,                       <span class="comment">// thread argument</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD dwCreationFlags,                    <span class="comment">// creation option</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPDWORD lpThreadId                        <span class="comment">// thread identifier);</span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>当CreateThread被调用时，系统会创建一个线程内核对象。该线程内核对象不是线程本身，而是操作系统用来管理线程的较小的数据结构；</p>
+<p>系统从进程的地址空间中分配内存，供线程的堆栈使用。新线程运行的进程环境与创建线程的环境相同。因此，新线程可以访问进程的内核对象的所有句柄、进程中的所有内存和在这个相同的进程中所有其他线程的堆栈。</p>
+<h3 id="psa"><a href="#psa" class="headerlink" title="psa"></a>psa</h3><p>psa指向LPSECURITY_ATTRIBUTES结构的指针。如果想要该线程内核对象的默认安全属性，通常传递NULL。如果我们希望子进程可以继承该线程对象的句柄，必须设置这个结构值中的<strong>bInheritHandle</strong>为TRUE。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">SECURITY_ATTRIBUTES</span> &#123;</span></span><br><span class="line">DWORD nLength; / /结构体的大小，可用SIZEOF取得</span><br><span class="line">LPVOID lpSecurityDescriptor; / /安全描述符</span><br><span class="line">BOOL bInheritHandle ;/ /安全描述的对象能否被新创建的进程继承</span><br><span class="line">&#125; SECURITY_ATTRIBUTES，* PSECURITY_ATTRIBUTES;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="dwStackSize"><a href="#dwStackSize" class="headerlink" title="dwStackSize"></a>dwStackSize</h3><p>dwStackSize参数用于设定线程可以将多少地址空间用于自己的堆栈。每个线程都拥有自己的堆栈。</p>
+<h3 id="lpStartAddress和lpParameter"><a href="#lpStartAddress和lpParameter" class="headerlink" title="lpStartAddress和lpParameter"></a>lpStartAddress和lpParameter</h3><p>lpStartAddress参数指明想要新线程执行的线程函数的地址。lpParameter指明线程的参数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">FirstThreadProc</span><span class="params">(LPVOID lpParameter)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SecondThreadProc</span><span class="params">(LPVOID lpParameter)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">FirstThreadProc</span><span class="params">(LPVOID lpParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span> x = <span class="number">0</span>;			<span class="comment">//如果不声明x为静态变量，线程2将在修改参数时访问错误，因为线程1已经被关闭了</span></span><br><span class="line">	DWORD dwThreadID;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, SecondThreadProc, &amp;x, <span class="number">0</span>, &amp;dwThreadID);</span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SecondThreadProc</span><span class="params">(LPVOID lpParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	*((<span class="keyword">int</span>*)lpParameter) = <span class="number">5</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *((<span class="keyword">int</span>*)lpParameter));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> nCount = <span class="number">10</span>;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, FirstThreadProc, &amp;nCount, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们需要写自己的函数，并且不需要参数的时候，我们可以这样做：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">FirstThreadProc</span><span class="params">(LPVOID lpParameter)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SecondThreadProc</span><span class="params">(LPVOID lpParameter)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">FirstThreadProc</span><span class="params">(LPVOID lpParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span> x = <span class="number">0</span>;			<span class="comment">//如果不声明x为静态变量，线程2将在修改参数时访问错误，因为线程1已经被关闭了</span></span><br><span class="line">	DWORD dwThreadID;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, SecondThreadProc, &amp;x, <span class="number">0</span>, &amp;dwThreadID);</span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SecondThreadProc</span><span class="params">(LPVOID lpParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	*((<span class="keyword">int</span>*)lpParameter) = <span class="number">5</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *((<span class="keyword">int</span>*)lpParameter));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">TestThreadProc</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;TestThreadProc\n&quot;</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;x = %d\n&quot;</span>, x);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> nCount = <span class="number">10</span>;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	HANDLE hThread2;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, FirstThreadProc, &amp;nCount, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)TestThreadProc(<span class="number">10</span>), &amp;nCount, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//自己的函数一定要进行类型强制转换</span></span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="dwCreationFlags"><a href="#dwCreationFlags" class="headerlink" title="dwCreationFlags"></a>dwCreationFlags</h3><p>dwCreationFlags参数用于设定创建线程的其他标志，它可以是两个值中的一个，如果是0，线程创建后立刻调度。如果为<strong>CREATE_SUSPENDED</strong>，线程创建后则会挂起；</p>
+<h3 id="lpThreadId"><a href="#lpThreadId" class="headerlink" title="lpThreadId"></a>lpThreadId</h3><p>CreateThread的最后一个参数是lpThreadId，它必须是一个DWORD的有效地址，CreateThread使用这个地址来存放系统分配给新线程的ID；</p>
+<h2 id="终止线程"><a href="#终止线程" class="headerlink" title="终止线程"></a>终止线程</h2><p>若要终止线程的运行，可以使用以下方法：</p>
+<ul>
+<li>线程函数返回</li>
+<li>通过调用ExitProcess函数，线程将自行撤销</li>
+<li>同一个进程或另一个进程中的线程调用TerminateThread函数</li>
+<li>包含线程的进程终止运行</li>
+</ul>
+<h3 id="线程函数返回"><a href="#线程函数返回" class="headerlink" title="线程函数返回"></a>线程函数返回</h3><h3 id="ExitThread函数"><a href="#ExitThread函数" class="headerlink" title="ExitThread函数"></a>ExitThread函数</h3><p>可以让线程调用ExitThread函数，以强制终止线程运行；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VOID <span class="title">ExitThread</span><span class="params">( DWORD dwExitCode)</span></span>; </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="TerminateThread函数"><a href="#TerminateThread函数" class="headerlink" title="TerminateThread函数"></a>TerminateThread函数</h3><p>调用TerminateThread函数也可以终止线程的运行，但是与ExitThread函数不同，TerminateThread可以撤销任意线程；</p>
+<h2 id="线程性质"><a href="#线程性质" class="headerlink" title="线程性质"></a>线程性质</h2><p>一旦内核对象创建完成，系统就分配用于线程的堆栈的内存。该内存是从进程的地址空间分配而来，因为线程并不拥有自己的地址空间。</p>
+<p>每一个线程都有它自己一组CPU寄存器，称为线程的上下文，该上下文反映上次运行时该线程的CPU寄存器状态。线程的这组CPU寄存器保存在CONTEXT结构中。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc1</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* p = (<span class="keyword">int</span>*)pR;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc2</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* p = (<span class="keyword">int</span>*)pR;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x = <span class="number">10</span>;</span><br><span class="line">	<span class="keyword">int</span> y = <span class="number">20</span>;</span><br><span class="line">	DWORD dwThreadID1;</span><br><span class="line">	DWORD dwThreadID2;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	HANDLE hThread2;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc1, &amp;x, <span class="number">0</span>, &amp;dwThreadID1);</span><br><span class="line">	hThread2 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc2, &amp;y, <span class="number">0</span>, &amp;dwThreadID2);</span><br><span class="line">	SuspendThread(hThread1);		<span class="comment">//挂起线程</span></span><br><span class="line">	CONTEXT context;				<span class="comment">//创建线程上下文的结构体</span></span><br><span class="line">	context.ContextFlags = CONTEXT_INTEGER;		<span class="comment">//设置线程上下文的标志</span></span><br><span class="line">	GetThreadContext(hThread1, &amp;context);		<span class="comment">//获取线程上下文</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%x %x %x %x\n&quot;</span>, context.Eax, context.Ecx, context.Ebx, context.Edx);		<span class="comment">//打印四个寄存器</span></span><br><span class="line">	context.Eax = <span class="number">0x100</span>;					<span class="comment">//修改EAX寄存器</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%x %x %x %x\n&quot;</span>, context.Eax, context.Ecx, context.Ebx, context.Edx);		<span class="comment">//重新打印四个寄存器</span></span><br><span class="line">	ResumeThread(hThread1);								<span class="comment">//恢复线程执行</span></span><br><span class="line">	getchar();</span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	CloseHandle(hThread2);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/0.png"></p>
+<h2 id="对线程ID的了解"><a href="#对线程ID的了解" class="headerlink" title="对线程ID的了解"></a>对线程ID的了解</h2><p>当线程运行时，他们想要调用Windows函数来改变运行环境。想要引用自己的进程内核对象，活着引用自身线程的内核对象函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">GetCurrentProcess</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function">HANDLE <span class="title">GetCurrentThread</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>上面这两个函数都能返回调用线程的进程的伪句柄或线程内核对象的伪句柄；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc1</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* p = (<span class="keyword">int</span>*)pR;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc2</span><span class="params">(LPVOID pR)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* p = (<span class="keyword">int</span>*)pR;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> x = <span class="number">10</span>;</span><br><span class="line">	<span class="keyword">int</span> y = <span class="number">20</span>;</span><br><span class="line">	DWORD dwThreadID1;</span><br><span class="line">	DWORD dwThreadID2;</span><br><span class="line">	HANDLE hThread1;</span><br><span class="line">	HANDLE hThread2;</span><br><span class="line">	hThread1 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc1, &amp;x, <span class="number">0</span>, &amp;dwThreadID1);</span><br><span class="line">	hThread2 = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc2, &amp;y, <span class="number">0</span>, &amp;dwThreadID2);</span><br><span class="line">	DWORD dProcessID = GetCurrentProcessId();</span><br><span class="line">	DWORD dThreadID = GetCurrentProcessId();</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, dProcessID);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, dThreadID);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, dwThreadID1);</span><br><span class="line">	getchar();</span><br><span class="line">	CloseHandle(hThread1);</span><br><span class="line">	CloseHandle(hThread2);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/18/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" title="Windows核心编程 - 线程">http://systemk1t.github.io/2021/06/18/Windows核心编程-线程/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" rel="tag"># Windows核心编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AD%90%E7%A8%8B%E5%BA%8F%E6%8C%87%E4%BB%A4/" rel="prev" title="8086指令基础 - 子程序指令">
+      <i class="fa fa-chevron-left"></i> 8086指令基础 - 子程序指令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/19/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/" rel="next" title="Windows核心编程 - 线程调度">
+      Windows核心编程 - 线程调度 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%95%E6%97%B6%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">何时创建线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">第一个线程函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CreateThread"><span class="nav-number">1.3.</span> <span class="nav-text">CreateThread</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#psa"><span class="nav-number">1.3.1.</span> <span class="nav-text">psa</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dwStackSize"><span class="nav-number">1.3.2.</span> <span class="nav-text">dwStackSize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lpStartAddress%E5%92%8ClpParameter"><span class="nav-number">1.3.3.</span> <span class="nav-text">lpStartAddress和lpParameter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dwCreationFlags"><span class="nav-number">1.3.4.</span> <span class="nav-text">dwCreationFlags</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lpThreadId"><span class="nav-number">1.3.5.</span> <span class="nav-text">lpThreadId</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%88%E6%AD%A2%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">终止线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E"><span class="nav-number">1.4.1.</span> <span class="nav-text">线程函数返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExitThread%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.2.</span> <span class="nav-text">ExitThread函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TerminateThread%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.3.</span> <span class="nav-text">TerminateThread函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%80%A7%E8%B4%A8"><span class="nav-number">1.5.</span> <span class="nav-text">线程性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E7%BA%BF%E7%A8%8BID%E7%9A%84%E4%BA%86%E8%A7%A3"><span class="nav-number">1.6.</span> <span class="nav-text">对线程ID的了解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

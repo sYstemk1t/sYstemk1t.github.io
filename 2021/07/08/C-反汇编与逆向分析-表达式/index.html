@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本章介绍了各种表达式的汇编形式以及汇编时代码优化的方法，如遇到数学模型无法理解，可跳过，后续将有结论；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++反汇编与逆向分析 - 表达式">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="本章介绍了各种表达式的汇编形式以及汇编时代码优化的方法，如遇到数学模型无法理解，可跳过，后续将有结论；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png">
+<meta property="article:published_time" content="2021-07-07T20:43:48.000Z">
+<meta property="article:modified_time" content="2021-07-08T18:28:51.274Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="反汇编与逆向分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++反汇编与逆向分析 - 表达式 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++反汇编与逆向分析 - 表达式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-08 04:43:48" itemprop="dateCreated datePublished" datetime="2021-07-08T04:43:48+08:00">2021-07-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-09 02:28:51" itemprop="dateModified" datetime="2021-07-09T02:28:51+08:00">2021-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">逆向分析</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本章介绍了各种表达式的汇编形式以及汇编时代码优化的方法，如遇到数学模型无法理解，可跳过，后续将有结论；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 7家庭版</li>
+<li>编译器：VC6 VS2013</li>
+</ul>
+<p>Debug 通常称为调试版本，它包含调试信息，并且不作任何优化，便于程序员调试程序。Release 称为发布版本，它往往是进行了各种优化，使得程序在代码大小和运行速度上都是最优的，以便用户很好地使用。<br>在VC++6.0中常用的优化方案有O1方案（生成文件占用空间最小，空间上），O2方案（执行效率最快，时间上），Release通常默认O2模式，Debug使用Od+ZI选项。</p>
+<h1 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h1><h2 id="SIG"><a href="#SIG" class="headerlink" title="SIG"></a>SIG</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">md %1_objs</span><br><span class="line">copy %1.lib %1_objs</span><br><span class="line">pushd %1_objs</span><br><span class="line">for /f %%i in (&#x27;link -lib /list %1.lib&#x27;) do link -lib /extract:%%i %1.lib</span><br><span class="line">for %%i in (*.obj) do pcf -g0 %%i</span><br><span class="line">sigmake -n&quot;%1.lib&quot; *.pat %1.sig</span><br><span class="line">if exist %1.exc for %%i in (%1.exc) do find /v &quot;;&quot; %%i &gt; abc.exc </span><br><span class="line">if exist %1.exc for %%i in (%1.exc) do &gt; abc.exc more +2 &quot;%%i&quot;</span><br><span class="line">copy abc.exc %1.exc</span><br><span class="line">del abc.exc</span><br><span class="line">sigmake -n&quot;%1.lib&quot; *.pat %1.sig</span><br><span class="line">copy %1.sig ..\%1.sig</span><br><span class="line">popd</span><br><span class="line">del %1_objs /s /q</span><br><span class="line">rd %1_objs</span><br></pre></td></tr></table></figure>
+
+<p>可直接提取符号，但是需要自己找到LIBC.LIB，然后将提取的SIG放入IDA的SIG文件中；</p>
+<h2 id="算数运算和赋值"><a href="#算数运算和赋值" class="headerlink" title="算数运算和赋值"></a>算数运算和赋值</h2><h3 id="各种算数工作形式"><a href="#各种算数工作形式" class="headerlink" title="各种算数工作形式"></a>各种算数工作形式</h3><p>1)加法</p>
+<p>加法对应的汇编指令为ADD。针对不同的操作数，转换的指令也不同，编译器会自动优化；</p>
+<p>常见的方式为：变量+变量、变量+常量、常量+常量；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">9:        &#x2F;*变量定义*&#x2F;</span><br><span class="line">10:       int nVarOne &#x3D; 0;</span><br><span class="line">00401028   mov         dword ptr [ebp-4],0</span><br><span class="line">11:       int nVarTwo &#x3D; 0;</span><br><span class="line">0040102F   mov         dword ptr [ebp-8],0</span><br><span class="line">12:       &#x2F;*变量加常量*&#x2F;</span><br><span class="line">13:       nVarOne &#x3D; nVarOne + 1;</span><br><span class="line">00401036   mov         eax,dword ptr [ebp-4]</span><br><span class="line">00401039   add         eax,1</span><br><span class="line">0040103C   mov         dword ptr [ebp-4],eax</span><br><span class="line">14:       &#x2F;*常量加常量*&#x2F;</span><br><span class="line">15:       nVarOne &#x3D; 1 + 2;</span><br><span class="line">0040103F   mov         dword ptr [ebp-4],3		;常量加常量在编译期间直接给出结果</span><br><span class="line">16:       &#x2F;*变量加变量*&#x2F;</span><br><span class="line">17:       nVarOne &#x3D; nVarTwo + nVarOne;</span><br><span class="line">00401046   mov         ecx,dword ptr [ebp-8]</span><br><span class="line">00401049   add         ecx,dword ptr [ebp-4]</span><br><span class="line">0040104C   mov         dword ptr [ebp-4],ecx</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当编译选项修改为Release后的汇编代码：</p>
+<p><img src="/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/0.png"></p>
+<p><strong>常量传递</strong></p>
+<p>将编译期间可计算出结果的变量转换为常量，这样就减少了变量的使用；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> nVar = <span class="number">1</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;nVar = %d\n&quot;</span>,nVar);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;nVar = %d\n&quot;</span>,<span class="number">1</span>);		<span class="comment">//常量nVar在编译期间计算出的变量，因此在所有引用nVar的地方都会被替换为常量</span></span><br><span class="line">	system(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>2)减法</p>
+<p>减法运算对应的汇编指令SUB，虽然计算机只会做加法，但是可以通过补码的形式将 减法转换为加法来计算；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">29:       &#x2F;*变量定义*&#x2F;</span><br><span class="line">30:       int nVarOne &#x3D; argc;</span><br><span class="line">0040F2A8   mov         eax,dword ptr [ebp+8]</span><br><span class="line">0040F2AB   mov         dword ptr [ebp-4],eax</span><br><span class="line">31:       int nVarTwo &#x3D; 0;</span><br><span class="line">0040F2AE   mov         dword ptr [ebp-8],0</span><br><span class="line">32:       &#x2F;*获取变量nVarOne的数据，防止scanf变量被常量化*&#x2F;</span><br><span class="line">33:       scanf(&quot;%d&quot;,&amp;nVarTwo);</span><br><span class="line">0040F2B5   lea         ecx,[ebp-8]</span><br><span class="line">0040F2B8   push        ecx</span><br><span class="line">0040F2B9   push        offset string &quot;%d&quot; (004250d4)</span><br><span class="line">0040F2BE   call        scanf (004114f0)</span><br><span class="line">0040F2C3   add         esp,8</span><br><span class="line">34:       &#x2F;&#x2F;常量减变量的减法运算</span><br><span class="line">35:       nVarOne &#x3D; nVarOne - 100;</span><br><span class="line">0040F2C6   mov         edx,dword ptr [ebp-4]</span><br><span class="line">0040F2C9   sub         edx,64h</span><br><span class="line">0040F2CC   mov         dword ptr [ebp-4],edx</span><br><span class="line">36:       &#x2F;&#x2F;加法与减法混合运算</span><br><span class="line">37:       nVarOne &#x3D; nVarOne + 5 - nVarTwo;</span><br><span class="line">0040F2CF   mov         eax,dword ptr [ebp-4]</span><br><span class="line">0040F2D2   add         eax,5</span><br><span class="line">0040F2D5   sub         eax,dword ptr [ebp-8]</span><br><span class="line">0040F2D8   mov         dword ptr [ebp-4],eax</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>3)乘法</p>
+<p>乘法运算对应的汇编指令有imul(有符号)和mul(无符号)两种；由于乘法指令周期较长，在编译过程中，编译器首先会尝试将乘法转换为加法或位移等指令周期较短的指令；</p>
+<p>Debug版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">48:       &#x2F;*变量定义*&#x2F;</span><br><span class="line">49:       int nVarOne &#x3D; argc;</span><br><span class="line">00401178   mov         eax,dword ptr [ebp+8]</span><br><span class="line">0040117B   mov         dword ptr [ebp-4],eax</span><br><span class="line">50:       int nVarTwo &#x3D; argc;</span><br><span class="line">0040117E   mov         ecx,dword ptr [ebp+8]</span><br><span class="line">00401181   mov         dword ptr [ebp-8],ecx</span><br><span class="line">51:</span><br><span class="line">52:       printf(&quot;nVarOne * 15 &#x3D; %d\n&quot;,nVarOne * 15);</span><br><span class="line">00401184   mov         edx,dword ptr [ebp-4]</span><br><span class="line">00401187   imul        edx,edx,0Fh			&#x2F;&#x2F;使用有符号乘法，imul结果存入edx中</span><br><span class="line">0040118A   push        edx</span><br><span class="line">0040118B   push        offset string &quot;nVarOne * 15 &#x3D; %d\n&quot; (0042709c)</span><br><span class="line">00401190   call        printf (00401350)</span><br><span class="line">00401195   add         esp,8</span><br><span class="line">53:</span><br><span class="line">54:</span><br><span class="line">55:</span><br><span class="line">56:       printf(&quot;nVarOne * 16 &#x3D; %d\n&quot;,nVarOne * 16);</span><br><span class="line">00401198   mov         eax,dword ptr [ebp-4]</span><br><span class="line">0040119B   shl         eax,4				&#x2F;&#x2F;左移操作符代替乘法运算</span><br><span class="line">0040119E   push        eax</span><br><span class="line">0040119F   push        offset string &quot;nVarOne * 16 &#x3D; %d\n&quot; (00427084)</span><br><span class="line">004011A4   call        printf (00401350)</span><br><span class="line">004011A9   add         esp,8</span><br><span class="line">57:</span><br><span class="line">58:</span><br><span class="line">59:       printf(&quot;2 * 2 &#x3D; %d\n&quot;,2 * 2);</span><br><span class="line">004011AC   push        4					&#x2F;&#x2F;常量做运算直接在编译时得到结果</span><br><span class="line">004011AE   push        offset string &quot;2 * 2 &#x3D; %d\n&quot; (00427074)</span><br><span class="line">004011B3   call        printf (00401350)</span><br><span class="line">004011B8   add         esp,8</span><br><span class="line">60:</span><br><span class="line">61:</span><br><span class="line">62:       printf(&quot;nVarOne * 4 + 5 &#x3D; %d\n&quot;,nVarOne * 4 + 5);</span><br><span class="line">004011BB   mov         ecx,dword ptr [ebp-4]</span><br><span class="line">004011BE   lea         edx,[ecx*4+5]		&#x2F;&#x2F;使用lea指令完成组合运算</span><br><span class="line">004011C5   push        edx</span><br><span class="line">004011C6   push        offset string &quot;nVarOne * 4 + 5 &#x3D; %d\n&quot; (00427058)</span><br><span class="line">004011CB   call        printf (00401350)</span><br><span class="line">004011D0   add         esp,8</span><br><span class="line">63:</span><br><span class="line">64:       printf(&quot;nVarOne * nVarTwo &#x3D; %d\n&quot;,nVarOne * nVarTwo);</span><br><span class="line">004011D3   mov         eax,dword ptr [ebp-4]</span><br><span class="line">004011D6   imul        eax,dword ptr [ebp-8]	&#x2F;&#x2F;直接使用有符号乘法</span><br><span class="line">004011DA   push        eax</span><br><span class="line">004011DB   push        offset string &quot;nVarOne * nVarTwo &#x3D; %d\n&quot; (0042703c)</span><br><span class="line">004011E0   call        printf (00401350)</span><br><span class="line">004011E5   add         esp,8</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>Release版本：</p>
+<p><img src="/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/1.png"></p>
+<p>4)除法</p>
+<ul>
+<li>除法算数约定<ul>
+<li>除法运算对应的汇编指令一般为div和idiv两种。除法指令周期较长，效率也很低，所以编译器会在编译期间用其他指令代替除法指令；</li>
+<li>向下取整<ul>
+<li>根据整数的取值范围，如3.5向下取整即为3，-3.5向下取整则为-4</li>
+</ul>
+</li>
+<li>向上取整<ul>
+<li>取往正无穷大的最接近X的整数值</li>
+</ul>
+</li>
+<li>向零取整<ul>
+<li>取得往0方向最接近x的整数值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>符号是由除数决定</strong></p>
+<p>Debug版本的除法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">.text:00401010 _main_0         proc near               ; CODE XREF: _main↑j</span><br><span class="line">.text:00401010</span><br><span class="line">.text:00401010 var_48          &#x3D; byte ptr -48h</span><br><span class="line">.text:00401010 var_8           &#x3D; dword ptr -8</span><br><span class="line">.text:00401010 var_4           &#x3D; dword ptr -4</span><br><span class="line">.text:00401010 arg_0           &#x3D; dword ptr  8</span><br><span class="line">.text:00401010</span><br><span class="line">.text:00401010                 push    ebp</span><br><span class="line">.text:00401011                 mov     ebp, esp</span><br><span class="line">.text:00401013                 sub     esp, 48h</span><br><span class="line">.text:00401016                 push    ebx</span><br><span class="line">.text:00401017                 push    esi</span><br><span class="line">.text:00401018                 push    edi</span><br><span class="line">.text:00401019                 lea     edi, [ebp+var_48]</span><br><span class="line">.text:0040101C                 mov     ecx, 12h</span><br><span class="line">.text:00401021                 mov     eax, 0CCCCCCCCh</span><br><span class="line">.text:00401026                 rep stosd</span><br><span class="line">.text:00401028                 mov     eax, [ebp+arg_0]</span><br><span class="line">.text:0040102B                 mov     [ebp+var_4], eax</span><br><span class="line">.text:0040102E                 mov     ecx, [ebp+arg_0]</span><br><span class="line">.text:00401031                 mov     [ebp+var_8], ecx</span><br><span class="line">.text:00401034                 mov     eax, [ebp+var_4]</span><br><span class="line">.text:00401037                 cdq</span><br><span class="line">.text:00401038                 idiv    [ebp+var_8]     ; 两个变量做除法，可以直接使用除法指令idiv</span><br><span class="line">.text:0040103B                 push    eax</span><br><span class="line">.text:0040103C                 push    offset aNvaroneNvartwo ; &quot;nVarOne &#x2F; nVarTwo &#x3D; %d\n&quot;</span><br><span class="line">.text:00401041                 call    _printf</span><br><span class="line">.text:00401046                 add     esp, 8</span><br><span class="line">.text:00401049                 mov     eax, [ebp+var_4]</span><br><span class="line">.text:0040104C                 cdq</span><br><span class="line">.text:0040104D                 sub     eax, edx        ; 自身减去扩展的高位</span><br><span class="line">.text:0040104F                 sar     eax, 1          ; 右移指令，2的1次幂</span><br><span class="line">.text:00401051                 push    eax</span><br><span class="line">.text:00401052                 push    offset aNvarone2D ; &quot;nVarOne &#x2F; 2 &#x3D; %d\n&quot;</span><br><span class="line">.text:00401057                 call    _printf</span><br><span class="line">.text:0040105C                 add     esp, 8</span><br><span class="line">.text:0040105F                 mov     eax, [ebp+var_8]</span><br><span class="line">.text:00401062                 cdq</span><br><span class="line">.text:00401063                 mov     ecx, 7</span><br><span class="line">.text:00401068                 idiv    ecx             ; 无优化，直接除以常量7</span><br><span class="line">.text:0040106A                 push    eax</span><br><span class="line">.text:0040106B                 push    offset aNvartwo7D ; &quot;nVarTwo &#x2F; 7 &#x3D; %d\n&quot;</span><br><span class="line">.text:00401070                 call    _printf</span><br><span class="line">.text:00401075                 add     esp, 8</span><br><span class="line">.text:00401078                 mov     eax, [ebp+var_8]</span><br><span class="line">.text:0040107B                 cdq</span><br><span class="line">.text:0040107C                 mov     ecx, 7</span><br><span class="line">.text:00401081                 idiv    ecx             ; 无优化，直接使用常量7</span><br><span class="line">.text:00401083                 push    edx</span><br><span class="line">.text:00401084                 push    offset aNvarone7D ; &quot;nVarOne % 7 &#x3D; %d\n&quot;</span><br><span class="line">.text:00401089                 call    _printf</span><br><span class="line">.text:0040108E                 add     esp, 8</span><br><span class="line">.text:00401091                 mov     eax, [ebp+var_4]</span><br><span class="line">.text:00401094                 cdq</span><br><span class="line">.text:00401095                 and     edx, 7          ; 扩展EAX高位到EDX，EAX中为负数，则EDX为0xFFFFFFFF</span><br><span class="line">.text:00401098                 add     eax, edx        ; 使用EAX加EDX，若EAX为负数则加7</span><br><span class="line">.text:0040109A                 sar     eax, 3          ; 右移2的3次幂</span><br><span class="line">.text:0040109D                 push    eax</span><br><span class="line">.text:0040109E                 push    offset aNvarone8D ; &quot;nVarOne &#x2F; 8 &#x3D; %d\n&quot;</span><br><span class="line">.text:004010A3                 call    _printf</span><br><span class="line">.text:004010A8                 add     esp, 8</span><br><span class="line">.text:004010AB                 xor     eax, eax</span><br><span class="line">.text:004010AD                 pop     edi</span><br><span class="line">.text:004010AE                 pop     esi</span><br><span class="line">.text:004010AF                 pop     ebx</span><br><span class="line">.text:004010B0                 add     esp, 48h</span><br><span class="line">.text:004010B3                 cmp     ebp, esp</span><br><span class="line">.text:004010B5                 call    __chkesp</span><br><span class="line">.text:004010BA                 mov     esp, ebp</span><br><span class="line">.text:004010BC                 pop     ebp</span><br><span class="line">.text:004010BD                 retn</span><br><span class="line">.text:004010BD _main_0         endp</span><br><span class="line">.text:004010BD</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>Release版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">.text:00401000 _main           proc near               ; CODE XREF: start+AF↓p</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000 argc            &#x3D; dword ptr  4</span><br><span class="line">.text:00401000 argv            &#x3D; dword ptr  8</span><br><span class="line">.text:00401000 envp            &#x3D; dword ptr  0Ch</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000                 push    esi</span><br><span class="line">.text:00401001                 mov     esi, [esp+4+argc]</span><br><span class="line">.text:00401005                 mov     eax, esi</span><br><span class="line">.text:00401007                 cdq</span><br><span class="line">.text:00401008                 idiv    esi</span><br><span class="line">.text:0040100A                 push    eax</span><br><span class="line">.text:0040100B                 push    offset aNvaroneNvartwo ; &quot;nVarOne &#x2F; nVarTwo &#x3D; %d\n&quot;</span><br><span class="line">.text:00401010                 call    sub_401080</span><br><span class="line">.text:00401015                 mov     eax, esi</span><br><span class="line">.text:00401017                 cdq</span><br><span class="line">.text:00401018                 sub     eax, edx</span><br><span class="line">.text:0040101A                 sar     eax, 1</span><br><span class="line">.text:0040101C                 push    eax</span><br><span class="line">.text:0040101D                 push    offset aNvarone2D ; &quot;nVarOne &#x2F; 2 &#x3D; %d\n&quot;</span><br><span class="line">.text:00401022                 call    sub_401080</span><br><span class="line">.text:00401027                 mov     eax, 92492493h</span><br><span class="line">.text:0040102C                 imul    esi</span><br><span class="line">.text:0040102E                 add     edx, esi</span><br><span class="line">.text:00401030                 sar     edx, 2			;右移两位</span><br><span class="line">.text:00401033                 mov     eax, edx</span><br><span class="line">.text:00401035                 shr     eax, 1Fh			;右移31次</span><br><span class="line">.text:00401038                 add     edx, eax</span><br><span class="line">.text:0040103A                 push    edx</span><br><span class="line">.text:0040103B                 push    offset aNvartwo7D ; &quot;nVarTwo &#x2F; 7 &#x3D; %d\n&quot;</span><br><span class="line">.text:00401040                 call    sub_401080</span><br><span class="line">.text:00401045                 mov     eax, esi</span><br><span class="line">.text:00401047                 mov     ecx, 7</span><br><span class="line">.text:0040104C                 cdq</span><br><span class="line">.text:0040104D                 idiv    ecx</span><br><span class="line">.text:0040104F                 push    edx</span><br><span class="line">.text:00401050                 push    offset aNvarone7D ; &quot;nVarOne % 7 &#x3D; %d\n&quot;</span><br><span class="line">.text:00401055                 call    sub_401080</span><br><span class="line">.text:0040105A                 mov     eax, esi</span><br><span class="line">.text:0040105C                 cdq</span><br><span class="line">.text:0040105D                 and     edx, 7</span><br><span class="line">.text:00401060                 add     eax, edx</span><br><span class="line">.text:00401062                 sar     eax, 3</span><br><span class="line">.text:00401065                 push    eax</span><br><span class="line">.text:00401066                 push    offset aNvarone8D ; &quot;nVarOne &#x2F; 8 &#x3D; %d\n&quot;</span><br><span class="line">.text:0040106B                 call    sub_401080</span><br><span class="line">.text:00401070                 add     esp, 28h</span><br><span class="line">.text:00401073                 xor     eax, eax</span><br><span class="line">.text:00401075                 pop     esi</span><br><span class="line">.text:00401076                 retn</span><br><span class="line">.text:00401076 _main           endp</span><br><span class="line">.text:00401060                 add     eax, edx</span><br><span class="line">.text:00401062                 sar     eax, 3</span><br><span class="line">.text:00401065                 push    eax</span><br><span class="line">.text:00401066                 push    offset aNvarone8D ; &quot;nVarOne &#x2F; 8 &#x3D; %d\n&quot;</span><br><span class="line">.text:0040106B                 call    sub_401080</span><br><span class="line">.text:00401070                 add     esp, 28h</span><br><span class="line">.text:00401073                 xor     eax, eax</span><br><span class="line">.text:00401075                 pop     esi</span><br><span class="line">.text:00401076                 retn</span><br><span class="line">.text:00401076 _main           endp</span><br><span class="line">.text:00401076</span><br></pre></td></tr></table></figure>
+
+
+
+<p>5)取模</p>
+<h4 id="无符号数模2的幂"><a href="#无符号数模2的幂" class="headerlink" title="无符号数模2的幂"></a>无符号数模2的幂</h4><p>还原定式：<code>and reg，2^n - 1</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">高级代码：</span><br><span class="line">printf(&quot;%d\n&quot;, argc % 8)</span><br><span class="line"></span><br><span class="line">汇编代码：</span><br><span class="line">and reg 7</span><br></pre></td></tr></table></figure>
+
+<h4 id="无符号数模非2的幂"><a href="#无符号数模非2的幂" class="headerlink" title="无符号数模非2的幂"></a>无符号数模非2的幂</h4><p>VC++6.0没有优化，VS2013开始release版本做了优化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">r：余数</span><br><span class="line">a：被除数</span><br><span class="line">q：商</span><br><span class="line">b：除数</span><br><span class="line">r &#x3D; a - qb</span><br><span class="line"></span><br><span class="line">汇编指令：</span><br><span class="line"></span><br><span class="line">;计算商部分</span><br><span class="line">mov eax, m</span><br><span class="line">mul esi</span><br><span class="line">mov ecx, esi</span><br><span class="line">sub ecx, edx</span><br><span class="line">shr ecx, n1</span><br><span class="line">add ecx, edx</span><br><span class="line">shr ecx, 2</span><br><span class="line"></span><br><span class="line">;商乘除数部分</span><br><span class="line">lea eax, [ecx * 8]		&#x2F;&#x2F;argc &#x2F; 7  &#x3D; argc * 8 - argc</span><br><span class="line">sub eax, ecx</span><br><span class="line"></span><br><span class="line">;被除数 - 商乘除数得到余数</span><br><span class="line">sub esi, eax</span><br></pre></td></tr></table></figure>
+
+<h4 id="有符号模非2的幂"><a href="#有符号模非2的幂" class="headerlink" title="有符号模非2的幂"></a>有符号模非2的幂</h4><p>和无符号模非2的幂定式一样，区别在于计算商部分改为有符号的除法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">汇编指令：</span><br><span class="line"></span><br><span class="line">;计算商部分</span><br><span class="line">mov eax, m</span><br><span class="line">imul esi</span><br><span class="line">add edx, esi</span><br><span class="line">sar edx, n</span><br><span class="line">mov ecx, edx</span><br><span class="line">shr ecx, 1Fh</span><br><span class="line">add ecx, edx</span><br><span class="line"></span><br><span class="line">;商乘除数部分</span><br><span class="line">lea eax, [ecx * 8]</span><br><span class="line">sub eax, ecx</span><br><span class="line"></span><br><span class="line">;被除数 - 商乘除数得到余数</span><br><span class="line">sub esi, eax</span><br></pre></td></tr></table></figure>
+
+<h4 id="有符号模2的幂"><a href="#有符号模2的幂" class="headerlink" title="有符号模2的幂"></a>有符号模2的幂</h4><ul>
+<li>先取被除数的符号为和低3位（and）， 判断最高位是否为1（正数）</li>
+<li>如果是正数，走正常流程，</li>
+<li>如果是负数，or修正数值（除最高位和低3位以外填符号位）<ul>
+<li>加减是对0值的特殊处理</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mov ebp, esp</span><br><span class="line">mov eax, [ebp + arg_0]</span><br><span class="line">and eax, 80000007h</span><br><span class="line">jns offset</span><br><span class="line">dec eax</span><br><span class="line">or eax, 0fffffff8h</span><br><span class="line">dinc eax</span><br></pre></td></tr></table></figure>
+
+<h4 id="有符号模-2的幂"><a href="#有符号模-2的幂" class="headerlink" title="有符号模-2的幂"></a>有符号模-2的幂</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">数学模型：</span><br><span class="line">此处A为变量，C为常量</span><br><span class="line">当：C &lt; 0时</span><br><span class="line">有：A % C </span><br><span class="line">可以：|A| % |C| &#x3D; R</span><br><span class="line">所以：当A &lt; 0, 取 -R</span><br><span class="line"></span><br><span class="line">定式</span><br><span class="line">mov eax, argc</span><br><span class="line">cdq</span><br><span class="line">xor eax, edx </span><br><span class="line">sub eax, edx ;等于把eax取绝对值</span><br><span class="line">and argc-1   ;等于把eax取模</span><br><span class="line">xor eax, edx ;等于对eax取反</span><br><span class="line">sub eax, edx ;等于eax+1</span><br><span class="line"></span><br><span class="line">解决方法：</span><br><span class="line">and 之后的参数取反+1</span><br><span class="line"></span><br><span class="line">abs(eax)</span><br><span class="line"></span><br><span class="line">;如果eax是正数，edx &#x3D; 0</span><br><span class="line">;如果eax是负数，edx &#x3D; 1 </span><br><span class="line">cdq</span><br><span class="line"></span><br><span class="line">;eax为正数，eax xor 0 &#x3D; eax</span><br><span class="line">;eax为负数，eax xor ffffffff &#x3D; not eax</span><br><span class="line">xor eax, edx </span><br><span class="line"></span><br><span class="line">;eax为正数，eax - 0 &#x3D; eax</span><br><span class="line">;eax为正数，eax - ffffffff &#x3D;  eax + 1</span><br><span class="line">sub eax, edx</span><br><span class="line"></span><br><span class="line">结论：</span><br><span class="line">如果eax为正数，eax的值不变</span><br><span class="line">如果eax为负数，eax的值取反+1</span><br><span class="line"></span><br><span class="line">A xor 0 &#x3D; A</span><br><span class="line">A xor 1 &#x3D; not A</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>如果模的除数为变量，即没有优化空间，指令为<code>div</code></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="加减乘看指令"><a href="#加减乘看指令" class="headerlink" title="加减乘看指令"></a>加减乘看指令</h3><ul>
+<li>变量乘法使用imul，多操作数</li>
+<li>优化乘法使用lea和shl组合</li>
+</ul>
+<h3 id="除法"><a href="#除法" class="headerlink" title="除法"></a>除法</h3><ul>
+<li>除数为常量的除法必优化</li>
+<li>除数为变量的除法，idiv和div，可以据此推断出有无符号</li>
+</ul>
+<h4 id="除数为2的幂"><a href="#除数为2的幂" class="headerlink" title="除数为2的幂"></a>除数为2的幂</h4><h5 id="无符号除以2的幂"><a href="#无符号除以2的幂" class="headerlink" title="无符号除以2的幂"></a>无符号除以2的幂</h5><p>使用 shr 指令</p>
+<h5 id="有符号除以2的幂"><a href="#有符号除以2的幂" class="headerlink" title="有符号除以2的幂"></a>有符号除以2的幂</h5><h6 id="正除数"><a href="#正除数" class="headerlink" title="正除数"></a>正除数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cdq</span><br><span class="line">and edx, 2^n - 1</span><br><span class="line">add eax, edx</span><br><span class="line">sar eax, n</span><br></pre></td></tr></table></figure>
+
+<h6 id="负除数"><a href="#负除数" class="headerlink" title="负除数"></a>负除数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cdq </span><br><span class="line">and edx, 2^n - 1</span><br><span class="line">add eax, edx</span><br><span class="line">sar eax, n</span><br><span class="line">neg eax</span><br></pre></td></tr></table></figure>
+
+<h4 id="除数为非2的幂"><a href="#除数为非2的幂" class="headerlink" title="除数为非2的幂"></a>除数为非2的幂</h4><p>原型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">设MagicNumber &#x3D; 2^n &#x2F; C</span><br><span class="line">A &#x2F; C &#x3D; A * M &gt;&gt; n</span><br></pre></td></tr></table></figure>
+
+<h5 id="无符号除以非2的幂"><a href="#无符号除以非2的幂" class="headerlink" title="无符号除以非2的幂"></a>无符号除以非2的幂</h5><h6 id="M无进位"><a href="#M无进位" class="headerlink" title="M无进位"></a>M无进位</h6><ul>
+<li>还原除数：C = 2^n / M</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov reg, A</span><br><span class="line">mov eax, M</span><br><span class="line">mul reg</span><br><span class="line">shr edx, n</span><br></pre></td></tr></table></figure>
+
+<h6 id="M有进位"><a href="#M有进位" class="headerlink" title="M有进位"></a>M有进位</h6><ul>
+<li>还原除数：C = 2^(n + 1) / (2^32 + M)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mov reg, A</span><br><span class="line">mov eax, M</span><br><span class="line">mul reg</span><br><span class="line">sub reg, edx</span><br><span class="line">shr edx, 1</span><br><span class="line">add reg, edx</span><br><span class="line">shr edx, n</span><br></pre></td></tr></table></figure>
+
+<h5 id="有符号除以非2的幂"><a href="#有符号除以非2的幂" class="headerlink" title="有符号除以非2的幂"></a>有符号除以非2的幂</h5><h6 id="M为正数"><a href="#M为正数" class="headerlink" title="M为正数"></a>M为正数</h6><ul>
+<li>除数为正数，还原除数 C = 2^n / M</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mov eax, M</span><br><span class="line">imul reg&#x2F;men ;被除数</span><br><span class="line">sar edx, n</span><br><span class="line">mov reg, edx</span><br><span class="line">shr reg, 31</span><br><span class="line">add edx, reg</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>除数为负数还原除数 |C| = 2^n / neg(M)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mov eax, M</span><br><span class="line">imul reg&#x2F;men ;被除数</span><br><span class="line">sub edx, reg&#x2F;men</span><br><span class="line">sar edx, n</span><br><span class="line">mov reg, edx</span><br><span class="line">shr reg, 31</span><br><span class="line">add edx, reg</span><br></pre></td></tr></table></figure>
+
+<h6 id="M为负数"><a href="#M为负数" class="headerlink" title="M为负数"></a>M为负数</h6><ul>
+<li>除数为负还原除数 |C| = 2^n / neg(M)</li>
+<li>计算器计算~M时先Dword计算16进制取反+1，得到的16进制值转Qword转十进制</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mov eax, M</span><br><span class="line">imul reg&#x2F;men ;被除数</span><br><span class="line">sar edx, n</span><br><span class="line">mov reg, edx</span><br><span class="line">shr reg, 31</span><br><span class="line">add edx, reg</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>除数为正数还原除数 C = 2^n / M</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mov eax, M</span><br><span class="line">imul reg&#x2F;mem ;被除数</span><br><span class="line">add edx, reg&#x2F;men</span><br><span class="line">sar edx, n</span><br><span class="line">mov reg, edx</span><br><span class="line">shr reg, 31</span><br><span class="line">add edx, reg</span><br></pre></td></tr></table></figure>
+
+<h3 id="取模"><a href="#取模" class="headerlink" title="取模"></a>取模</h3><ul>
+<li>无优化取模看div/idiv，其后使用edx，可以据此推断出有无符号</li>
+</ul>
+<h4 id="无符号取模"><a href="#无符号取模" class="headerlink" title="无符号取模"></a>无符号取模</h4><h5 id="除数为2的幂-1"><a href="#除数为2的幂-1" class="headerlink" title="除数为2的幂"></a>除数为2的幂</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">and reg, 2^n - 1</span><br></pre></td></tr></table></figure>
+
+<h5 id="除数为非2的幂-1"><a href="#除数为非2的幂-1" class="headerlink" title="除数为非2的幂"></a>除数为非2的幂</h5><p>r：余数 a：被除数 q：商 b：除数</p>
+<ul>
+<li>低版本编译器无优化</li>
+<li>高版本使用 r = a - qb 的数学原型求得余数</li>
+</ul>
+<h4 id="有符号取模"><a href="#有符号取模" class="headerlink" title="有符号取模"></a>有符号取模</h4><h5 id="除数为2的幂-2"><a href="#除数为2的幂-2" class="headerlink" title="除数为2的幂"></a>除数为2的幂</h5><h6 id="除数为正数"><a href="#除数为正数" class="headerlink" title="除数为正数"></a>除数为正数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">and reg, 80000xxxh</span><br><span class="line">jns xx</span><br><span class="line">dec reg</span><br><span class="line">and reg, fffffyyyh</span><br><span class="line">inc reg</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>xx：看xxx二进制有多少个连续的1，或者看yyy有多少个连续的0，其个数就是2^n中的指数n</li>
+</ul>
+<h6 id="除数为负数"><a href="#除数为负数" class="headerlink" title="除数为负数"></a>除数为负数</h6><ul>
+<li>高版本同正数</li>
+<li>低版本</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cdq</span><br><span class="line">xor eax, edx</span><br><span class="line">sub eax, edx</span><br><span class="line">and eax, 2^n - 1</span><br><span class="line">xor eax, edx</span><br><span class="line">sub eax, edx</span><br></pre></td></tr></table></figure>
+
+<h5 id="除数为非2的幂-2"><a href="#除数为非2的幂-2" class="headerlink" title="除数为非2的幂"></a>除数为非2的幂</h5><ul>
+<li>低版本无优化，根据除法指令还原</li>
+<li>高版本使用 r = a - qb 的数学模型求得余数</li>
+</ul>
+<h3 id="条件表达式"><a href="#条件表达式" class="headerlink" title="条件表达式"></a>条件表达式</h3><ul>
+<li>表达式1 ? 表达式2 : 表达式3</li>
+<li>当表达式2或表达式3不为常量，无优化，直接编译为分支结构，酌情还原</li>
+<li>当表达式1为等值比较，表达式2和3为常量时，优化原型为：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eax &#x3D; 0 ? 0 0 : -1</span><br><span class="line">neg eax</span><br><span class="line">sbb eax, eax</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>当表达式1扩展为非0等值比较，表达式2和表达式3扩展为其他任意常量时：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">A &#x3D;&#x3D; B ? C : 0</span><br><span class="line">mov reg, A</span><br><span class="line">sub reg, B</span><br><span class="line">neg reg</span><br><span class="line">sbb reg, reg</span><br><span class="line">and reg, D - C</span><br><span class="line">add reg, C</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>当表达式1扩展为区间比较，表达式2和3扩展为其他任意常量时：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A ? C : D</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>低版本使用<code>setxx</code> 系列指令，dec以后构造出一个0或者-1的值，然后思路同上例</li>
+<li>高版本使用<code>cmovxx</code> 系列指令，不存在位运算技巧，直接分析<code>cmovxx</code> 条件还原即可</li>
+</ul>
+<h2 id="三目运算"><a href="#三目运算" class="headerlink" title="三目运算"></a>三目运算</h2><h4 id="无优化版"><a href="#无优化版" class="headerlink" title="无优化版"></a>无优化版</h4><p>产生分支和if else产生的汇编代码相同<br>如果返回的都是变量则无优化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">无优化版高级代码：</span><br><span class="line">argc?100 argc*3:argc*-3</span><br></pre></td></tr></table></figure>
+
+<h4 id="恒等优化版"><a href="#恒等优化版" class="headerlink" title="恒等优化版"></a>恒等优化版</h4><p>取消分支</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">比较还原为 &#x3D;&#x3D; 0</span><br><span class="line"></span><br><span class="line">例：</span><br><span class="line">高级代码：</span><br><span class="line">eax &#x3D;&#x3D; 100 ? 0 : -1;</span><br><span class="line"></span><br><span class="line">汇编代码：</span><br><span class="line">sub eax, 100</span><br><span class="line">neg eax       </span><br><span class="line">sbb eax, eax  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">高级代码：</span><br><span class="line">eax &#x3D;&#x3D; 0 ? 0 : -1;</span><br><span class="line"></span><br><span class="line">汇编代码：</span><br><span class="line">neg eax       </span><br><span class="line">sbb eax, eax  </span><br><span class="line"></span><br><span class="line">neg reg ; reg &#x3D; 0 - reg</span><br><span class="line"></span><br><span class="line">sbb r1, r2</span><br><span class="line">r1 &#x3D; r1 - r2 - CF</span><br><span class="line"></span><br><span class="line">立即数优化版</span><br><span class="line">例：</span><br><span class="line"></span><br><span class="line">高级代码：</span><br><span class="line">eax &#x3D;&#x3D; 100 ？39 ： 93；</span><br><span class="line"></span><br><span class="line">汇编代码：</span><br><span class="line">sub eax, 100</span><br><span class="line">neg eax</span><br><span class="line">sbb eax, eax      ;if eax &#x3D;&#x3D; 100, eax &#x3D; 0, else eax &#x3D; ffffffffh</span><br><span class="line">and eax, 93 - 39  ;接上面, eax &#x3D; 0, else eax &#x3D; 93-39</span><br><span class="line">add eax, 39       ;接上面, eax &#x3D; 39, else eax &#x3D; 39 + 93 - 39 &#x3D; 93</span><br></pre></td></tr></table></figure>
+
+<h4 id="非恒等式"><a href="#非恒等式" class="headerlink" title="非恒等式"></a>非恒等式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">使用set命令做比较</span><br><span class="line">setg &#x2F; setng</span><br><span class="line"></span><br><span class="line">例：</span><br><span class="line">高级代码：</span><br><span class="line">eax &gt; 100 ? 39 : 93;</span><br><span class="line"></span><br><span class="line">汇编代码：</span><br><span class="line">xor ecx, ecx</span><br><span class="line">cmp eax, 100</span><br><span class="line"></span><br><span class="line">方式1：</span><br><span class="line">setng cl         ;if eax &gt; 100, cl &#x3D; 0, else ecx &#x3D; 0</span><br><span class="line">dec ecx          ;...接上面, ecx &#x3D; ffffffffh, else ecx &#x3D; 0          </span><br><span class="line">and ecx, 39 - 93</span><br><span class="line">add ecx, 93</span><br><span class="line"></span><br><span class="line">方式2：</span><br><span class="line">setg cl</span><br><span class="line">dec ecx</span><br><span class="line">and ecx, 93 - 39</span><br><span class="line">add ecx, 39</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">高级编译器新增指令：</span><br><span class="line">cmovxx</span><br><span class="line"></span><br><span class="line">解决方法：</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/2.png"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/08/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="C++反汇编与逆向分析 - 表达式">http://systemk1t.github.io/2021/07/08/C-反汇编与逆向分析-表达式/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" rel="tag"># 反汇编与逆向分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/03/32%E4%BD%8D%E6%B1%87%E7%BC%96%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E5%9F%BA%E7%A1%80/" rel="prev" title="32位汇编程序设计 - 基础">
+      <i class="fa fa-chevron-left"></i> 32位汇编程序设计 - 基础
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/10/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-IF/" rel="next" title="C++反汇编与逆向分析 - IF">
+      C++反汇编与逆向分析 - IF <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SIG"><span class="nav-number">1.1.</span> <span class="nav-text">SIG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E5%92%8C%E8%B5%8B%E5%80%BC"><span class="nav-number">1.2.</span> <span class="nav-text">算数运算和赋值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E7%AE%97%E6%95%B0%E5%B7%A5%E4%BD%9C%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">各种算数工作形式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E6%A8%A12%E7%9A%84%E5%B9%82"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">无符号数模2的幂</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E6%A8%A1%E9%9D%9E2%E7%9A%84%E5%B9%82"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">无符号数模非2的幂</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%A8%A1%E9%9D%9E2%E7%9A%84%E5%B9%82"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">有符号模非2的幂</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%A8%A12%E7%9A%84%E5%B9%82"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">有符号模2的幂</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%A8%A1-2%E7%9A%84%E5%B9%82"><span class="nav-number">1.2.1.5.</span> <span class="nav-text">有符号模-2的幂</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%87%8F%E4%B9%98%E7%9C%8B%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.1.</span> <span class="nav-text">加减乘看指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%A4%E6%B3%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">除法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA2%E7%9A%84%E5%B9%82"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">除数为2的幂</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E9%99%A4%E4%BB%A52%E7%9A%84%E5%B9%82"><span class="nav-number">1.3.2.1.1.</span> <span class="nav-text">无符号除以2的幂</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E9%99%A4%E4%BB%A52%E7%9A%84%E5%B9%82"><span class="nav-number">1.3.2.1.2.</span> <span class="nav-text">有符号除以2的幂</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%AD%A3%E9%99%A4%E6%95%B0"><span class="nav-number">1.3.2.1.2.1.</span> <span class="nav-text">正除数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%B4%9F%E9%99%A4%E6%95%B0"><span class="nav-number">1.3.2.1.2.2.</span> <span class="nav-text">负除数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA%E9%9D%9E2%E7%9A%84%E5%B9%82"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">除数为非2的幂</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E9%99%A4%E4%BB%A5%E9%9D%9E2%E7%9A%84%E5%B9%82"><span class="nav-number">1.3.2.2.1.</span> <span class="nav-text">无符号除以非2的幂</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#M%E6%97%A0%E8%BF%9B%E4%BD%8D"><span class="nav-number">1.3.2.2.1.1.</span> <span class="nav-text">M无进位</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#M%E6%9C%89%E8%BF%9B%E4%BD%8D"><span class="nav-number">1.3.2.2.1.2.</span> <span class="nav-text">M有进位</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E9%99%A4%E4%BB%A5%E9%9D%9E2%E7%9A%84%E5%B9%82"><span class="nav-number">1.3.2.2.2.</span> <span class="nav-text">有符号除以非2的幂</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#M%E4%B8%BA%E6%AD%A3%E6%95%B0"><span class="nav-number">1.3.2.2.2.1.</span> <span class="nav-text">M为正数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#M%E4%B8%BA%E8%B4%9F%E6%95%B0"><span class="nav-number">1.3.2.2.2.2.</span> <span class="nav-text">M为负数</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%96%E6%A8%A1"><span class="nav-number">1.3.3.</span> <span class="nav-text">取模</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E5%8F%96%E6%A8%A1"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">无符号取模</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA2%E7%9A%84%E5%B9%82-1"><span class="nav-number">1.3.3.1.1.</span> <span class="nav-text">除数为2的幂</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA%E9%9D%9E2%E7%9A%84%E5%B9%82-1"><span class="nav-number">1.3.3.1.2.</span> <span class="nav-text">除数为非2的幂</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E5%8F%96%E6%A8%A1"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">有符号取模</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA2%E7%9A%84%E5%B9%82-2"><span class="nav-number">1.3.3.2.1.</span> <span class="nav-text">除数为2的幂</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA%E6%AD%A3%E6%95%B0"><span class="nav-number">1.3.3.2.1.1.</span> <span class="nav-text">除数为正数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA%E8%B4%9F%E6%95%B0"><span class="nav-number">1.3.3.2.1.2.</span> <span class="nav-text">除数为负数</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%99%A4%E6%95%B0%E4%B8%BA%E9%9D%9E2%E7%9A%84%E5%B9%82-2"><span class="nav-number">1.3.3.2.2.</span> <span class="nav-text">除数为非2的幂</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.3.4.</span> <span class="nav-text">条件表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E7%9B%AE%E8%BF%90%E7%AE%97"><span class="nav-number">1.4.</span> <span class="nav-text">三目运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E4%BC%98%E5%8C%96%E7%89%88"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">无优化版</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%81%92%E7%AD%89%E4%BC%98%E5%8C%96%E7%89%88"><span class="nav-number">1.4.0.2.</span> <span class="nav-text">恒等优化版</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E6%81%92%E7%AD%89%E5%BC%8F"><span class="nav-number">1.4.0.3.</span> <span class="nav-text">非恒等式</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="构造函数与析构函数是类的重要组成部分，构造函数常用来完成对象生成时的数据初始化工作，而析构函数则常用于在对象销毁时释放对象中所申请的资源； 当对象生成时，编译器会自动产生调用其类构造函数的代码，在编译过程中可以为类中的数据成员赋予恰当的初值。当对象销毁后，编译器调用析构函数；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++反汇编与逆向分析 - 构造析构">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="构造函数与析构函数是类的重要组成部分，构造函数常用来完成对象生成时的数据初始化工作，而析构函数则常用于在对象销毁时释放对象中所申请的资源； 当对象生成时，编译器会自动产生调用其类构造函数的代码，在编译过程中可以为类中的数据成员赋予恰当的初值。当对象销毁后，编译器调用析构函数；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C4.png">
+<meta property="article:published_time" content="2021-07-17T18:25:21.000Z">
+<meta property="article:modified_time" content="2021-07-19T16:25:26.493Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="反汇编与逆向分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++反汇编与逆向分析 - 构造析构 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++反汇编与逆向分析 - 构造析构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-18 02:25:21" itemprop="dateCreated datePublished" datetime="2021-07-18T02:25:21+08:00">2021-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-20 00:25:26" itemprop="dateModified" datetime="2021-07-20T00:25:26+08:00">2021-07-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">逆向分析</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>构造函数与析构函数是类的重要组成部分，构造函数常用来完成对象生成时的数据初始化工作，而析构函数则常用于在对象销毁时释放对象中所申请的资源；</p>
+<p>当对象生成时，编译器会自动产生调用其类构造函数的代码，在编译过程中可以为类中的数据成员赋予恰当的初值。当对象销毁后，编译器调用析构函数；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 7家庭版</li>
+<li>编译器：VC6 VS2013</li>
+</ul>
+<h1 id="构造析构"><a href="#构造析构" class="headerlink" title="构造析构"></a>构造析构</h1><h2 id="构造函数出现时机"><a href="#构造函数出现时机" class="headerlink" title="构造函数出现时机"></a>构造函数出现时机</h2><p>对象生成时会自动调用构造函数，只要找到了定义对象的地方就找了构造函数的调用时机。不同作用域对象声明周期不同。</p>
+<p>将对象进行分类：不同类型的对象的构造函数被调用的时机会发生变化，但都会遵循C++语法；定义的同时调用构造函数，那么只要知道了对象的生命周期，便可以推断出构造函数的调用时机；</p>
+<h3 id="局部对象"><a href="#局部对象" class="headerlink" title="局部对象"></a>局部对象</h3><p>局部对象下的构造函数的出现实际比较容易识别。当对象产生时，便有可能引发构造函数的调用。编译器隐藏了构造函数的调用过程；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">21:   int main(int argc, char* argv[])</span><br><span class="line">22:   &#123;</span><br><span class="line">00401060   push        ebp</span><br><span class="line">00401061   mov         ebp,esp</span><br><span class="line">00401063   sub         esp,44h</span><br><span class="line">00401066   push        ebx</span><br><span class="line">00401067   push        esi</span><br><span class="line">00401068   push        edi</span><br><span class="line">00401069   lea         edi,[ebp-44h]</span><br><span class="line">0040106C   mov         ecx,11h</span><br><span class="line">00401071   mov         eax,0CCCCCCCCh</span><br><span class="line">00401076   rep stos    dword ptr [edi]</span><br><span class="line">23:       CNumber Number;</span><br><span class="line">00401078   lea         ecx,[ebp-4]			;获得对象首地址，传入ecx中作为参数</span><br><span class="line">0040107B   call        @ILT+0(CNumber::CNumber) (00401005)</span><br><span class="line">24:       return 0;</span><br><span class="line">00401080   xor         eax,eax</span><br><span class="line">25:   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">16:   CNumber::CNumber()</span><br><span class="line">17:   &#123;</span><br><span class="line">00401020   push        ebp</span><br><span class="line">00401021   mov         ebp,esp</span><br><span class="line">00401023   sub         esp,44h</span><br><span class="line">00401026   push        ebx</span><br><span class="line">00401027   push        esi</span><br><span class="line">00401028   push        edi</span><br><span class="line">00401029   push        ecx</span><br><span class="line">0040102A   lea         edi,[ebp-44h]</span><br><span class="line">0040102D   mov         ecx,11h</span><br><span class="line">00401032   mov         eax,0CCCCCCCCh</span><br><span class="line">00401037   rep stos    dword ptr [edi]</span><br><span class="line">00401039   pop         ecx						;还原ecx</span><br><span class="line">0040103A   mov         dword ptr [ebp-4],ecx	;this指针</span><br><span class="line">18:       m_nNumber &#x3D; 1;</span><br><span class="line">0040103D   mov         eax,dword ptr [ebp-4]	;[ebp-4]为this指针，eax保存了对象的首地址</span><br><span class="line">00401040   mov         dword ptr [eax],1		;偏移量为0，所以eax不需要加</span><br><span class="line">19:   &#125;</span><br><span class="line">00401046   mov         eax,dword ptr [ebp-4]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>当在进入对象的作用域时，编译器会产生调用构造函数的代码。由于构造函数属于成员函数，因此在调用过程中需要传递this指针。构造函数调用结束后，会将this指针作为返回值；</p>
+<ul>
+<li>该成员函数是这个对象在作用域内调用的第一个成员函数，根据this指针即可区分每个对象；</li>
+<li>这个函数必须返回this指针</li>
+<li>使用其他调用约定，编译器会提示调用约定无效</li>
+<li>构造函数返回的值不被调用方使用</li>
+</ul>
+<h3 id="堆对象"><a href="#堆对象" class="headerlink" title="堆对象"></a>堆对象</h3><p>堆对象的识别重点在于识别堆空间的申请与释放。在C++中堆申请需要使用malooc、new运算或其他具有相同功能的函数；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">class CNumber</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	int i;</span><br><span class="line">	int j;</span><br><span class="line">	CNumber();</span><br><span class="line">	~CNumber();</span><br><span class="line">protected:</span><br><span class="line">private:</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CNumber::CNumber()</span><br><span class="line">&#123;</span><br><span class="line">	;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CNumber::~CNumber()</span><br><span class="line">&#123;</span><br><span class="line">	;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CNumber *pNumber &#x3D; NULL;</span><br><span class="line">	pNumber &#x3D; new CNumber;</span><br><span class="line"></span><br><span class="line">	pNumber-&gt;i &#x3D; 100;</span><br><span class="line">	printf(&quot;%d\n&quot;,pNumber-&gt;i);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">30:       CNumber *pNumber &#x3D; NULL;</span><br><span class="line">004010BD   mov         dword ptr [ebp-10h],0				;给指针赋值为0</span><br><span class="line">31:       pNumber &#x3D; new CNumber;</span><br><span class="line">004010C4   push        8									;压入类的大小</span><br><span class="line">004010C6   call        operator new (00401280)				;函数重载，后续介绍</span><br><span class="line">004010CB   add         esp,4								;</span><br><span class="line">004010CE   mov         dword ptr [ebp-18h],eax				;使用临时变量保存new的返回值，new返回值为对象首地址</span><br><span class="line">004010D1   mov         dword ptr [ebp-4],0					;[ebp-4]保存堆申请次数</span><br><span class="line">004010D8   cmp         dword ptr [ebp-18h],0				;检测堆空间是否申请成功</span><br><span class="line">004010DC   je          main+5Bh (004010eb)					;失败则跳过构造函数</span><br><span class="line">004010DE   mov         ecx,dword ptr [ebp-18h]				;使用ecx传递this指针</span><br><span class="line">004010E1   call        @ILT+0(CNumber::CNumber) (00401005)	;构造函数</span><br><span class="line">004010E6   mov         dword ptr [ebp-1Ch],eax				;构造函数返回this指针</span><br><span class="line">004010E9   jmp         main+62h (004010f2)					;编译器产生双分支结构，用于检查new是否成功</span><br><span class="line">004010EB   mov         dword ptr [ebp-1Ch],0				;堆申请失败，设置指针值为NULL</span><br><span class="line">004010F2   mov         eax,dword ptr [ebp-1Ch]				;</span><br><span class="line">004010F5   mov         dword ptr [ebp-14h],eax</span><br><span class="line">004010F8   mov         dword ptr [ebp-4],0FFFFFFFFh</span><br><span class="line">004010FF   mov         ecx,dword ptr [ebp-14h]</span><br><span class="line">00401102   mov         dword ptr [ebp-10h],ecx</span><br><span class="line">32:</span><br><span class="line">33:       pNumber-&gt;i &#x3D; 100;</span><br><span class="line">00401105   mov         edx,dword ptr [ebp-10h]				;edx获得this指针</span><br><span class="line">00401108   mov         dword ptr [edx],64h					;对成员函数赋值</span><br><span class="line">34:       printf(&quot;%d\n&quot;,pNumber-&gt;i);</span><br><span class="line">0040110E   mov         eax,dword ptr [ebp-10h]</span><br><span class="line">00401111   mov         ecx,dword ptr [eax]</span><br><span class="line">00401113   push        ecx</span><br><span class="line">00401114   push        offset string &quot;%d\n&quot; (0042501c)</span><br><span class="line">00401119   call        printf (00401200)</span><br><span class="line">0040111E   add         esp,8</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>如果堆申请失败，则会避开调用构造函数，因为在C++语法中，new成功后，返回值为对象的首地址，否则为NULL。因此编译器需要检查堆空间申请结果，产生一个双分支，以此决定是否触发构造函数。</strong></p>
+<h3 id="全局对象"><a href="#全局对象" class="headerlink" title="全局对象"></a>全局对象</h3><ul>
+<li>debug版本下在<code>_cinit</code>函数的第二个<code>_initterm</code>函数中的函数指针，有个<code>$e4</code>开头的标号</li>
+<li>$e4:构造函数的代理的代理，先执行构造函数的代理然后执行析构函数的代理的代理<ul>
+<li>$e1:执行构造函数代理</li>
+<li>$e3:注册析构函数的代理的代理<ul>
+<li>$e2:析构函数代理，调用atexit内部的函数指针</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>$E4(构造函数的代理的代理)-&gt;$E1(构造函数的代理)。析构在$E4-&gt;$E3（注册析构函数代理的代理）-&gt;$E2（析构函数的代理.调用atexit(offset E2）</li>
+</ul>
+<p><img src="/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C0.png"></p>
+<p>快速识别方法:</p>
+<ul>
+<li>首先找到cinit</li>
+<li>查看__initterm值</li>
+</ul>
+<p><img src="/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C1.png"></p>
+<h3 id="全局对象与静态对象"><a href="#全局对象与静态对象" class="headerlink" title="全局对象与静态对象"></a>全局对象与静态对象</h3><p>全局对象与静态对象的构造时机相同，它们的构造函数的调用被隐藏起来，但识别很容易。因为程序中所有全局对象将会在同一地点调用构造函数以初始化数据。</p>
+<p><strong>构造函数需要传递对象的首地址作为this指针，而且构造函数可以带各类参数。</strong></p>
+<ul>
+<li>直接定位初始化函数<ul>
+<li>先进入MainCRTStartup函数中，然后找到初始化函数_cinit，在_cinit函数的第二个__initterm处设置断点。</li>
+</ul>
+</li>
+<li>栈回溯</li>
+</ul>
+<h3 id="对象数组"><a href="#对象数组" class="headerlink" title="对象数组"></a>对象数组</h3><h5 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h5><ul>
+<li>new[]指针往上4个字节可以看到对象总个数，增加是正序增加</li>
+<li>delete[]会逆序释放</li>
+<li>对象数组构造的五个参数<ol>
+<li>对象数组的首地址</li>
+<li>构造函数的指针</li>
+<li>数组对象的总个数</li>
+<li>对象的大小</li>
+<li>析构函数指针</li>
+</ol>
+</li>
+</ul>
+<h5 id="析构"><a href="#析构" class="headerlink" title="析构"></a>析构</h5><ul>
+<li>会无条件执行析构函数</li>
+<li>对象数组析构必要条件<ol>
+<li>对象数组的首地址</li>
+<li>对象的大小</li>
+<li>对象的数量</li>
+<li>析构函数的地址</li>
+<li>当对象数组的时候多了一个位表示是否数组对象</li>
+</ol>
+</li>
+</ul>
+<p><img src="/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C2.png"></p>
+<p>地址004014D7的位置为对象数组的首地址</p>
+<p>地址004014DC的位置为构造函数的指针</p>
+<p>地址004014EA的位置为数组对象的个数</p>
+<p>地址004014EC的位置为数组对象的大小</p>
+<p>地址004014F4的位置为构造函数的指针，也就是this指针</p>
+<p><img src="/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C3.png"></p>
+<p>析构的顺序也是一样的；</p>
+<p><img src="/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84%5C4.png"></p>
+<p>这里有一个需要注意的地方，就是00401690处的and 2指令，这条指令大概意思是取到处第二位判断，是否为对象数组；</p>
+<p>004016B1处的and 1指令为取最低位，如果为1，则释放空间；</p>
+<h3 id="参数对象"><a href="#参数对象" class="headerlink" title="参数对象"></a>参数对象</h3><p>参数对象属于局部对象中一种特殊的饿情况。当对象作为参数时，调用一个特殊的构造函数-拷贝构造函数。该构造函数只有一个参数，类型为对象的引用；</p>
+<p>当对象为参数时，会触发此类对象的拷贝构造函数。如果在函数调用时传递该对象，参数会进行复制，形参是实参的副本，相当于拷贝构造了一个全新的对象。由于定义了新对象，会触发拷贝构造函数，在这个特殊的构造函数中完成对象的数据赋值；</p>
+<p>当然我们不对构造函数进行拷贝构造函数的书写，那么编译器会为我们默认提供一个浅拷贝函数；</p>
+<ul>
+<li><p>函数调用前执行构造（拷贝），里面执行析构</p>
+</li>
+<li><p>分小对象和大对象、有没有拷贝构造</p>
+</li>
+<li><p>小对象会简单push</p>
+</li>
+<li><p>大对象会生成：<code>mov edi, esp</code>这一句汇编，相当于浅拷贝</p>
+</li>
+<li><p>有拷贝构造时，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov ecx, esp</span><br></pre></td></tr></table></figure>
+
+<p>this指向栈顶</p>
+<ul>
+<li>构造再函数外，析构再函数内</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">125:      CMyString str;</span><br><span class="line">0040155D   lea         ecx,[ebp-14h]			;获取str对象的首地址</span><br><span class="line">00401560   call        @ILT+5(CMyString::CMyString) (0040100a)	;调用构造函数，没有拷贝构造函数</span><br><span class="line">00401565   mov         dword ptr [ebp-4],0		</span><br><span class="line">126:      CMyString Two(str);</span><br><span class="line">0040156C   mov         eax,dword ptr [ebp-14h]		;取出对象str中数据成员信息</span><br><span class="line">0040156F   mov         dword ptr [ebp-1Ch],eax		;赋值对象Two中数据成员的值</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>虽然编译器提供了默认浅拷贝很方便，但在某些情况下会导致程序出错；</p>
+<p>拷贝构造函数在函数外构造，函数内析构；</p>
+<h2 id="返回对象"><a href="#返回对象" class="headerlink" title="返回对象"></a>返回对象</h2><h3 id="非赋值返回"><a href="#非赋值返回" class="headerlink" title="非赋值返回"></a>非赋值返回</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">CMyString GetString()</span><br><span class="line">&#123;</span><br><span class="line">	CMyString str &#x3D; &quot;Hello,World!&quot;;</span><br><span class="line">	return str;</span><br><span class="line">&#125;	</span><br><span class="line">	</span><br><span class="line">CMyString str1 &#x3D; GetString();  并非赋值，调用拷贝构造	不产生临时对象</span><br><span class="line">133:      CMyString str1 &#x3D; GetString();</span><br><span class="line">0040F5DD   lea         eax,[ebp-14h]</span><br><span class="line">0040F5E0   push        eax</span><br><span class="line">0040F5E1   call        @ILT+55(GetString) (0040103c)</span><br><span class="line">0040F5E6   add         esp,4</span><br><span class="line">0040F5E9   mov         dword ptr [ebp-4],0</span><br><span class="line"></span><br><span class="line">;构造函数</span><br><span class="line">004015F8   lea         eax,[ebp-14h]</span><br><span class="line">004015FB   push        eax</span><br><span class="line">004015FC   mov         ecx,dword ptr [ebp+8]</span><br><span class="line">004015FF   call        @ILT+5(CMyString::CMyString) (0040100a)		;退出之前构造</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">0040F606   mov         dword ptr [ebp-18h],0</span><br><span class="line">0040F60D   mov         dword ptr [ebp-4],0FFFFFFFFh</span><br><span class="line">0040F614   lea         ecx,[ebp-14h]</span><br><span class="line">0040F617   call        @ILT+40(CMyString::~CMyString) (0040102d)</span><br><span class="line">0040F61C   mov         eax,dword ptr [ebp-18h]</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>会再函数内构造，函数外析构</li>
+<li>拷贝构造的软条件：<ul>
+<li>是个构造函数</li>
+<li>该构造函数的参数是本类对象的指针</li>
+<li>如果没有拷贝构造，则就是以参数为目标的memcpy的行为</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">CMyString <span class="title">GetString</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">CMyString <span class="title">str</span><span class="params">(<span class="string">&quot;teste&quot;</span>)</span></span>;</span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    CMyString str = GetString(); <span class="comment">//此处属于拷贝构造，不属于赋值运算，所以不产生临时对象</span></span><br><span class="line">    <span class="comment">//相当于</span></span><br><span class="line">    <span class="comment">//CMyString str = GetString(&amp;str);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>识别方式：</p>
+<ul>
+<li>函数的参数1为返回对象的指针</li>
+<li>返回对象的函数返回值为参数1</li>
+<li>再返回对象的函数内（退出前），会执行以参数1为this的拷贝构造函数，<ul>
+<li>如果没有拷贝构造，则执行浅拷贝（大对象有memcpy的行为，小对象寄存器赋值）</li>
+</ul>
+</li>
+<li>返回对象的析构实际再返回对象函数以外</li>
+</ul>
+<h3 id="隐含参数"><a href="#隐含参数" class="headerlink" title="隐含参数"></a>隐含参数</h3><p>隐藏一个返回对象的指针，做返回值；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CMyString GetString(&amp;str1)</span><br><span class="line">&#123;</span><br><span class="line">	CMyString str &#x3D; &quot;Hello,World!&quot;;</span><br><span class="line">	return str;</span><br><span class="line">&#125;	</span><br><span class="line">	</span><br><span class="line">CMyString str1 &#x3D; GetString();  并非赋值，调用拷贝构造</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="拷贝构造"><a href="#拷贝构造" class="headerlink" title="拷贝构造"></a>拷贝构造</h3><ul>
+<li>识别为构造函数</li>
+<li>该函数的参数为本类对象的指针，有且仅有这一个参数</li>
+<li>在对象传参的时候，调用了这个函数</li>
+<li>在对象作为返回值的时候，调用了这个函数</li>
+<li>拷贝构造函数的识别可以和参数对象以及返回对象相互举证</li>
+</ul>
+<h3 id="临时对象"><a href="#临时对象" class="headerlink" title="临时对象"></a>临时对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">CMyString GetString()</span><br><span class="line">&#123;</span><br><span class="line">	CMyString str &#x3D; &quot;Hello,World!&quot;;</span><br><span class="line">	return str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	&#x2F;&#x2F;CMyString str &#x3D; &quot;sYstemk1t&quot;;</span><br><span class="line">	&#x2F;&#x2F;CMyString str &#x3D; &quot;sYstemk1t&quot;;</span><br><span class="line">	&#x2F;&#x2F;CMyString str1 &#x3D; GetString();</span><br><span class="line">	&#x2F;&#x2F;printf(&quot;%d\n&quot;,str1.GetLength());</span><br><span class="line">	CMyString str1;</span><br><span class="line">	str1 &#x3D; GetString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">135:      CMyString str1;</span><br><span class="line">0040F5DD   lea         ecx,[ebp-14h]			;传递局部对象首地址</span><br><span class="line">0040F5E0   call        @ILT+10(CMyString::CMyString) (0040100f)		;调用构造函数</span><br><span class="line">0040F5E5   mov         dword ptr [ebp-4],0		;局部变量给0</span><br><span class="line">136:      str1 &#x3D; GetString();</span><br><span class="line">0040F5EC   lea         eax,[ebp-1Ch]			;临时变量</span><br><span class="line">0040F5EF   push        eax						;返回局部结果</span><br><span class="line">0040F5F0   call        @ILT+55(GetString) (0040103c)	;构造函数</span><br><span class="line">0040F5F5   add         esp,4</span><br><span class="line">0040F5F8   mov         dword ptr [ebp-24h],eax	;浅拷贝开始</span><br><span class="line">0040F5FB   mov         ecx,dword ptr [ebp-24h]</span><br><span class="line">0040F5FE   mov         edx,dword ptr [ecx]</span><br><span class="line">0040F600   mov         eax,dword ptr [ecx+4]</span><br><span class="line">0040F603   mov         dword ptr [ebp-14h],edx</span><br><span class="line">0040F606   mov         dword ptr [ebp-10h],eax	;浅拷贝结束</span><br><span class="line">0040F609   lea         ecx,[ebp-1Ch]			;获得首地址</span><br><span class="line">0040F60C   call        @ILT+40(CMyString::~CMyString) (0040102d)	;析构局部对象</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>临时对象的生命期从函数内执行构造开始，到本条语句结束结束为止（遇到分号则析构）</strong></p>
+<h3 id="无名对象"><a href="#无名对象" class="headerlink" title="无名对象"></a>无名对象</h3><ul>
+<li>无名对象必须由引用去维护</li>
+<li>此处产生无名对象，其特点为使用指针保留并维护这个返回对象的地址</li>
+<li>无名对象的作用域和其引用的作用域定义一致，故此处不会析构这个返回对象</li>
+<li>先识别返回对象，观察对象如何操作，拷贝构造给到第三方后观察有没有析构，如果有析构即可判定为临时对象，如果没有通过拷贝，将返回对象的指针交给第三方维护，即可判定为无名对象</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">CMyString <span class="title">GetString</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">CMyString <span class="title">str</span><span class="params">(<span class="string">&quot;teste&quot;</span>)</span></span>;</span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    CMyString &amp;str = GetString() ；</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/18/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84/" title="C++反汇编与逆向分析 - 构造析构">http://systemk1t.github.io/2021/07/18/C-反汇编与逆向分析-构造析构/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" rel="tag"># 反汇编与逆向分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/" rel="prev" title="C++反汇编与逆向分析 - 类">
+      <i class="fa fa-chevron-left"></i> C++反汇编与逆向分析 - 类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/19/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%99%9A%E5%87%BD%E6%95%B0/" rel="next" title="C++反汇编与逆向分析 - 虚函数">
+      C++反汇编与逆向分析 - 虚函数 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%9E%90%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">构造析构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%87%BA%E7%8E%B0%E6%97%B6%E6%9C%BA"><span class="nav-number">1.1.</span> <span class="nav-text">构造函数出现时机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.1.</span> <span class="nav-text">局部对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.2.</span> <span class="nav-text">堆对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.3.</span> <span class="nav-text">全局对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%AF%B9%E8%B1%A1%E4%B8%8E%E9%9D%99%E6%80%81%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.4.</span> <span class="nav-text">全局对象与静态对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%95%B0%E7%BB%84"><span class="nav-number">1.1.5.</span> <span class="nav-text">对象数组</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">1.1.5.0.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%90%E6%9E%84"><span class="nav-number">1.1.5.0.2.</span> <span class="nav-text">析构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.6.</span> <span class="nav-text">参数对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.2.</span> <span class="nav-text">返回对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E8%B5%8B%E5%80%BC%E8%BF%94%E5%9B%9E"><span class="nav-number">1.2.1.</span> <span class="nav-text">非赋值返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E5%90%AB%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">隐含参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0"><span class="nav-number">1.2.3.</span> <span class="nav-text">拷贝构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.2.4.</span> <span class="nav-text">临时对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E5%90%8D%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.2.5.</span> <span class="nav-text">无名对象</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数组和指针都是对内存地址操作，但是它们有诸多不同之处，数组是相同类型的数据集合，以线性方式连续存储在内存中；而指针只是保存一个地址值的4字节变量。在使用中，数组是一个地址常量值，保存数组首元素地址，不可修改；而指针是一个变量，只要修改指针所保存的地址数据，就可以随意访问；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++反汇编与逆向分析 - 数组">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/14/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%95%B0%E7%BB%84/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="数组和指针都是对内存地址操作，但是它们有诸多不同之处，数组是相同类型的数据集合，以线性方式连续存储在内存中；而指针只是保存一个地址值的4字节变量。在使用中，数组是一个地址常量值，保存数组首元素地址，不可修改；而指针是一个变量，只要修改指针所保存的地址数据，就可以随意访问；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-14T15:27:19.000Z">
+<meta property="article:modified_time" content="2021-07-15T05:48:55.415Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="反汇编与逆向分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/14/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%95%B0%E7%BB%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++反汇编与逆向分析 - 数组 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/14/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%95%B0%E7%BB%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++反汇编与逆向分析 - 数组
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-14 23:27:19" itemprop="dateCreated datePublished" datetime="2021-07-14T23:27:19+08:00">2021-07-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-15 13:48:55" itemprop="dateModified" datetime="2021-07-15T13:48:55+08:00">2021-07-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">逆向分析</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>18 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>数组和指针都是对内存地址操作，但是它们有诸多不同之处，数组是相同类型的数据集合，以线性方式连续存储在内存中；而指针只是保存一个地址值的4字节变量。在使用中，数组是一个地址常量值，保存数组首元素地址，不可修改；而指针是一个变量，只要修改指针所保存的地址数据，就可以随意访问；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 7家庭版</li>
+<li>编译器：VC6 VS2013</li>
+</ul>
+<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><h2 id="数组在函数内"><a href="#数组在函数内" class="headerlink" title="数组在函数内"></a>数组在函数内</h2><p>当在函数内定义数组时，如果没有其他声明，该数组即为局部变量，拥有局部变量的所有特性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">10:       int Array[5] &#x3D; &#123;1, 2, 3, 4, 5&#125;;</span><br><span class="line">0040D7A8   mov         dword ptr [ebp-14h],1</span><br><span class="line">0040D7AF   mov         dword ptr [ebp-10h],2</span><br><span class="line">0040D7B6   mov         dword ptr [ebp-0Ch],3</span><br><span class="line">0040D7BD   mov         dword ptr [ebp-8],4</span><br><span class="line">0040D7C4   mov         dword ptr [ebp-4],5</span><br><span class="line">11:       int nOne &#x3D; 1;</span><br><span class="line">0040D7CB   mov         dword ptr [ebp-18h],1</span><br><span class="line">12:       int nTwo &#x3D; 2;</span><br><span class="line">0040D7D2   mov         dword ptr [ebp-1Ch],2</span><br><span class="line">13:       int nThree &#x3D; 3;</span><br><span class="line">0040D7D9   mov         dword ptr [ebp-20h],3</span><br><span class="line">14:       int nFour &#x3D; 4;</span><br><span class="line">0040D7E0   mov         dword ptr [ebp-24h],4</span><br><span class="line">15:       int nFive &#x3D; 5;</span><br><span class="line">0040D7E7   mov         dword ptr [ebp-28h],5</span><br></pre></td></tr></table></figure>
+
+<p>**    //数组有变量或变量表达式作为下标访问 **<br>**    //数组有循环结构去处理数组内各个元素的流程 **</p>
+<p>**    //当局部变量连续但类型不同时，将更容易区分与数组间的不同 **</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">10:       int Array[5] &#x3D; &#123;1, 2, 3, 4, 5&#125;;</span><br><span class="line">0040102B   mov         dword ptr [ebp-14h],1			;数组首地址</span><br><span class="line">00401032   mov         dword ptr [ebp-10h],2</span><br><span class="line">00401039   mov         dword ptr [ebp-0Ch],3</span><br><span class="line">00401040   mov         dword ptr [ebp-8],4</span><br><span class="line">00401047   mov         dword ptr [ebp-4],5</span><br><span class="line">11:       int nOne &#x3D; 1;</span><br><span class="line">0040104E   mov         dword ptr [ebp-18h],1</span><br><span class="line">12:       int nTwo &#x3D; 2;</span><br><span class="line">00401055   mov         dword ptr [ebp-1Ch],2</span><br><span class="line">13:       int nThree &#x3D; 3;</span><br><span class="line">0040105C   mov         dword ptr [ebp-20h],3</span><br><span class="line">14:       char cChar &#x3D; &#39;A&#39;;</span><br><span class="line">00401063   mov         byte ptr [ebp-24h],41h			;连续DWORD中存在一个byte</span><br><span class="line">15:       float fLoat &#x3D; 1.0f;</span><br><span class="line">00401067   mov         dword ptr [ebp-28h],3F800000h</span><br><span class="line">16:</span><br><span class="line">17:       int nInt &#x3D; 2;</span><br><span class="line">0040106E   mov         dword ptr [ebp-2Ch],2</span><br><span class="line">18:       short sShort &#x3D; 1;</span><br><span class="line">00401075   mov         word ptr [ebp-30h],offset main+69h (00401079)</span><br><span class="line">19:       double dDouble &#x3D; 20.f;</span><br><span class="line">0040107B   mov         dword ptr [ebp-38h],0</span><br><span class="line">00401082   mov         dword ptr [ebp-34h],40340000h</span><br><span class="line">20:       int nFour &#x3D; 4;</span><br><span class="line">00401089   mov         dword ptr [ebp-3Ch],4</span><br><span class="line">21:       int nFive &#x3D; 5;</span><br><span class="line">00401090   mov         dword ptr [ebp-40h],5</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>当我们使用表达式寻址的时候；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">0040104B   mov         eax,dword ptr [ebp-8]				;数组下标访问，ary + sizeof(type) * n </span><br><span class="line">															;这里存在常量折叠</span><br><span class="line">0040104E   push        eax</span><br><span class="line">0040104F   push        offset string &quot;%d\n&quot; (0042601c)</span><br><span class="line">00401054   call        printf (00401130)</span><br><span class="line">00401059   add         esp,8</span><br><span class="line">27:       printf(&quot;%d\n&quot;,Array[argc]);</span><br><span class="line">0040105C   mov         ecx,dword ptr [ebp+8]</span><br><span class="line">0040105F   mov         edx,dword ptr [ebp+ecx*4-14h]</span><br><span class="line">00401063   push        edx</span><br><span class="line">00401064   push        offset string &quot;%d\n&quot; (0042601c)</span><br><span class="line">00401069   call        printf (00401130)</span><br><span class="line">0040106E   add         esp,8</span><br><span class="line">28:       printf(&quot;%d\n&quot;,Array[argc % 8]);</span><br><span class="line">00401071   mov         eax,dword ptr [ebp+8]</span><br><span class="line">00401074   and         eax,80000007h</span><br><span class="line">00401079   jns         main+70h (00401080)</span><br><span class="line">0040107B   dec         eax</span><br><span class="line">0040107C   or          eax,0F8h</span><br><span class="line">0040107F   inc         eax</span><br><span class="line">00401080   mov         ecx,dword ptr [ebp+eax*4-14h]</span><br><span class="line">00401084   push        ecx</span><br><span class="line">00401085   push        offset string &quot;%d\n&quot; (0042601c)</span><br><span class="line">0040108A   call        printf (00401130)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>在Release版本下，使用esi寻址，也就是指针寻址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">.text:00401000 ; int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">.text:00401000 _main           proc near               ; CODE XREF: start+AF↓p</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000 var_14          &#x3D; dword ptr -14h</span><br><span class="line">.text:00401000 var_10          &#x3D; dword ptr -10h</span><br><span class="line">.text:00401000 var_C           &#x3D; dword ptr -0Ch</span><br><span class="line">.text:00401000 var_8           &#x3D; dword ptr -8</span><br><span class="line">.text:00401000 var_4           &#x3D; dword ptr -4</span><br><span class="line">.text:00401000 argc            &#x3D; dword ptr  4</span><br><span class="line">.text:00401000 argv            &#x3D; dword ptr  8</span><br><span class="line">.text:00401000 envp            &#x3D; dword ptr  0Ch</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000                 sub     esp, 14h</span><br><span class="line">.text:00401003                 push    esi</span><br><span class="line">.text:00401004                 push    edi</span><br><span class="line">.text:00401005                 mov     edi, 5</span><br><span class="line">.text:0040100A                 mov     [esp+1Ch+var_14], 1</span><br><span class="line">.text:00401012                 mov     [esp+1Ch+var_10], 2</span><br><span class="line">.text:0040101A                 mov     [esp+1Ch+var_C], 3</span><br><span class="line">.text:00401022                 mov     [esp+1Ch+var_8], 4</span><br><span class="line">.text:0040102A                 mov     [esp+1Ch+var_4], edi</span><br><span class="line">.text:0040102E                 lea     esi, [esp+1Ch+var_14]</span><br><span class="line">.text:00401032</span><br><span class="line">.text:00401032 loc_401032:                             ; CODE XREF: _main+46↓j</span><br><span class="line">.text:00401032                 mov     eax, [esi]			;将5放入eax寄存器</span><br><span class="line">.text:00401034                 push    eax				</span><br><span class="line">.text:00401035                 push    offset Format   ; &quot;%d\n&quot;</span><br><span class="line">.text:0040103A                 call    _printf</span><br><span class="line">.text:0040103F                 add     esp, 8</span><br><span class="line">.text:00401042                 add     esi, 4			</span><br><span class="line">.text:00401045                 dec     edi			;减1</span><br><span class="line">.text:00401046                 jnz     short loc_401032</span><br><span class="line">.text:00401048                 pop     edi</span><br><span class="line">.text:00401049                 xor     eax, eax</span><br><span class="line">.text:0040104B                 pop     esi</span><br><span class="line">.text:0040104C                 add     esp, 14h</span><br><span class="line">.text:0040104F                 retn</span><br><span class="line">.text:0040104F _main           endp</span><br><span class="line">.text:0040104F</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>在高版本编译器下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">.text:00401040 sub_401040      proc near               ; CODE XREF: start-8D↓p</span><br><span class="line">.text:00401040</span><br><span class="line">.text:00401040 var_14          &#x3D; xmmword ptr -14h</span><br><span class="line">.text:00401040 var_4           &#x3D; dword ptr -4</span><br><span class="line">.text:00401040</span><br><span class="line">.text:00401040                 push    ebp</span><br><span class="line">.text:00401041                 mov     ebp, esp</span><br><span class="line">.text:00401043                 sub     esp, 14h</span><br><span class="line">.text:00401046                 movaps  xmm0, ds:xmmword_402110</span><br><span class="line">.text:0040104D                 push    esi</span><br><span class="line">.text:0040104E                 movups  [ebp+var_14], xmm0</span><br><span class="line">.text:00401052                 mov     [ebp+var_4], 5</span><br><span class="line">.text:00401059                 xor     esi, esi</span><br><span class="line">.text:0040105B                 nop     dword ptr [eax+eax+00h]</span><br><span class="line">.text:00401060</span><br><span class="line">.text:00401060 loc_401060:                             ; CODE XREF: sub_401040+35↓j</span><br><span class="line">.text:00401060                 push    dword ptr [ebp+esi*4+var_14]</span><br><span class="line">.text:00401064                 push    offset unk_402108</span><br><span class="line">.text:00401069                 call    sub_401010</span><br><span class="line">.text:0040106E                 inc     esi</span><br><span class="line">.text:0040106F                 add     esp, 8</span><br><span class="line">.text:00401072                 cmp     esi, 5</span><br><span class="line">.text:00401075                 jl      short loc_401060</span><br><span class="line">.text:00401077                 xor     eax, eax</span><br><span class="line">.text:00401079                 pop     esi</span><br><span class="line">.text:0040107A                 mov     esp, ebp</span><br><span class="line">.text:0040107C                 pop     ebp</span><br><span class="line">.text:0040107D                 retn</span><br><span class="line">.text:0040107D sub_401040      endp</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="数组做参数"><a href="#数组做参数" class="headerlink" title="数组做参数"></a>数组做参数</h2><p>数组中数据元素连续存储，并且数组是同类型的集合。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">debug版本：</span><br><span class="line">17:       char szHello[20] &#x3D; &#123;0&#125;;</span><br><span class="line">00401098   mov         byte ptr [ebp-14h],0</span><br><span class="line">0040109C   xor         eax,eax</span><br><span class="line">0040109E   mov         dword ptr [ebp-13h],eax</span><br><span class="line">004010A1   mov         dword ptr [ebp-0Fh],eax</span><br><span class="line">004010A4   mov         dword ptr [ebp-0Bh],eax</span><br><span class="line">004010A7   mov         dword ptr [ebp-7],eax</span><br><span class="line">004010AA   mov         word ptr [ebp-3],ax</span><br><span class="line">004010AE   mov         byte ptr [ebp-1],al</span><br><span class="line">18:       Show(szHello);</span><br><span class="line">004010B1   lea         ecx,[ebp-14h]			;取首地址存入ECX寄存器中</span><br><span class="line">004010B4   push        ecx						;将ECX寄存器参数压栈</span><br><span class="line">004010B5   call        @ILT+5(Show) (0040100a)</span><br><span class="line">004010BA   add         esp,4					;平衡栈</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">00401020   push        ebp</span><br><span class="line">00401021   mov         ebp,esp</span><br><span class="line">00401023   sub         esp,40h</span><br><span class="line">00401026   push        ebx</span><br><span class="line">00401027   push        esi</span><br><span class="line">00401028   push        edi</span><br><span class="line">00401029   lea         edi,[ebp-40h]</span><br><span class="line">0040102C   mov         ecx,10h</span><br><span class="line">00401031   mov         eax,0CCCCCCCCh</span><br><span class="line">00401036   rep stos    dword ptr [edi]</span><br><span class="line">10:       strcpy(szBuffer,&quot;HelloWorld&quot;);</span><br><span class="line">00401038   push        offset string &quot;HelloWorld&quot; (0042201c)		;获取常量首地址，并将此地址压入栈中</span><br><span class="line">0040103D   mov         eax,dword ptr [ebp+8]						;取参数szBuffer地址存入EAX中</span><br><span class="line">00401040   push        eax											;压栈作为strcpy的参数</span><br><span class="line">00401041   call        strcpy (00401180)					</span><br><span class="line">00401046   add         esp,8</span><br><span class="line">11:       printf(szBuffer);</span><br><span class="line">00401049   mov         ecx,dword ptr [ebp+8]</span><br><span class="line">0040104C   push        ecx</span><br><span class="line">0040104D   call        printf (00401100)</span><br><span class="line">00401052   add         esp,4</span><br><span class="line">12:       printf(&quot;\r\n&quot;);</span><br><span class="line">00401055   push        offset string &quot;\r\n&quot; (004224bc)</span><br><span class="line">0040105A   call        printf (00401100)</span><br><span class="line">0040105F   add         esp,4</span><br><span class="line">13:   &#125;</span><br><span class="line">00401062   pop         edi</span><br><span class="line">00401063   pop         esi</span><br><span class="line">00401064   pop         ebx</span><br><span class="line">00401065   add         esp,40h</span><br><span class="line">00401068   cmp         ebp,esp</span><br><span class="line">0040106A   call        __chkesp (00401270)</span><br><span class="line">0040106F   mov         esp,ebp</span><br><span class="line">00401071   pop         ebp</span><br><span class="line">00401072   ret</span><br></pre></td></tr></table></figure>
+
+
+
+<p>Release版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">.text:00401040 ; int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">.text:00401040 _main           proc near               ; CODE XREF: start+AF↓p</span><br><span class="line">.text:00401040</span><br><span class="line">.text:00401040 var_14          &#x3D; byte ptr -14h</span><br><span class="line">.text:00401040 var_13          &#x3D; dword ptr -13h</span><br><span class="line">.text:00401040 var_F           &#x3D; dword ptr -0Fh</span><br><span class="line">.text:00401040 var_B           &#x3D; dword ptr -0Bh</span><br><span class="line">.text:00401040 var_7           &#x3D; dword ptr -7</span><br><span class="line">.text:00401040 var_3           &#x3D; word ptr -3</span><br><span class="line">.text:00401040 var_1           &#x3D; byte ptr -1</span><br><span class="line">.text:00401040 argc            &#x3D; dword ptr  4</span><br><span class="line">.text:00401040 argv            &#x3D; dword ptr  8</span><br><span class="line">.text:00401040 envp            &#x3D; dword ptr  0Ch</span><br><span class="line">.text:00401040</span><br><span class="line">.text:00401040                 sub     esp, 14h</span><br><span class="line">.text:00401043                 xor     eax, eax</span><br><span class="line">.text:00401045                 lea     ecx, [esp+14h+var_14]</span><br><span class="line">.text:00401049                 mov     [esp+14h+var_13], eax</span><br><span class="line">.text:0040104D                 push    ecx</span><br><span class="line">.text:0040104E                 mov     [esp+18h+var_F], eax</span><br><span class="line">.text:00401052                 mov     [esp+18h+var_14], 0</span><br><span class="line">.text:00401057                 mov     [esp+18h+var_B], eax</span><br><span class="line">.text:0040105B                 mov     [esp+18h+var_7], eax</span><br><span class="line">.text:0040105F                 mov     [esp+18h+var_3], ax</span><br><span class="line">.text:00401064                 mov     [esp+18h+var_1], al			;栈中清零</span><br><span class="line">.text:00401068                 call    sub_401000</span><br><span class="line">.text:0040106D                 xor     eax, eax</span><br><span class="line">.text:0040106F                 add     esp, 18h</span><br><span class="line">.text:00401072                 retn</span><br><span class="line">.text:00401072 _main           endp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">.text:00401000                 push    esi</span><br><span class="line">.text:00401001                 push    edi			</span><br><span class="line">.text:00401002                 mov     edi, offset aHelloworld ; ；&quot;HelloWorld&quot; </span><br><span class="line">.text:00401007                 or      ecx, 0FFFFFFFFh			;将ECX置位-1，是为了配合repne scasb指令</span><br><span class="line">.text:0040100A                 xor     eax, eax					;eax为0</span><br><span class="line">.text:0040100C                 repne scasb						;repne&#x2F;repnz与scas指令结合使用，表示串未结束</span><br><span class="line">																;</span><br><span class="line">.text:0040100E                 mov     eax, [esp+8+arg_0]		;获取参数内容，向EDI中赋值字符串首地址</span><br><span class="line">.text:00401012                 not     ecx						;对ECX取反</span><br><span class="line">.text:00401014                 sub     edi, ecx					</span><br><span class="line">.text:00401016                 push    eax				</span><br><span class="line">.text:00401017                 mov     edx, ecx</span><br><span class="line">.text:00401019                 mov     esi, edi</span><br><span class="line">.text:0040101B                 mov     edi, eax</span><br><span class="line">.text:0040101D                 shr     ecx, 2</span><br><span class="line">.text:00401020                 rep movsd</span><br><span class="line">.text:00401022                 mov     ecx, edx</span><br><span class="line">.text:00401024                 and     ecx, 3</span><br><span class="line">.text:00401027                 rep movsb</span><br><span class="line">.text:00401029                 call    sub_401080</span><br><span class="line">.text:0040102E                 push    offset unk_407030</span><br><span class="line">.text:00401033                 call    sub_401080</span><br><span class="line">.text:00401038                 add     esp, 8</span><br><span class="line">.text:0040103B                 pop     edi</span><br><span class="line">.text:0040103C                 pop     esi</span><br><span class="line">.text:0040103D                 retn</span><br><span class="line">.text:0040103D sub_401000      endp</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="数组作为返回值"><a href="#数组作为返回值" class="headerlink" title="数组作为返回值"></a>数组作为返回值</h2><p>数组作为函数的返回值与作为函数的参数大同小异，都是将数组的首地址以指针的方式进行传递。当数组作为参数时，其定义所在的作用域必然在函数调用以外，在调用之前已经存在。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">char* RetArray()</span><br><span class="line">&#123;</span><br><span class="line">012013D0  push        ebp  </span><br><span class="line">012013D1  mov         ebp,esp  </span><br><span class="line">012013D3  sub         esp,0D8h  </span><br><span class="line">012013D9  push        ebx  </span><br><span class="line">012013DA  push        esi  </span><br><span class="line">012013DB  push        edi  </span><br><span class="line">012013DC  lea         edi,[ebp-0D8h]  </span><br><span class="line">012013E2  mov         ecx,36h  </span><br><span class="line">012013E7  mov         eax,0CCCCCCCCh  </span><br><span class="line">012013EC  rep stos    dword ptr es:[edi]  </span><br><span class="line">012013EE  mov         eax,dword ptr ds:[01208000h]  </span><br><span class="line">012013F3  xor         eax,ebp  </span><br><span class="line">012013F5  mov         dword ptr [ebp-4],eax  </span><br><span class="line">	char szBuffer[] &#x3D; &#123; &quot;Hello World&quot; &#125;;</span><br><span class="line">012013F8  mov         eax,dword ptr ds:[01205858h]  		;字符串数组初始化为字符串</span><br><span class="line">012013FD  mov         dword ptr [szBuffer],eax  </span><br><span class="line">01201400  mov         ecx,dword ptr ds:[120585Ch]  </span><br><span class="line">01201406  mov         dword ptr [ebp-10h],ecx  </span><br><span class="line">01201409  mov         edx,dword ptr ds:[1205860h]  </span><br><span class="line">0120140F  mov         dword ptr [ebp-0Ch],edx  </span><br><span class="line">;使用EAX寄存器保存数组首地址，作为函数返回值。虽然EAX保存的地址存在，但是当函数调用结束后，此地址中数据不稳定，在进行其他操作会破坏数据</span><br><span class="line">	return szBuffer;</span><br><span class="line">01201412  lea         eax,[szBuffer]  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">printf(&quot;%s\n&quot;, RetArray());</span><br><span class="line">0120149E  call        RetArray (0120117Ch)  	;使用RetArray返回数组作为printf参数使用</span><br><span class="line">012014A3  mov         esi,esp  </span><br><span class="line">012014A5  push        eax  </span><br><span class="line">012014A6  push        1205868h  </span><br><span class="line">012014AB  call        dword ptr ds:[1209118h]  </span><br><span class="line">012014B1  add         esp,8  					;平衡堆栈</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="下标寻址和指针寻址"><a href="#下标寻址和指针寻址" class="headerlink" title="下标寻址和指针寻址"></a>下标寻址和指针寻址</h2><p>访问数组的方法有两种：</p>
+<ul>
+<li>下标访问</li>
+<li>指针访问</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">	char *pChar &#x3D; NULL;						</span><br><span class="line">013013E8  mov         dword ptr [pChar],0  	;初始化指针为空</span><br><span class="line">	char szBuffer[] &#x3D; &quot;Hello&quot;;</span><br><span class="line">013013EF  mov         eax,dword ptr ds:[01305858h]  	;初始化数组</span><br><span class="line">013013F4  mov         dword ptr [szBuffer],eax  </span><br><span class="line">013013F7  mov         cx,word ptr ds:[130585Ch]  </span><br><span class="line">013013FE  mov         word ptr [ebp-18h],cx  </span><br><span class="line">	pChar &#x3D; szBuffer;</span><br><span class="line">01301402  lea         eax,[szBuffer]  		;获取数组首地址，使用EDX保存</span><br><span class="line">01301405  mov         dword ptr [pChar],eax  </span><br><span class="line">	printf(&quot;%c\n&quot;, *pChar);</span><br><span class="line">01301408  mov         eax,dword ptr [pChar]  	;通过指针访问数组</span><br><span class="line">0130140B  movsx       ecx,byte ptr [eax]  		;字符串指针的间接访问</span><br><span class="line">0130140E  mov         esi,esp  		</span><br><span class="line">01301410  push        ecx  					;间接访问传参</span><br><span class="line">01301411  push        1305860h  </span><br><span class="line">01301416  call        dword ptr ds:[1309110h]  </span><br><span class="line">0130141C  add         esp,8  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	printf(&quot;%c\n&quot;, szBuffer[1]);</span><br><span class="line">01301426  mov         eax,1  				</span><br><span class="line">0130142B  shl         eax,0  				</span><br><span class="line">0130142E  movsx       ecx,byte ptr szBuffer[eax]  ;数组下标寻址</span><br><span class="line">01301433  mov         esi,esp  </span><br><span class="line">01301435  push        ecx  						;去除数据作为参数</span><br><span class="line">01301436  push        1305860h  </span><br><span class="line">0130143B  call        dword ptr ds:[1309110h]  </span><br><span class="line">01301441  add         esp,8  </span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="指针类型数据的数组"><a href="#指针类型数据的数组" class="headerlink" title="指针类型数据的数组"></a>指针类型数据的数组</h2><p>指针类型的数组就是数组中各元素都是相同类型的指针组成，我们称之为指针数组；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">	char *pBuffer[3] &#x3D; &#123; &quot;Hello&quot;, &quot;World&quot;, &quot;!\r\n&quot; &#125;;</span><br><span class="line">00303B28  mov         dword ptr [pBuffer],305858h  			;初始化字符串指针第一项</span><br><span class="line">00303B2F  mov         dword ptr [ebp-10h],305860h  </span><br><span class="line">00303B36  mov         dword ptr [ebp-0Ch],305868h  </span><br><span class="line">	ShowString(pBuffer);</span><br><span class="line">00303B3D  lea         eax,[pBuffer]  						;首地址</span><br><span class="line">00303B40  push        eax  </span><br><span class="line">00303B41  call        ShowString (03011E0h)  </span><br><span class="line">00303B46  add         esp,4  </span><br><span class="line"></span><br><span class="line">void ShowString(char* pBuffer[])</span><br><span class="line">&#123;</span><br><span class="line">003013C0  push        ebp  </span><br><span class="line">003013C1  mov         ebp,esp  </span><br><span class="line">003013C3  sub         esp,0CCh  </span><br><span class="line">003013C9  push        ebx  </span><br><span class="line">003013CA  push        esi  </span><br><span class="line">003013CB  push        edi  </span><br><span class="line">003013CC  lea         edi,[ebp-0CCh]  </span><br><span class="line">003013D2  mov         ecx,33h  </span><br><span class="line">003013D7  mov         eax,0CCCCCCCCh  </span><br><span class="line">003013DC  rep stos    dword ptr es:[edi]  </span><br><span class="line">	for (size_t i &#x3D; 0; i &lt; 3; i++)</span><br><span class="line">003013DE  mov         dword ptr [ebp-8],0  			</span><br><span class="line">003013E5  jmp         ShowString+30h (03013F0h)  </span><br><span class="line">003013E7  mov         eax,dword ptr [ebp-8]  </span><br><span class="line">003013EA  add         eax,1  </span><br><span class="line">003013ED  mov         dword ptr [ebp-8],eax  </span><br><span class="line">003013F0  cmp         dword ptr [ebp-8],3  </span><br><span class="line">003013F4  jae         ShowString+54h (0301414h)  </span><br><span class="line">	&#123;</span><br><span class="line">		printf(pBuffer[i]);</span><br><span class="line">003013F6  mov         esi,esp  </span><br><span class="line">003013F8  mov         eax,dword ptr [ebp-8]  </span><br><span class="line">003013FB  mov         ecx,dword ptr [pBuffer]  	;取下标值</span><br><span class="line">003013FE  mov         edx,dword ptr [ecx+eax*4]  	;一维数组寻址</span><br><span class="line">00301401  push        edx  						;将字符串首地址压入栈</span><br><span class="line">00301402  call        dword ptr ds:[309110h]  </span><br><span class="line">00301408  add         esp,4  </span><br><span class="line">0030140B  cmp         esi,esp  </span><br><span class="line">0030140D  call        __RTC_CheckEsp (0301140h)  </span><br><span class="line">	&#125;</span><br><span class="line">00301412  jmp         ShowString+27h (03013E7h)  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>数组由三个指针变量组成，故长度为12字节；</p>
+<p>同样存储三个字符串，但指针数组存储的是各个字符串的首地址，而二位字符数组中存储着每个字符串的字符数据；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">char pBuffer1[3][10] &#x3D; &#123; &#123; &quot;Hello&quot; &#125;, &#123; &quot;World&quot; &#125;, &#123; &quot;!\r\n&quot; &#125; &#125;;</span><br><span class="line">00E33CCD  mov         eax,dword ptr ds:[00E35858h]  	;一维数组初始化过程</span><br><span class="line">00E33CD2  mov         dword ptr [pBuffer1],eax  </span><br><span class="line">00E33CD5  mov         cx,word ptr ds:[0E3585Ch]  </span><br><span class="line">00E33CDC  mov         word ptr [ebp-38h],cx  </span><br><span class="line">00E33CE0  xor         eax,eax  </span><br><span class="line">00E33CE2  mov         dword ptr [ebp-36h],eax  </span><br><span class="line">00E33CE5  mov         eax,dword ptr ds:[00E35860h]  </span><br><span class="line">00E33CEA  mov         dword ptr [ebp-32h],eax  </span><br><span class="line">00E33CED  mov         cx,word ptr ds:[0E35864h]  </span><br><span class="line">00E33CF4  mov         word ptr [ebp-2Eh],cx  </span><br><span class="line">00E33CF8  xor         eax,eax  </span><br><span class="line">00E33CFA  mov         dword ptr [ebp-2Ch],eax  </span><br><span class="line">00E33CFD  mov         eax,dword ptr ds:[00E35868h]  </span><br><span class="line">00E33D02  mov         dword ptr [ebp-28h],eax  </span><br><span class="line">00E33D05  xor         eax,eax  </span><br><span class="line">00E33D07  mov         dword ptr [ebp-24h],eax  </span><br><span class="line">00E33D0A  mov         word ptr [ebp-20h],ax  </span><br></pre></td></tr></table></figure>
+
+<p>二维字符数组初始化过程中，赋值的不是字符串地址，而是期中字符数据，据此可以明显地区分它与字符指针数组；</p>
+<h2 id="指向数组的指针变量"><a href="#指向数组的指针变量" class="headerlink" title="指向数组的指针变量"></a>指向数组的指针变量</h2><p>当指针变量保存的数据为数组的首地址，且将此地址结尾数组时，此指针变量本称为数组指针；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">	char cArray[3][10] &#x3D; &#123; &quot;Hello&quot;, &quot;World&quot;, &quot;!\r\n&quot; &#125;;</span><br><span class="line">001E3D7E  mov         eax,dword ptr ds:[001E5858h]  </span><br><span class="line">001E3D83  mov         dword ptr [cArray],eax  </span><br><span class="line">001E3D86  mov         cx,word ptr ds:[1E585Ch]  </span><br><span class="line">001E3D8D  mov         word ptr [ebp-60h],cx  </span><br><span class="line">001E3D91  xor         eax,eax  </span><br><span class="line">001E3D93  mov         dword ptr [ebp-5Eh],eax  </span><br><span class="line">001E3D96  mov         eax,dword ptr ds:[001E5860h]  </span><br><span class="line">001E3D9B  mov         dword ptr [ebp-5Ah],eax  </span><br><span class="line">001E3D9E  mov         cx,word ptr ds:[1E5864h]  </span><br><span class="line">001E3DA5  mov         word ptr [ebp-56h],cx  </span><br><span class="line">001E3DA9  xor         eax,eax  </span><br><span class="line">001E3DAB  mov         dword ptr [ebp-54h],eax  </span><br><span class="line">001E3DAE  mov         eax,dword ptr ds:[001E5868h]  </span><br><span class="line">001E3DB3  mov         dword ptr [ebp-50h],eax  </span><br><span class="line">001E3DB6  xor         eax,eax  </span><br><span class="line">001E3DB8  mov         dword ptr [ebp-4Ch],eax  </span><br><span class="line">001E3DBB  mov         word ptr [ebp-48h],ax  </span><br><span class="line">	char(*pArray)[10] &#x3D; cArray;</span><br><span class="line">001E3DBF  lea         eax,[cArray]  			;取数组首地址存入ECX中</span><br><span class="line">001E3DC2  mov         dword ptr [pArray],eax  </span><br><span class="line">	for (size_t i &#x3D; 0; i &lt; 3; i++)</span><br><span class="line">001E3DC5  mov         dword ptr [ebp-7Ch],0  </span><br><span class="line">001E3DCC  jmp         wmain+0D7h (01E3DD7h)  </span><br><span class="line">001E3DCE  mov         eax,dword ptr [ebp-7Ch]  </span><br><span class="line">001E3DD1  add         eax,1  </span><br><span class="line">	for (size_t i &#x3D; 0; i &lt; 3; i++)</span><br><span class="line">001E3DD4  mov         dword ptr [ebp-7Ch],eax  </span><br><span class="line">001E3DD7  cmp         dword ptr [ebp-7Ch],3  </span><br><span class="line">001E3DDB  jae         wmain+103h (01E3E03h)  </span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;%s\n&quot;, *pArray);</span><br><span class="line">001E3DDD  mov         esi,esp  </span><br><span class="line">001E3DDF  mov         eax,dword ptr [pArray]  </span><br><span class="line">001E3DE2  push        eax  </span><br><span class="line">001E3DE3  push        1E586Ch  </span><br><span class="line">001E3DE8  call        dword ptr ds:[1E9110h]  </span><br><span class="line">001E3DEE  add         esp,8  </span><br><span class="line">001E3DF1  cmp         esi,esp  </span><br><span class="line">001E3DF3  call        __RTC_CheckEsp (01E1140h)  </span><br><span class="line">		pArray++;</span><br><span class="line">001E3DF8  mov         eax,dword ptr [pArray]  </span><br><span class="line">001E3DFB  add         eax,0Ah  					</span><br><span class="line">001E3DFE  mov         dword ptr [pArray],eax  </span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="函数指针"><a href="#函数指针" class="headerlink" title="函数指针"></a>函数指针</h2><p>函数调用过程中，通过call指令跳转到首地址处，执行函数内的指令代码，既然是指针，当然可以使用指针变量进行存储。用于保存函数首地址的指针变量被称为函数指针；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">	void(*pShow)(void) &#x3D; Show;</span><br><span class="line">00BA144E  mov         dword ptr [pShow],0BA11BDh  			;函数名即为函数首地址，常量地址</span><br><span class="line">	pShow();</span><br><span class="line">00BA1455  mov         esi,esp  							;</span><br><span class="line">00BA1457  call        dword ptr [pShow]  				;间接调用</span><br><span class="line">00BA145A  cmp         esi,esp  							</span><br><span class="line">00BA145C  call        __RTC_CheckEsp (0BA1140h)  		;检查栈平衡</span><br><span class="line">	Show();</span><br><span class="line">00BA1461  call        Show (0BA11BDh)  					;直接调用</span><br></pre></td></tr></table></figure>
+
+<p>与函数调用最大的区别是函数是直接调用，而函数指针需要取出指针变量中保存的地址数据，间接调用函数；</p>
+<p>函数指针是比较特殊的指针类型，由于其保存的地址数据为代码段内的地址信息，而非数据区，因此不存在偏移；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">int __stdcall Show(int nShow)</span><br><span class="line">&#123;</span><br><span class="line">010613D0  push        ebp  </span><br><span class="line">010613D1  mov         ebp,esp  </span><br><span class="line">010613D3  sub         esp,0C0h  </span><br><span class="line">010613D9  push        ebx  </span><br><span class="line">010613DA  push        esi  </span><br><span class="line">010613DB  push        edi  </span><br><span class="line">010613DC  lea         edi,[ebp-0C0h]  </span><br><span class="line">010613E2  mov         ecx,30h  </span><br><span class="line">010613E7  mov         eax,0CCCCCCCCh  </span><br><span class="line">010613EC  rep stos    dword ptr es:[edi]  </span><br><span class="line">	printf(&quot;%d\n&quot;, nShow);</span><br><span class="line">010613EE  mov         esi,esp  </span><br><span class="line">010613F0  mov         eax,dword ptr [nShow]  </span><br><span class="line">010613F3  push        eax  </span><br><span class="line">010613F4  push        1065858h  </span><br><span class="line">010613F9  call        dword ptr ds:[1069110h]  </span><br><span class="line">010613FF  add         esp,8  </span><br><span class="line">01061402  cmp         esi,esp  </span><br><span class="line">01061404  call        __RTC_CheckEsp (01061140h)  </span><br><span class="line">	return nShow;</span><br><span class="line">01061409  mov         eax,dword ptr [nShow]  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	int(__stdcall *pShow)(int) &#x3D; Show;</span><br><span class="line">01061A8E  mov         dword ptr [pShow],10611E5h  			;获取函数首地址并保存</span><br><span class="line">	int nRet &#x3D; pShow(3);</span><br><span class="line">01061A95  mov         esi,esp  								;保存进入函数前栈顶，用于栈顶检查</span><br><span class="line">01061A97  push        3  									;压入参数3</span><br><span class="line">01061A99  call        dword ptr [pShow]  					;间接调用</span><br><span class="line">01061A9C  cmp         esi,esp  </span><br><span class="line">01061A9E  call        __RTC_CheckEsp (01061140h)  </span><br><span class="line">01061AA3  mov         dword ptr [nRet],eax  </span><br><span class="line">	printf(&quot;%d\n&quot;, nRet);</span><br><span class="line">01061AA6  mov         esi,esp  </span><br><span class="line">01061AA8  mov         eax,dword ptr [nRet] 				;eax用于接受函数返回值 </span><br><span class="line">01061AAB  push        eax  </span><br><span class="line">01061AAC  push        1065858h  </span><br><span class="line">01061AB1  call        dword ptr ds:[1069110h]  </span><br><span class="line">01061AB7  add         esp,8  </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="字符串优化"><a href="#字符串优化" class="headerlink" title="字符串优化"></a>字符串优化</h2><h2 id="二维数组"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;跟变量初始化一样c语言源码：</span><br><span class="line">10:       int Array[3][5] &#x3D; &#123;&#123;1, 2, 3, 4, 5&#125;,&#123;10, 20, 30, 40, 50&#125;,&#123;100, 200, 300, 400, 500&#125;&#125;;</span><br><span class="line">00401028   mov         dword ptr [ebp-3Ch],1</span><br><span class="line">0040102F   mov         dword ptr [ebp-38h],2</span><br><span class="line">00401036   mov         dword ptr [ebp-34h],3</span><br><span class="line">0040103D   mov         dword ptr [ebp-30h],4</span><br><span class="line">00401044   mov         dword ptr [ebp-2Ch],5</span><br><span class="line">0040104B   mov         dword ptr [ebp-28h],0Ah</span><br><span class="line">00401052   mov         dword ptr [ebp-24h],14h</span><br><span class="line">00401059   mov         dword ptr [ebp-20h],1Eh</span><br><span class="line">00401060   mov         dword ptr [ebp-1Ch],28h</span><br><span class="line">00401067   mov         dword ptr [ebp-18h],32h</span><br><span class="line">0040106E   mov         dword ptr [ebp-14h],64h</span><br><span class="line">00401075   mov         dword ptr [ebp-10h],0C8h</span><br><span class="line">0040107C   mov         dword ptr [ebp-0Ch],12Ch</span><br><span class="line">00401083   mov         dword ptr [ebp-8],190h</span><br><span class="line">0040108A   mov         dword ptr [ebp-4],1F4h</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="各种显示方法"><a href="#各种显示方法" class="headerlink" title="各种显示方法"></a>各种显示方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><span class="line">1.常量下标显示：</span><br><span class="line">printf(&quot;%d\r\n&quot;,ary[2][3]);</span><br><span class="line"></span><br><span class="line">debug版本汇编：</span><br><span class="line">00401091   mov         eax,dword ptr [ebp-8]</span><br><span class="line">00401094   push        eax</span><br><span class="line">00401095   push        offset string &quot;%d\n&quot; (0042201c)</span><br><span class="line">0040109A   call        printf (00401160)</span><br><span class="line">0040109F   add         esp,8</span><br><span class="line"></span><br><span class="line">分析：1.跟常量赋值一样，无法确定是数组</span><br><span class="line">2.确定是数组了，公式公式：</span><br><span class="line">ary+sizeof(int[5])*2+sizeof(int)*3(ebp‐3c)+(14*2)+(4*3)</span><br><span class="line"></span><br><span class="line">2.前面是变量下标</span><br><span class="line">debug汇编：</span><br><span class="line">30:       printf(&quot;%d\n&quot;,Array[argc][3]);</span><br><span class="line">004010A2   mov         ecx,dword ptr [ebp+8]	;出现乘法比例因子，没能搞这么大</span><br><span class="line">004010A5   imul        ecx,ecx,14h				</span><br><span class="line">004010A8   mov         edx,dword ptr [ebp+ecx-30h]		;常量折叠，误算数组首地址，可以改</span><br><span class="line">004010AC   push        edx</span><br><span class="line">004010AD   push        offset string &quot;%d\n&quot; (0042201c)</span><br><span class="line">004010B2   call        printf (00401160)</span><br><span class="line">004010B7   add         esp,8</span><br><span class="line">公式：</span><br><span class="line">ary+sizeof(int[5])*argc+sizeof(int)*3</span><br><span class="line"></span><br><span class="line">3.后面是变量下标</span><br><span class="line">debug版本：</span><br><span class="line">31:       printf(&quot;%d\n&quot;,Array[2][argc]);</span><br><span class="line">004010BA   mov         eax,dword ptr [ebp+8]			;常量折叠优化</span><br><span class="line">004010BD   mov         ecx,dword ptr [ebp+eax*4-14h]</span><br><span class="line">004010C1   push        ecx</span><br><span class="line">004010C2   push        offset string &quot;%d\n&quot; (0042201c)</span><br><span class="line">004010C7   call        printf (00401160)</span><br><span class="line">004010CC   add         esp,8</span><br><span class="line">公式：</span><br><span class="line">ary+sizeof(int[5])*2+sizeof(int)*argcebp‐3c+14*2+argc*4</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4.两个都是表达式</span><br><span class="line">debug版本：</span><br><span class="line">32:       printf(&quot;%d\n&quot;,Array[argc % -8][argc &#x2F; 8]);</span><br><span class="line">004010CF   mov         eax,dword ptr [ebp+8]</span><br><span class="line">004010D2   cdq</span><br><span class="line">004010D3   xor         eax,edx</span><br><span class="line">004010D5   sub         eax,edx</span><br><span class="line">004010D7   and         eax,7</span><br><span class="line">004010DA   xor         eax,edx</span><br><span class="line">004010DC   sub         eax,edx</span><br><span class="line">004010DE   imul        eax,eax,14h</span><br><span class="line">004010E1   lea         ecx,[ebp+eax-3Ch]</span><br><span class="line">004010E5   mov         eax,dword ptr [ebp+8]</span><br><span class="line">004010E8   cdq</span><br><span class="line">004010E9   and         edx,7</span><br><span class="line">004010EC   add         eax,edx</span><br><span class="line">004010EE   sar         eax,3</span><br><span class="line">004010F1   mov         edx,dword ptr [ecx+eax*4]</span><br><span class="line">004010F4   push        edx</span><br><span class="line">004010F5   push        offset string &quot;%d\n&quot; (0042201c)</span><br><span class="line">004010FA   call        printf (00401160)</span><br><span class="line">004010FF   add         esp,8</span><br><span class="line">公式：</span><br><span class="line">ecx&#x3D;(ebp‐3c)+(eax*14)ecx+(eax*4)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5.优化遍历二维数组</span><br><span class="line">vc6下优化：</span><br><span class="line">.text:00401000 ; int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">.text:00401000 _main           proc near               ; CODE XREF: start+AF↓p</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000 ary             &#x3D; word ptr -3Ch</span><br><span class="line">.text:00401000 var_1C          &#x3D; dword ptr -1Ch</span><br><span class="line">.text:00401000 var_18          &#x3D; dword ptr -18h</span><br><span class="line">.text:00401000 var_14          &#x3D; dword ptr -14h</span><br><span class="line">.text:00401000 var_10          &#x3D; dword ptr -10h</span><br><span class="line">.text:00401000 var_C           &#x3D; dword ptr -0Ch</span><br><span class="line">.text:00401000 var_8           &#x3D; dword ptr -8</span><br><span class="line">.text:00401000 var_4           &#x3D; dword ptr -4</span><br><span class="line">.text:00401000 argc            &#x3D; dword ptr  4</span><br><span class="line">.text:00401000 argv            &#x3D; dword ptr  8</span><br><span class="line">.text:00401000 envp            &#x3D; dword ptr  0Ch</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000                 sub     esp, 3Ch</span><br><span class="line">.text:00401003                 push    ebx</span><br><span class="line">.text:00401004                 mov     ebx, 3</span><br><span class="line">.text:00401009                 push    esi</span><br><span class="line">.text:0040100A                 push    edi</span><br><span class="line">.text:0040100B                 mov     dword ptr [esp+48h+ary], 1</span><br><span class="line">.text:00401013                 mov     dword ptr [esp+48h+ary+4], 2</span><br><span class="line">.text:0040101B                 mov     dword ptr [esp+48h+ary+8], ebx</span><br><span class="line">.text:0040101F                 mov     dword ptr [esp+48h+ary+0Ch], 4</span><br><span class="line">.text:00401027                 mov     dword ptr [esp+48h+ary+10h], 5</span><br><span class="line">.text:0040102F                 mov     dword ptr [esp+48h+ary+14h], 0Ah</span><br><span class="line">.text:00401037                 mov     dword ptr [esp+48h+ary+18h], 14h</span><br><span class="line">.text:0040103F                 mov     dword ptr [esp+48h+ary+1Ch], 1Eh</span><br><span class="line">.text:00401047                 mov     [esp+48h+var_1C], 28h</span><br><span class="line">.text:0040104F                 mov     [esp+48h+var_18], 32h</span><br><span class="line">.text:00401057                 mov     [esp+48h+var_14], 64h</span><br><span class="line">.text:0040105F                 mov     [esp+48h+var_10], 0C8h</span><br><span class="line">.text:00401067                 mov     [esp+48h+var_C], 12Ch</span><br><span class="line">.text:0040106F                 mov     [esp+48h+var_8], 190h</span><br><span class="line">.text:00401077                 mov     [esp+48h+var_4], 1F4h</span><br><span class="line">.text:0040107F                 lea     esi, [esp+48h+ary]</span><br><span class="line">.text:00401083</span><br><span class="line">.text:00401083 loc_401083:                             ; CODE XREF: _main+9F↓j</span><br><span class="line">.text:00401083                 mov     edi, 5</span><br><span class="line">.text:00401088</span><br><span class="line">.text:00401088 loc_401088:                             ; CODE XREF: _main+9C↓j</span><br><span class="line">.text:00401088                 mov     eax, [esi]</span><br><span class="line">.text:0040108A                 push    eax</span><br><span class="line">.text:0040108B                 push    offset unk_407030</span><br><span class="line">.text:00401090                 call    sub_4010B0</span><br><span class="line">.text:00401095                 add     esp, 8</span><br><span class="line">.text:00401098                 add     esi, 4</span><br><span class="line">.text:0040109B                 dec     edi</span><br><span class="line">.text:0040109C                 jnz     short loc_401088</span><br><span class="line">.text:0040109E                 dec     ebx</span><br><span class="line">.text:0040109F                 jnz     short loc_401083</span><br><span class="line">.text:004010A1                 pop     edi</span><br><span class="line">.text:004010A2                 pop     esi</span><br><span class="line">.text:004010A3                 xor     eax, eax</span><br><span class="line">.text:004010A5                 pop     ebx</span><br><span class="line">.text:004010A6                 add     esp, 3Ch</span><br><span class="line">.text:004010A9                 retn</span><br><span class="line">.text:004010A9 _main           endp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2019下优化：</span><br><span class="line">.text:00401040 _main           proc near               ; CODE XREF: __scrt_common_main_seh+F5↓p</span><br><span class="line">.text:00401040</span><br><span class="line">.text:00401040 Array           &#x3D; dword ptr -3Ch</span><br><span class="line">.text:00401040</span><br><span class="line">.text:00401040                 push    ebp</span><br><span class="line">.text:00401041                 mov     ebp, esp</span><br><span class="line">.text:00401043                 sub     esp, 3Ch</span><br><span class="line">.text:00401046                 movaps  xmm0, ds:__xmm@00000004000000030000000200000001</span><br><span class="line">.text:0040104D                 movups  xmmword ptr [ebp+Array], xmm0</span><br><span class="line">.text:00401051                 push    ebx</span><br><span class="line">.text:00401052                 movaps  xmm0, ds:__xmm@0000001e000000140000000a00000005</span><br><span class="line">.text:00401059                 mov     ebx, 3</span><br><span class="line">.text:0040105E                 push    esi</span><br><span class="line">.text:0040105F                 movups  xmmword ptr [ebp+Array+10h], xmm0</span><br><span class="line">.text:00401063                 lea     esi, [ebp+Array]</span><br><span class="line">.text:00401066                 mov     [ebp+Array+30h], 12Ch</span><br><span class="line">.text:0040106D                 movaps  xmm0, ds:__xmm@000000c8000000640000003200000028</span><br><span class="line">.text:00401074                 push    edi</span><br><span class="line">.text:00401075                 movups  xmmword ptr [ebp+Array+20h], xmm0</span><br><span class="line">.text:00401079                 mov     [ebp+Array+34h], 190h</span><br><span class="line">.text:00401080                 mov     [ebp+Array+38h], 1F4h</span><br><span class="line">.text:00401087                 nop     word ptr [eax+eax+00000000h]</span><br><span class="line">.text:00401090</span><br><span class="line">.text:00401090 loc_401090:                             ; CODE XREF: _main+7A↓j</span><br><span class="line">.text:00401090                 mov     edi, 5</span><br><span class="line">.text:00401095                 db      66h, 66h</span><br><span class="line">.text:00401095                 nop     word ptr [eax+eax+00000000h]</span><br><span class="line">.text:004010A0</span><br><span class="line">.text:004010A0 loc_4010A0:                             ; CODE XREF: _main+75↓j</span><br><span class="line">.text:004010A0                 push    dword ptr [esi]</span><br><span class="line">.text:004010A2                 push    offset _Format  ; &quot;%d\n&quot;</span><br><span class="line">.text:004010A7                 call    _printf</span><br><span class="line">.text:004010AC                 add     esp, 8</span><br><span class="line">.text:004010AF                 add     esi, 4</span><br><span class="line">.text:004010B2                 sub     edi, 1</span><br><span class="line">.text:004010B5                 jnz     short loc_4010A0</span><br><span class="line">.text:004010B7                 sub     ebx, 1</span><br><span class="line">.text:004010BA                 jnz     short loc_401090</span><br><span class="line">.text:004010BC                 pop     edi</span><br><span class="line">.text:004010BD                 pop     esi</span><br><span class="line">.text:004010BE                 xor     eax, eax</span><br><span class="line">.text:004010C0                 pop     ebx</span><br><span class="line">.text:004010C1                 mov     esp, ebp</span><br><span class="line">.text:004010C3                 pop     ebp</span><br><span class="line">.text:004010C4                 retn</span><br><span class="line">.text:004010C4 _main           endp</span><br><span class="line">.text:004010C4</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="二维数组访问优化"><a href="#二维数组访问优化" class="headerlink" title="二维数组访问优化"></a>二维数组访问优化</h3>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/14/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%95%B0%E7%BB%84/" title="C++反汇编与逆向分析 - 数组">http://systemk1t.github.io/2021/07/14/C-反汇编与逆向分析-数组/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" rel="tag"># 反汇编与逆向分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/" rel="prev" title="C++反汇编与逆向分析 - 变量位置与访问方式">
+      <i class="fa fa-chevron-left"></i> C++反汇编与逆向分析 - 变量位置与访问方式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/15/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%93%E6%9E%84%E4%BD%93/" rel="next" title="C++反汇编与逆向分析 - 结构体">
+      C++反汇编与逆向分析 - 结构体 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">1.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%9C%A8%E5%87%BD%E6%95%B0%E5%86%85"><span class="nav-number">1.1.</span> <span class="nav-text">数组在函数内</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%81%9A%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">数组做参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E4%BD%9C%E4%B8%BA%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">1.3.</span> <span class="nav-text">数组作为返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E6%A0%87%E5%AF%BB%E5%9D%80%E5%92%8C%E6%8C%87%E9%92%88%E5%AF%BB%E5%9D%80"><span class="nav-number">1.4.</span> <span class="nav-text">下标寻址和指针寻址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E6%95%B0%E7%BB%84"><span class="nav-number">1.5.</span> <span class="nav-text">指针类型数据的数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%90%91%E6%95%B0%E7%BB%84%E7%9A%84%E6%8C%87%E9%92%88%E5%8F%98%E9%87%8F"><span class="nav-number">1.6.</span> <span class="nav-text">指向数组的指针变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="nav-number">1.7.</span> <span class="nav-text">函数指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BC%98%E5%8C%96"><span class="nav-number">1.8.</span> <span class="nav-text">字符串优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="nav-number">1.9.</span> <span class="nav-text">二维数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.9.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E6%98%BE%E7%A4%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.9.2.</span> <span class="nav-text">各种显示方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E8%AE%BF%E9%97%AE%E4%BC%98%E5%8C%96"><span class="nav-number">1.9.3.</span> <span class="nav-text">二维数组访问优化</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

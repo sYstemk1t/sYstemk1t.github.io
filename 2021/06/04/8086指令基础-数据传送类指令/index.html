@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8086指令基础 - 数据传送类指令">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/6.png">
+<meta property="article:published_time" content="2021-06-03T19:16:50.000Z">
+<meta property="article:modified_time" content="2021-06-06T19:28:17.227Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="16汇编">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>8086指令基础 - 数据传送类指令 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          8086指令基础 - 数据传送类指令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-04 03:16:50" itemprop="dateCreated datePublished" datetime="2021-06-04T03:16:50+08:00">2021-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-07 03:28:17" itemprop="dateModified" datetime="2021-06-07T03:28:17+08:00">2021-06-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">16位汇编</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Windows XP Debug</li>
+</ul>
+<h1 id="数据传送指令"><a href="#数据传送指令" class="headerlink" title="数据传送指令"></a>数据传送指令</h1><p>本篇重点指令为：MOV XCHG XLAT PUSH POP LEA</p>
+<h2 id="帮助"><a href="#帮助" class="headerlink" title="帮助"></a>帮助</h2><p>在学习汇编指令之前，我们先下载一个手册，下载地址：[链接：](<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1uSaKwezcqaRdukYypCgfPg">https://pan.baidu.com/s/1uSaKwezcqaRdukYypCgfPg</a> 提取码：dwqv )</p>
+<p>在XP的机器中是可以直接打开的，如果无法打开，先运行winhlp32.exe,然后打开指令.hlp<br><img src="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/0.png"></p>
+<p>指令操作数的表达包括以下：</p>
+<ul>
+<li>r8–任意一个8位通用寄存器<ul>
+<li>AH    AL    BH    BL    CH    CL    DH    DL</li>
+</ul>
+</li>
+<li>r16–任意一个16位通用寄存器<ul>
+<li>AX    BX    CX    DX    SI    DI    BP    SP</li>
+</ul>
+</li>
+<li>reg–代表r8或r16</li>
+<li>seg–段寄存器<ul>
+<li>CS    DS    ES    SS</li>
+</ul>
+</li>
+<li>i8–一个8位立即数</li>
+<li>i16–一个16位立即数</li>
+<li>imn–代表i8或i16</li>
+<li>dest–目的操作数</li>
+<li>src–源操作数</li>
+</ul>
+<h2 id="通用数据传送指令"><a href="#通用数据传送指令" class="headerlink" title="通用数据传送指令"></a>通用数据传送指令</h2><h3 id="数据传送指令mov"><a href="#数据传送指令mov" class="headerlink" title="数据传送指令mov"></a>数据传送指令mov</h3><p><img src="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/1.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MOV reg&#x2F;mem,imm</span><br><span class="line">MOV reg&#x2F;mem&#x2F;seg,reg</span><br><span class="line">MOV reg&#x2F;seg,mem</span><br><span class="line">MOV reg&#x2F;mem,seg</span><br></pre></td></tr></table></figure>
+
+
+
+<p>demo:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mov al,4                ;al&lt;--4,字节传送</span><br><span class="line">mov cx,0ffh             ;cx&lt;--00ffh，字传送</span><br><span class="line">mov si,200h             ;si&lt;--0200h, 字传送</span><br><span class="line">mov byte ptr [si],0ah   ;byte ptr 说明是字节操作</span><br><span class="line">mov word ptr [si+2],0bh ;word ptr 说明是字操作</span><br><span class="line">mov ax，bx              ;ax&lt;--,字传送</span><br><span class="line">mov ah,al               ;ah&lt;--,字节操作</span><br><span class="line">mov ds,ax               ;ds&lt;--ax,字传送</span><br><span class="line">mov [si],al             ;[si]&lt;--al,字节传送</span><br><span class="line">mov al,[bx]</span><br><span class="line">mov dx,[bp]           ;dx&lt;--ss:[bp]</span><br><span class="line">mov es,[si]          ;es&lt;--ds:[si]</span><br></pre></td></tr></table></figure>
+
+<p><strong>不存在存储器向存储器的传送指令</strong></p>
+<ul>
+<li><strong>非法传送种种</strong><ul>
+<li>两个操作数的类型不一致</li>
+<li>两个操作数不能都是存储器</li>
+<li>段寄存器的操作有一些限制</li>
+</ul>
+</li>
+</ul>
+<h3 id="交换指令XCHG"><a href="#交换指令XCHG" class="headerlink" title="交换指令XCHG"></a>交换指令XCHG</h3><ul>
+<li>寄存器与寄存器之间对换数据</li>
+<li>寄存器与存储器之间对换数据</li>
+<li>不能在存储器与存储器之间对换数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">XCHG reg,reg&#x2F;mem</span><br><span class="line">；reg  reg&#x2F;mem</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/3.png"></p>
+<h3 id="换码指令XLAT"><a href="#换码指令XLAT" class="headerlink" title="换码指令XLAT"></a>换码指令XLAT</h3><p>将BX指定的缓冲区中、AL指定的位移处的一个字节数据取出赋给AL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">XLAT    ；al←ds:[bx+al]</span><br></pre></td></tr></table></figure>
+
+<p>demo;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov bx,100h</span><br><span class="line">mov al,03h</span><br><span class="line">xlat</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="堆栈操作指令"><a href="#堆栈操作指令" class="headerlink" title="堆栈操作指令"></a>堆栈操作指令</h3><ul>
+<li>堆栈是一个”先进后出”的主存区域，位于堆栈段中；SS段寄存器记录其段地址</li>
+<li>堆栈只有一个出口，即当前栈顶，用堆栈指针寄存器SP指定</li>
+<li>栈顶是地址较小的一段(低地址位置)，栈底不变</li>
+</ul>
+<p><img src="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/4.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PUSH r16&#x2F;m16&#x2F;seg</span><br><span class="line">；SP←SP－2</span><br><span class="line">；SS:[SP]←r16&#x2F;m16&#x2F;seg</span><br><span class="line"></span><br><span class="line">POP r16&#x2F;m16&#x2F;seg</span><br><span class="line">；r16&#x2F;m16&#x2F;seg←SS:[SP]</span><br><span class="line">；SP←SP＋2</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/5.png"></p>
+<h3 id="标志寄存器操作"><a href="#标志寄存器操作" class="headerlink" title="标志寄存器操作"></a>标志寄存器操作</h3><p>标志寄存器传送指令用来传送标志寄存器FLAGS的内容，方便进行对各个标志位的直接操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">低8位传送：LAHF和SAHF</span><br><span class="line">16位传送：PUSHF和POPF</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="LAHF"><a href="#LAHF" class="headerlink" title="LAHF"></a>LAHF</h4><p>LAHF指令将标志寄存器的低字节送寄存器AH<br>SF/ZF/AF/PF/CF状态标志位分别送入AH的第7/6/4/2/0位，而AH的第5/3/1位任意</p>
+<h4 id="SAHF"><a href="#SAHF" class="headerlink" title="SAHF"></a>SAHF</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;FLAGS的低字节←AH</span><br></pre></td></tr></table></figure>
+
+<p>SAHF将AH寄存器内容送FLAGS的低字节<br>用AH的第7/6/4/2/0位相应设置SF/ZF/AF/ PF/CF标志</p>
+<h4 id="PUSHF"><a href="#PUSHF" class="headerlink" title="PUSHF"></a>PUSHF</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">;SP←SP－2</span><br><span class="line">;SS:[SP]←FLAGS</span><br></pre></td></tr></table></figure>
+
+<p>PUSHF指令将标志寄存器的内容压入堆栈，同时栈顶指针SP减2</p>
+<h4 id="POPF"><a href="#POPF" class="headerlink" title="POPF"></a>POPF</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">;FLAGS←SS:[SP]</span><br><span class="line">;SP←SP＋2</span><br></pre></td></tr></table></figure>
+
+<p>POPF指令将栈顶字单元内容送标志寄存器，同时栈顶指针SP加2</p>
+<h3 id="地址传送指令"><a href="#地址传送指令" class="headerlink" title="地址传送指令"></a>地址传送指令</h3><h4 id="LEA"><a href="#LEA" class="headerlink" title="LEA"></a>LEA</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LEA r16,mem</span><br><span class="line">；r16←mem的有效地址EA</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/6.png"></p>
+<h4 id="LDS"><a href="#LDS" class="headerlink" title="LDS"></a>LDS</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LDS r16,mem</span><br><span class="line">；r16←mem，</span><br><span class="line">；DS←mem+2</span><br></pre></td></tr></table></figure>
+
+<p>LDS指令将主存中mem指定的字送至r16，并将mem的下一字送DS寄存器</p>
+<h4 id="LES"><a href="#LES" class="headerlink" title="LES"></a>LES</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LES r16,mem</span><br><span class="line">；r16←mem，</span><br><span class="line">；ES←mem+2</span><br></pre></td></tr></table></figure>
+
+<p>LES指令将主存中mem指定的字送至r16，并将mem的下一字送ES寄存器</p>
+<h3 id="输入输出指令"><a href="#输入输出指令" class="headerlink" title="输入输出指令"></a>输入输出指令</h3><p>8086通过输入输出指令与外设进行数据交换；呈现给程序员的<strong>外设是端口（Port）</strong>即I/O地址</p>
+<h4 id="输入输出寻址方式"><a href="#输入输出寻址方式" class="headerlink" title="输入输出寻址方式"></a>输入输出寻址方式</h4><ul>
+<li>直接寻址：只用于寻址00H～FFH前256个端口，操作数i8表示端口号</li>
+<li>间接寻址：可用于寻址全部64K个端口，DX寄存器的值就是端口号对大于FFH的端口只能采用间接寻址方式</li>
+</ul>
+<h4 id="输入指令IN"><a href="#输入指令IN" class="headerlink" title="输入指令IN"></a>输入指令IN</h4><p>将外设数据传给CPU内部的AL/AX。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">IN AL,i8</span><br><span class="line">；字节输入：AL←I&#x2F;O端口（i8直接寻址）</span><br><span class="line">IN AL,DX</span><br><span class="line">；字节输入：AL←I&#x2F;O端口（DX间接寻址）</span><br><span class="line">IN AX,i8</span><br><span class="line">；字输入：AX←I&#x2F;O端口（i8直接寻址）</span><br><span class="line">IN AX,DX</span><br><span class="line">；字输入：AX←I&#x2F;O端口（DX间接寻址）</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="输出指令OUT"><a href="#输出指令OUT" class="headerlink" title="输出指令OUT"></a>输出指令OUT</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">OUT i8,AL</span><br><span class="line">；字节输出：I&#x2F;O端口←AL（i8直接寻址）</span><br><span class="line">OUT DX,AL</span><br><span class="line">；字节输出：I&#x2F;O端口←AL（DX间接寻址）</span><br><span class="line">OUT i8,AX</span><br><span class="line">；字输出：I&#x2F;O端口←AX（i8直接寻址）</span><br><span class="line">OUT DX,AX</span><br><span class="line">；字输出：I&#x2F;O端口←AX（DX间接寻址）</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E7%B1%BB%E6%8C%87%E4%BB%A4/" title="8086指令基础 - 数据传送类指令">http://systemk1t.github.io/2021/06/04/8086指令基础-数据传送类指令/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/16%E6%B1%87%E7%BC%96/" rel="tag"># 16汇编</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F/" rel="prev" title="8086指令基础 - 寻址方式">
+      <i class="fa fa-chevron-left"></i> 8086指令基础 - 寻址方式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4/" rel="next" title="8086指令基础 - 算术运算类指令">
+      8086指令基础 - 算术运算类指令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E6%8C%87%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">数据传送指令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9"><span class="nav-number">1.1.</span> <span class="nav-text">帮助</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">通用数据传送指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E6%8C%87%E4%BB%A4mov"><span class="nav-number">1.2.1.</span> <span class="nav-text">数据传送指令mov</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%8C%87%E4%BB%A4XCHG"><span class="nav-number">1.2.2.</span> <span class="nav-text">交换指令XCHG</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%A2%E7%A0%81%E6%8C%87%E4%BB%A4XLAT"><span class="nav-number">1.2.3.</span> <span class="nav-text">换码指令XLAT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.4.</span> <span class="nav-text">堆栈操作指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.5.</span> <span class="nav-text">标志寄存器操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LAHF"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">LAHF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SAHF"><span class="nav-number">1.2.5.2.</span> <span class="nav-text">SAHF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PUSHF"><span class="nav-number">1.2.5.3.</span> <span class="nav-text">PUSHF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POPF"><span class="nav-number">1.2.5.4.</span> <span class="nav-text">POPF</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E4%BC%A0%E9%80%81%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.6.</span> <span class="nav-text">地址传送指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LEA"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">LEA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LDS"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">LDS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LES"><span class="nav-number">1.2.6.3.</span> <span class="nav-text">LES</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.7.</span> <span class="nav-text">输入输出指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.7.1.</span> <span class="nav-text">输入输出寻址方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8C%87%E4%BB%A4IN"><span class="nav-number">1.2.7.2.</span> <span class="nav-text">输入指令IN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8C%87%E4%BB%A4OUT"><span class="nav-number">1.2.7.3.</span> <span class="nav-text">输出指令OUT</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="继承和多态是面向对象语言最强大的功能。有了继承和多态，我们可以完成代码重用。在C中有许多技巧可以实现多态。本文的目的就是演示一种简单和容易的技术，在C中应用继承和多态。通过创建一个VTable（virtual table）和在基类和派生类对象之间提供正确的访问，我们能在C中实现继承和多态。VTable能通过维护一张函数表指针表来实现。为了提供基类和派生类对象之间的访问，我们可以在基类中维护派生类的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++反汇编与逆向分析 - 继承">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="继承和多态是面向对象语言最强大的功能。有了继承和多态，我们可以完成代码重用。在C中有许多技巧可以实现多态。本文的目的就是演示一种简单和容易的技术，在C中应用继承和多态。通过创建一个VTable（virtual table）和在基类和派生类对象之间提供正确的访问，我们能在C中实现继承和多态。VTable能通过维护一张函数表指针表来实现。为了提供基类和派生类对象之间的访问，我们可以在基类中维护派生类的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/0.png">
+<meta property="article:published_time" content="2021-07-19T16:59:12.000Z">
+<meta property="article:modified_time" content="2021-07-20T15:11:03.990Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="反汇编与逆向分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/1.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++反汇编与逆向分析 - 继承 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++反汇编与逆向分析 - 继承
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-20 00:59:12 / 修改时间：23:11:03" itemprop="dateCreated datePublished" datetime="2021-07-20T00:59:12+08:00">2021-07-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">逆向分析</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>继承和多态是面向对象语言最强大的功能。有了继承和多态，我们可以完成代码重用。在C中有许多技巧可以实现多态。本文的目的就是演示一种简单和容易的技术，在C中应用继承和多态。通过创建一个VTable（virtual table）和在基类和派生类对象之间提供正确的访问，我们能在C中实现继承和多态。VTable能通过维护一张函数表指针表来实现。为了提供基类和派生类对象之间的访问，我们可以在基类中维护派生类的引用和在派生类中维护基类的引用。</p>
+<a id="more"></a>
+
+<h1 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h1><h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><ul>
+<li>当有父类时，以填虚表为界，反是有父类构造或者成员构造，都在填虚表之前</li>
+<li>如果内联了父类的构造，判断填写虚表上是否也往同一个地址填虚表</li>
+<li>子类构造前会先构造父类和成员构造</li>
+<li>构造先父类虚表，在成员，在自身虚表</li>
+<li>调用成员对象的构造函数</li>
+<li>先填写子类自己的虚表指针</li>
+<li>然后执行子类的构造函数体</li>
+</ul>
+<h3 id="析构"><a href="#析构" class="headerlink" title="析构"></a>析构</h3><ul>
+<li>虚构先自身，在成员，在父类</li>
+<li>先填写子类自己的虚表指针</li>
+<li>然后执行子类的析构函数体</li>
+<li>调用成员对象的析构函数体</li>
+<li>然后调用父类的析构函数体</li>
+</ul>
+<hr>
+<ol>
+<li>析构在父类是虚析构，子类也是虚析构</li>
+<li>cout是一个全局对象，endl是一个函数指针,flush也是函数指针</li>
+<li>当有父类或成员构造的时候，构造以虚表为界线，前面为父类或成员，call传递this指针(里面还有call继续有父类)；</li>
+<li>析构先填写虚表，再虚构的原因：每个类了为了防止将来被继承</li>
+<li>构造调用父类的构造函数，调用成员对象的构造函数指针，先填写子类自己的虚表，然后执行子类的构造函数体</li>
+<li>析构先填写子类自己的虚表指针，然后执行子类的析构函数体，调用成员对象的析构函数指针,再调用父类的析构函数</li>
+<li>纯虚父类被强制调用<ul>
+<li>vc6.0 push 19h ，call asmg_exit(purecall)</li>
+<li>vs2019指针指向一个错误信息的收集</li>
+</ul>
+</li>
+</ol>
+<p><strong>父类对象引用子类对象，没问题；子类对象引用父类对象，有风险</strong></p>
+<h2 id="子类对象"><a href="#子类对象" class="headerlink" title="子类对象"></a>子类对象</h2><ul>
+<li>子类对象构造函数<ul>
+<li>调用父类的构造函数</li>
+<li>调用成员对象的构造函数</li>
+<li>先填写子类自己的虚表指针</li>
+<li>然后执行子类的构造函数体</li>
+</ul>
+</li>
+<li>子类对象析构函数<ul>
+<li>先填写子类自己的虚表指针</li>
+<li>执行子类的析构函数体</li>
+<li>调用成员对象的析构函数</li>
+<li>调用父类的析构函数</li>
+</ul>
+</li>
+</ul>
+<h2 id="识别类与类的关系"><a href="#识别类与类的关系" class="headerlink" title="识别类与类的关系"></a>识别类与类的关系</h2><p>在C++的继承关系中，子类具有父类的所有的数据和成员函数。子类对象可直接使用父类中声明为公有和保护的数据成员与函数；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">class CBase</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	CBase();</span><br><span class="line">	~CBase();</span><br><span class="line">	int m_nBase;</span><br><span class="line">	void SetNumber(int n);</span><br><span class="line">	int GetNumber();</span><br><span class="line">private:</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CBase::CBase()</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CBase::~CBase()</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int CBase::GetNumber()</span><br><span class="line">&#123;</span><br><span class="line">	return m_nBase;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void CBase::SetNumber(int n)</span><br><span class="line">&#123;</span><br><span class="line">	m_nBase &#x3D; n;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class CDerive : public CBase				&#x2F;&#x2F;派生类定义</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	void ShowNumber(int nNumber);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void CDerive::ShowNumber(int nNumber)</span><br><span class="line">&#123;</span><br><span class="line">	int m_nCDerive;</span><br><span class="line">	SetNumber(nNumber);</span><br><span class="line">	m_nCDerive &#x3D; nNumber + 1;</span><br><span class="line">	printf(&quot;%d\n&quot;, GetNumber());</span><br><span class="line">	printf(&quot;%d\n&quot;, m_nCDerive);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	CDerive Derive;</span><br><span class="line">	Derive.ShowNumber(argc);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>父类中定义了成员函数、构造函数、析构函数和两个成员函数。子类中只有一个成员函数一个数据成员。根据C++语法规则，子类将继承父类中的成员数据和成员函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">	CDerive Derive;</span><br><span class="line">00FD16BD  lea         ecx,[Derive]  			;获取对象首地址作为this指针</span><br><span class="line">00FD16C0  call        CDerive::CDerive (0FD10A5h) 	 	;调用子类的构造函数，编译器默认提供</span><br><span class="line">00FD16C5  mov         dword ptr [ebp-4],0  			</span><br><span class="line">	Derive.ShowNumber(argc);</span><br><span class="line">00FD16CC  mov         eax,dword ptr [argc]  	</span><br><span class="line">00FD16CF  push        eax  </span><br><span class="line">00FD16D0  lea         ecx,[Derive]  	</span><br><span class="line">00FD16D3  call        CDerive::ShowNumber (0FD1032h)	;调用  Derive成员函数，传入this指针</span><br><span class="line">	return 0;</span><br><span class="line">00FD16D8  mov         dword ptr [ebp-0E0h],0  </span><br><span class="line">00FD16E2  mov         dword ptr [ebp-4],0FFFFFFFFh  </span><br><span class="line">00FD16E9  lea         ecx,[Derive]  </span><br><span class="line">00FD16EC  call        CDerive::~CDerive (0FD10E6h)  	;调用Derive的析构函数，编译器默认提供</span><br><span class="line">00FD16F1  mov         eax,dword ptr [ebp-0E0h]  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">;子类默认构造函数分析</span><br><span class="line">CDerive::CDerive:</span><br><span class="line">00FD146F  pop         ecx  				;还原this指针</span><br><span class="line">00FD1470  mov         dword ptr [this],ecx  		</span><br><span class="line">00FD1473  mov         ecx,dword ptr [this]  	;以子类对象首地址作为父类的this指针，调用父类构造函数</span><br><span class="line">00FD1476  call        CBase::CBase (0FD1172h)  	;父类构造函数</span><br><span class="line">00FD147B  mov         eax,dword ptr [this]  </span><br><span class="line">00FD1491  ret  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">;子类默认析构函数分析</span><br><span class="line">CDerive::~CDerive:</span><br><span class="line">00FD150F  pop         ecx  				;还原this指针</span><br><span class="line">00FD1510  mov         dword ptr [this],ecx  	</span><br><span class="line">00FD1513  mov         ecx,dword ptr [this]  ;以子类对象作为父类的this指针，调用父类构造函数</span><br><span class="line">00FD1516  call        CBase::~CBase (0FD1028h)  	;调用父类的析构函数</span><br><span class="line">00FD152E  ret  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译器提供了默认的构造与析构函数。当子类中没有构造函数或析构函数时，而其父类却需要构造函数与析构函数时，编译器会为该父类的子类提供默认的析构函数与构造函数；</p>
+<p><strong>由于子类继承了父类，因此子类中拥有父类的各成员，类似于在子类中定义了父类的对象作为数据成员使用</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CBase</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	CBase();</span><br><span class="line">	~CBase();</span><br><span class="line">	<span class="keyword">int</span> m_nBase;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">SetNumber</span><span class="params">(<span class="keyword">int</span> n)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">GetNumber</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CDerive</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	CBase m_Base;			<span class="comment">//原来父类的CBase称为成员对象</span></span><br><span class="line">    <span class="keyword">int</span> m_nDerive;			<span class="comment">//原来的子类派生数据</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>父类中有构造函数，但子类中没有构造函数时，编译器会默认为子类生成构造函数，以实现成员构造函数的调用</strong></p>
+<p><strong>子类中有构造函数，但父类中没有构造函数，编译器不会默认为父类提供构造函数</strong></p>
+<p>子类对象在内存中的数据排列为：先安排父类数据、后安排子类新定义的数据；</p>
+<p><strong>在已有初始化列表的情况下，将会优先执行初始化列表中的操作；其次才是自身的构造函数；</strong></p>
+<p>顺序为：</p>
+<ul>
+<li>先构造父类</li>
+<li>按顺序构造成员对象和初始化列表</li>
+<li>最后自身的构造函数</li>
+</ul>
+<h3 id="多父类"><a href="#多父类" class="headerlink" title="多父类"></a>多父类</h3><ul>
+<li>构造和析构时会填多次次虚表</li>
+<li>多次虚表部分各覆盖了多次虚表内容</li>
+<li>识别双父类：观察填写虚表的次数</li>
+</ul>
+<h3 id="菱形结构"><a href="#菱形结构" class="headerlink" title="菱形结构"></a>菱形结构</h3><ul>
+<li>菱形结构可以设计为组合关系或者聚合关系<ul>
+<li>组合关系是同生共死</li>
+<li>聚合关系是我死你活</li>
+</ul>
+</li>
+<li>多重继承时，构造会多一个参数（bool值），表示是否构造基类</li>
+<li>多重继承会在构造先填baseoffset再填虚表</li>
+<li>寻找基类的虚表地址：<ul>
+<li>（baseoffset：记录基类偏移的结构体）</li>
+<li>this指针+4 得到baseoffset的指针</li>
+<li>baseoffset指针+4得到baseoffset偏移</li>
+<li>this指针+4+baseoffset偏移得到虚表地址 </li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/1.png"></p>
+<p>内存结构：</p>
+<p><img src="/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/0.png"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/" title="C++反汇编与逆向分析 - 继承">http://systemk1t.github.io/2021/07/20/C-反汇编与逆向分析-继承/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" rel="tag"># 反汇编与逆向分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/19/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E8%99%9A%E5%87%BD%E6%95%B0/" rel="prev" title="C++反汇编与逆向分析 - 虚函数">
+      <i class="fa fa-chevron-left"></i> C++反汇编与逆向分析 - 虚函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/26/unix%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B-%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" rel="next" title="unix环境高级编程 - 文件目录">
+      unix环境高级编程 - 文件目录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-number">1.</span> <span class="nav-text">继承</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">1.0.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84"><span class="nav-number">1.0.2.</span> <span class="nav-text">析构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E7%B1%BB%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">子类对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%86%E5%88%AB%E7%B1%BB%E4%B8%8E%E7%B1%BB%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.2.</span> <span class="nav-text">识别类与类的关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%88%B6%E7%B1%BB"><span class="nav-number">1.2.1.</span> <span class="nav-text">多父类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8F%B1%E5%BD%A2%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.2.</span> <span class="nav-text">菱形结构</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

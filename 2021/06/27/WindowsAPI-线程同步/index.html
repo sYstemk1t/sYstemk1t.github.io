@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《WindowsAPI开发详解》一书总结而来；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WindowsAPI - 线程同步">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《WindowsAPI开发详解》一书总结而来；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-27T07:34:46.000Z">
+<meta property="article:modified_time" content="2021-06-27T17:00:11.711Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="WindowsAPI开发详解">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>WindowsAPI - 线程同步 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WindowsAPI - 线程同步
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-27 15:34:46" itemprop="dateCreated datePublished" datetime="2021-06-27T15:34:46+08:00">2021-06-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-28 01:00:11" itemprop="dateModified" datetime="2021-06-28T01:00:11+08:00">2021-06-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WindowsAPI%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">WindowsAPI开发详解</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《WindowsAPI开发详解》一书总结而来；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Visual Studio 2013</li>
+</ul>
+<h1 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h1><h2 id="同步原理"><a href="#同步原理" class="headerlink" title="同步原理"></a>同步原理</h2><p>在多线程中线程同步很有意义，在线程同步过程中，需要先定义一个同步对象，同步对象一般具有两种状态：标志的和未标志的。</p>
+<h3 id="同步对象"><a href="#同步对象" class="headerlink" title="同步对象"></a>同步对象</h3><p>最长用到的同步对象包括：Event、Mutex、Semaphore、Waitable；</p>
+<h3 id="等待函数"><a href="#等待函数" class="headerlink" title="等待函数"></a>等待函数</h3><p>最常用于的就是WaitForSingleObject、WaitForMultipleObjects</p>
+<h4 id="WaitForSingleObject"><a href="#WaitForSingleObject" class="headerlink" title="WaitForSingleObject"></a>WaitForSingleObject</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">WaitForSingleObject</span><span class="params">( HANDLE hHandle, DWORD dwMilliseconds )</span></span>; </span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="WaitForMultipleObjects"><a href="#WaitForMultipleObjects" class="headerlink" title="WaitForMultipleObjects"></a>WaitForMultipleObjects</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">WaitForMultipleObjects</span><span class="params">(DWORD nCount, </span></span></span><br><span class="line"><span class="function"><span class="params">                             CONST HANDLE *lpHandles, </span></span></span><br><span class="line"><span class="function"><span class="params">							BOOL fWaitAll, </span></span></span><br><span class="line"><span class="function"><span class="params">                             DWORD dwMilliseconds )</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="同步对象-1"><a href="#同步对象-1" class="headerlink" title="同步对象"></a>同步对象</h2><h3 id="事件Event"><a href="#事件Event" class="headerlink" title="事件Event"></a>事件Event</h3><h4 id="CreateEvent"><a href="#CreateEvent" class="headerlink" title="CreateEvent"></a>CreateEvent</h4><p>事件在线程同步中是最长使用的一种同步对象。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateEvent</span><span class="params">( LPSECURITY_ATTRIBUTES lpEventAttributes, 		<span class="comment">//安全描述符</span></span></span></span><br><span class="line"><span class="function"><span class="params">                   BOOL bManualReset, 							<span class="comment">//是否手工重置</span></span></span></span><br><span class="line"><span class="function"><span class="params">					BOOL bInitialState, 						<span class="comment">//是否置位</span></span></span></span><br><span class="line"><span class="function"><span class="params">                   LPTSTR lpName)</span></span>; 							<span class="comment">//事件名</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="SetEvent"><a href="#SetEvent" class="headerlink" title="SetEvent"></a>SetEvent</h4><p>将事件对象设置为标记；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">SetEvent</span><span class="params">(HANDLE hEvent )</span></span>; </span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="ResetEvent"><a href="#ResetEvent" class="headerlink" title="ResetEvent"></a>ResetEvent</h4><p>重置标记，如果事件是手工重置，那么需要该函数来重置事件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">ResetEvent</span><span class="params">( HANDLE hEvent )</span></span>; </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="OpenEvent"><a href="#OpenEvent" class="headerlink" title="OpenEvent"></a>OpenEvent</h4><p>从事件名中得到事件句柄</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">OpenEvent</span><span class="params">(  DWORD dwDesiredAccess,  <span class="comment">// access</span></span></span></span><br><span class="line"><span class="function"><span class="params">  BOOL bInheritHandle,    <span class="comment">// inheritance option</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPCTSTR lpName          <span class="comment">// object name);</span></span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NUMTHREADS 3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFFER_SIZE	16</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FOR_TIMES	5</span></span><br><span class="line"></span><br><span class="line">HANDLE hEvent;</span><br><span class="line">BYTE lpSharedBuffer[<span class="number">16</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UseEvent</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc</span><span class="params">(LPVOID lpParam)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">VOID <span class="title">UseEvent</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThread;</span><br><span class="line">	hEvent = CreateEvent(<span class="literal">NULL</span>, TRUE, FALSE, <span class="literal">NULL</span>);	<span class="comment">//FALSE为有信号</span></span><br><span class="line">	<span class="keyword">if</span> (hEvent == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateEvent Error = %d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	hThread = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="keyword">if</span> (hThread == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateThread Error = %d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	Sleep(<span class="number">2000</span>);</span><br><span class="line">	CopyMemory(lpSharedBuffer, <span class="string">&quot;EVENT&quot;</span>, <span class="built_in">strlen</span>(<span class="string">&quot;EVENT&quot;</span>) + <span class="number">1</span>);</span><br><span class="line">	SetEvent(hEvent);			<span class="comment">//设置为通知</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dwWaitResult;</span><br><span class="line">	dwWaitResult = WaitForSingleObject(hEvent, INFINITE);			<span class="comment">//等待事件被重置</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dwWaitResult != WAIT_OBJECT_0)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Wait Error : %d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>((CONST <span class="keyword">char</span> *)lpSharedBuffer);				<span class="comment">//读共享内存</span></span><br><span class="line">	<span class="keyword">if</span> (!ResetEvent(hEvent))			<span class="comment">//重置事件</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;SetEvent Error:%d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	UseEvent();</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>两个线程中使用事件对象：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 头文件　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">/* 常量定义　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NUMTHREADS	3 </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFFER_SIZE	16</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FOR_TIMES	5</span></span><br><span class="line"><span class="comment">/* 全局变量　*/</span></span><br><span class="line">HANDLE hWriteEvent[NUMTHREADS];		<span class="comment">// 写Event 表示写操作是否完成</span></span><br><span class="line">HANDLE hReadEvents[NUMTHREADS];	<span class="comment">// 读Event 表示读操作是否完成</span></span><br><span class="line">BYTE lpSharedBuffer[<span class="number">16</span>] = &#123; <span class="number">0</span> &#125;;	<span class="comment">// 共享内存</span></span><br><span class="line"><span class="comment">/* 函数声明　*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultiEvents</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">WriteToBuffer</span><span class="params">(VOID)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadFunction</span><span class="params">(LPVOID lpParam)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	演示</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	MultiEvents();</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* void UseEvents(void)</span></span><br><span class="line"><span class="comment">* 功能	演示Event的使用方法</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultiEvents</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThread;</span><br><span class="line">	DWORD i;</span><br><span class="line">	<span class="comment">// 创建多个线程，读共享内存，主线程写共享内存。</span></span><br><span class="line">	<span class="comment">// 每个线程都有对应的读写同步事件</span></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; NUMTHREADS; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 每个线程都有一个Event表示写入操作完成</span></span><br><span class="line">		hWriteEvent[i] = CreateEvent(</span><br><span class="line">			<span class="literal">NULL</span>,			<span class="comment">// 默认安全属性</span></span><br><span class="line">			FALSE,			<span class="comment">// 自动重置</span></span><br><span class="line">			FALSE,			<span class="comment">// 初始为未置位的</span></span><br><span class="line">			<span class="literal">NULL</span>			<span class="comment">// 未命名</span></span><br><span class="line">			);</span><br><span class="line">		<span class="comment">// 判断是否创建成功</span></span><br><span class="line">		<span class="keyword">if</span> (hWriteEvent[i] == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;CreateEvent failed (%d)\n&quot;</span>, GetLastError());</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 每个读线程有一个Event表示读操作已经完成</span></span><br><span class="line">		hReadEvents[i] = CreateEvent(</span><br><span class="line">			<span class="literal">NULL</span>,     <span class="comment">// 默认安全属性</span></span><br><span class="line">			FALSE,	  <span class="comment">// 自动重置</span></span><br><span class="line">			FALSE,    <span class="comment">// 初始化为未置位的</span></span><br><span class="line">			<span class="literal">NULL</span>);    <span class="comment">// 未命名</span></span><br><span class="line">		<span class="keyword">if</span> (hReadEvents[i] == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;CreateEvent failed (%d)\n&quot;</span>, GetLastError());</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 创建线程</span></span><br><span class="line">		hThread = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>,</span><br><span class="line">			ThreadFunction,</span><br><span class="line">			(LPVOID)i,  <span class="comment">// Event对象句柄作为</span></span><br><span class="line">			<span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">		<span class="keyword">if</span> (hThread == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;CreateThread failed (%d)\n&quot;</span>, GetLastError());</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	WriteToBuffer();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID WriteToBuffer(INT iContent)</span></span><br><span class="line"><span class="comment">* 功能	由主线程调用，向共享内存中写入数据</span></span><br><span class="line"><span class="comment">*		等待所有读线程读完后函数返回</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID <span class="title">WriteToBuffer</span><span class="params">(VOID)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dwWaitResult, j, i;</span><br><span class="line">	<span class="comment">// 完成 FOR_TIMES 次读写</span></span><br><span class="line">	<span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; FOR_TIMES; j++)</span><br><span class="line">	&#123;</span><br><span class="line">		Sleep(rand() % <span class="number">100</span>);	<span class="comment">// 写入需要的时间随机</span></span><br><span class="line">		<span class="comment">// 写入共享内存</span></span><br><span class="line">		wsprintf((LPWSTR)lpSharedBuffer, TEXT(<span class="string">&quot;shared %d&quot;</span>), j);</span><br><span class="line">		<span class="comment">// 将线程对应的写Event置为“标志的”，表示写操作完成，</span></span><br><span class="line">		<span class="comment">// 其他线程可以开始读</span></span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i&lt;NUMTHREADS; i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (!SetEvent(hWriteEvent[i]))</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;SetEvent failed (%d)\n&quot;</span>, GetLastError());</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 等待所有的线程读完，开始下次写入</span></span><br><span class="line">		dwWaitResult = WaitForMultipleObjects(</span><br><span class="line">			NUMTHREADS,   <span class="comment">// Event句柄的个数</span></span><br><span class="line">			hReadEvents,  <span class="comment">// Event句柄数组</span></span><br><span class="line">			TRUE,         <span class="comment">// 等到所有的Event都被标志</span></span><br><span class="line">			INFINITE);    <span class="comment">// 无限等待</span></span><br><span class="line">		<span class="comment">// 判断等待结果</span></span><br><span class="line">		<span class="keyword">if</span> (dwWaitResult != WAIT_OBJECT_0)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Wait error: %d\n&quot;</span>, GetLastError());</span><br><span class="line">			ExitProcess(<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* DWORD WINAPI ThreadFunction(LPVOID lpParam)</span></span><br><span class="line"><span class="comment">* 功能	线程函数，读共享内存</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	LPVOID lpParamt 实际为指向Event句柄的指针</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadFunction</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dwWaitResult;</span><br><span class="line">	BYTE lpRead[<span class="number">16</span>];</span><br><span class="line">	DWORD j = <span class="number">0</span>;</span><br><span class="line">	DWORD dwThreadIndex = (DWORD)lpParam;</span><br><span class="line">	<span class="comment">// 完成 FOR_TIMES 次读写</span></span><br><span class="line">	<span class="keyword">for</span> (; j&lt;FOR_TIMES; j++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 等待写事件置位，表示数据已经写入</span></span><br><span class="line">		dwWaitResult = WaitForSingleObject(</span><br><span class="line">			hWriteEvent[dwThreadIndex], <span class="comment">// Event 句柄</span></span><br><span class="line">			INFINITE);					<span class="comment">// 无限等待</span></span><br><span class="line">		<span class="keyword">switch</span> (dwWaitResult)</span><br><span class="line">		&#123;</span><br><span class="line">		<span class="keyword">case</span> WAIT_OBJECT_0:</span><br><span class="line">			Sleep(rand() % <span class="number">10</span>);			<span class="comment">// 模拟数据处理所需的时间随机</span></span><br><span class="line">			CopyMemory(lpRead, lpSharedBuffer, <span class="number">16</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">			<span class="comment">// 发生错误</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Wait error: %d\n&quot;</span>, GetLastError());</span><br><span class="line">			ExitThread(<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 将读Event置位，表示读操作完成</span></span><br><span class="line">		<span class="keyword">if</span> (!SetEvent(hReadEvents[dwThreadIndex]))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;SetEvent failed (%d)\n&quot;</span>, GetLastError());</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//打印读到的内容</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;线程 %u\t第 %d 次读，内容：%ls \r\n&quot;</span>,</span><br><span class="line">			dwThreadIndex, j, (LPSTR)lpRead);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<h3 id="互斥对象Mutex"><a href="#互斥对象Mutex" class="headerlink" title="互斥对象Mutex"></a>互斥对象Mutex</h3><p>互斥对象具有以下特性：如果互斥对象没有被任何线程拥有，那么它是标记的，如果被一个线程拥有，那么它就是未标记的。</p>
+<h4 id="CreateMutex"><a href="#CreateMutex" class="headerlink" title="CreateMutex"></a>CreateMutex</h4><p>创建互斥对象</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateMutex</span><span class="params">( LPSECURITY_ATTRIBUTES lpMutexAttributes, 		<span class="comment">//安全描述符</span></span></span></span><br><span class="line"><span class="function"><span class="params">					BOOL bInitialOwner, 				<span class="comment">//是否被线程拥有</span></span></span></span><br><span class="line"><span class="function"><span class="params">                   LPCTSTR lpName )</span></span>;					<span class="comment">//互斥体名字</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="OpenMutex"><a href="#OpenMutex" class="headerlink" title="OpenMutex"></a>OpenMutex</h4><p>通过互斥对象名获取对象句柄；</p>
+<p><strong>dwDesiredAccess</strong>：对互斥量对象访问权限的设置，MUTEX_ALL_ACCESS 请求对互斥体的完全访问，MUTEX_MODIFY_STATE 允许使用 ReleaseMutex 函数，SYNCHRONIZE 允许互斥体对象同步使用；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">OpenMutex</span><span class="params">(  DWORD dwDesiredAccess,  <span class="comment">// access</span></span></span></span><br><span class="line"><span class="function"><span class="params"> 				 BOOL bInheritHandle,    <span class="comment">// inheritance option</span></span></span></span><br><span class="line"><span class="function"><span class="params">  				LPCTSTR lpName          <span class="comment">// object name);</span></span></span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="ReleaseMutex"><a href="#ReleaseMutex" class="headerlink" title="ReleaseMutex"></a>ReleaseMutex</h4><p>释放互斥对象，一个线程释放了互斥对象后，如果其他进程在等待，则可以获得该互斥对象；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">ReleaseMutex</span><span class="params">( HANDLE hMutex )</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* ************************************</span></span><br><span class="line"><span class="comment">*《精通Windows API》</span></span><br><span class="line"><span class="comment">* 示例代码</span></span><br><span class="line"><span class="comment">* Mutex.c</span></span><br><span class="line"><span class="comment">* 7.2.2  演示使用Mutex同步线程</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 头文件　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">/* 常量定义　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NUM_THREADS	4 </span></span><br><span class="line"><span class="comment">/* 全局变量　*/</span></span><br><span class="line">DWORD dwCounter = <span class="number">0</span>;</span><br><span class="line">HANDLE hMutex;</span><br><span class="line"><span class="comment">/* 函数声明　*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UseMutex</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">MutexThread</span><span class="params">(LPVOID lpParam)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	演示</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	UseMutex();</span><br><span class="line">	getchar();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* void UseMutex(void)</span></span><br><span class="line"><span class="comment">* 功能	演示 Mutex 的使用方法</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UseMutex</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	INT i;</span><br><span class="line">	HANDLE hThread;</span><br><span class="line"></span><br><span class="line"><span class="comment">//#ifdef MUTEX</span></span><br><span class="line">	<span class="comment">// 创建 Mutex</span></span><br><span class="line">	hMutex = CreateMutex(</span><br><span class="line">		<span class="literal">NULL</span>,                       <span class="comment">// 默认安全属性</span></span><br><span class="line">		FALSE,                      <span class="comment">// 初始化为未被拥有</span></span><br><span class="line">		<span class="literal">NULL</span>);                      <span class="comment">// 未命名</span></span><br><span class="line">	<span class="keyword">if</span> (hMutex == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateMutex error: %d\n&quot;</span>, GetLastError());</span><br><span class="line">	&#125;</span><br><span class="line"><span class="comment">//#endif</span></span><br><span class="line">	<span class="comment">// 创建多个线程</span></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; NUM_THREADS; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		hThread = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>,</span><br><span class="line">			MutexThread,</span><br><span class="line">			<span class="literal">NULL</span>,</span><br><span class="line">			<span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">		<span class="keyword">if</span> (hThread == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;CreateThread failed (%d)\n&quot;</span>, GetLastError());</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	Sleep(<span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* DWORD WINAPI MutexThread(LPVOID lpParam)</span></span><br><span class="line"><span class="comment">* 功能	线程函数，读共享内存</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">MutexThread</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//#ifdef MUTEX </span></span><br><span class="line">	DWORD dwWaitResult;</span><br><span class="line">	dwWaitResult = WaitForSingleObject(</span><br><span class="line">		hMutex,			<span class="comment">// 句柄</span></span><br><span class="line">		INFINITE);		<span class="comment">// 无限等待</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">switch</span> (dwWaitResult)</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">case</span> WAIT_OBJECT_0:</span><br><span class="line"><span class="comment">//#endif</span></span><br><span class="line">		<span class="comment">// 等待随机长的时间，各个线程等待的时间将不一致</span></span><br><span class="line">		Sleep(rand() % <span class="number">100</span>);</span><br><span class="line">		<span class="comment">// 得到互斥对象后 访问共享数据</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;counter: %d\n&quot;</span>, dwCounter);</span><br><span class="line">		<span class="comment">// 互斥对象保证同一时间只有一个线程在访问dwCounter</span></span><br><span class="line">		dwCounter++;</span><br><span class="line"></span><br><span class="line"><span class="comment">//#ifdef MUTEX</span></span><br><span class="line">		<span class="comment">// 释放 Mutex</span></span><br><span class="line">		<span class="keyword">if</span> (!ReleaseMutex(hMutex))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Release Mutex error: %d\n&quot;</span>, GetLastError());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Wait error: %d\n&quot;</span>, GetLastError());</span><br><span class="line">		ExitThread(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line"><span class="comment">//#endif</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>通常我们使用Mutex来禁止程序多开：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE g_hMutex = CreateMutex(<span class="literal">NULL</span>, TRUE, TEXT(<span class="string">&quot;sYstemk1t&quot;</span>));<span class="comment">//获取令牌</span></span><br><span class="line">	DWORD dwMutexResults = GetLastError();</span><br><span class="line">	<span class="comment">//WaitForSingleObject(g_hMutex, INFINITE);</span></span><br><span class="line">	<span class="keyword">if</span> (g_hMutex)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (ERROR_ALREADY_EXISTS == dwMutexResults)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;程序已经打开了\n&quot;</span>);</span><br><span class="line">			Sleep(<span class="number">2000</span>);</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;创建失败\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		Sleep(<span class="number">2000</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;程序正在运行\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//ReleaseMutex(g_hMutex);			//释放令牌</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//创建一个互斥体</span></span><br><span class="line">	HANDLE g_hMutex = CreateMutex(<span class="number">0</span>, FALSE, TEXT(<span class="string">&quot;sYstemk1t&quot;</span>)); <span class="comment">//TRUE 创建出来无信号 FALSE 创建出来有信号</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//获取互斥体，等待令牌</span></span><br><span class="line">	WaitForSingleObject(g_hMutex, INFINITE);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		Sleep(<span class="number">1000</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;B进程的Y线程:%d \n&quot;</span>, i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//释放令牌</span></span><br><span class="line">	ReleaseMutex(g_hMutex);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>信号量维护了一个计数器，计数器的值可以在0到指定的最大值之间。当一个线程完成了对信号量的等待后，信号量计数器值减少。当一个线程释放信号量时，信号量计数器增加。</p>
+<h4 id="CreateSemaphore"><a href="#CreateSemaphore" class="headerlink" title="CreateSemaphore"></a>CreateSemaphore</h4><p>创建信号量对象</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateSemaphore</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, 	<span class="comment">//安全属性</span></span></span></span><br><span class="line"><span class="function"><span class="params">        LONG lInitialCount, 							<span class="comment">//初始计数值</span></span></span></span><br><span class="line"><span class="function"><span class="params">        LONG lMaximumCount, 					<span class="comment">//最大计数值</span></span></span></span><br><span class="line"><span class="function"><span class="params">        LPCTSTR lpName )</span></span>;						<span class="comment">//信号量命名对象</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="OpenSemaphore"><a href="#OpenSemaphore" class="headerlink" title="OpenSemaphore"></a>OpenSemaphore</h4><p>通过信号量命名，获得信号量对象句柄</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">OpenSemaphore</span><span class="params">(  DWORD dwDesiredAccess,  <span class="comment">// access</span></span></span></span><br><span class="line"><span class="function"><span class="params">          BOOL bInheritHandle,    <span class="comment">// inheritance option</span></span></span></span><br><span class="line"><span class="function"><span class="params">          LPCTSTR lpName          <span class="comment">// object name);</span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>SEMAPHORE_ALL_ACCESS (0x1F0003) 要求对<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1">事件对象</a>的完全访问； </p>
+<p>SEMAPHORE_MODIFY_STATE (0x0002) 允许使用ReleaseSemaphore函数； </p>
+<p>SYNCHRONIZE (0x00100000L)允许同步使用信号机对象。</p>
+<h4 id="ReleaseSemaphore"><a href="#ReleaseSemaphore" class="headerlink" title="ReleaseSemaphore"></a>ReleaseSemaphore</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">ReleaseSemaphore</span><span class="params">(HANDLE hSemaphore, 		<span class="comment">//信号量对象的句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">                      LONG lReleaseCount, 		<span class="comment">//要增加信号对象的当前计数的量</span></span></span></span><br><span class="line"><span class="function"><span class="params">						LPLONG lpPreviousCount )</span></span>;	<span class="comment">//指向要接收信号量的上一个计数的变量的指针</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 头文件　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">/* 常量定义　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NUMTHREADS	4 </span></span><br><span class="line"><span class="comment">/* 全局变量　*/</span></span><br><span class="line">HANDLE hSemaphore;</span><br><span class="line"><span class="comment">/* 函数声明　*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UseSemaphore</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SemaphoreThread</span><span class="params">(LPVOID lpParam)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	演示</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	 UseSemaphore() ;</span><br><span class="line">	 getchar();</span><br><span class="line">	 <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	 </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* DWORD WaitForAllThread(HANDLE hThread[], DWORD dwNumThread)</span></span><br><span class="line"><span class="comment">* 功能	等待指定的线程都结束</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	HANDLE hThread[]	需要等待结束的线程句柄数组</span></span><br><span class="line"><span class="comment">*		DWORD dwNumThread	线程句柄数组的大小</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">DWORD <span class="title">WaitForAllThread</span><span class="params">(HANDLE hThread[], DWORD dwNumThread)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// 等待所有线程结束</span></span><br><span class="line">	DWORD dwWaitResult = WaitForMultipleObjects(</span><br><span class="line">		dwNumThread,</span><br><span class="line">		hThread,				<span class="comment">// 线程句柄作为等待对象</span></span><br><span class="line">		TRUE,</span><br><span class="line">		INFINITE);</span><br><span class="line">	<span class="keyword">switch</span> (dwWaitResult) </span><br><span class="line">		&#123;</span><br><span class="line">		<span class="keyword">case</span> WAIT_OBJECT_0: </span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;\nAll thread exit\n&quot;</span>); </span><br><span class="line">			<span class="keyword">break</span>; </span><br><span class="line">		<span class="keyword">default</span>: </span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;\nWait error: %u&quot;</span>, GetLastError()); </span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* void UseSemaphore(void) </span></span><br><span class="line"><span class="comment">* 功能	演示UseSemaphore的使用方法</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UseSemaphore</span><span class="params">(<span class="keyword">void</span>)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThread[NUMTHREADS];</span><br><span class="line">	INT i;</span><br><span class="line">	LONG lMax;</span><br><span class="line">	CHAR cMax;</span><br><span class="line">	<span class="comment">// 打印信息获取输入</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;将创建%d个进程，获得信号量的进程可以向屏幕打印。\n&quot;</span></span><br><span class="line">		<span class="string">&quot;请输入信号量的最大计数1~%d：&quot;</span>,NUMTHREADS,NUMTHREADS);	</span><br><span class="line">	<span class="comment">// 获得输入的字符</span></span><br><span class="line">	cMax = getch();</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%c\n&quot;</span>,cMax);</span><br><span class="line">	<span class="comment">// 将字符转换为数字</span></span><br><span class="line">	lMax = cMax &amp; <span class="number">0xF</span>;</span><br><span class="line">	<span class="keyword">if</span>(lMax&lt;<span class="number">0</span> || lMax&gt;NUMTHREADS)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;请输入1-%d&quot;</span>,NUMTHREADS);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 创建信号量</span></span><br><span class="line">	hSemaphore = CreateSemaphore( </span><br><span class="line">		<span class="literal">NULL</span>,   <span class="comment">// 默认安全属性</span></span><br><span class="line">		lMax,   <span class="comment">// 初始化计数器，用户输入</span></span><br><span class="line">		lMax,   <span class="comment">// 最大计数，用户输入</span></span><br><span class="line">		<span class="literal">NULL</span>);  <span class="comment">// 未命名</span></span><br><span class="line">	<span class="keyword">if</span> (hSemaphore == <span class="literal">NULL</span>) </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateSemaphore error: %d\n&quot;</span>, GetLastError());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 创建多个线程 访问共享资源</span></span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; NUMTHREADS; i++) </span><br><span class="line">	&#123;		</span><br><span class="line">		hThread[i] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, </span><br><span class="line">			SemaphoreThread, </span><br><span class="line">			&amp;i,			<span class="comment">// 进程序号作为参数</span></span><br><span class="line">			<span class="number">0</span>, <span class="literal">NULL</span>); </span><br><span class="line">		<span class="keyword">if</span> (hThread[i] == <span class="literal">NULL</span>) </span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;CreateThread failed (%d)\n&quot;</span>, GetLastError());</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 等待所有线程都执行完成并退出</span></span><br><span class="line">	WaitForAllThread(hThread,NUMTHREADS);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* DWORD WINAPI SemaphoreThread(LPVOID lpParam) </span></span><br><span class="line"><span class="comment">* 功能	线程函数，读共享内存</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">SemaphoreThread</span><span class="params">(LPVOID lpParam)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dwWaitResult;</span><br><span class="line">	BYTE lpRead[<span class="number">16</span>];</span><br><span class="line">	<span class="comment">//DWORD i = *(LPWORD)lpParam;		// 线程的编号</span></span><br><span class="line">	DWORD dwPreviousCount;</span><br><span class="line"></span><br><span class="line">	DWORD j = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// 每个线程都将访问3次受限资源</span></span><br><span class="line">	<span class="keyword">for</span>(; j&lt;<span class="number">3</span>; j++)</span><br><span class="line">	&#123;		</span><br><span class="line">		<span class="comment">// 线程可以在此进行一些操作</span></span><br><span class="line">		<span class="comment">// 以暂停随机长的时间模拟真实情况</span></span><br><span class="line">		Sleep(rand()%<span class="number">1000</span>);</span><br><span class="line">		<span class="comment">// 等待信号量</span></span><br><span class="line">		dwWaitResult = WaitForSingleObject( </span><br><span class="line">			hSemaphore,      <span class="comment">// 信号量句柄</span></span><br><span class="line">			INFINITE);		 <span class="comment">// 无限等待</span></span><br><span class="line">		<span class="keyword">switch</span> (dwWaitResult) </span><br><span class="line">		&#123;</span><br><span class="line">		<span class="keyword">case</span> WAIT_OBJECT_0: </span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;\nProcess %d Gets Semaphore&quot;</span>,GetCurrentThreadId());</span><br><span class="line">			<span class="keyword">break</span>; </span><br><span class="line">		<span class="keyword">default</span>: </span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;\nprocess %u Wait error: %u&quot;</span>,GetCurrentThreadId(), GetLastError()); </span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 获得信息量后访问受限资源</span></span><br><span class="line">		<span class="comment">// 以等待随机长时间模块真实情况</span></span><br><span class="line">		Sleep(rand()%<span class="number">1000</span>);</span><br><span class="line">		<span class="comment">// 释放信号量</span></span><br><span class="line">		<span class="keyword">if</span> (!ReleaseSemaphore( </span><br><span class="line">			hSemaphore,				<span class="comment">// 信号量句柄</span></span><br><span class="line">			<span class="number">1</span>,						<span class="comment">// 释放后计数器减1 </span></span><br><span class="line">			&amp;dwPreviousCount) )		<span class="comment">// 获得计数</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;\nprocess %u ReleaseSemaphore error: %d&quot;</span>, GetCurrentThreadId(), GetLastError());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;\nProcess %u release Semaphore, previous count is %u&quot;</span>,</span><br><span class="line">				GetCurrentThreadId(), dwPreviousCount);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="WindowsAPI - 线程同步">http://systemk1t.github.io/2021/06/27/WindowsAPI-线程同步/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/WindowsAPI%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/" rel="tag"># WindowsAPI开发详解</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/27/WindowsAPI-%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B/" rel="prev" title="WindowsAPI - 进程线程">
+      <i class="fa fa-chevron-left"></i> WindowsAPI - 进程线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/29/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E8%A7%86%E7%AA%97%E5%92%8C%E8%AE%AF%E6%81%AF/" rel="next" title="Windows程序设计 - 视窗和讯息">
+      Windows程序设计 - 视窗和讯息 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">1.</span> <span class="nav-text">线程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">同步原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.1.</span> <span class="nav-text">同步对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.2.</span> <span class="nav-text">等待函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#WaitForSingleObject"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">WaitForSingleObject</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WaitForMultipleObjects"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">WaitForMultipleObjects</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%AF%B9%E8%B1%A1-1"><span class="nav-number">1.2.</span> <span class="nav-text">同步对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6Event"><span class="nav-number">1.2.1.</span> <span class="nav-text">事件Event</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CreateEvent"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">CreateEvent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SetEvent"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">SetEvent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ResetEvent"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">ResetEvent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OpenEvent"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">OpenEvent</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E5%AF%B9%E8%B1%A1Mutex"><span class="nav-number">1.2.2.</span> <span class="nav-text">互斥对象Mutex</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CreateMutex"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">CreateMutex</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OpenMutex"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">OpenMutex</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReleaseMutex"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">ReleaseMutex</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">1.2.3.</span> <span class="nav-text">信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CreateSemaphore"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">CreateSemaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OpenSemaphore"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">OpenSemaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReleaseSemaphore"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">ReleaseSemaphore</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

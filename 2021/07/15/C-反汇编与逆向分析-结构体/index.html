@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="C语言中的结构体是一种复合数据结构，可以将不同数据类型的变量进行封装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++反汇编与逆向分析 - 结构体">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/15/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%93%E6%9E%84%E4%BD%93/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="C语言中的结构体是一种复合数据结构，可以将不同数据类型的变量进行封装">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-15T15:13:46.000Z">
+<meta property="article:modified_time" content="2021-07-15T18:00:15.461Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="反汇编与逆向分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/15/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%93%E6%9E%84%E4%BD%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++反汇编与逆向分析 - 结构体 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/15/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%93%E6%9E%84%E4%BD%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++反汇编与逆向分析 - 结构体
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-15 23:13:46" itemprop="dateCreated datePublished" datetime="2021-07-15T23:13:46+08:00">2021-07-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-16 02:00:15" itemprop="dateModified" datetime="2021-07-16T02:00:15+08:00">2021-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">逆向分析</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>C语言中的结构体是一种复合数据结构，可以将不同数据类型的变量进行封装</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 7家庭版</li>
+<li>编译器：VC6 VS2013</li>
+</ul>
+<h1 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h1><h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">19:   int main(int argc, char* argv[])</span><br><span class="line">20:   &#123;</span><br><span class="line">00401010   push        ebp</span><br><span class="line">00401011   mov         ebp,esp</span><br><span class="line">00401013   sub         esp,6Ch</span><br><span class="line">00401016   push        ebx</span><br><span class="line">00401017   push        esi</span><br><span class="line">00401018   push        edi</span><br><span class="line">00401019   lea         edi,[ebp-6Ch]</span><br><span class="line">0040101C   mov         ecx,1Bh</span><br><span class="line">00401021   mov         eax,0CCCCCCCCh</span><br><span class="line">00401026   rep stos    dword ptr [edi]</span><br><span class="line">21:       tagPerson p &#x3D; &#123;</span><br><span class="line">22:           &quot;jack&quot;,             &#x2F;&#x2F;+0</span><br><span class="line">00401028   mov         eax,[string &quot;jack&quot; (00426024)]		;内存地址赋值给eax寄存器</span><br><span class="line">0040102D   mov         dword ptr [ebp-28h],eax</span><br><span class="line">00401030   mov         cl,byte ptr [string &quot;jack&quot;+4 (00426028)]	;补个\0,对齐</span><br><span class="line">00401036   mov         byte ptr [ebp-24h],cl</span><br><span class="line">23:           15,                 &#x2F;&#x2F;+8</span><br><span class="line">00401039   mov         dword ptr [ebp-20h],0Fh				;赋值</span><br><span class="line">24:           250.0,              &#x2F;&#x2F;+16</span><br><span class="line">00401040   mov         dword ptr [ebp-18h],0</span><br><span class="line">00401047   mov         dword ptr [ebp-14h],406F4000h		;double类型占8字节，所以需要两次赋值</span><br><span class="line">25:           172,                &#x2F;&#x2F;+24</span><br><span class="line">0040104E   mov         word ptr [ebp-10h],offset main+42h (00401052)</span><br><span class="line">26:           3.14,               &#x2F;&#x2F;+28</span><br><span class="line">00401054   mov         dword ptr [ebp-0Ch],4048F5C3h	</span><br><span class="line">27:           &#39;M&#39;                 &#x2F;&#x2F;+32</span><br><span class="line">28:       &#125;;</span><br><span class="line">0040105B   mov         byte ptr [ebp-8],4Dh</span><br><span class="line">29:       struct tagPerson *pPer &#x3D; &amp;p;</span><br><span class="line">0040105F   lea         edx,[ebp-28h]				</span><br><span class="line">00401062   mov         dword ptr [ebp-2Ch],edx				;将p的地址赋值给指针变量pPer</span><br><span class="line">30:       printf(&quot;%d\n&quot;,sizeof(p));</span><br><span class="line">00401065   push        28h</span><br><span class="line">00401067   push        offset string &quot;%d\n&quot; (00426020)</span><br><span class="line">0040106C   call        printf (004010e0)</span><br><span class="line">00401071   add         esp,8</span><br><span class="line">31:       printf(&quot;%d\n&quot;,p.wHeight);       &#x2F;&#x2F;+24</span><br><span class="line">00401074   movsx       eax,word ptr [ebp-10h]				</span><br><span class="line">00401078   push        eax</span><br><span class="line">00401079   push        offset string &quot;%d\n&quot; (00426020)</span><br><span class="line">0040107E   call        printf (004010e0)</span><br><span class="line">00401083   add         esp,8</span><br><span class="line">32:       printf(&quot;%f\n&quot;,pPer-&gt;f);         &#x2F;&#x2F;+28</span><br><span class="line">00401086   mov         ecx,dword ptr [ebp-2Ch]</span><br><span class="line">00401089   fld         dword ptr [ecx+1Ch]</span><br><span class="line">0040108C   sub         esp,8</span><br><span class="line">0040108F   fstp        qword ptr [esp]</span><br><span class="line">00401092   push        offset string &quot;%f\n&quot; (0042601c)</span><br><span class="line">00401097   call        printf (004010e0)</span><br><span class="line">0040109C   add         esp,0Ch</span><br><span class="line">33:       return 0;</span><br><span class="line">0040109F   xor         eax,eax</span><br><span class="line">34:   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="结构指针做函数参数"><a href="#结构指针做函数参数" class="headerlink" title="结构指针做函数参数"></a>结构指针做函数参数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">21:       printf(&quot;%d\n&quot;,tagPoint-&gt;nAge);</span><br><span class="line">00401028   mov         eax,dword ptr [ebp+8]				;找到参数将参数地址放入eax中</span><br><span class="line">0040102B   mov         ecx,dword ptr [eax+8]				;在内存中加偏移</span><br><span class="line">0040102E   push        ecx</span><br><span class="line">0040102F   push        offset string &quot;%d\n&quot; (00426020)</span><br><span class="line">00401034   call        printf (004010e0)</span><br><span class="line">00401039   add         esp,8</span><br><span class="line">22:       printf(&quot;%d\n&quot;,tagPoint-&gt;wHeight);       &#x2F;&#x2F;+24</span><br><span class="line">0040103C   mov         edx,dword ptr [ebp+8]</span><br><span class="line">0040103F   movsx       eax,word ptr [edx+18h]</span><br><span class="line">00401043   push        eax</span><br><span class="line">00401044   push        offset string &quot;%d\n&quot; (00426020)</span><br><span class="line">00401049   call        printf (004010e0)</span><br><span class="line">0040104E   add         esp,8</span><br><span class="line">23:       printf(&quot;%f\n&quot;,tagPoint-&gt;f);         &#x2F;&#x2F;+28</span><br><span class="line">00401051   mov         ecx,dword ptr [ebp+8]</span><br><span class="line">00401054   fld         dword ptr [ecx+1Ch]				;push浮点指令</span><br><span class="line">00401057   sub         esp,8</span><br><span class="line">0040105A   fstp        qword ptr [esp]					;pop浮点指令</span><br><span class="line">0040105D   push        offset string &quot;%f\n&quot; (0042601c)</span><br><span class="line">00401062   call        printf (004010e0)</span><br><span class="line">00401067   add         esp,0Ch</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">38:       Show(&amp;p);</span><br><span class="line">00410A05   lea         eax,[ebp-28h]				;结构体首地址</span><br><span class="line">00410A08   push        eax</span><br><span class="line">00410A09   call        @ILT+5(Show) (0040100a)</span><br><span class="line">00410A0E   add         esp,4</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="对比数组与结构体指针做参数"><a href="#对比数组与结构体指针做参数" class="headerlink" title="对比数组与结构体指针做参数"></a>对比数组与结构体指针做参数</h2><p>如果是结构指针做参数，并且结构体中都为相同类型，那么和数组看不出任何差异；</p>
+<p>;结构指针做参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">struct tagTest2 </span><br><span class="line">&#123;</span><br><span class="line">	int m_1;</span><br><span class="line">	int m_2;</span><br><span class="line">	int m_3;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void Show2(struct tagTest2 *p)</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;%d\n&quot;,p-&gt;m_1);</span><br><span class="line">	printf(&quot;%d\n&quot;,p-&gt;m_2);</span><br><span class="line">	printf(&quot;%d\n&quot;,p-&gt;m_3);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct tagTest2 Test &#x3D; &#123;1,2,3&#125;;</span><br><span class="line">Show2(&amp;Test);</span><br><span class="line"></span><br><span class="line">;函数调用反汇编代码略</span><br><span class="line"></span><br><span class="line">.text:00410B08                 mov     eax, [ebp+arg_0] ; 寻找到参数，参数存入eax寄存器中</span><br><span class="line">.text:00410B0B                 mov     ecx, [eax]      ; 在内存中加偏移</span><br><span class="line">.text:00410B0D                 push    ecx</span><br><span class="line">.text:00410B0E                 push    offset aD       ; &quot;%d\n&quot;</span><br><span class="line">.text:00410B13                 call    printf</span><br><span class="line">.text:00410B18                 add     esp, 8</span><br><span class="line">.text:00410B1B                 mov     edx, [ebp+arg_0]</span><br><span class="line">.text:00410B1E                 mov     eax, [edx+4]    ; 第二个结构体成员</span><br><span class="line">.text:00410B21                 push    eax</span><br><span class="line">.text:00410B22                 push    offset aD       ; &quot;%d\n&quot;</span><br><span class="line">.text:00410B27                 call    printf</span><br><span class="line">.text:00410B2C                 add     esp, 8</span><br><span class="line">.text:00410B2F                 mov     ecx, [ebp+arg_0]</span><br><span class="line">.text:00410B32                 mov     edx, [ecx+8]    ; 第三个结构体成员</span><br><span class="line">.text:00410B35                 push    edx</span><br><span class="line">.text:00410B36                 push    offset aD       ; &quot;%d\n&quot;</span><br><span class="line">.text:00410B3B                 call    printf</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>数组做函数参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">	</span><br><span class="line">void Show3(int *ary)</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;%d\n&quot;,ary[0]);</span><br><span class="line">	printf(&quot;%d\n&quot;,ary[1]);</span><br><span class="line">	printf(&quot;%d\n&quot;,ary[2]);</span><br><span class="line">&#125;</span><br><span class="line">int Array[3] &#x3D; &#123;1,2,3&#125;;</span><br><span class="line"></span><br><span class="line">.text:004010C8                 mov     eax, [ebp+arg_0]</span><br><span class="line">.text:004010CB                 mov     ecx, [eax]</span><br><span class="line">.text:004010CD                 push    ecx</span><br><span class="line">.text:004010CE                 push    offset aD       ; &quot;%d\n&quot;</span><br><span class="line">.text:004010D3                 call    printf</span><br><span class="line">.text:004010D8                 add     esp, 8</span><br><span class="line">.text:004010DB                 mov     edx, [ebp+arg_0]</span><br><span class="line">.text:004010DE                 mov     eax, [edx+4]</span><br><span class="line">.text:004010E1                 push    eax</span><br><span class="line">.text:004010E2                 push    offset aD       ; &quot;%d\n&quot;</span><br><span class="line">.text:004010E7                 call    printf</span><br><span class="line">.text:004010EC                 add     esp, 8</span><br><span class="line">.text:004010EF                 mov     ecx, [ebp+arg_0]</span><br><span class="line">.text:004010F2                 mov     edx, [ecx+8]</span><br><span class="line">.text:004010F5                 push    edx</span><br><span class="line">.text:004010F6                 push    offset aD       ; &quot;%d\n&quot;</span><br><span class="line">.text:004010FB                 call    printf</span><br></pre></td></tr></table></figure>
+
+<p>如果细心一些，马么我们可以发现，结构体指针做参数和数组指针做参数是没有差异的，这样的条件十分苛刻；</p>
+<h2 id="结构体变量做函数参数"><a href="#结构体变量做函数参数" class="headerlink" title="结构体变量做函数参数"></a>结构体变量做函数参数</h2><h3 id="简单类型"><a href="#简单类型" class="headerlink" title="简单类型"></a>简单类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">struct tagTest2 </span><br><span class="line">&#123;</span><br><span class="line">	int m_1;</span><br><span class="line">	int m_2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void Show(struct tagTest2 Test)</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;%d\n&quot;,Test.m_1);</span><br><span class="line">	printf(&quot;%d\n&quot;,Test.m_2);</span><br><span class="line">&#125;</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	struct tagTest2 Test &#x3D; &#123;1,2&#125;;</span><br><span class="line">	Show(Test);</span><br><span class="line">	printf(&quot;Hello World!\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">21:       Show(Test);</span><br><span class="line">004010C6   mov         eax,dword ptr [ebp-4]</span><br><span class="line">004010C9   push        eax</span><br><span class="line">004010CA   mov         ecx,dword ptr [ebp-8]</span><br><span class="line">004010CD   push        ecx</span><br><span class="line">004010CE   call        @ILT+5(Show) (0040100a)</span><br><span class="line">004010D3   add         esp,8</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">13:   void Show(struct tagTest2 Test)</span><br><span class="line">14:   &#123;</span><br><span class="line">00401020   push        ebp</span><br><span class="line">00401021   mov         ebp,esp</span><br><span class="line">00401023   sub         esp,40h</span><br><span class="line">00401026   push        ebx</span><br><span class="line">00401027   push        esi</span><br><span class="line">00401028   push        edi</span><br><span class="line">00401029   lea         edi,[ebp-40h]</span><br><span class="line">0040102C   mov         ecx,10h</span><br><span class="line">00401031   mov         eax,0CCCCCCCCh</span><br><span class="line">00401036   rep stos    dword ptr [edi]</span><br><span class="line">15:       printf(&quot;%d\n&quot;,Test.m_1);</span><br><span class="line">00401038   mov         eax,dword ptr [ebp+8]		;处理为参数，用ebp+8来寻址</span><br><span class="line">0040103B   push        eax</span><br><span class="line">0040103C   push        offset string &quot;%d\n&quot; (0042201c)</span><br><span class="line">00401041   call        printf (00401130)</span><br><span class="line">00401046   add         esp,8</span><br><span class="line">16:       printf(&quot;%d\n&quot;,Test.m_2);</span><br><span class="line">00401049   mov         ecx,dword ptr [ebp+0Ch]</span><br><span class="line">0040104C   push        ecx</span><br><span class="line">0040104D   push        offset string &quot;%d\n&quot; (0042201c)</span><br><span class="line">00401052   call        printf (00401130)</span><br><span class="line">00401057   add         esp,8</span><br><span class="line">17:   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>当作简单的参数还原也可以；</p>
+<h3 id="复杂类型"><a href="#复杂类型" class="headerlink" title="复杂类型"></a>复杂类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">48:       Show2(p);</span><br><span class="line">00401198   add         esp,0DCh			;给栈顶留空间，结构体做参数特殊处理</span><br><span class="line">0040119B   mov         ecx,0Ah</span><br><span class="line">004011A0   lea         esi,[ebp-28h]	;结构体传参</span><br><span class="line">004011A3   mov         edi,esp</span><br><span class="line">004011A5   rep movs    dword ptr [edi],dword ptr [esi]			;memcpy</span><br><span class="line">004011A7   call        @ILT+0(Show2) (00401005)</span><br><span class="line">004011AC   add         esp,28h</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">30:   void Show2(struct tagPerson Test)</span><br><span class="line">31:   &#123;</span><br><span class="line">004010C0   push        ebp</span><br><span class="line">004010C1   mov         ebp,esp</span><br><span class="line">004010C3   sub         esp,40h</span><br><span class="line">004010C6   push        ebx</span><br><span class="line">004010C7   push        esi</span><br><span class="line">004010C8   push        edi</span><br><span class="line">004010C9   lea         edi,[ebp-40h]</span><br><span class="line">004010CC   mov         ecx,10h</span><br><span class="line">004010D1   mov         eax,0CCCCCCCCh</span><br><span class="line">004010D6   rep stos    dword ptr [edi]</span><br><span class="line">32:       printf(&quot;%d\n&quot;,Test.nAge);</span><br><span class="line">004010D8   mov         eax,dword ptr [ebp+10h]</span><br><span class="line">004010DB   push        eax</span><br><span class="line">004010DC   push        offset string &quot;%d\n&quot; (00426020)</span><br><span class="line">004010E1   call        printf (004011f0)</span><br><span class="line">004010E6   add         esp,8</span><br><span class="line">33:       printf(&quot;%f\n&quot;,Test.dwlWeight);</span><br><span class="line">004010E9   mov         ecx,dword ptr [ebp+1Ch]</span><br><span class="line">004010EC   push        ecx</span><br><span class="line">004010ED   mov         edx,dword ptr [ebp+18h]</span><br><span class="line">004010F0   push        edx</span><br><span class="line">004010F1   push        offset string &quot;%f\n&quot; (0042601c)</span><br><span class="line">004010F6   call        printf (004011f0)</span><br><span class="line">004010FB   add         esp,0Ch</span><br><span class="line">34:       printf(&quot;%f\n&quot;,Test.f);</span><br><span class="line">004010FE   fld         dword ptr [ebp+24h]</span><br><span class="line">00401101   sub         esp,8</span><br><span class="line">00401104   fstp        qword ptr [esp]</span><br><span class="line">00401107   push        offset string &quot;%f\n&quot; (0042601c)</span><br><span class="line">0040110C   call        printf (004011f0)</span><br><span class="line">00401111   add         esp,0Ch</span><br><span class="line">35:   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>遇到这样的代码定式，一定有一个结构体：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">.text:004010CE                 sub     esp, 24h</span><br><span class="line">.text:004010D1                 mov     ecx, 0Ah</span><br><span class="line">.text:004010D6                 lea     esi, [esp+58h+var_28]</span><br><span class="line">.text:004010DA                 mov     edi, esp        ; 栈顶有结构体</span><br><span class="line">.text:004010DC                 rep movsd</span><br><span class="line"></span><br><span class="line">;高版本编译器中是这样的：</span><br><span class="line">.text:00401105                 sub     esp, 24h</span><br><span class="line">.text:00401108                 mov     eax, esp</span><br><span class="line">.text:0040110A                 movups  xmmword ptr [eax], xmm0 ; eax相当于栈顶</span><br><span class="line">.text:0040110D                 movups  xmm0, [ebp+var_1C]</span><br><span class="line">.text:00401111                 movups  xmmword ptr [eax+10h], xmm0</span><br><span class="line">.text:00401115                 movq    xmm0, [ebp+var_C]</span><br><span class="line">.text:0040111A                 movq    qword ptr [eax+20h], xmm0</span><br><span class="line"></span><br><span class="line">;高版本不适用mm0</span><br><span class="line">.text:00401132                 sub     esp, 200h</span><br><span class="line">.text:00401138                 lea     esi, [ebp+var_214]</span><br><span class="line">.text:0040113E                 mov     ecx, 84h</span><br><span class="line">.text:00401143                 mov     edi, esp</span><br><span class="line">.text:00401145                 rep movsd</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="返回对象"><a href="#返回对象" class="headerlink" title="返回对象"></a>返回对象</h2><p>返回对象或返回结构体变量时产生临时对象；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">91:       struct tagTest2 Test &#x3D; GetTest2();		&#x2F;&#x2F;临时对象</span><br><span class="line">0040133D   call        @ILT+10(GetTest2) (0040100f)</span><br><span class="line">00401342   mov         dword ptr [ebp-70h],eax</span><br><span class="line">00401345   mov         dword ptr [ebp-6Ch],edx		&#x2F;&#x2F;6c开始的两个DWORD就是临时对象</span><br><span class="line">00401348   mov         edx,dword ptr [ebp-70h]</span><br><span class="line">0040134B   mov         dword ptr [ebp-40h],edx</span><br><span class="line">0040134E   mov         eax,dword ptr [ebp-6Ch]</span><br><span class="line">00401351   mov         dword ptr [ebp-3Ch],eax</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">92:       struct tagPerson Test1 &#x3D; GetTest3();临时对象</span><br><span class="line">00401354   lea         ecx,[ebp-0C0h]				;</span><br><span class="line">0040135A   push        ecx</span><br><span class="line">0040135B   call        @ILT+5(GetTest3) (0040100a)</span><br><span class="line">00401360   add         esp,4</span><br><span class="line">00401363   mov         esi,eax</span><br><span class="line">00401365   mov         ecx,0Ah</span><br><span class="line">0040136A   lea         edi,[ebp-98h]</span><br><span class="line">00401370   rep movs    dword ptr [edi],dword ptr [esi]		;返回值给临时对象</span><br><span class="line">00401372   mov         ecx,0Ah</span><br><span class="line">00401377   lea         esi,[ebp-98h]</span><br><span class="line">0040137D   lea         edi,[ebp-68h]</span><br><span class="line">00401380   rep movs    dword ptr [edi],dword ptr [esi]		;返回给局部变量</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 <span class="title">GetInt64</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">8765432187654321L</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">GetFolat</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">3.14f</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">GetDouble</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">3.14</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">struct tagTest2 <span class="title">GetTest2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">tagTest2</span> <span class="title">Test</span>= &#123;</span><span class="number">1</span>,<span class="number">2</span>&#125;;</span><br><span class="line">	<span class="keyword">return</span> Test;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">struct tagPerson <span class="title">GetTest3</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">tagPerson</span> <span class="title">p</span> = &#123;</span></span><br><span class="line">		<span class="string">&quot;jack&quot;</span>,				<span class="comment">//+0</span></span><br><span class="line">			<span class="number">15</span>,					<span class="comment">//+8</span></span><br><span class="line">			<span class="number">250.0</span>,				<span class="comment">//+16</span></span><br><span class="line">			<span class="number">172</span>,				<span class="comment">//+24</span></span><br><span class="line">			<span class="number">3.14</span>,				<span class="comment">//+28</span></span><br><span class="line">			<span class="string">&#x27;M&#x27;</span>					<span class="comment">//+32</span></span><br><span class="line">		&#125;;</span><br><span class="line">	<span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">tagPerson</span> <span class="title">p</span> = &#123;</span></span><br><span class="line">		<span class="string">&quot;jack&quot;</span>,				<span class="comment">//+0</span></span><br><span class="line">			<span class="number">15</span>,					<span class="comment">//+8</span></span><br><span class="line">			<span class="number">250.0</span>,				<span class="comment">//+16</span></span><br><span class="line">			<span class="number">172</span>,				<span class="comment">//+24</span></span><br><span class="line">			<span class="number">3.14</span>,				<span class="comment">//+28</span></span><br><span class="line">			<span class="string">&#x27;M&#x27;</span>					<span class="comment">//+32</span></span><br><span class="line">		&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> n = GetInt64();</span><br><span class="line">	<span class="keyword">float</span> n1 = GetFolat();</span><br><span class="line">	<span class="keyword">double</span> dbl = GetDouble();</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">tagTest2</span> <span class="title">Test</span> = <span class="title">GetTest2</span>();</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">tagPerson</span> <span class="title">Test1</span> = <span class="title">GetTest3</span>();</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Hello World!\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="复杂对象"><a href="#复杂对象" class="headerlink" title="复杂对象"></a>复杂对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">92:       struct tagPerson Test1 &#x3D; GetTest3();</span><br><span class="line">00401354   lea         ecx,[ebp-0C0h]</span><br><span class="line">0040135A   push        ecx						;复杂对象就是返回到内存中，使用参数返回到内存中</span><br><span class="line">0040135B   call        @ILT+5(GetTest3) (0040100a)</span><br><span class="line">00401360   add         esp,4</span><br><span class="line">00401363   mov         esi,eax</span><br><span class="line">00401365   mov         ecx,0Ah</span><br><span class="line">0040136A   lea         edi,[ebp-98h]</span><br><span class="line">00401370   rep movs    dword ptr [edi],dword ptr [esi]</span><br><span class="line">00401372   mov         ecx,0Ah</span><br><span class="line">00401377   lea         esi,[ebp-98h]</span><br><span class="line">0040137D   lea         edi,[ebp-68h]</span><br><span class="line">00401380   rep movs    dword ptr [edi],dword ptr [esi]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">;函数中返回</span><br><span class="line">0040129F   mov         ecx,0Ah</span><br><span class="line">004012A4   lea         esi,[ebp-28h]			;参数给esi</span><br><span class="line">004012A7   mov         edi,dword ptr [ebp+8]	;</span><br><span class="line">004012AA   rep movs    dword ptr [edi],dword ptr [esi]	;memcpy</span><br><span class="line">004012AC   mov         eax,dword ptr [ebp+8]	;将结果返回到参数所指向的内存块中</span><br><span class="line"></span><br><span class="line">memcpy(pRet,xxx,xxx)</span><br><span class="line">return pRet</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/15/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%93%E6%9E%84%E4%BD%93/" title="C++反汇编与逆向分析 - 结构体">http://systemk1t.github.io/2021/07/15/C-反汇编与逆向分析-结构体/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" rel="tag"># 反汇编与逆向分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/14/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%95%B0%E7%BB%84/" rel="prev" title="C++反汇编与逆向分析 - 数组">
+      <i class="fa fa-chevron-left"></i> C++反汇编与逆向分析 - 数组
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/16/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%B1%BB/" rel="next" title="C++反汇编与逆向分析 - 类">
+      C++反汇编与逆向分析 - 类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.</span> <span class="nav-text">结构体</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%8C%87%E9%92%88%E5%81%9A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">结构指针做函数参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E6%95%B0%E7%BB%84%E4%B8%8E%E7%BB%93%E6%9E%84%E4%BD%93%E6%8C%87%E9%92%88%E5%81%9A%E5%8F%82%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">对比数组与结构体指针做参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%8F%98%E9%87%8F%E5%81%9A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-number">1.4.</span> <span class="nav-text">结构体变量做函数参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.4.1.</span> <span class="nav-text">简单类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">复杂类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.5.</span> <span class="nav-text">返回对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.5.1.</span> <span class="nav-text">复杂对象</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

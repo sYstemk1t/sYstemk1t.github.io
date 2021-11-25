@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8086指令基础 - 位操作指令">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/0.png">
+<meta property="article:published_time" content="2021-06-04T06:38:06.000Z">
+<meta property="article:modified_time" content="2021-06-06T19:28:28.189Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="16汇编">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>8086指令基础 - 位操作指令 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          8086指令基础 - 位操作指令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-04 14:38:06" itemprop="dateCreated datePublished" datetime="2021-06-04T14:38:06+08:00">2021-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-07 03:28:28" itemprop="dateModified" datetime="2021-06-07T03:28:28+08:00">2021-06-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">16位汇编</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Windows XP Debug</li>
+</ul>
+<h1 id="位操作指令"><a href="#位操作指令" class="headerlink" title="位操作指令"></a>位操作指令</h1><h2 id="符号扩展"><a href="#符号扩展" class="headerlink" title="符号扩展"></a>符号扩展</h2><p>符号扩展是指用一个操作数的符号位（即最高位）形成另一个操作数，后一个操作数的各位都是全0（正数）或全1（负数）。符号扩展不改变数据大小</p>
+<ul>
+<li>对于数据64H（表示数据100），起最高位D7为0，符号扩展后高八位都是0，成为0064H</li>
+<li>对于数据FF00H（表示有符号数-256），其最高位D15为1，符号扩展后高16位都是1，成为FFFFFF0H（仍表示有符号数-256）</li>
+</ul>
+<h3 id="CBW-BYTE-WORD"><a href="#CBW-BYTE-WORD" class="headerlink" title="CBW(BYTE-WORD)"></a>CBW(BYTE-WORD)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> CBW</span><br><span class="line">；AL的符号扩展至AH</span><br><span class="line">；如AL的最高有效位是0，则AH＝00</span><br><span class="line">；AL的最高有效位为1，则AH＝FFH。AL不变</span><br></pre></td></tr></table></figure>
+
+<h3 id="CWD-WORD-DWORD"><a href="#CWD-WORD-DWORD" class="headerlink" title="CWD(WORD-DWORD)"></a>CWD(WORD-DWORD)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CWD </span><br><span class="line">；AX的符号扩展至DX</span><br><span class="line">；如AX的最高有效位是0，则DX＝00</span><br><span class="line">；AX的最高有效位为1，则DX＝FFFFH。AX不变</span><br></pre></td></tr></table></figure>
+
+
+
+<p>demo:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mov al,80h  ；al&#x3D;80h</span><br><span class="line">cbw ；ax&#x3D;ff80h</span><br><span class="line">add al,255  ；al&#x3D;7fh</span><br><span class="line">cbw ；ax&#x3D;007fh</span><br><span class="line">cwd ；DX.AX←AX</span><br><span class="line">idiv bx ；AX←DX.AX÷BX</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="十进制调整指令"><a href="#十进制调整指令" class="headerlink" title="十进制调整指令"></a>十进制调整指令</h2><p>十进制数调整指令对二进制运算的结果进行十进制调整，以得到十进制的运算结果分成<strong>压缩BCD码和非压缩BCD码</strong>调整</p>
+<h3 id="压缩BCD码"><a href="#压缩BCD码" class="headerlink" title="压缩BCD码"></a>压缩BCD码</h3><p>压缩BCD码就是通常的8421码；它用4个二进制位表示一个十进制位，<strong>一个字节可以表示两个十进制位，即00～99</strong></p>
+<h3 id="非压缩BDC码"><a href="#非压缩BDC码" class="headerlink" title="非压缩BDC码"></a>非压缩BDC码</h3><p>非压缩BCD码用8个二进制位表示一个十进制位，只用低4个二进制位表示一个十进制位0～9，高4位任意，通常默认为0</p>
+<h3 id="BCD码"><a href="#BCD码" class="headerlink" title="BCD码"></a>BCD码</h3><p>二进制编码的十进制数：一位十进制数用4位二进制编码来表示 8086支持压缩BCD码和非压缩BCD码的调整运算</p>
+<table>
+<thead>
+<tr>
+<th>真值</th>
+<th>8</th>
+<th>64</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>二进制编码</td>
+<td>08H</td>
+<td>40H</td>
+</tr>
+<tr>
+<td>压缩BCD码</td>
+<td>08H</td>
+<td>64H</td>
+</tr>
+<tr>
+<td>非压缩BCD码</td>
+<td>08H</td>
+<td>0604H</td>
+</tr>
+</tbody></table>
+<h3 id="压缩BCD码加、减调整指令"><a href="#压缩BCD码加、减调整指令" class="headerlink" title="压缩BCD码加、减调整指令"></a>压缩BCD码加、减调整指令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">（ADD AL,i8&#x2F;r8&#x2F;m8）</span><br><span class="line">（ADC AL,i8&#x2F;r8&#x2F;m8）</span><br><span class="line">DAA</span><br><span class="line">；AL←将AL的加和调整为压缩BCD码</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">（SUB AL,i8&#x2F;r8&#x2F;m8）</span><br><span class="line">（SBB AL,i8&#x2F;r8&#x2F;m8）</span><br><span class="line">DAS</span><br><span class="line">；AL←将AL的减差调整为压缩BCD码</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/0.png"></p>
+<p>使用<strong>DAA或DAS指令</strong>前，应先执行以AL为目的操作数的加法或减法指令</p>
+<h3 id="DAS实现十进制调整"><a href="#DAS实现十进制调整" class="headerlink" title="DAS实现十进制调整"></a>DAS实现十进制调整</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mov al,68h</span><br><span class="line">；al&#x3D;68h，压缩BCD码表示真值68</span><br><span class="line">mov bl,28h</span><br><span class="line">；bl&#x3D;28h，压缩BCD码表示真值28</span><br><span class="line">sub al,bl</span><br><span class="line">；二进制减法：al&#x3D;68h-28h&#x3D;40h</span><br><span class="line">das </span><br><span class="line">；十进制调整：al&#x3D;40h</span><br><span class="line">；实现压缩BCD码加法：68-28＝40</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4/" title="8086指令基础 - 位操作指令">http://systemk1t.github.io/2021/06/04/8086指令基础-位操作指令/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/16%E6%B1%87%E7%BC%96/" rel="tag"># 16汇编</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4/" rel="prev" title="8086指令基础 - 算术运算类指令">
+      <i class="fa fa-chevron-left"></i> 8086指令基础 - 算术运算类指令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E6%8C%87%E4%BB%A4/" rel="next" title="8086指令基础 - 逻辑运算指令">
+      8086指令基础 - 逻辑运算指令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">位操作指令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E6%89%A9%E5%B1%95"><span class="nav-number">1.1.</span> <span class="nav-text">符号扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CBW-BYTE-WORD"><span class="nav-number">1.1.1.</span> <span class="nav-text">CBW(BYTE-WORD)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CWD-WORD-DWORD"><span class="nav-number">1.1.2.</span> <span class="nav-text">CWD(WORD-DWORD)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E8%BF%9B%E5%88%B6%E8%B0%83%E6%95%B4%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">十进制调整指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9BCD%E7%A0%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">压缩BCD码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%8E%8B%E7%BC%A9BDC%E7%A0%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">非压缩BDC码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BCD%E7%A0%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">BCD码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9BCD%E7%A0%81%E5%8A%A0%E3%80%81%E5%87%8F%E8%B0%83%E6%95%B4%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.4.</span> <span class="nav-text">压缩BCD码加、减调整指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DAS%E5%AE%9E%E7%8E%B0%E5%8D%81%E8%BF%9B%E5%88%B6%E8%B0%83%E6%95%B4"><span class="nav-number">1.2.5.</span> <span class="nav-text">DAS实现十进制调整</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

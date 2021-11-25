@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《WindowsAPI开发详解》一书总结而来；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WindowsAPI - 进程线程">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《WindowsAPI开发详解》一书总结而来；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-26T16:21:25.000Z">
+<meta property="article:modified_time" content="2021-06-27T04:47:45.140Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="WindowsAPI开发详解">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>WindowsAPI - 进程线程 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WindowsAPI - 进程线程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-27 00:21:25 / 修改时间：12:47:45" itemprop="dateCreated datePublished" datetime="2021-06-27T00:21:25+08:00">2021-06-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WindowsAPI%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">WindowsAPI开发详解</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>18 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《WindowsAPI开发详解》一书总结而来；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Visual Studio 2013</li>
+</ul>
+<h1 id="进程线程模块"><a href="#进程线程模块" class="headerlink" title="进程线程模块"></a>进程线程模块</h1><p>运行一个程序就会产生一个进程。进程是应用程序的实例。进程包括一个虚拟地址空间及代码、数据、对象等程序运行所需环境和资源的集合；</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="程序与进程"><a href="#程序与进程" class="headerlink" title="程序与进程"></a>程序与进程</h3><ul>
+<li>可执行文件<ul>
+<li>程序的载体是可执行文件。可执行文件中包括了运行所需的程序、数据以配置信息等。<strong>Windows平台的可执行程序基本都是PE格式</strong></li>
+</ul>
+</li>
+<li>应用程序<ul>
+<li>程序是一系列具有特定功能、能完成操作的代码集合。</li>
+</ul>
+</li>
+<li>进程<ul>
+<li>进程提供了程序运行所需要的资源、虚拟内存地址空间、各种数据、可执行代码、需要使用的各种内核对象、系统调用接口等，还至少包含了一个线程；</li>
+</ul>
+</li>
+</ul>
+<h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><h3 id="创建进程"><a href="#创建进程" class="headerlink" title="创建进程"></a>创建进程</h3><ul>
+<li>父子进程<ul>
+<li>如果一个进程创建了另外一个进程，那么被创建的进程成为子进程，创建者为父进程</li>
+</ul>
+</li>
+<li>启动参数<ul>
+<li>进程创建后，可以调用GetCommandLine、GetStartupInfo获取启动参数、启动信息；</li>
+</ul>
+</li>
+<li>进程句柄和进程标识<ul>
+<li>如果需要知道自己的句柄，可以使用GetCurrentProcess和GetCurrentPocessId函数获取自己的句柄和PID；</li>
+</ul>
+</li>
+<li>退出和终止线程<ul>
+<li>代码执行完成后自动退出，如果要立即退出调用ExitProcess，使其他进程退出调用TerminateProcess函数；</li>
+</ul>
+</li>
+</ul>
+<h4 id="CreateProcess"><a href="#CreateProcess" class="headerlink" title="CreateProcess"></a>CreateProcess</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">CreateProcess</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPCTSTR lpApplicationName,                 <span class="comment">// name of executable module		//进程名，进程要拉起的程序</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPTSTR lpCommandLine,                      <span class="comment">// command line string				//命令行参数</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSECURITY_ATTRIBUTES lpProcessAttributes, <span class="comment">// SD								//安全描述符</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSECURITY_ATTRIBUTES lpThreadAttributes,  <span class="comment">// SD</span></span></span></span><br><span class="line"><span class="function"><span class="params">  BOOL bInheritHandles,                      <span class="comment">// handle inheritance option		//是否继承</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD dwCreationFlags,                     <span class="comment">// creation flags					//创建标志</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpEnvironment,                      <span class="comment">// new environment block			//新进程环境快，如果为空则继承父进程环境</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPCTSTR lpCurrentDirectory,                <span class="comment">// current directory name			//当前目录</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSTARTUPINFO lpStartupInfo,               <span class="comment">// startup information				//START_INFO结构体</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPPROCESS_INFORMATION lpProcessInformation <span class="comment">// process information				//PROCESS_INFOMATION结构体</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD <span class="title">CreateChildProcess</span><span class="params">(LPTSTR szChildProcessCmd)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* int main(void)</span></span><br><span class="line"><span class="comment">* 功能	演示进程创建</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	未使用</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	TCHAR szApplicationName[] = TEXT(<span class="string">&quot;notepad.exe&quot;</span>);</span><br><span class="line">	CreateChildProcess(szApplicationName);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* DWORD CreateChildProcess(LPSTR szChildProcessCmd)</span></span><br><span class="line"><span class="comment">* 功能	演示创建子进程</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	LPSTR szChildProcessCmd	启动子进程的命令行</span></span><br><span class="line"><span class="comment">* 返回值	成功返回，失败返回</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">DWORD <span class="title">CreateChildProcess</span><span class="params">(LPTSTR szChildProcessCmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	STARTUPINFO si;</span><br><span class="line">	PROCESS_INFORMATION pi;</span><br><span class="line">	ZeroMemory(&amp;si, <span class="keyword">sizeof</span>(si));</span><br><span class="line">	ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(pi));</span><br><span class="line">	si.cb = <span class="keyword">sizeof</span>(si);</span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="keyword">if</span> (!CreateProcess(</span><br><span class="line">		<span class="literal">NULL</span>,		<span class="comment">//对象名称</span></span><br><span class="line">		szChildProcessCmd,			<span class="comment">//进程命令行</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//不继承进程句柄</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//不继承线程句柄</span></span><br><span class="line">		FALSE,					<span class="comment">//不继承句柄</span></span><br><span class="line">		<span class="number">0</span>,						<span class="comment">//创建标志</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程环境变量</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程目录作为当前目录</span></span><br><span class="line">		&amp;si,					<span class="comment">//进程的详细信息</span></span><br><span class="line">		&amp;pi						<span class="comment">//</span></span><br><span class="line">		)</span><br><span class="line">		)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateChildProcess Error = %d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 在创建成功后父进程也可直接退出，这里等待子进程执行结束</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 等待子进程结束</span></span><br><span class="line">	<span class="comment">// 使用到了通过PROCESS_INFORMATION 返回的相关信息，hProcess为子进程句柄</span></span><br><span class="line">	<span class="comment">// 父进程也可以不等待子进程运行完成而直接退出</span></span><br><span class="line">	WaitForSingleObject(pi.hProcess, INFINITE);</span><br><span class="line">	<span class="comment">// 关闭进程句柄和线程句柄</span></span><br><span class="line">	CloseHandle(pi.hProcess);</span><br><span class="line">	CloseHandle(pi.hThread);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="获取和设置环境变量"><a href="#获取和设置环境变量" class="headerlink" title="获取和设置环境变量"></a>获取和设置环境变量</h3><h4 id="GetEnvironmentStrings"><a href="#GetEnvironmentStrings" class="headerlink" title="GetEnvironmentStrings"></a>GetEnvironmentStrings</h4><p>获取所有环境变量的字符串；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LPVOID <span class="title">GetEnvironmentStrings</span><span class="params">(VOID)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><h4 id="CreateThread"><a href="#CreateThread" class="headerlink" title="CreateThread"></a>CreateThread</h4><p>使用CreateThread函数可以创建线程，每一个线程都必须拥有线程函数，线程函数是线程执行的起点。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateThread</span> <span class="params">(  SEC_ATTRS SecurityAttributes,  <span class="comment">//安全描述符</span></span></span></span><br><span class="line"><span class="function"><span class="params">                     	ULONG StackSize,				<span class="comment">//堆栈大小</span></span></span></span><br><span class="line"><span class="function"><span class="params">  						SEC_THREAD_START StartFunction,  	<span class="comment">//线程函数</span></span></span></span><br><span class="line"><span class="function"><span class="params">                     	PVOID ThreadParameter,  		<span class="comment">//线程函数</span></span></span></span><br><span class="line"><span class="function"><span class="params">                     	ULONG CreationFlags,			<span class="comment">//创建标志</span></span></span></span><br><span class="line"><span class="function"><span class="params">  						PULONG ThreadId)</span></span>;				<span class="comment">//线程ID</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="ThreadProc"><a href="#ThreadProc" class="headerlink" title="ThreadProc"></a>ThreadProc</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc</span><span class="params">(LPVOID lpParameter)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>进程中每一个线程都有一个句柄和一个标识符，每一个线程的TID都不一样，因此TID用于标识一个线程。如果只要线程的TID，可以通过OpenThread获取线程句柄，如果知道线程的句柄，可以使用<strong>GetThreadId</strong>获取线程的TID；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_THREADS 5</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">THREAD_PARAM</span>&#123;</span></span><br><span class="line">	DWORD i;</span><br><span class="line">	DWORD dwRandom;</span><br><span class="line">	DWORD dwData;</span><br><span class="line">&#125;THREAD_PARAM,*LPTHREAD_PARAM;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LPTHREAD_PARAM pData;</span><br><span class="line">	<span class="comment">// 参数数据类型</span></span><br><span class="line">	pData = (LPTHREAD_PARAM)lpParam;</span><br><span class="line">	<span class="comment">// 显示参数</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;TID = %u,\t Parameters = %u, %u,  %u\n&quot;</span>,</span><br><span class="line">		GetCurrentThreadId(),</span><br><span class="line">		pData-&gt;i, pData-&gt;dwRandom, pData-&gt;dwData);</span><br><span class="line">	<span class="comment">// 释放保存参数的内存（在主线程中分配的）.</span></span><br><span class="line">	HeapFree(GetProcessHeap(), <span class="number">0</span>, pData);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LPTHREAD_PARAM pData;</span><br><span class="line">	DWORD dwThreadId[MAX_THREADS];</span><br><span class="line">	HANDLE hThread[MAX_THREADS];</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; MAX_THREADS; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		pData = (LPTHREAD_PARAM)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, <span class="keyword">sizeof</span>(THREAD_PARAM));</span><br><span class="line">		<span class="keyword">if</span> (pData == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;HeapAlloc Error\n&quot;</span>);</span><br><span class="line">			ExitProcess(<span class="number">2</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		pData-&gt;i = i;</span><br><span class="line">		pData-&gt;dwRandom = rand();</span><br><span class="line">		pData-&gt;dwData = <span class="number">100</span>;</span><br><span class="line">		hThread[i] = CreateThread(</span><br><span class="line">			<span class="literal">NULL</span>,              <span class="comment">// 默认安全属性</span></span><br><span class="line">			<span class="number">0</span>,                 <span class="comment">// 默认堆栈大小 </span></span><br><span class="line">			ThreadProc,        <span class="comment">// 线程函数</span></span><br><span class="line">			pData,             <span class="comment">// 参数</span></span><br><span class="line">			<span class="number">0</span>,                 <span class="comment">// 默认创建标志</span></span><br><span class="line">			&amp;dwThreadId[i]);   <span class="comment">// 返回TID</span></span><br><span class="line">		<span class="comment">// 判断是否创建成功</span></span><br><span class="line">		<span class="keyword">if</span> (hThread[i] == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			ExitProcess(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	WaitForMultipleObjects(MAX_THREADS, hThread, TRUE, INFINITE);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		CloseHandle(hThread[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="线程挂起、恢复、切换、终止"><a href="#线程挂起、恢复、切换、终止" class="headerlink" title="线程挂起、恢复、切换、终止"></a>线程挂起、恢复、切换、终止</h3><h4 id="Sleep"><a href="#Sleep" class="headerlink" title="Sleep"></a>Sleep</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Sleep</span><span class="params">(DWORD dwMilliseconds)</span></span>; </span><br><span class="line"><span class="function">DWORD <span class="title">SleepEx</span><span class="params">(  DWORD dwMilliseconds,  <span class="comment">// time-out interval  BOOL bAlertable        // early completion option);</span></span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="SuspendThread、ResumeThread"><a href="#SuspendThread、ResumeThread" class="headerlink" title="SuspendThread、ResumeThread"></a>SuspendThread、ResumeThread</h4><p>SuspendThread是挂起指定线程，不同于Sleep，挂起的线程只能通过ResumeThread恢复</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DWORD <span class="title">SuspendThread</span><span class="params">(HANDLE hThread)</span></span>; </span><br><span class="line"><span class="function">DWORD <span class="title">ResumeThread</span><span class="params">( HANDLE hThread)</span></span>; </span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="SwitchtoThread"><a href="#SwitchtoThread" class="headerlink" title="SwitchtoThread"></a>SwitchtoThread</h4><p>SwitchToThread函数的作用是使得线程主动让出程序的执行；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">SwitchToThread</span><span class="params">(VOID)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="ExitThread"><a href="#ExitThread" class="headerlink" title="ExitThread"></a>ExitThread</h4><p>退出本线程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VOID <span class="title">ExitThread</span><span class="params">( DWORD dwExitCode)</span></span>; </span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="TerminateThread"><a href="#TerminateThread" class="headerlink" title="TerminateThread"></a>TerminateThread</h4><p>终止线程线程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">TerminateThread</span><span class="params">(HANDLE hThread, 	<span class="comment">//句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">                     DWORD dwExitCode)</span></span>;	<span class="comment">//退出码</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadProc</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LPDWORD pData;</span><br><span class="line">	DWORD i = <span class="number">0</span>;</span><br><span class="line">	pData = (LPDWORD)lpParam;</span><br><span class="line">	<span class="keyword">for</span> (; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		Sleep(<span class="number">100</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;TID = %u,\t Paramters = %u\t i = %u\n&quot;</span>, GetCurrentThreadId(), *pData, i);</span><br><span class="line">	&#125;</span><br><span class="line">	ExitThread(<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dwData;</span><br><span class="line">	DWORD dwThreadId[<span class="number">2</span>];</span><br><span class="line">	HANDLE hThread[<span class="number">2</span>];</span><br><span class="line">	<span class="comment">//创建线程</span></span><br><span class="line">	dwData = <span class="number">1</span>;</span><br><span class="line">	hThread[<span class="number">0</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc, &amp;dwData, CREATE_SUSPENDED, &amp;dwThreadId[<span class="number">0</span>]);		<span class="comment">//挂起方式创建线程</span></span><br><span class="line">	<span class="keyword">if</span> (hThread[<span class="number">0</span>] == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		ExitProcess(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	dwData = <span class="number">2</span>;</span><br><span class="line">	hThread[<span class="number">1</span>] = CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, ThreadProc, &amp;dwData, <span class="number">0</span>, &amp;dwThreadId[<span class="number">1</span>]);</span><br><span class="line">	<span class="keyword">if</span> (hThread[<span class="number">0</span>] == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		ExitProcess(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	Sleep(<span class="number">200</span>);</span><br><span class="line">	ResumeThread(hThread[<span class="number">0</span>]);			<span class="comment">//恢复线程运行</span></span><br><span class="line">	SuspendThread(hThread[<span class="number">1</span>]);			<span class="comment">//将线程1挂起</span></span><br><span class="line">	Sleep(<span class="number">300</span>);							<span class="comment">//等待</span></span><br><span class="line">	TerminateThread(hThread[<span class="number">0</span>], <span class="number">0</span>);		<span class="comment">//结束线程0</span></span><br><span class="line">	ResumeThread(hThread[<span class="number">1</span>]);			<span class="comment">//恢复线程1</span></span><br><span class="line">	WaitForMultipleObjects(<span class="number">2</span>, hThread, TRUE, INFINITE);		<span class="comment">//等待线程结束运行</span></span><br><span class="line">	CloseHandle(hThread[<span class="number">0</span>]);			<span class="comment">//关闭句柄</span></span><br><span class="line">	CloseHandle(hThread[<span class="number">1</span>]);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="远程线程"><a href="#远程线程" class="headerlink" title="远程线程"></a>远程线程</h3><p>如果进程具有特定权限，可以为其他进程创建线程。</p>
+<h4 id="CreateRemoteThread"><a href="#CreateRemoteThread" class="headerlink" title="CreateRemoteThread"></a>CreateRemoteThread</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateRemoteThread</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  HANDLE hProcess,                          <span class="comment">// handle to process</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSECURITY_ATTRIBUTES lpThreadAttributes, <span class="comment">// SD</span></span></span></span><br><span class="line"><span class="function"><span class="params">  SIZE_T dwStackSize,                       <span class="comment">// initial stack size</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPTHREAD_START_ROUTINE lpStartAddress,    <span class="comment">// thread function</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpParameter,                       <span class="comment">// thread argument</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD dwCreationFlags,                    <span class="comment">// creation option</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPDWORD lpThreadId                        <span class="comment">// thread identifier</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="WriteProcessMemory"><a href="#WriteProcessMemory" class="headerlink" title="WriteProcessMemory"></a>WriteProcessMemory</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">WriteProcessMemory</span><span class="params">( HANDLE hProcess, </span></span></span><br><span class="line"><span class="function"><span class="params">                        LPVOID lpBaseAddress, </span></span></span><br><span class="line"><span class="function"><span class="params">						LPVOID lpBuffer, </span></span></span><br><span class="line"><span class="function"><span class="params">                        DWORD nSize, </span></span></span><br><span class="line"><span class="function"><span class="params">                        LPDWORD lpNumberOfBytesWritten )</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;TlHelp32.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function">BOOL <span class="title">LoadRometeDll</span><span class="params">(DWORD dwProcessId, LPTSTR lpszLibName)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BOOL bResult = FALSE;</span><br><span class="line">	HANDLE hProcess = <span class="literal">NULL</span>;</span><br><span class="line">	HANDLE hThread = <span class="literal">NULL</span>;</span><br><span class="line">	PSTR pszLibFileRemote = <span class="literal">NULL</span>;</span><br><span class="line">	DWORD dwCch;</span><br><span class="line">	PTHREAD_START_ROUTINE pfnThreadRtn;</span><br><span class="line">	__try</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//获取想要注入代码的句柄</span></span><br><span class="line">		hProcess = OpenProcess(</span><br><span class="line">			PROCESS_ALL_ACCESS,</span><br><span class="line">			FALSE,</span><br><span class="line">			dwProcessId</span><br><span class="line">			);</span><br><span class="line">		<span class="keyword">if</span> (hProcess == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		dwCch = <span class="number">1</span> + lstrlen(lpszLibName);			<span class="comment">//计算DLL路径名需要的字节数</span></span><br><span class="line">		pszLibFileRemote = (PSTR)VirtualAllocEx(hProcess, <span class="literal">NULL</span>, dwCch, MEM_COMMIT, PAGE_READWRITE);	<span class="comment">//远程线程中为路径分配空间</span></span><br><span class="line">		<span class="keyword">if</span> (pszLibFileRemote == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (!WriteProcessMemory(hProcess, pszLibFileRemote, lpszLibName, dwCch, <span class="literal">NULL</span>))	<span class="comment">//将DLL名复制到远程线程空间中</span></span><br><span class="line">		&#123;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		pfnThreadRtn = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT(<span class="string">&quot;Kernel32&quot;</span>)), <span class="string">&quot;LoadLibraryA&quot;</span>);	<span class="comment">//获取LoadLibrary真实地址</span></span><br><span class="line">		<span class="keyword">if</span> (pfnThreadRtn == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		hThread = CreateRemoteThread(hProcess, <span class="literal">NULL</span>, <span class="number">0</span>, pfnThreadRtn, (PVOID)pszLibFileRemote, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//创建远程线程，并通过远程调用DLL</span></span><br><span class="line">		<span class="keyword">if</span> (hThread == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		WaitForSingleObject(hThread, INFINITE);</span><br><span class="line">		bResult = TRUE;</span><br><span class="line">			</span><br><span class="line">	&#125;</span><br><span class="line">	__finally</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 关闭句柄. </span></span><br><span class="line">		<span class="keyword">if</span> (pszLibFileRemote != <span class="literal">NULL</span>)</span><br><span class="line">			VirtualFreeEx(hProcess, (PVOID)pszLibFileRemote, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line">		<span class="keyword">if</span> (hThread != <span class="literal">NULL</span>)</span><br><span class="line">			CloseHandle(hThread);</span><br><span class="line">		<span class="keyword">if</span> (hProcess != <span class="literal">NULL</span>)</span><br><span class="line">			CloseHandle(hProcess);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> bResult;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">BOOL <span class="title">GetProcessIdByName</span><span class="params">(LPTSTR szProcessName, LPDWORD lpPID)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// 变量及初始化</span></span><br><span class="line">	STARTUPINFO st;</span><br><span class="line">	PROCESS_INFORMATION pi;</span><br><span class="line">	PROCESSENTRY32 ps;</span><br><span class="line">	HANDLE hSnapshot;</span><br><span class="line">	ZeroMemory(&amp;st, <span class="keyword">sizeof</span>(STARTUPINFO));</span><br><span class="line">	ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(PROCESS_INFORMATION));</span><br><span class="line">	st.cb = <span class="keyword">sizeof</span>(STARTUPINFO);</span><br><span class="line">	ZeroMemory(&amp;ps, <span class="keyword">sizeof</span>(PROCESSENTRY32));</span><br><span class="line">	ps.dwSize = <span class="keyword">sizeof</span>(PROCESSENTRY32);</span><br><span class="line">	<span class="comment">// 遍历进程</span></span><br><span class="line">	hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span> (hSnapshot == INVALID_HANDLE_VALUE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!Process32First(hSnapshot, &amp;ps))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 比较进程名</span></span><br><span class="line">		<span class="keyword">if</span> (lstrcmpi(ps.szExeFile, TEXT(<span class="string">&quot;explorer.exe&quot;</span>)) == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">// 找到了</span></span><br><span class="line">			*lpPID = ps.th32ProcessID;</span><br><span class="line">			CloseHandle(hSnapshot);</span><br><span class="line">			<span class="keyword">return</span> TRUE;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">while</span> (Process32Next(hSnapshot, &amp;ps));</span><br><span class="line">	<span class="comment">// 没有找到</span></span><br><span class="line">	CloseHandle(hSnapshot);</span><br><span class="line">	<span class="keyword">return</span> FALSE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(HINSTANCE, HINSTANCE, LPSTR, INT)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dwPID;</span><br><span class="line">	<span class="comment">//获取进程PID</span></span><br><span class="line">	<span class="keyword">if</span> (!GetProcessIdByName(TEXT(<span class="string">&quot;explorer.exe&quot;</span>), &amp;dwPID))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!LoadRometeDll(dwPID, TEXT(<span class="string">&quot;msg.dll&quot;</span>)))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="进程状态信息"><a href="#进程状态信息" class="headerlink" title="进程状态信息"></a>进程状态信息</h2><h3 id="PS和Tool-Help"><a href="#PS和Tool-Help" class="headerlink" title="PS和Tool Help"></a>PS和Tool Help</h3><p>使用CreateToolhelp32Snapshot获取快照；</p>
+<h3 id="遍历系统进程"><a href="#遍历系统进程" class="headerlink" title="遍历系统进程"></a>遍历系统进程</h3><p>使用EnumProcess函数和Process32First和Process32Next函数完成列举进程；</p>
+<h4 id="EnumProcess"><a href="#EnumProcess" class="headerlink" title="EnumProcess"></a>EnumProcess</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">EnumProcesses</span><span class="params">(  DWORD *lpidProcess,  <span class="comment">// array of process identifiers		//保存获取的进程PID数组</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD cb,            <span class="comment">// size of array		//指向数组的大小、字节</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD *cbNeeded      <span class="comment">// number of bytes returned);		//获取PID的个数</span></span></span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="CreateToolhelp32Snapshot"><a href="#CreateToolhelp32Snapshot" class="headerlink" title="CreateToolhelp32Snapshot"></a>CreateToolhelp32Snapshot</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE WINAPI <span class="title">CreateToolhelp32Snapshot</span><span class="params">(  DWORD dwFlags,       	<span class="comment">//指明快照信息</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD th32ProcessID  )</span></span>;					<span class="comment">//PID 所有进程的快照</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Process32First"><a href="#Process32First" class="headerlink" title="Process32First"></a>Process32First</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL WINAPI <span class="title">Process32First</span><span class="params">(  HANDLE hSnapshot,       	<span class="comment">// 返回的快照句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">                           LPPROCESSENTRY32 lppe  )</span></span>;	<span class="comment">//PROCESSENTRY32结构变量的指针</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Psapi.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Tlhelp32.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">/* 预处理声明　*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> comment (lib, <span class="meta-string">&quot;psapi.lib&quot;</span>)</span></span><br><span class="line"><span class="comment">/* 函数声明　*/</span></span><br><span class="line"><span class="function">VOID WINAPI <span class="title">EnumProcess1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">VOID WINAPI <span class="title">EnumProcess2</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">ListProcessModules1</span><span class="params">( DWORD dwPID )</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">ListProcessModules2</span><span class="params">( DWORD dwPID)</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">PrintMemoryInfo</span><span class="params">( DWORD dwPID )</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">ShowProcessMemoryInfo</span><span class="params">( DWORD dwPID )</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">ListHeapInfo</span><span class="params">( DWORD dwPID )</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">ListProcessThreads</span><span class="params">( DWORD dwPID )</span></span>;</span><br><span class="line"><span class="function">VOID <span class="title">PrintError</span><span class="params">( LPTSTR msg )</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID WINAPI EnumProcess1()</span></span><br><span class="line"><span class="comment">* 功能	调用EnumProcesses遍历进程，</span></span><br><span class="line"><span class="comment">*		并调用ListProcessModules1函数和</span></span><br><span class="line"><span class="comment">*		ListProcessThreads函数列举模块和线程</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 无参数，无返回值</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID WINAPI <span class="title">EnumProcess1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// 假设不超过1024个进程</span></span><br><span class="line">	DWORD aProcesses[<span class="number">1024</span>], cbNeeded, cProcesses;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> i;</span><br><span class="line">	<span class="comment">// 调用EnumProcesses</span></span><br><span class="line">	<span class="keyword">if</span> ( !EnumProcesses( aProcesses, <span class="keyword">sizeof</span>(aProcesses), &amp;cbNeeded ) )</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	<span class="comment">// 进程数</span></span><br><span class="line">	cProcesses = cbNeeded / <span class="keyword">sizeof</span>(DWORD);</span><br><span class="line">	<span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; cProcesses; i++ )</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 显示进程信息</span></span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n\n**************************************************&quot;</span> );</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;\nPROCESS : %u\n\n&quot;</span>,aProcesses[i]);</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n****************************************************&quot;</span> );</span><br><span class="line">		<span class="comment">// 列举模块信息和线程信息</span></span><br><span class="line">		ListProcessModules1( aProcesses[i] );</span><br><span class="line">		ListProcessThreads( aProcesses[i] );</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID WINAPI EnumProcess2()</span></span><br><span class="line"><span class="comment">* 功能	调用Process32First和Process32Next遍历进程，</span></span><br><span class="line"><span class="comment">*		并调用ListProcessModules2函数列举模块，</span></span><br><span class="line"><span class="comment">*		调用ShowProcessMemoryInfo函数显示内存使用情况</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 无参数，无返回值</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID WINAPI <span class="title">EnumProcess2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hProcessSnap;</span><br><span class="line">	HANDLE hProcess;</span><br><span class="line">	PROCESSENTRY32 pe32;</span><br><span class="line">	DWORD dwPriorityClass;</span><br><span class="line">	<span class="comment">// Snapshot</span></span><br><span class="line">	hProcessSnap = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, <span class="number">0</span> );</span><br><span class="line">	<span class="keyword">if</span>( hProcessSnap == INVALID_HANDLE_VALUE )</span><br><span class="line">	&#123;</span><br><span class="line">		PrintError( <span class="string">&quot;CreateToolhelp32Snapshot (of processes)&quot;</span> );</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 设置输入参数，结构的大小</span></span><br><span class="line">	pe32.dwSize = <span class="keyword">sizeof</span>( PROCESSENTRY32 );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 开始列举进程</span></span><br><span class="line">	<span class="keyword">if</span>( !Process32First( hProcessSnap, &amp;pe32 ) )</span><br><span class="line">	&#123;</span><br><span class="line">		PrintError( <span class="string">&quot;Process32First&quot;</span> );  <span class="comment">// 出错信息</span></span><br><span class="line">		CloseHandle( hProcessSnap );</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 打印进程名</span></span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n\n=====================================================&quot;</span> );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\nPROCESS NAME:  %s&quot;</span>, pe32.szExeFile );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n-----------------------------------------------------&quot;</span> );</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 获取优先级</span></span><br><span class="line">		dwPriorityClass = <span class="number">0</span>;</span><br><span class="line">		hProcess = OpenProcess( PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID );</span><br><span class="line">		<span class="keyword">if</span>( hProcess == <span class="literal">NULL</span> )</span><br><span class="line">			PrintError( <span class="string">&quot;OpenProcess&quot;</span> );</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			dwPriorityClass = GetPriorityClass( hProcess );</span><br><span class="line">			<span class="keyword">if</span>( !dwPriorityClass )</span><br><span class="line">				PrintError( <span class="string">&quot;GetPriorityClass&quot;</span> );</span><br><span class="line">			CloseHandle( hProcess );</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 打印进程相关信息</span></span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n  process ID        = 0x%08X&quot;</span>, pe32.th32ProcessID );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n  thread count      = %d&quot;</span>,   pe32.cntThreads );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n  parent process ID = 0x%08X&quot;</span>, pe32.th32ParentProcessID );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n  Priority Base     = %d&quot;</span>, pe32.pcPriClassBase );</span><br><span class="line">		<span class="keyword">if</span>( dwPriorityClass )</span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\n  Priority Class    = %d&quot;</span>, dwPriorityClass );</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 获取模块信息，显示内存使用情况</span></span><br><span class="line">		ListProcessModules2( pe32.th32ProcessID );</span><br><span class="line">		PrintMemoryInfo(pe32.th32ProcessID);</span><br><span class="line">		ListHeapInfo(pe32.th32ProcessID);</span><br><span class="line"></span><br><span class="line">	&#125; <span class="keyword">while</span>( Process32Next( hProcessSnap, &amp;pe32 ) );</span><br><span class="line"></span><br><span class="line">	CloseHandle( hProcessSnap );	<span class="comment">//关闭句柄</span></span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID ListProcessModules1( DWORD dwPID )</span></span><br><span class="line"><span class="comment">* 功能	调用EnumProcessModules函数</span></span><br><span class="line"><span class="comment">*		列举和显示进程加载的模块</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	DWORD dwPID	进程PID</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID <span class="title">ListProcessModules1</span><span class="params">( DWORD dwPID )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HMODULE hMods[<span class="number">1024</span>];</span><br><span class="line">	HANDLE hProcess;</span><br><span class="line">	DWORD cbNeeded;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> i;	</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>( <span class="string">&quot;\nListProcessModules1 Process ID %u\n&quot;</span>, dwPID );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 打开进程，获得句柄</span></span><br><span class="line">	hProcess = OpenProcess( PROCESS_QUERY_INFORMATION |</span><br><span class="line">		PROCESS_VM_READ,</span><br><span class="line">		FALSE, dwPID );</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> == hProcess)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	<span class="comment">// 调用EnumProcessModules</span></span><br><span class="line">	<span class="keyword">if</span>( EnumProcessModules(hProcess, hMods, <span class="keyword">sizeof</span>(hMods), &amp;cbNeeded))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; (cbNeeded / <span class="keyword">sizeof</span>(HMODULE)); i++ )</span><br><span class="line">		&#123;</span><br><span class="line">			TCHAR szModName[MAX_PATH];</span><br><span class="line">			<span class="comment">// 获取获取的路径</span></span><br><span class="line">			<span class="keyword">if</span> ( GetModuleFileNameEx( hProcess, hMods[i], szModName,</span><br><span class="line">				<span class="keyword">sizeof</span>(szModName)/<span class="keyword">sizeof</span>(TCHAR)))</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="comment">// 打印</span></span><br><span class="line">				<span class="built_in">printf</span>( TEXT(<span class="string">&quot;\t%s (0x%08X)\n&quot;</span>), szModName, hMods[i] );</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	CloseHandle( hProcess );	<span class="comment">// 关闭进程句柄</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID ListProcessModules2( DWORD dwPID )</span></span><br><span class="line"><span class="comment">* 功能	调用Module32First和Module32Next函数</span></span><br><span class="line"><span class="comment">*		列举和显示进程加载的模块</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	DWORD dwPID	进程PID</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID <span class="title">ListProcessModules2</span><span class="params">( DWORD dwPID)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hModuleSnap = INVALID_HANDLE_VALUE;</span><br><span class="line">	MODULEENTRY32 me32;</span><br><span class="line">	<span class="built_in">printf</span>( <span class="string">&quot;\nListProcessModules2 Process ID %u\n&quot;</span>, dwPID );</span><br><span class="line">	<span class="comment">// Snapshot</span></span><br><span class="line">	hModuleSnap = CreateToolhelp32Snapshot( TH32CS_SNAPMODULE, dwPID );</span><br><span class="line">	<span class="keyword">if</span>( hModuleSnap == INVALID_HANDLE_VALUE )</span><br><span class="line">	&#123;</span><br><span class="line">		PrintError( <span class="string">&quot;CreateToolhelp32Snapshot (of modules)&quot;</span> );</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 设置输入参数，结构的大小</span></span><br><span class="line">	me32.dwSize = <span class="keyword">sizeof</span>( MODULEENTRY32 );</span><br><span class="line">	<span class="comment">// 开始获取模块信息</span></span><br><span class="line">	<span class="keyword">if</span>( !Module32First( hModuleSnap, &amp;me32 ) )</span><br><span class="line">	&#123;</span><br><span class="line">		PrintError( <span class="string">&quot;Module32First&quot;</span> );  <span class="comment">// Show cause of failure</span></span><br><span class="line">		CloseHandle( hModuleSnap );     <span class="comment">// Must clean up the snapshot object!</span></span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n\n     MODULE NAME:     %s&quot;</span>,             me32.szModule );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n     executable     = %s&quot;</span>,             me32.szExePath );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n     process ID     = 0x%08X&quot;</span>,         me32.th32ProcessID );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n     ref count (g)  =     0x%04X&quot;</span>,     me32.GlblcntUsage );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n     ref count (p)  =     0x%04X&quot;</span>,     me32.ProccntUsage );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n     base address   = 0x%08X&quot;</span>, (DWORD) me32.modBaseAddr );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n     base size      = %d&quot;</span>,             me32.modBaseSize );</span><br><span class="line"></span><br><span class="line">	&#125; <span class="keyword">while</span>( Module32Next( hModuleSnap, &amp;me32 ) );</span><br><span class="line">	CloseHandle( hModuleSnap );	<span class="comment">// 关闭句柄</span></span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID PrintMemoryInfo( DWORD dwPID )</span></span><br><span class="line"><span class="comment">* 功能	显示进程的内存使用情况</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	DWORD dwPID	进程PID</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID <span class="title">PrintMemoryInfo</span><span class="params">( DWORD dwPID )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hProcess;</span><br><span class="line">	PROCESS_MEMORY_COUNTERS pmc;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>( <span class="string">&quot;\nProcess ID: %u\n&quot;</span>, dwPID );</span><br><span class="line"></span><br><span class="line">	hProcess = OpenProcess(  PROCESS_QUERY_INFORMATION |</span><br><span class="line">		PROCESS_VM_READ,</span><br><span class="line">		FALSE, dwPID );</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> == hProcess)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( GetProcessMemoryInfo( hProcess, &amp;pmc, <span class="keyword">sizeof</span>(pmc)) )</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tPageFaultCount: 0x%08X\n&quot;</span>, pmc.PageFaultCount );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tPeakWorkingSetSize: 0x%08X\n&quot;</span>, </span><br><span class="line">			pmc.PeakWorkingSetSize );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tWorkingSetSize: 0x%08X\n&quot;</span>, pmc.WorkingSetSize );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tQuotaPeakPagedPoolUsage: 0x%08X\n&quot;</span>, </span><br><span class="line">			pmc.QuotaPeakPagedPoolUsage );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tQuotaPagedPoolUsage: 0x%08X\n&quot;</span>, </span><br><span class="line">			pmc.QuotaPagedPoolUsage );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tQuotaPeakNonPagedPoolUsage: 0x%08X\n&quot;</span>, </span><br><span class="line">			pmc.QuotaPeakNonPagedPoolUsage );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tQuotaNonPagedPoolUsage: 0x%08X\n&quot;</span>, </span><br><span class="line">			pmc.QuotaNonPagedPoolUsage );</span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tPagefileUsage: 0x%08X\n&quot;</span>, pmc.PagefileUsage ); </span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tPeakPagefileUsage: 0x%08X\n&quot;</span>, </span><br><span class="line">			pmc.PeakPagefileUsage );</span><br><span class="line">	&#125;</span><br><span class="line">	CloseHandle( hProcess );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID ListHeapInfo( DWORD dwPID )</span></span><br><span class="line"><span class="comment">* 功能	显示进程的堆分配情况</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	DWORD dwPID	进程PID</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID <span class="title">ListHeapInfo</span><span class="params">( DWORD dwPID )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HEAPLIST32 hl;</span><br><span class="line">	HEAPENTRY32 he;</span><br><span class="line">	HANDLE hSnapshot = INVALID_HANDLE_VALUE;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>( <span class="string">&quot;\\ListHeapInfo Process ID %u\n&quot;</span>, dwPID );</span><br><span class="line"></span><br><span class="line">	<span class="comment">//  Snapshot</span></span><br><span class="line">	hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPHEAPLIST , dwPID ); </span><br><span class="line">	<span class="keyword">if</span>( hSnapshot == INVALID_HANDLE_VALUE ) </span><br><span class="line">	&#123; </span><br><span class="line">		PrintError( <span class="string">&quot;CreateToolhelp32Snapshot (of heaplist)&quot;</span> ); </span><br><span class="line">		<span class="keyword">return</span> ; </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 设置输入参数，结构的大小</span></span><br><span class="line">	hl.dwSize = <span class="keyword">sizeof</span>( HEAPLIST32 ); </span><br><span class="line"></span><br><span class="line">	<span class="comment">// 开始获取信息</span></span><br><span class="line">	<span class="keyword">if</span>( !Heap32ListFirst( hSnapshot, &amp;hl ) ) </span><br><span class="line">	&#123; </span><br><span class="line">		PrintError( <span class="string">&quot;Heap32ListFirst&quot;</span> );  </span><br><span class="line">		CloseHandle( hSnapshot );     </span><br><span class="line">		<span class="keyword">return</span> ; </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">do</span> </span><br><span class="line">	&#123; </span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\n\tHeap ID     =%u&quot;</span>, hl.th32HeapID ); </span><br><span class="line">		<span class="built_in">printf</span>( <span class="string">&quot;\tHeap Flags     = %u&quot;</span>, hl.dwFlags ); </span><br><span class="line">		he.dwSize = <span class="keyword">sizeof</span>(HEAPENTRY32);</span><br><span class="line">		<span class="keyword">if</span>( !Heap32First(&amp;he,dwPID,hl.th32HeapID) ) </span><br><span class="line">		&#123; </span><br><span class="line">			PrintError( <span class="string">&quot;Heap32First&quot;</span> );	<span class="comment">// 出错</span></span><br><span class="line">			CloseHandle( hSnapshot );     </span><br><span class="line">			<span class="keyword">return</span> ; </span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">do</span> </span><br><span class="line">		&#123; </span><br><span class="line">			<span class="comment">// 显示信息</span></span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\n\t\t Heap Address\t= %u&quot;</span>,he.dwAddress ); </span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\t Heap Size\t= %u&quot;</span>,he.dwBlockSize); </span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\t Heap Flags\t= %u&quot;</span>,he.dwFlags);</span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\t Heap Handle\t= %u&quot;</span>,he.hHandle);</span><br><span class="line">		&#125; <span class="keyword">while</span>( Heap32Next(&amp;he )); </span><br><span class="line"></span><br><span class="line">	&#125; <span class="keyword">while</span>( Heap32ListNext( hSnapshot, &amp;hl ) ); </span><br><span class="line">	CloseHandle( hSnapshot );	<span class="comment">// 关闭句柄</span></span><br><span class="line">	<span class="keyword">return</span> ; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************</span></span><br><span class="line"><span class="comment">* VOID ListProcessThreads( DWORD dwPID )</span></span><br><span class="line"><span class="comment">* 功能	调用Thread32First和Thread32Next</span></span><br><span class="line"><span class="comment">*		显示一个进程的线程</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 参数	DWORD dwPID	进程PID</span></span><br><span class="line"><span class="comment">**************************************/</span></span><br><span class="line"><span class="function">VOID <span class="title">ListProcessThreads</span><span class="params">( DWORD dwPID )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hThreadSnap = INVALID_HANDLE_VALUE; </span><br><span class="line">	THREADENTRY32 te32; </span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>( <span class="string">&quot;\\ListProcessThreads Process ID %u\n&quot;</span>, dwPID );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Snapshot</span></span><br><span class="line">	hThreadSnap = CreateToolhelp32Snapshot( TH32CS_SNAPTHREAD, <span class="number">0</span> ); </span><br><span class="line">	<span class="keyword">if</span>( hThreadSnap == INVALID_HANDLE_VALUE ) </span><br><span class="line">		<span class="keyword">return</span> ; </span><br><span class="line"></span><br><span class="line">	<span class="comment">// 设置输入参数，结构的大小</span></span><br><span class="line">	te32.dwSize = <span class="keyword">sizeof</span>(THREADENTRY32 ); </span><br><span class="line"></span><br><span class="line">	<span class="comment">// 开始获取信息</span></span><br><span class="line">	<span class="keyword">if</span>( !Thread32First( hThreadSnap, &amp;te32 ) ) </span><br><span class="line">	&#123;</span><br><span class="line">		PrintError( <span class="string">&quot;Thread32First&quot;</span> );  <span class="comment">// Show cause of failure</span></span><br><span class="line">		CloseHandle( hThreadSnap );     <span class="comment">// Must clean up the snapshot object!</span></span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">do</span> </span><br><span class="line">	&#123; </span><br><span class="line">		<span class="keyword">if</span>( te32.th32OwnerProcessID == dwPID )</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">// 显示相关信息</span></span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\n   THREAD ID = 0x%08X&quot;</span>, te32.th32ThreadID ); </span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\t   base priority = %d&quot;</span>, te32.tpBasePri ); </span><br><span class="line">			<span class="built_in">printf</span>( <span class="string">&quot;\t   delta priority = %d&quot;</span>, te32.tpDeltaPri ); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">while</span>( Thread32Next(hThreadSnap, &amp;te32 ) ); </span><br><span class="line"></span><br><span class="line">	CloseHandle( hThreadSnap );</span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印出错信息</span></span><br><span class="line"><span class="function">VOID <span class="title">PrintError</span><span class="params">( LPTSTR msg )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD eNum;</span><br><span class="line">	TCHAR sysMsg[<span class="number">256</span>];</span><br><span class="line">	TCHAR* p;</span><br><span class="line"></span><br><span class="line">	eNum = GetLastError( );</span><br><span class="line">	FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,</span><br><span class="line">		<span class="literal">NULL</span>, eNum,</span><br><span class="line">		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), </span><br><span class="line">		sysMsg, <span class="number">256</span>, <span class="literal">NULL</span> );</span><br><span class="line">	p = sysMsg;</span><br><span class="line">	<span class="keyword">while</span>( ( *p &gt; <span class="number">31</span> ) || ( *p == <span class="number">9</span> ) )</span><br><span class="line">		++p;</span><br><span class="line">	<span class="keyword">do</span> &#123; *p-- = <span class="number">0</span>; &#125; <span class="keyword">while</span>( ( p &gt;= sysMsg ) &amp;&amp;</span><br><span class="line">		( ( *p == <span class="string">&#x27;.&#x27;</span> ) || ( *p &lt; <span class="number">33</span> ) ) );</span><br><span class="line">	<span class="built_in">printf</span>( <span class="string">&quot;\n  WARNING: %s failed with error %d (%s)&quot;</span>, msg, eNum, sysMsg );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;EnumProcess1 \n&quot;</span>);</span><br><span class="line">	EnumProcess1();</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;\n\n\nEnumProcess2 \n&quot;</span>);</span><br><span class="line">	EnumProcess2();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="动态链接库"><a href="#动态链接库" class="headerlink" title="动态链接库"></a>动态链接库</h2>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/27/WindowsAPI-%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B/" title="WindowsAPI - 进程线程">http://systemk1t.github.io/2021/06/27/WindowsAPI-进程线程/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/WindowsAPI%E5%BC%80%E5%8F%91%E8%AF%A6%E8%A7%A3/" rel="tag"># WindowsAPI开发详解</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/26/WindowsAPI-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="WindowsAPI - 内存管理">
+      <i class="fa fa-chevron-left"></i> WindowsAPI - 内存管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/27/WindowsAPI-%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" rel="next" title="WindowsAPI - 线程同步">
+      WindowsAPI - 线程同步 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">进程线程模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E4%B8%8E%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">程序与进程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">进程管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">创建进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CreateProcess"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">CreateProcess</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%92%8C%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">获取和设置环境变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#GetEnvironmentStrings"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">GetEnvironmentStrings</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">创建线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CreateThread"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">CreateThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadProc"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">ThreadProc</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%8C%82%E8%B5%B7%E3%80%81%E6%81%A2%E5%A4%8D%E3%80%81%E5%88%87%E6%8D%A2%E3%80%81%E7%BB%88%E6%AD%A2"><span class="nav-number">1.3.2.</span> <span class="nav-text">线程挂起、恢复、切换、终止</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Sleep"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">Sleep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SuspendThread%E3%80%81ResumeThread"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">SuspendThread、ResumeThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SwitchtoThread"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">SwitchtoThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ExitThread"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">ExitThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TerminateThread"><span class="nav-number">1.3.2.5.</span> <span class="nav-text">TerminateThread</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.3.3.</span> <span class="nav-text">远程线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CreateRemoteThread"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">CreateRemoteThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WriteProcessMemory"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">WriteProcessMemory</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%E4%BF%A1%E6%81%AF"><span class="nav-number">1.4.</span> <span class="nav-text">进程状态信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PS%E5%92%8CTool-Help"><span class="nav-number">1.4.1.</span> <span class="nav-text">PS和Tool Help</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E7%B3%BB%E7%BB%9F%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">遍历系统进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EnumProcess"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">EnumProcess</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CreateToolhelp32Snapshot"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">CreateToolhelp32Snapshot</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Process32First"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">Process32First</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93"><span class="nav-number">1.5.</span> <span class="nav-text">动态链接库</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

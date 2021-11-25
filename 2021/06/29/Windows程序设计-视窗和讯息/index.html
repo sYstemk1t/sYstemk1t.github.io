@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows程序设计》一书总结而来；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows程序设计 - 视窗和讯息">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/29/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E8%A7%86%E7%AA%97%E5%92%8C%E8%AE%AF%E6%81%AF/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows程序设计》一书总结而来；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-29T03:53:54.000Z">
+<meta property="article:modified_time" content="2021-07-02T10:45:18.372Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="Windows程序设计">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/29/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E8%A7%86%E7%AA%97%E5%92%8C%E8%AE%AF%E6%81%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Windows程序设计 - 视窗和讯息 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/29/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E8%A7%86%E7%AA%97%E5%92%8C%E8%AE%AF%E6%81%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows程序设计 - 视窗和讯息
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-29 11:53:54" itemprop="dateCreated datePublished" datetime="2021-06-29T11:53:54+08:00">2021-06-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-02 18:45:18" itemprop="dateModified" datetime="2021-07-02T18:45:18+08:00">2021-07-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">Windows程序设计</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《Windows程序设计》一书总结而来；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 7家庭版</li>
+<li>编译器：Visual Studio 2013</li>
+</ul>
+<h1 id="视窗和实训"><a href="#视窗和实训" class="headerlink" title="视窗和实训"></a>视窗和实训</h1><h2 id="自己的窗口"><a href="#自己的窗口" class="headerlink" title="自己的窗口"></a>自己的窗口</h2><p>建立窗口很简单，使用CreateWindow函数即可；</p>
+<h3 id="总体"><a href="#总体" class="headerlink" title="总体"></a>总体</h3><p>程序建立每一个窗口都有自己的消息处理函数；在Windows开始执行的时候，Windows为其建立一个消息队列，这个消息队列用于存储程序可能建立各种不同的窗口，在程序中有一段代码称为回调函数；</p>
+<h3 id="Hello程序"><a href="#Hello程序" class="headerlink" title="Hello程序"></a>Hello程序</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> comment(lib, <span class="meta-string">&quot;winmm&quot;</span>)</span></span><br><span class="line"><span class="function">LRESULT CALLBACK <span class="title">WndProc</span><span class="params">(HWND, UINT, WPARAM, LPARAM)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(HINSTANCE hInstance, HINSTANCE hprevInstance, LPSTR szCmdline, INT iCmdShow)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">static</span> TCHAR szAppName[] = TEXT(<span class="string">&quot;HelloWin&quot;</span>);</span><br><span class="line">	HWND hwnd;</span><br><span class="line">	MSG msg;</span><br><span class="line">    <span class="comment">//创建窗口类</span></span><br><span class="line">	WNDCLASS wc;</span><br><span class="line">	wc.style = CS_HREDRAW | CS_VREDRAW;</span><br><span class="line">	wc.lpfnWndProc = WndProc;			<span class="comment">//窗口回调函数</span></span><br><span class="line">	wc.cbClsExtra = <span class="number">0</span>;</span><br><span class="line">	wc.cbWndExtra = <span class="number">0</span>;</span><br><span class="line">	wc.hInstance = hInstance;			<span class="comment">//窗口句柄</span></span><br><span class="line">	wc.hIcon = LoadIcon(<span class="literal">NULL</span>, IDI_APPLICATION);		<span class="comment">//图标</span></span><br><span class="line">	wc.hCursor = LoadCursor(<span class="literal">NULL</span>, IDC_ARROW);		<span class="comment">//鼠标样式</span></span><br><span class="line">	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);		<span class="comment">//画刷</span></span><br><span class="line">	wc.lpszMenuName = <span class="literal">NULL</span>;			<span class="comment">//菜单</span></span><br><span class="line">	wc.lpszClassName = szAppName;	<span class="comment">//窗口名</span></span><br><span class="line">	<span class="keyword">if</span> (!RegisterClass(&amp;wc))			<span class="comment">//注册窗口类</span></span><br><span class="line">	&#123;</span><br><span class="line">		MessageBox(<span class="literal">NULL</span>, TEXT(<span class="string">&quot;无法注册窗口&quot;</span>), szAppName, MB_OK);		<span class="comment">//弹框</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	hwnd = CreateWindow(szAppName,	<span class="comment">//会产生WM_CREATE消息，该消息不进入队列，直接调用窗口过程，初始化窗口</span></span><br><span class="line">		TEXT(<span class="string">&quot;The Hello Program&quot;</span>),	<span class="comment">//窗口标题</span></span><br><span class="line">		WS_OVERLAPPEDWINDOW,		<span class="comment">//窗口样式</span></span><br><span class="line">		CW_USEDEFAULT,</span><br><span class="line">		CW_USEDEFAULT,</span><br><span class="line">		CW_USEDEFAULT,</span><br><span class="line">		CW_USEDEFAULT,</span><br><span class="line">		<span class="literal">NULL</span>,			<span class="comment">//父窗口</span></span><br><span class="line">		<span class="literal">NULL</span>,			<span class="comment">//菜单</span></span><br><span class="line">		hInstance,		<span class="comment">//应用程序实例化句柄</span></span><br><span class="line">		<span class="literal">NULL</span></span><br><span class="line">		);</span><br><span class="line">	ShowWindow(hwnd, iCmdShow);		<span class="comment">//显示窗口(此时窗口仍然是无效的，因为只显示了窗口，但没在上面画些有用的东西)产生WM_size消息</span></span><br><span class="line">	UpdateWindow(hwnd);				<span class="comment">//更新窗口(产生WM_PAINT消息，使得窗口有效，也是直接调用窗口过程，不进入队列)</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (GetMessage(&amp;msg,<span class="literal">NULL</span>,<span class="number">0</span>,<span class="number">0</span>))		<span class="comment">//消息循环</span></span><br><span class="line">	&#123;</span><br><span class="line">		TranslateMessage(&amp;msg);		<span class="comment">//对消息进行转换</span></span><br><span class="line">		DispatchMessage(&amp;msg);		<span class="comment">//把消息交给系统，系统调用窗口过程，窗口过程处理完后才返回</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> msg.wParam;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">LRESULT CALLBACK <span class="title">WndProc</span><span class="params">(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HDC hdc;</span><br><span class="line">	PAINTSTRUCT ps;</span><br><span class="line">	RECT rect;</span><br><span class="line">	<span class="keyword">switch</span> (message)</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">case</span> WM_CREATE:</span><br><span class="line">		PlaySound(TEXT(<span class="string">&quot;HelloWin.wav&quot;</span>), <span class="literal">NULL</span>, SND_FILENAME | SND_ASYNC);			<span class="comment">//音频</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">case</span> WM_PAINT:</span><br><span class="line">		hdc = BeginPaint(hwnd, &amp;ps);					<span class="comment">//获取设备描述表句柄，和特定的硬件平台有关(显示器)</span></span><br><span class="line">		GetClientRect(hwnd, &amp;rect);					<span class="comment">//客户区大小</span></span><br><span class="line">		DrawText(hdc, TEXT(<span class="string">&quot;Hello,This Is Win7&quot;</span>), <span class="number">-1</span>, &amp;rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);	<span class="comment">//绘制窗口</span></span><br><span class="line">		EndPaint(hwnd, &amp;ps);					<span class="comment">//结束绘制</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">case</span> WM_DESTROY:</span><br><span class="line">		PostQuitMessage(<span class="number">0</span>);					<span class="comment">//参数0作为返回消息wParam参数</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> DefWindowProc(hwnd, message, wParam, lParam);	<span class="comment">//默认处理函数，处理一些其它消息	</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="大写字母识别字"><a href="#大写字母识别字" class="headerlink" title="大写字母识别字"></a>大写字母识别字</h3><p>CS —— Class Stye         类风格选项</p>
+<p>CW —— Create Window     创建窗体选项</p>
+<p>DT —— Draw Text         绘制文本选项<br>IDI —— ID of Icon         图标ID号</p>
+<p> IDC —— ID of Cursor       光标ID号   </p>
+<p>MB —— MessageBox       消息框选项<br>SND —— Sound           声音选项</p>
+<p>WM —— Window Message    窗口消息</p>
+<p>WS —— Window Style      窗口风格</p>
+<h3 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h3><p> MSG                     消息结构</p>
+<p>WNDCLASS                窗口结构</p>
+<p>PAINTSTRUCT               绘图结构</p>
+<p>RECT                     矩形结构</p>
+<h3 id="句柄"><a href="#句柄" class="headerlink" title="句柄"></a>句柄</h3><p>HINSTANCE —— Handle of Instance    实例句柄</p>
+<p>HWND —— Handle of Window        窗口句柄</p>
+<p>HDC —— Handle of Device Content 32bit   设备描述句柄 </p>
+<h3 id="注册窗口"><a href="#注册窗口" class="headerlink" title="注册窗口"></a>注册窗口</h3><p>RegisterClass之后根据WndClass中的classname来CreateWindow；</p>
+<p>UpdateWindow(hwnd)向hwnd发送WM_PAINT消息。</p>
+<p>WM_Quit导致GetMessage返回0，消息循环结束。而PostQuitMessage通常用于响应WM_Destroy来向消息队列发送WM_Quit消息。为何不直接发送WM_Quit消息？如果这样的话在程序关闭之前你无法做任何其他操作。WM_Destroy响应函数可用于程序清理工作。</p>
+<p>TraslateMsg进行键盘转换，DispatchMsg将消息交给窗口，而窗口将其交给适合的消息处理函数。</p>
+<p>Windows程序所做的一切都是处理响应发送给窗口过程的消息。</p>
+<p>Windows会在创建之后给窗口发送WM_CREATE消息，而不是之前一直潜意识中误解的WM_CREATE消息的响应函数来负责Create Windows。</p>
+<p>消息循环和窗口过程并非并发进行</p>
+<p>DefWndProc也是你窗口的一部分</p>
+<p>消息机制补充：</p>
+<ul>
+<li>消息队列是FIFO的形式</li>
+<li>WM_PiANT、WM_TIMER、WM_QUIT这三个消息特殊，操作系统回把他们放到消息队列后面处理</li>
+<li>消息队列分为队列化消息和非队列化消息</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/29/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E8%A7%86%E7%AA%97%E5%92%8C%E8%AE%AF%E6%81%AF/" title="Windows程序设计 - 视窗和讯息">http://systemk1t.github.io/2021/06/29/Windows程序设计-视窗和讯息/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/" rel="tag"># Windows程序设计</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/27/WindowsAPI-%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" rel="prev" title="WindowsAPI - 线程同步">
+      <i class="fa fa-chevron-left"></i> WindowsAPI - 线程同步
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/01/Windows%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-%E6%96%87%E6%9C%AC%E8%BE%93%E5%87%BA/" rel="next" title="Windows程序设计 - 文本输出">
+      Windows程序设计 - 文本输出 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%86%E7%AA%97%E5%92%8C%E5%AE%9E%E8%AE%AD"><span class="nav-number">1.</span> <span class="nav-text">视窗和实训</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E7%9A%84%E7%AA%97%E5%8F%A3"><span class="nav-number">1.1.</span> <span class="nav-text">自己的窗口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E4%BD%93"><span class="nav-number">1.1.1.</span> <span class="nav-text">总体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hello%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">Hello程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E5%86%99%E5%AD%97%E6%AF%8D%E8%AF%86%E5%88%AB%E5%AD%97"><span class="nav-number">1.1.3.</span> <span class="nav-text">大写字母识别字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.1.4.</span> <span class="nav-text">结构体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%A5%E6%9F%84"><span class="nav-number">1.1.5.</span> <span class="nav-text">句柄</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E7%AA%97%E5%8F%A3"><span class="nav-number">1.1.6.</span> <span class="nav-text">注册窗口</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows核心编程 - 进程">
+<meta property="og:url" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。 本系列博文均根据学习《Windows核心编程》一书总结而来；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/3.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/4.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/5.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/6.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/7.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/8.png">
+<meta property="article:published_time" content="2021-05-31T08:28:54.000Z">
+<meta property="article:modified_time" content="2021-06-18T12:11:47.049Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="Windows核心编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Windows核心编程 - 进程 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows核心编程 - 进程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-31 16:28:54" itemprop="dateCreated datePublished" datetime="2021-05-31T16:28:54+08:00">2021-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-18 20:11:47" itemprop="dateModified" datetime="2021-06-18T20:11:47+08:00">2021-06-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Windows核心编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 Win32编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习Win32开发的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《Windows核心编程》一书总结而来；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Visual Studio 2019</li>
+</ul>
+<h1 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h1><p>操作系统如何创建进程内核对象，以方便管理每个进程。使用相关的内核对象来对进程进行操作，进程的不同属性；</p>
+<p>进程通常被定义为一个正常运行的程序的实例，它由两部分组成：</p>
+<ul>
+<li>一个是操作系统用来管理进程的内核对象。内核对象也是用来存放关于进程的统计信息的地方</li>
+<li>另一个是地址空间，它包含所有可执行模块或DLL模块的代码和数据。它好包含动态分配的空间。</li>
+</ul>
+<p>进程是不活泼的，若要使得进程完成某个操作，它必须拥有一个<strong>在它环境中的运行的线程</strong>，该线程负责执行包含在进程的地址空间中的代码。实际上，一个进程可以包含多个线程，所有这些线程都“同时”执行进程地址空间中的代码。为此，每个线程都有它自己的一组CPU寄存器和它自己的对战。<strong>每个进程至少拥有一个线程</strong>；</p>
+<p><strong>如果没有线程来执行进程的地址空间中的代码，那么进程就会自动被系统撤销</strong></p>
+<p>如果我们要使得这些线程同时运行，操作系统就要为每个线程安排一定的CPU时间。它通过一种循环方式为线程提供时间片(量程)，造成一种假象，仿佛所有的线程都是同时运行；</p>
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/0.png"></p>
+<p><strong>当创建一个进程的时候，系统会自动创建它的一个线程，成为主线程，该线程可以创建其他线程，而这些线程又可以创建更多线程</strong></p>
+<h2 id="第一个Windows程序"><a href="#第一个Windows程序" class="headerlink" title="第一个Windows程序"></a>第一个Windows程序</h2><p>如果我们使用VC++来创建应用程序时，我们需要将子系统修改成:windows，手动编译的链接开关是：SUBSYSTEM:WINDOWS;</p>
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/1.png"></p>
+<p>Windows程序必须拥有一个在应用程序启动运行时调用的进入点函数,可以使用的进入口函数有四个：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">WinMain</span><span class="params">(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,<span class="keyword">int</span> nCmdShow )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> WINAPI <span class="title">wWinMain</span><span class="params">(HINSTANCE hinstance, HINSTANCE hPrevlnst, PWSTR lpsCmdLine, <span class="keyword">int</span> nCmdShow)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span> *argv[],<span class="keyword">char</span>*envp[])</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">wmain</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">wchar_t</span> *argv[],<span class="keyword">wchar_t</span> *envp[])</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>操作系统实际上并不会调用我们编写的入口点函数，它会调用C/C++运行期库；</p>
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/2.png"></p>
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/3.png"></p>
+<p>ASCII和UNiCODE字符的入口点：</p>
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/4.png"></p>
+<p><strong>连接器是要查看代码中存在以上四个函数中的哪一个，确定可执行程序是哪个子系统，并且确定可执行程序中应当嵌入哪个C++启动器</strong>，所有的C/C++运行期启动函数的作用是相同的。差别在于它们究竟是ASCII还是Unicode；</p>
+<p>启动函数功能如下：</p>
+<ul>
+<li>检索指向新进程的完整命令行的指针</li>
+<li>检索指向新进程的环境变量的指针</li>
+<li>对C/C++运行期的全局变量进行初始化</li>
+<li>对C运行期内存单位分配函数和其他底层输入输出例程使用的内存栈进行初始化</li>
+<li>为所有全局和静态C++类对象调用构造函数</li>
+</ul>
+<h3 id="进程实例句柄"><a href="#进程实例句柄" class="headerlink" title="进程实例句柄"></a>进程实例句柄</h3><p>加载到进程地址空间的每个可执行文件或DLL文件都被赋予了一个独一无二的实例句柄。</p>
+<p>可执行文件的映像加载到的基地址是由链接器决定的。VC++链接使用的默认基地址是0x00400000。可以改变应用程序加载到的基地址，方式是使用VC链接程序中的/BASE:address链接程序开关；</p>
+<p>我们可以使用GetModuleHandle函数返回可执行文件或DLL文件加载到进程的地址空间时所使用的句柄/基地址：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HMODULE</span><br><span class="line">WINAPI</span><br><span class="line">GetModuleHandleA(</span><br><span class="line">    _In_opt_ LPCSTR lpModuleName</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="进程命令行"><a href="#进程命令行" class="headerlink" title="进程命令行"></a>进程命令行</h3><p>当一个新进程创建时，它需要传递一个命令行。该命令行用不为空，至少用于创建新进程的可执行文件的名字是命令行第一个标记；它主要用于检索进程的命令行，跳过可执行文件的名字，并将指向命令行其余部分的指针传递给WinMain的pszCmdLine参数；</p>
+<p>我们也可以获得一个指向进程的完整命令行的指针，使用GetCommandLine函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">LPSTR</span><br><span class="line">WINAPI</span><br><span class="line">GetCommandLineA(</span><br><span class="line">    VOID</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/5.png"></p>
+<h3 id="进程的环境变量"><a href="#进程的环境变量" class="headerlink" title="进程的环境变量"></a>进程的环境变量</h3><p>每个进程都有一个与它相关的环境快。环境快是进程的地址空间中分配的一个内存块。每个环境快都包含一组字符串；</p>
+<h3 id="进程错误模式"><a href="#进程错误模式" class="headerlink" title="进程错误模式"></a>进程错误模式</h3><p>与每个进程相关的是一组标志，用于告诉系统，进程对严重的错误应该如何反映：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WINBASEAPI</span><br><span class="line">UINT</span><br><span class="line">WINAPI</span><br><span class="line">SetErrorMode(</span><br><span class="line">    _In_ UINT uMode</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p><strong>默认情况下，子进程继承父进程的错误模式标志</strong></p>
+<h3 id="进程的当前驱动器和目录"><a href="#进程的当前驱动器和目录" class="headerlink" title="进程的当前驱动器和目录"></a>进程的当前驱动器和目录</h3><p>调用以下函数，线程能够获得设置它的进程的当前目录和驱动器：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">DWORD</span><br><span class="line">WINAPI</span><br><span class="line">GetCurrentDirectoryW(</span><br><span class="line">    _In_ DWORD nBufferLength,</span><br><span class="line">    _Out_writes_to_opt_(nBufferLength,<span class="keyword">return</span> + <span class="number">1</span>) LPWSTR lpBuffer</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">WINBASEAPI</span><br><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">SetCurrentDirectoryW(</span><br><span class="line">    _In_ LPCWSTR lpPathName</span><br><span class="line">    );</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="进程当前目录"><a href="#进程当前目录" class="headerlink" title="进程当前目录"></a>进程当前目录</h3><p>如果父进程创建了一个它想传递给子进程的环境快，子进程的环境快不会继承父进程的当前目录，相反，子进程的当前目录将默认为每个驱动器的根目录。如果想子进程继承父进程的当前目录，该父进程必须创建这些驱动器名的环境变量；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DWORD</span><br><span class="line">WINAPI</span><br><span class="line">GetFullPathNameA(</span><br><span class="line">    _In_ LPCSTR lpFileName,</span><br><span class="line">    _In_ DWORD nBufferLength,</span><br><span class="line">    _Out_writes_to_opt_(nBufferLength,<span class="keyword">return</span> + <span class="number">1</span>) LPSTR lpBuffer,</span><br><span class="line">    _Outptr_opt_ LPSTR* lpFilePart</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="系统版本"><a href="#系统版本" class="headerlink" title="系统版本"></a>系统版本</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BOOL</span><br><span class="line">WINAPI</span><br><span class="line">GetVersionExA(</span><br><span class="line">    _Inout_ LPOSVERSIONINFOA lpVersionInformation</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<p>GetVersionEx必须传入一个OSVERSIONINFOW结构；</p>
+<h2 id="CreateProcess函数"><a href="#CreateProcess函数" class="headerlink" title="CreateProcess函数"></a>CreateProcess函数</h2><p>可以使用CreateProcess函数创建一个进程：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">CreateProcess</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  LPCTSTR lpApplicationName,                 <span class="comment">// name of executable module</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPTSTR lpCommandLine,                      <span class="comment">// command line string</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSECURITY_ATTRIBUTES lpProcessAttributes, <span class="comment">// SD</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSECURITY_ATTRIBUTES lpThreadAttributes,  <span class="comment">// SD</span></span></span></span><br><span class="line"><span class="function"><span class="params">  BOOL bInheritHandles,                      <span class="comment">// handle inheritance option</span></span></span></span><br><span class="line"><span class="function"><span class="params">  DWORD dwCreationFlags,                     <span class="comment">// creation flags</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPVOID lpEnvironment,                      <span class="comment">// new environment block</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPCTSTR lpCurrentDirectory,                <span class="comment">// current directory name</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPSTARTUPINFO lpStartupInfo,               <span class="comment">// startup information</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPPROCESS_INFORMATION lpProcessInformation <span class="comment">// process information);</span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>当一个线程系统CreateProcess时，系统就会自动创建一个进程内核对象，其初始使用计数1，该进程内核对象不是进程本身，二十操作系统管理进程时使用的一个较小的数据结构。系统会为新进程创建一个虚拟地址空间，并将可执行文件或任何必要的DLL文件的代码和数据加载到该进程的地址空间中。</p>
+<h3 id="lpApplicationName和lpCommandLine"><a href="#lpApplicationName和lpCommandLine" class="headerlink" title="lpApplicationName和lpCommandLine"></a>lpApplicationName和lpCommandLine</h3><p>lpApplicationName和lpCommandLine参数分别用于设定新进程要使用的可执行文件的名字和传递给新进程的命令行参数；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	STARTUPINFO si;</span><br><span class="line">	PROCESS_INFORMATION pi;</span><br><span class="line">	ZeroMemory(&amp;si, <span class="keyword">sizeof</span>(si));</span><br><span class="line">	ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(pi));</span><br><span class="line">	si.cb = <span class="keyword">sizeof</span>(si);</span><br><span class="line">	TCHAR szApplicationName[] = TEXT(<span class="string">&quot;C:\\Windows\\SysWOW64\\notepad.exe&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (!CreateProcess(</span><br><span class="line">		szApplicationName,		<span class="comment">//对象名称</span></span><br><span class="line">		<span class="literal">NULL</span>,			<span class="comment">//进程命令行</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//不继承进程句柄</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//不继承线程句柄</span></span><br><span class="line">		FALSE,					<span class="comment">//不继承句柄</span></span><br><span class="line">		<span class="number">0</span>,						<span class="comment">//创建标志</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程环境变量</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程目录作为当前目录</span></span><br><span class="line">		&amp;si,					<span class="comment">//进程的详细信息</span></span><br><span class="line">		&amp;pi						<span class="comment">//</span></span><br><span class="line">	)</span><br><span class="line">		)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateChildProcess Error = %d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>值得注意是的是，如果我们给szApplicationName参数传递为NULL，并且使用lpCommandLine也可以调用系统环境变量中的一些程序，比如可以直接创建CMD；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	STARTUPINFO si;</span><br><span class="line">	PROCESS_INFORMATION pi;</span><br><span class="line">	ZeroMemory(&amp;si, <span class="keyword">sizeof</span>(si));</span><br><span class="line">	ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(pi));</span><br><span class="line">	si.cb = <span class="keyword">sizeof</span>(si);</span><br><span class="line">	TCHAR szApplicationName[] = TEXT(<span class="string">&quot;cmd.exe&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (!CreateProcess(</span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//对象名称</span></span><br><span class="line">		szApplicationName,		<span class="comment">//进程命令行</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//不继承进程句柄</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//不继承线程句柄</span></span><br><span class="line">		FALSE,					<span class="comment">//不继承句柄</span></span><br><span class="line">		<span class="number">0</span>,						<span class="comment">//创建标志</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程环境变量</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程目录作为当前目录</span></span><br><span class="line">		&amp;si,					<span class="comment">//进程的详细信息</span></span><br><span class="line">		&amp;pi						<span class="comment">//</span></span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">		)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateChildProcess Error = %d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="psaProcess和psaThread和bInheritHandles"><a href="#psaProcess和psaThread和bInheritHandles" class="headerlink" title="psaProcess和psaThread和bInheritHandles"></a>psaProcess和psaThread和bInheritHandles</h3><p>若要创建一个新进程，系统必须创建一个进程内核对象和一个线程内核对象(用于进程的主线程)。可以使用psaProcess和psaPthread参数分别设定进程对象和线程对象需要的安全属性；一般传递为NULL，但是可以使用<strong>SECURITY_ATTRIBUTES</strong>结构对它们进行初始化；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	STARTUPINFO si;</span><br><span class="line">	PROCESS_INFORMATION pi;</span><br><span class="line">	SECURITY_ATTRIBUTES sPthread;</span><br><span class="line">	SECURITY_ATTRIBUTES sPProcess;</span><br><span class="line">	sPProcess.bInheritHandle = TRUE;			<span class="comment">//继承</span></span><br><span class="line">	sPProcess.nLength = <span class="keyword">sizeof</span>(sPProcess);</span><br><span class="line">	sPthread.bInheritHandle = FALSE;			<span class="comment">//不继承</span></span><br><span class="line">	ZeroMemory(&amp;si, <span class="keyword">sizeof</span>(si));</span><br><span class="line">	ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(pi));</span><br><span class="line">	si.cb = <span class="keyword">sizeof</span>(si);</span><br><span class="line">	TCHAR szApplicationName[] = TEXT(<span class="string">&quot;cmd.exe&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (!CreateProcess(</span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//对象名称</span></span><br><span class="line">		szApplicationName,		<span class="comment">//进程命令行</span></span><br><span class="line">		&amp;sPProcess,					<span class="comment">//不继承进程句柄</span></span><br><span class="line">		&amp;sPthread,					<span class="comment">//不继承线程句柄</span></span><br><span class="line">		FALSE,					<span class="comment">//不继承句柄</span></span><br><span class="line">		<span class="number">0</span>,						<span class="comment">//创建标志</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程环境变量</span></span><br><span class="line">		<span class="literal">NULL</span>,					<span class="comment">//使用父进程目录作为当前目录</span></span><br><span class="line">		&amp;si,					<span class="comment">//进程的详细信息</span></span><br><span class="line">		&amp;pi						<span class="comment">//</span></span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">		)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateChildProcess Error = %d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="fdwCreate"><a href="#fdwCreate" class="headerlink" title="fdwCreate"></a>fdwCreate</h3><p>fdwCreate参数用于标识标志，以便于规定如何创建新进程。</p>
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/6.png"></p>
+<h3 id="pEnvironment"><a href="#pEnvironment" class="headerlink" title="pEnvironment"></a>pEnvironment</h3><p>pEnvironment参数用于指向包含新进程要使用的环境字符串的内存块；大部分时间为NULL；</p>
+<p>也可以使用GetEnvironmentStrings获取进程正在使用的环境字符串数据块的地址；</p>
+<h3 id="pszCurDir"><a href="#pszCurDir" class="headerlink" title="pszCurDir"></a>pszCurDir</h3><p>pszCurDir参数允许父进程设置子进程的当前驱动器和目录，这个参数必须是以’\0’结尾的字符串；</p>
+<h3 id="psiStartInfo"><a href="#psiStartInfo" class="headerlink" title="psiStartInfo"></a>psiStartInfo</h3><p>psiStartInfo参数用于指向一个STARTUPINFO结构：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">STARTUPINFO</span> &#123;</span> </span><br><span class="line">    DWORD   cb; </span><br><span class="line">    LPTSTR  lpReserved; </span><br><span class="line">    LPTSTR  lpDesktop; </span><br><span class="line">    LPTSTR  lpTitle; </span><br><span class="line">    DWORD   dwX; </span><br><span class="line">    DWORD   dwY; </span><br><span class="line">    DWORD   dwXSize; </span><br><span class="line">    DWORD   dwYSize; </span><br><span class="line">    DWORD   dwXCountChars; </span><br><span class="line">    DWORD   dwYCountChars; </span><br><span class="line">    DWORD   dwFillAttribute; </span><br><span class="line">    DWORD   dwFlags; </span><br><span class="line">    WORD    wShowWindow; </span><br><span class="line">    WORD    cbReserved2; </span><br><span class="line">    LPBYTE  lpReserved2; </span><br><span class="line">    HANDLE  hStdInput; </span><br><span class="line">    HANDLE  hStdOutput; </span><br><span class="line">    HANDLE  hStdError; </span><br><span class="line">&#125; STARTUPINFO, *LPSTARTUPINFO;</span><br></pre></td></tr></table></figure>
+
+<p><strong>cb参数表示结构体的大小，这个参数必须设置</strong>，大部分应用程序要求的仅仅是默认值；</p>
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/7.png"></p>
+<h3 id="ppiProcInfo"><a href="#ppiProcInfo" class="headerlink" title="ppiProcInfo"></a>ppiProcInfo</h3><p>ppiProcInfo参数用于指向你必须指定的PROCESS_INFORMATION结构，CreateProcess在返回之前要对该结构的成员进行初始化；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">PROCESS_INFORMATION</span> &#123;</span> </span><br><span class="line">    HANDLE hProcess; 		<span class="comment">//进程句柄</span></span><br><span class="line">    HANDLE hThread; 		<span class="comment">//线程句柄</span></span><br><span class="line">    DWORD dwProcessId; 		<span class="comment">//进程ID</span></span><br><span class="line">    DWORD dwThreadId; 		<span class="comment">//线程ID</span></span><br><span class="line">&#125; PROCESS_INFORMATION; </span><br></pre></td></tr></table></figure>
+
+<p>创建新进程可使系统简历一个进程内核对象和一个线程内核对象；关闭一个进程必须关闭它所有的句柄；</p>
+<h2 id="终止进程的运行"><a href="#终止进程的运行" class="headerlink" title="终止进程的运行"></a>终止进程的运行</h2><p>若要终止进程的运行，可以调用以下方法：</p>
+<ul>
+<li>主线程的进入点函数返回；</li>
+<li>进程中的一个线程调用ExitProcess函数；</li>
+<li>另一个进程中的线程调用TerminateProcess函数；</li>
+<li>进程中的所有线程自行终止运行；</li>
+</ul>
+<h3 id="主线程的进入点函数返回"><a href="#主线程的进入点函数返回" class="headerlink" title="主线程的进入点函数返回"></a>主线程的进入点函数返回</h3><p>始终都应该这样设计程序，即当主线程的进入点函数返回时，它的进程才能终止运行；</p>
+<p>让主线程的进入点函数返回，可以确保以下列操作：</p>
+<ul>
+<li>该线程创建的任何C++对象都能将使用它们的狗在函数正确的撤销</li>
+<li>操作系统能正确的释放该线程的堆栈使用的内存</li>
+<li>系统将进程的推出代码设置为进入函数点的返回值</li>
+<li>系统将进程的内核对象的返回值-1</li>
+</ul>
+<h3 id="ExitProcess函数"><a href="#ExitProcess函数" class="headerlink" title="ExitProcess函数"></a>ExitProcess函数</h3><p>当进程中一个线程调用ExitProcess函数时，进程便终止运行；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VOID <span class="title">ExitProcess</span><span class="params">(  UINT uExitCode   <span class="comment">// exit code for all threads);</span></span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CSomeObj</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	CSomeObj();</span><br><span class="line">	~CSomeObj();</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CSomeObj::CSomeObj()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Constructor\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CSomeObj::~CSomeObj()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Destructor\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">CSomeObj g_GlocalObj;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	CSomeObj LocalObj;</span><br><span class="line">	ExitProcess(<span class="number">0</span>);			<span class="comment">//再次调用ExitProcess，构造函数将失去作用</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;我不会被打印\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="TerMinateProcess"><a href="#TerMinateProcess" class="headerlink" title="TerMinateProcess"></a>TerMinateProcess</h3><p>调用TerminateProcess函数也可以终止进程；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">TerminateProcess</span><span class="params">(  </span></span></span><br><span class="line"><span class="function"><span class="params">    HANDLE hProcess, <span class="comment">// handle to the process</span></span></span></span><br><span class="line"><span class="function"><span class="params"> 	UINT uExitCode   <span class="comment">// exit code for the process);</span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>任意线程都可以调用TerminateProcess来终止另一个进程或自己的进程运行；</p>
+<h3 id="进程终止时情况"><a href="#进程终止时情况" class="headerlink" title="进程终止时情况"></a>进程终止时情况</h3><p>当进程终止时，下列操作将启动：</p>
+<ul>
+<li>进程中剩余的所有线程全部终止运行，（线程依附进程，进程是最小的单位执行体），每个进程都至少拥有一个线程，如果线程全部消亡，进程就没有存在的意思；</li>
+<li>进程指定的所有用户对象和GDI全部被释放，所有内核对象都关闭；</li>
+<li>进程的推出代码将从STILL_ACTIVE改为传递给ExitProcess或TerminateProcess的代码</li>
+<li>进程内核对象的状态变为收到通知的状态。系统中的其他线程挂起，直到进程终止运行；</li>
+<li>进程内核对象的使用计数递减1</li>
+</ul>
+<p>当进程终止运行时，系统能够自动确定它的内核对象的使用计数。如果使用计数降为 0，那么没有其他进程拥有该对象打开的句柄，当进程被撤消时，对象也被撤消。  </p>
+<p>可以调用GetExitCodeProcess来获取当前已经撤销的进程的退出代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">GetExitCodeProcess</span><span class="params">(  HANDLE hProcess,     <span class="comment">// handle to the process</span></span></span></span><br><span class="line"><span class="function"><span class="params">  LPDWORD lpExitCode   <span class="comment">// termination status);</span></span></span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="子进程"><a href="#子进程" class="headerlink" title="子进程"></a>子进程</h2><p>如果需要另一个代码块来执行操作，通过调用函数或子例程，当调用一个函数时，在函数返货之前，代码将无法继续操作。大多数情况下，需要实施这种单步任务；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	STARTUPINFO si;</span><br><span class="line">	PROCESS_INFORMATION pi;</span><br><span class="line">	ZeroMemory(&amp;si, <span class="keyword">sizeof</span>(si));</span><br><span class="line">	ZeroMemory(&amp;pi, <span class="keyword">sizeof</span>(pi));</span><br><span class="line">	DWORD dwExitCode;</span><br><span class="line">	TCHAR szCmdLineName[] = TEXT(<span class="string">&quot;NOTEPAD.EXE&quot;</span>);</span><br><span class="line">	BOOL fSuccess = CreateProcess(<span class="literal">NULL</span>, szCmdLineName, <span class="literal">NULL</span>, <span class="literal">NULL</span>, FALSE, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;si, &amp;pi);</span><br><span class="line">	<span class="keyword">if</span> (fSuccess)</span><br><span class="line">	&#123;</span><br><span class="line">		CloseHandle(pi.hProcess);</span><br><span class="line">		WaitForSingleObject(pi.hProcess,INFINITE);</span><br><span class="line">		GetExitCodeProcess(pi.hProcess, &amp;dwExitCode);</span><br><span class="line">		CloseHandle(pi.hThread);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/8.png"></p>
+<h2 id="枚举进程"><a href="#枚举进程" class="headerlink" title="枚举进程"></a>枚举进程</h2><p>枚举进程可以使用Procee32First和Process32Next函数；</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/05/31/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B/" title="Windows核心编程 - 进程">http://systemk1t.github.io/2021/05/31/Windows核心编程-进程/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B/" rel="tag"># Windows核心编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/28/Windows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-WindowsObjects/" rel="prev" title="Windows核心编程 - WindowsObjects">
+      <i class="fa fa-chevron-left"></i> Windows核心编程 - WindowsObjects
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/03/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AF%84%E5%AD%98%E5%99%A8/" rel="next" title="8086指令基础 - 寄存器">
+      8086指令基础 - 寄存器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AAWindows%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text">第一个Windows程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%AE%9E%E4%BE%8B%E5%8F%A5%E6%9F%84"><span class="nav-number">1.1.1.</span> <span class="nav-text">进程实例句柄</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">1.1.2.</span> <span class="nav-text">进程命令行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text">进程的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%94%99%E8%AF%AF%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.4.</span> <span class="nav-text">进程错误模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%BD%93%E5%89%8D%E9%A9%B1%E5%8A%A8%E5%99%A8%E5%92%8C%E7%9B%AE%E5%BD%95"><span class="nav-number">1.1.5.</span> <span class="nav-text">进程的当前驱动器和目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95"><span class="nav-number">1.1.6.</span> <span class="nav-text">进程当前目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC"><span class="nav-number">1.1.7.</span> <span class="nav-text">系统版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CreateProcess%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">CreateProcess函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lpApplicationName%E5%92%8ClpCommandLine"><span class="nav-number">1.2.1.</span> <span class="nav-text">lpApplicationName和lpCommandLine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#psaProcess%E5%92%8CpsaThread%E5%92%8CbInheritHandles"><span class="nav-number">1.2.2.</span> <span class="nav-text">psaProcess和psaThread和bInheritHandles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fdwCreate"><span class="nav-number">1.2.3.</span> <span class="nav-text">fdwCreate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pEnvironment"><span class="nav-number">1.2.4.</span> <span class="nav-text">pEnvironment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pszCurDir"><span class="nav-number">1.2.5.</span> <span class="nav-text">pszCurDir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#psiStartInfo"><span class="nav-number">1.2.6.</span> <span class="nav-text">psiStartInfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ppiProcInfo"><span class="nav-number">1.2.7.</span> <span class="nav-text">ppiProcInfo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%88%E6%AD%A2%E8%BF%9B%E7%A8%8B%E7%9A%84%E8%BF%90%E8%A1%8C"><span class="nav-number">1.3.</span> <span class="nav-text">终止进程的运行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%BF%9B%E5%85%A5%E7%82%B9%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E"><span class="nav-number">1.3.1.</span> <span class="nav-text">主线程的进入点函数返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExitProcess%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.2.</span> <span class="nav-text">ExitProcess函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TerMinateProcess"><span class="nav-number">1.3.3.</span> <span class="nav-text">TerMinateProcess</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%BB%88%E6%AD%A2%E6%97%B6%E6%83%85%E5%86%B5"><span class="nav-number">1.3.4.</span> <span class="nav-text">进程终止时情况</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">子进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.5.</span> <span class="nav-text">枚举进程</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

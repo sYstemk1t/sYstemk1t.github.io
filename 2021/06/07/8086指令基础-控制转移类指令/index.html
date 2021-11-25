@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8086指令基础 - 控制转移类指令">
+<meta property="og:url" content="http://systemk1t.github.io/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/0.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/1.png">
+<meta property="article:published_time" content="2021-06-06T19:35:24.000Z">
+<meta property="article:modified_time" content="2021-06-07T08:13:01.329Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="16汇编">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/0.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>8086指令基础 - 控制转移类指令 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          8086指令基础 - 控制转移类指令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-07 03:35:24 / 修改时间：16:13:01" itemprop="dateCreated datePublished" datetime="2021-06-07T03:35:24+08:00">2021-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/16%E4%BD%8D%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">16位汇编</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 16位汇编编程，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习汇编开发的童鞋们提供一份参考。</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 10家庭版</li>
+<li>编译器：Windows XP Debug</li>
+</ul>
+<h1 id="控制转移类指令"><a href="#控制转移类指令" class="headerlink" title="控制转移类指令"></a>控制转移类指令</h1><p>控制转移类指令用于实现分支、循环、过程等程序结构，是仅次于传送指令的最常用指令</p>
+<p>重点掌握：JMP、JCC、LOOP、CALL、RET、INT n、IRET常用系统功能调用</p>
+<p>一般了解：LOOPZ、LOOPNZ    INTO</p>
+<p><strong>控制转移类指令通过改变IP(和CS)值，实现程序执行顺序的改变</strong></p>
+<h2 id="JMP-无条件转移指令"><a href="#JMP-无条件转移指令" class="headerlink" title="JMP 无条件转移指令"></a>JMP 无条件转移指令</h2><ul>
+<li>只要执行无条件转移指令jmp，就使得程序转到指定的目标地址处，从目标地址处开始执行指令</li>
+<li>操作数是要转移到的目标地址</li>
+<li>JMP指令分为四种类型：<ul>
+<li>段内转移、直接寻址</li>
+<li>段内转移、间接寻址</li>
+<li>段间转移、直接寻址</li>
+<li>段间转移、间接寻址</li>
+</ul>
+</li>
+</ul>
+<p><strong>位移量</strong>是紧接着JMP指令后的那条指令的偏移地址，到目标指令的偏移地址的地址位移；当向地址增大方向转移时，位移量为正；向地址减小方向转移时，位移量为负</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Code segment</span><br><span class="line">start:</span><br><span class="line">;设置数据段</span><br><span class="line">	mov ax,Data</span><br><span class="line">	mov ds,ax</span><br><span class="line">	mov es,ax</span><br><span class="line">;设置堆栈段</span><br><span class="line">	jmp LABEL1		;段内短转移	段内近转移</span><br><span class="line">	mov ax,MyStack</span><br><span class="line">	jmp ax</span><br><span class="line">	jmp [2000h]		;jmp内存</span><br><span class="line">	mov ss,ax</span><br><span class="line"></span><br><span class="line">LABEL1:</span><br><span class="line">	mov ah,09</span><br><span class="line">	mov dx,offset MYMSG</span><br><span class="line">	int 21h</span><br><span class="line">;退出</span><br><span class="line">	mov ax,4c00h</span><br><span class="line">	int 21h</span><br><span class="line">Code ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="寻址方式"><a href="#寻址方式" class="headerlink" title="寻址方式"></a>寻址方式</h2><ul>
+<li><p>直接寻址方式</p>
+<ul>
+<li>转移地址像立即数一样，直接在指令的机器代码中，就是直接寻址;<strong>使用标号表达</strong></li>
+</ul>
+</li>
+<li><p>间接寻址方式</p>
+<ul>
+<li>转移地址在寄存器或主存单元中，就是通过寄存器或存储器的间接寻址方式；<strong>用寄存器或存储器表达</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="目标地址范围"><a href="#目标地址范围" class="headerlink" title="目标地址范围"></a>目标地址范围</h2><h3 id="段内"><a href="#段内" class="headerlink" title="段内"></a>段内</h3><ul>
+<li>段内转移 - 近转移（near）<ul>
+<li>在当前代码段64KB范围内转移(+-32范围)</li>
+<li>不需要改变CS段地址，只要改变IP偏移地址</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JMP label   ；IP←IP+位移量</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>段内转移 - 短转移（short）<ul>
+<li>转移范围可以用一个字节表达，在段内-128~+127范围</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JMP r16&#x2F;m16     ；IP←r16&#x2F;m16</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="段间"><a href="#段间" class="headerlink" title="段间"></a>段间</h3><ul>
+<li>段间转移 - 远转移（far）<ul>
+<li>从当前代码段跳转到另一个代码段，可以在1MB范围</li>
+<li>需要更改CS段地址和IP偏移地址</li>
+<li>目的地址必须用一个32位数表达，叫做32位远指针，它就是逻辑地址</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JMP far ptr label</span><br><span class="line">    ；IP←label的偏移地址</span><br><span class="line">    ；CS←label的段地址</span><br><span class="line">JMP far ptr mem</span><br><span class="line">    ；IP←[mem]，CS←[mem+2]</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>1.**实际编程时，汇编程序会根据目标地址的距离，</strong>自动处理成短转移、近转移或远转移**<br><strong>2.**程序员可用操作符</strong>short、near ptr 或far ptr** 强制</p>
+<h2 id="条件转移指令"><a href="#条件转移指令" class="headerlink" title="条件转移指令"></a>条件转移指令</h2><p>在指令手册中我们可以看到<strong>所有的JCC指令</strong></p>
+<p><img src="/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/0.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jcc label:</span><br><span class="line">	;条件满足，发生转移，IP&lt;-ip + 8位位移量</span><br><span class="line">	;条件不满足，顺序执行</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指定的条件CC如果成立，程序转移到由标号lable指定的目的地址去执行指令；条件不成立，则程序将顺序执行下一条指令</li>
+<li>操作数label是采用短转移，成为相对寻址方式</li>
+</ul>
+<p><img src="/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/1.png"></p>
+<table>
+<thead>
+<tr>
+<th>Tables</th>
+<th>Are</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Z/E</td>
+<td>相等</td>
+</tr>
+<tr>
+<td>N</td>
+<td>非</td>
+</tr>
+<tr>
+<td>S</td>
+<td>符号</td>
+</tr>
+<tr>
+<td>P</td>
+<td>奇偶</td>
+</tr>
+<tr>
+<td>O</td>
+<td>溢出</td>
+</tr>
+<tr>
+<td>C</td>
+<td>进位</td>
+</tr>
+<tr>
+<td>L</td>
+<td>小于（有符号数）</td>
+</tr>
+<tr>
+<td>G</td>
+<td>大于（有符号数）</td>
+</tr>
+<tr>
+<td>A</td>
+<td>高于（无符号数）</td>
+</tr>
+<tr>
+<td>B</td>
+<td>低于（无符号数）</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>判断单个标志位状态</p>
+<ul>
+<li>这组指令单独判断5个状态标志之一<br>⑴JZ/JE和JNZ/JNE：利用零标志ZF，判断结果是否为零（或相等）<br>⑵JS和JNS：利用符号标志SF，判断结果是正是负<br>⑶JO和JNO：利用溢出标志OF，判断结果是否产生溢出<br>⑷JP/JPE和JNP/JPO：利用奇偶标志PF，判断结果中“1”的个数是偶是奇<br>⑸JC/JB/JNAE和JNC/JNB/JAE：利用进位标志CF，判断结果是否进位或借位</li>
+</ul>
+</li>
+<li><p>比较无符号数高低</p>
+<ul>
+<li>无符号数的大小用高（Above）低（Below）表示<br>利用CF确定高低、利用ZF标志确定相等（Equal）<br>两数的高低分成4种关系：<br>⑴ 低于（不高于等于）：JB（JNAE）<br>⑵ 不低于（高于等于）：JNB（JAE）<br>⑶ 低于等于（不高于）：JBE（JNA）<br>⑷ 不低于等于（高于）：JNBE（JA ）</li>
+</ul>
+</li>
+<li><p>比较有符号数大小</p>
+<ul>
+<li>有符号数的大（Greater）小（Less）需要组合OF、SF标志，并利用ZF标志确定相等（Equal）<br>两数的大小分成4种关系：<br>⑴ 小于（不大于等于）：JL（JNGE）<br>⑵ 不小于（大于等于）：JNL（JGE）<br>⑶ 小于等于（不大于）：JLE（JNG）<br>⑷ 不小于等于（大于）：JNLE（JG ）</li>
+</ul>
+</li>
+</ul>
+<h3 id="计算器CX为0转移"><a href="#计算器CX为0转移" class="headerlink" title="计算器CX为0转移"></a>计算器CX为0转移</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">JCXZ label</span><br><span class="line">  ；CX＝0，发生转移：IP←IP＋8位位移量</span><br><span class="line">  ；CX≠0，顺序执行</span><br></pre></td></tr></table></figure>
+
+<p>这是一条较特殊的指令<br>CX寄存器通常在程序中用做计数器<br>JCXZ指令用来判断计数是否为0</p>
+<h2 id="循环指令"><a href="#循环指令" class="headerlink" title="循环指令"></a>循环指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">LOOP label  ；CX←CX－1，</span><br><span class="line">    ；CX≠0，循环到标号label</span><br><span class="line">LOOPZ label ；CX←CX－1，</span><br><span class="line">    ；CX≠0且ZF＝1，循环到标号label</span><br><span class="line">LOOPNZ label    ；CX←CX－1，</span><br><span class="line">    ；CX≠0且ZF＝0，循环到标号label</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>demo:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">        mov cx,count    ；设置循环次数</span><br><span class="line">        mov si,offset string</span><br><span class="line">        xor bx,bx   ；bx清0，用于记录空格数</span><br><span class="line">        mov al,20h</span><br><span class="line">again:  cmp al,es:[si]</span><br><span class="line">        jnz next    ；ZF&#x3D;0，非空格，转移</span><br><span class="line">        inc bx  ；ZF&#x3D;1，是空格，个数加1</span><br><span class="line">next:   inc si</span><br><span class="line">        loop again</span><br><span class="line">        ；字符个数减1，不为0继续循环</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4/" title="8086指令基础 - 控制转移类指令">http://systemk1t.github.io/2021/06/07/8086指令基础-控制转移类指令/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/16%E6%B1%87%E7%BC%96/" rel="tag"># 16汇编</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/04/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E4%B8%B2%E6%8C%87%E4%BB%A4/" rel="prev" title="8086指令基础 - 串指令">
+      <i class="fa fa-chevron-left"></i> 8086指令基础 - 串指令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/07/8086%E6%8C%87%E4%BB%A4%E5%9F%BA%E7%A1%80-%E5%AD%90%E7%A8%8B%E5%BA%8F%E6%8C%87%E4%BB%A4/" rel="next" title="8086指令基础 - 子程序指令">
+      8086指令基础 - 子程序指令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">控制转移类指令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JMP-%E6%97%A0%E6%9D%A1%E4%BB%B6%E8%BD%AC%E7%A7%BB%E6%8C%87%E4%BB%A4"><span class="nav-number">1.1.</span> <span class="nav-text">JMP 无条件转移指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">寻址方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4"><span class="nav-number">1.3.</span> <span class="nav-text">目标地址范围</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%B5%E5%86%85"><span class="nav-number">1.3.1.</span> <span class="nav-text">段内</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%B5%E9%97%B4"><span class="nav-number">1.3.2.</span> <span class="nav-text">段间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E8%BD%AC%E7%A7%BB%E6%8C%87%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">条件转移指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E5%99%A8CX%E4%B8%BA0%E8%BD%AC%E7%A7%BB"><span class="nav-number">1.4.1.</span> <span class="nav-text">计算器CX为0转移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">循环指令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

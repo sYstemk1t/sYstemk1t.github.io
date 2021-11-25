@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="变量的作用域指的是变量在源码中可以被访问到的范围。全局变量属于进程作用域，在整个进程中都可以访问到这个全局变量；静态变量属于文件作用域，在当前源码文件中可以访问；局部变量属于函数作用域，在函数内可以访问到；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++反汇编与逆向分析 - 变量位置与访问方式">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="变量的作用域指的是变量在源码中可以被访问到的范围。全局变量属于进程作用域，在整个进程中都可以访问到这个全局变量；静态变量属于文件作用域，在当前源码文件中可以访问；局部变量属于函数作用域，在函数内可以访问到；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/1.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/2.png">
+<meta property="og:image" content="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/0.png">
+<meta property="article:published_time" content="2021-07-13T10:41:04.000Z">
+<meta property="article:modified_time" content="2021-07-14T11:04:42.470Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="反汇编与逆向分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/1.png">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++反汇编与逆向分析 - 变量位置与访问方式 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++反汇编与逆向分析 - 变量位置与访问方式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-13 18:41:04" itemprop="dateCreated datePublished" datetime="2021-07-13T18:41:04+08:00">2021-07-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-14 19:04:42" itemprop="dateModified" datetime="2021-07-14T19:04:42+08:00">2021-07-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">逆向分析</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>变量的作用域指的是变量在源码中可以被访问到的范围。全局变量属于进程作用域，在整个进程中都可以访问到这个全局变量；静态变量属于文件作用域，在当前源码文件中可以访问；局部变量属于函数作用域，在函数内可以访问到；</p>
+<a id="more"></a>
+
+<p>运行环境：</p>
+<ul>
+<li>操作系统： Windows 7家庭版</li>
+<li>编译器：VC6 VS2013</li>
+</ul>
+<h2 id="变量识别"><a href="#变量识别" class="headerlink" title="变量识别"></a>变量识别</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> g_nTest = <span class="number">0x8765093</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = <span class="number">999</span>;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;g_nTest);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;argc);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;n = %d\n&quot;</span>,n + argc);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;g_nTest = %d\n&quot;</span>,g_nTest + argc);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Hello World!\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">00401010                          | 55                   | push ebp                                        |</span><br><span class="line">00401011                          | 8BEC                 | mov ebp,esp                                     |</span><br><span class="line">00401013                          | 83EC 44              | sub esp,44                                      |</span><br><span class="line">00401016                          | 53                   | push ebx                                        |</span><br><span class="line">00401017                          | 56                   | push esi                                        |</span><br><span class="line">00401018                          | 57                   | push edi                                        |</span><br><span class="line">00401019                          | 8D7D BC              | lea edi,dword ptr ss:[ebp-44]                   |</span><br><span class="line">0040101C                          | B9 11000000          | mov ecx,11                                      |</span><br><span class="line">00401021                          | B8 CCCCCCCC          | mov eax,CCCCCCCC                                |</span><br><span class="line">00401026                          | F3:AB                | rep stosd                                       |</span><br><span class="line">00401028                          | C745 FC E7030000     | mov dword ptr ss:[ebp-4],3E7                    |局部变量</span><br><span class="line">0040102F                          | 8D45 FC              | lea eax,dword ptr ss:[ebp-4]                    |</span><br><span class="line">00401032                          | 50                   | push eax                                        |</span><br><span class="line">00401033                          | 68 48504200          | push test.425048                                | 425048:&quot;%d&quot;</span><br><span class="line">00401038                          | E8 23010000          | call test.401160                                | printf</span><br><span class="line">0040103D                          | 83C4 08              | add esp,8                                       |</span><br><span class="line">00401040                          | 68 307A4200          | push test.427A30                                |全局变量</span><br><span class="line">00401045                          | 68 48504200          | push test.425048                                | 425048:&quot;%d&quot;</span><br><span class="line">0040104A                          | E8 11010000          | call test.401160                                |</span><br><span class="line">0040104F                          | 83C4 08              | add esp,8                                       |</span><br><span class="line">00401052                          | 8D4D 08              | lea ecx,dword ptr ss:[ebp+8]                    |参数访问</span><br><span class="line">00401055                          | 51                   | push ecx                                        |</span><br><span class="line">00401056                          | 68 48504200          | push test.425048                                | 425048:&quot;%d&quot;</span><br><span class="line">0040105B                          | E8 00010000          | call test.401160                                |</span><br><span class="line">00401060                          | 83C4 08              | add esp,8                                       |</span><br><span class="line">00401063                          | 8B55 FC              | mov edx,dword ptr ss:[ebp-4]                    | edx:EntryPoint</span><br><span class="line">00401066                          | 0355 08              | add edx,dword ptr ss:[ebp+8]                    | edx:EntryPoint</span><br><span class="line">00401069                          | 52                   | push edx                                        | edx:EntryPoint</span><br><span class="line">0040106A                          | 68 3C504200          | push test.42503C                                | 42503C:&quot;n &#x3D; %d\n&quot;</span><br><span class="line">0040106F                          | E8 6C000000          | call test.4010E0                                |</span><br><span class="line">00401074                          | 83C4 08              | add esp,8                                       |</span><br><span class="line">00401077                          | A1 307A4200          | mov eax,dword ptr ds:[427A30]                   |</span><br><span class="line">0040107C                          | 0345 08              | add eax,dword ptr ss:[ebp+8]                    |</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在IDA中识别 为这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">.text:00401000 ; int __cdecl main(int argc, const char **argv, const char **envp)</span><br><span class="line">.text:00401000 _main           proc near               ; CODE XREF: start+AF↓p</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000 var_4           &#x3D; dword ptr -4</span><br><span class="line">.text:00401000 argc            &#x3D; dword ptr  4</span><br><span class="line">.text:00401000 argv            &#x3D; dword ptr  8</span><br><span class="line">.text:00401000 envp            &#x3D; dword ptr  0Ch</span><br><span class="line">.text:00401000</span><br><span class="line">.text:00401000                 push    ecx</span><br><span class="line">.text:00401001                 lea     eax, [esp+4+var_4]</span><br><span class="line">.text:00401005                 mov     [esp+4+var_4], 3E7h</span><br><span class="line">.text:0040100D                 push    eax</span><br><span class="line">.text:0040100E                 push    offset aD       ; &quot;%d&quot;</span><br><span class="line">.text:00401013                 call    _scanf</span><br><span class="line">.text:00401018                 push    offset dword_408030			;全局变量通过地址访问</span><br><span class="line">.text:0040101D                 push    offset aD       ; &quot;%d&quot;</span><br><span class="line">.text:00401022                 call    _scanf</span><br><span class="line">.text:00401027                 lea     ecx, [esp+14h+argc]</span><br><span class="line">.text:0040102B                 push    ecx</span><br><span class="line">.text:0040102C                 push    offset aD       ; &quot;%d&quot;</span><br><span class="line">.text:00401031                 call    _scanf</span><br><span class="line">.text:00401036                 mov     edx, [esp+1Ch+argc]</span><br><span class="line">.text:0040103A                 mov     eax, [esp+1Ch+var_4]</span><br><span class="line">.text:0040103E                 add     eax, edx</span><br><span class="line">.text:00401040                 push    eax</span><br><span class="line">.text:00401041                 push    offset aND      ; &quot;n &#x3D; %d\n&quot;</span><br><span class="line">.text:00401046                 call    sub_401080</span><br><span class="line">.text:0040104B                 mov     ecx, dword_408030</span><br><span class="line">.text:00401051                 mov     edx, [esp+24h+argc]</span><br><span class="line">.text:00401055                 add     ecx, edx</span><br><span class="line">.text:00401057                 push    ecx</span><br><span class="line">.text:00401058                 push    offset aGNtestD ; &quot;g_nTest &#x3D; %d\n&quot;</span><br><span class="line">.text:0040105D                 call    sub_401080</span><br><span class="line">.text:00401062                 push    offset aHelloWorld ; &quot;Hello World!\n&quot;</span><br><span class="line">.text:00401067                 call    sub_401080</span><br><span class="line">.text:0040106C                 xor     eax, eax</span><br><span class="line">.text:0040106E                 add     esp, 30h</span><br><span class="line">.text:00401071                 retn</span><br><span class="line">.text:00401071 _main           endp</span><br><span class="line">.text:00401071</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="全局代码"><a href="#全局代码" class="headerlink" title="全局代码"></a>全局代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Test.cpp : 此文件包含 &quot;main&quot; 函数。程序执行将在此处开始并结束。</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetInt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetInt1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetInt2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetInt3</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">6</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetInt4</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">7</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> g_nTest = GetInt();</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> g_nTest1 = GetInt1() + g_nTest;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> g_nTest2 = GetInt2() / <span class="number">7</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> g_nTest3 = GetInt3() % <span class="number">-8</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> g_nTest4 = GetInt4();</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = <span class="number">999</span>;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;g_nTest);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;argc);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;n = %d\n&quot;</span>, n + argc);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;g_nTest = %d\n&quot;</span>, g_nTest + argc);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Hello World!\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 运行程序: Ctrl + F5 或调试 &gt;“开始执行(不调试)”菜单</span></span><br><span class="line"><span class="comment">// 调试程序: F5 或调试 &gt;“开始调试”菜单</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 入门使用技巧: </span></span><br><span class="line"><span class="comment">//   1. 使用解决方案资源管理器窗口添加/管理文件</span></span><br><span class="line"><span class="comment">//   2. 使用团队资源管理器窗口连接到源代码管理</span></span><br><span class="line"><span class="comment">//   3. 使用输出窗口查看生成输出和其他消息</span></span><br><span class="line"><span class="comment">//   4. 使用错误列表窗口查看错误</span></span><br><span class="line"><span class="comment">//   5. 转到“项目”&gt;“添加新项”以创建新的代码文件，或转到“项目”&gt;“添加现有项”以将现有代码文件添加到项目</span></span><br><span class="line"><span class="comment">//   6. 将来，若要再次打开此项目，请转到“文件”&gt;“打开”&gt;“项目”并选择 .sln 文件</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里直接反汇编Release版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">start:</span><br><span class="line">.text:00401407 ; __unwind &#123; &#x2F;&#x2F; __SEH_prolog4</span><br><span class="line">.text:00401407                 call    sub_4016AF</span><br><span class="line">.text:0040140C                 jmp     loc_401285</span><br><span class="line">.text:0040140C ; &#125; &#x2F;&#x2F; starts at 401407</span><br><span class="line">.text:0040140C start           endp ; sp-analysis failed</span><br><span class="line"></span><br><span class="line">;进入loc_401285</span><br><span class="line">.text:00401285 ; __unwind &#123; &#x2F;&#x2F; __SEH_prolog4</span><br><span class="line">.text:00401285                 push    14h</span><br><span class="line">.text:00401287                 push    offset unk_402560</span><br><span class="line">.text:0040128C                 call    __SEH_prolog4</span><br><span class="line">.text:00401291                 push    1</span><br><span class="line">.text:00401293                 call    sub_401487</span><br><span class="line">.text:00401298                 pop     ecx</span><br><span class="line">.text:00401299                 test    al, al</span><br><span class="line">.text:0040129B                 jz      loc_4013F1</span><br><span class="line">.text:004012A1                 xor     bl, bl</span><br><span class="line">.text:004012A3                 mov     [ebp-19h], bl</span><br><span class="line">.text:004012A6 ;   __try &#123; &#x2F;&#x2F; __except at loc_4013C0</span><br><span class="line">.text:004012A6                 and     dword ptr [ebp-4], 0</span><br><span class="line">.text:004012AA                 call    sub_401455</span><br><span class="line">.text:004012AF                 mov     [ebp-24h], al</span><br><span class="line">.text:004012B2                 mov     eax, dword_403044</span><br><span class="line">.text:004012B7                 xor     ecx, ecx</span><br><span class="line">.text:004012B9                 inc     ecx</span><br><span class="line">.text:004012BA                 cmp     eax, ecx</span><br><span class="line">.text:004012BC                 jz      loc_4013F1</span><br><span class="line">.text:004012C2                 test    eax, eax</span><br><span class="line">.text:004012C4                 jnz     short loc_40130F</span><br><span class="line">.text:004012C6                 mov     dword_403044, ecx</span><br><span class="line">.text:004012CC                 push    offset unk_4020F8</span><br><span class="line">.text:004012D1                 push    offset unk_4020EC</span><br><span class="line">.text:004012D6                 call    _initterm_e</span><br><span class="line">.text:004012DB                 pop     ecx</span><br><span class="line">.text:004012DC                 pop     ecx</span><br><span class="line">.text:004012DD                 test    eax, eax</span><br><span class="line">.text:004012DF                 jz      short loc_4012F2</span><br><span class="line">.text:004012DF ;   &#125; &#x2F;&#x2F; starts at 4012A6</span><br><span class="line">.text:004012E1                 mov     dword ptr [ebp-4], 0FFFFFFFEh</span><br><span class="line">.text:004012E8                 mov     eax, 0FFh</span><br><span class="line">.text:004012ED                 jmp     loc_4013E1</span><br><span class="line">.text:004012F2 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:004012F2</span><br><span class="line">.text:004012F2 loc_4012F2:                             ; CODE XREF: start-128↑j</span><br><span class="line">.text:004012F2                 push    offset unk_4020E8</span><br><span class="line">.text:004012F7                 push    offset unk_4020CC</span><br><span class="line">.text:004012FC                 call    _initterm</span><br><span class="line">.text:00401301                 pop     ecx</span><br><span class="line">.text:00401302                 pop     ecx</span><br><span class="line">.text:00401303                 mov     dword_403044, 2</span><br><span class="line">.text:0040130D                 jmp     short loc_401314</span><br><span class="line">.text:0040130F ; ---------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">;继续进入_initterm</span><br><span class="line">.rdata:004020D0                 dd offset sub_401273    ; set_newMode   库函数</span><br><span class="line">.rdata:004020D4                 dd offset sub_401070	;这几个函数分别代表我们写的函数</span><br><span class="line">.rdata:004020D8                 dd offset sub_401000</span><br><span class="line">.rdata:004020DC                 dd offset sub_401020</span><br><span class="line">.rdata:004020E0                 dd offset sub_401040</span><br><span class="line">.rdata:004020E4                 dd offset sub_401060</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="静态局部变量"><a href="#静态局部变量" class="headerlink" title="静态局部变量"></a>静态局部变量</h2><p>静态变量分为全局静态变量和局部静态变量，全局静态变量和全局变量类似，只是全局静态变量只能在本文件中使用；</p>
+<p>局部静态便令比较特殊，它不会随作用域的结束而小时，并且在未进入作用域之前就已存在，其生命周期也和全局变量相同。<strong>局部静态变量会预先被当作全局变量处，而它的初始化部分只是在做赋值操作</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void ShowStatic(int nNumber)</span><br><span class="line">&#123;</span><br><span class="line">	static int g_snNumber &#x3D; nNumber;		&#x2F;&#x2F;定义局部静态变量，赋值为参数</span><br><span class="line">	printf(&quot;%d\n&quot;,g_snNumber);				&#x2F;&#x2F;打印静态变量</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	for (int i &#x3D; 0; i &lt; 5; i++)</span><br><span class="line">	&#123;			</span><br><span class="line">		ShowStatic(i);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">00401020   push        ebp</span><br><span class="line">00401021   mov         ebp,esp				;保存寄存器环境</span><br><span class="line">00401023   sub         esp,40h				</span><br><span class="line">00401026   push        ebx</span><br><span class="line">00401027   push        esi</span><br><span class="line">00401028   push        edi</span><br><span class="line">00401029   lea         edi,[ebp-40h]		;</span><br><span class="line">0040102C   mov         ecx,10h</span><br><span class="line">00401031   mov         eax,0CCCCCCCCh</span><br><span class="line">00401036   rep stos    dword ptr [edi]</span><br><span class="line">9:        static int g_snNumber &#x3D; nNumber;</span><br><span class="line">00401038   xor         eax,eax				;清空EAX寄存器</span><br><span class="line">0040103A   mov         al,[&#96;ShowStatic&#39;::&#96;2&#39;::$S1 (00427c4c)]	;取00427c4c处1字节送入al中</span><br><span class="line">0040103F   and         eax,1				;将eax与数值1做与运算，eax最终结果只能是0或1</span><br><span class="line">00401042   test        eax,eax				;比较eax，不等于0则跳转，跳转到0040105e处</span><br><span class="line">00401044   jne         ShowStatic+3Eh (0040105e)</span><br><span class="line">00401046   mov         cl,byte ptr [&#96;ShowStatic&#39;::&#96;2&#39;::$S1 (00427c4c)]		;将之前比较是否为0的地址放入cl中</span><br><span class="line">0040104C   or          cl,1					;将cl与数值1做或运算，cl最低为将被置1，其他不变</span><br><span class="line">0040104F   mov         byte ptr [&#96;ShowStatic&#39;::&#96;2&#39;::$S1 (00427c4c)],cl		;将cl值存入00427c4c中</span><br><span class="line">00401055   mov         edx,dword ptr [ebp+8]	;参数存入edx中</span><br><span class="line">00401058   mov         dword ptr [___decimal_point_length+0A9Ch (00427c48)],edx  ;edx赋值到00427c48，将局部静态变量赋值为EDX寄存器中保存的数据</span><br><span class="line">10:       printf(&quot;%d\n&quot;,g_snNumber);</span><br><span class="line">0040105E   mov         eax,[___decimal_point_length+0A9Ch (00427c48)]		;静态局部变量的访问，与全局变量一样</span><br><span class="line">00401063   push        eax</span><br><span class="line">00401064   push        offset string &quot;%d\n&quot; (0042201c)</span><br><span class="line">00401069   call        printf (00401110)</span><br><span class="line">0040106E   add         esp,8</span><br><span class="line">11:   &#125;</span><br><span class="line">00401071   pop         edi</span><br><span class="line">00401072   pop         esi</span><br><span class="line">00401073   pop         ebx</span><br><span class="line">00401074   add         esp,40h</span><br><span class="line">00401077   cmp         ebp,esp</span><br><span class="line">00401079   call        __chkesp (00401190)</span><br><span class="line">0040107E   mov         esp,ebp</span><br><span class="line">00401080   pop         ebp</span><br><span class="line">00401081   ret</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>cl中存储的是局部变量的标志，这个标志占1字节，通过位运算，将标志中的一个数据置为1，以此判断局部静态变量是否被初始化过。</strong></p>
+<p><img src="/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/1.png"></p>
+<p>当有两个静态局部变量，它们会公用一个标记位的内存；</p>
+<p><img src="/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/2.png"></p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆在C/C++中使用malloc和new实现堆空间申请，返回的数据便是申请的对空间的地址；保存堆空间首地址的变量大小为4字节的指针类型，其访问方式按作用域来划分；</p>
+<p>堆识别在于：堆标志(全FD)、签名、地址、内存中的真相</p>
+<h3 id="地址特性"><a href="#地址特性" class="headerlink" title="地址特性"></a>地址特性</h3><p>判断依据就是使用调试器装载程序，记住栈地址和内存地址首地址，然后运行到代码；</p>
+<p><img src="/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/0.png"></p>
+<h3 id="堆反调试"><a href="#堆反调试" class="headerlink" title="堆反调试"></a>堆反调试</h3><ul>
+<li>Peb+2的byte是调试标志位</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;反调试代码</span><br><span class="line">__asm</span><br><span class="line">&#123;</span><br><span class="line">    mov eax, fs:[18]</span><br><span class="line">    mov eax, fs:[30]</span><br><span class="line">    mov [eax + 0x2], 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Peb+0x68的地方调试时值非0，运行时值为0,，为堆类型</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__asm</span><br><span class="line">&#123;</span><br><span class="line">    mov eax, fs:[18]</span><br><span class="line">    mov eax, fs:[30]</span><br><span class="line">    mov [eax + 0x68], 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/13/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%8F%98%E9%87%8F%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F/" title="C++反汇编与逆向分析 - 变量位置与访问方式">http://systemk1t.github.io/2021/07/13/C-反汇编与逆向分析-变量位置与访问方式/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" rel="tag"># 反汇编与逆向分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/11/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E5%87%BD%E6%95%B0/" rel="prev" title="C++反汇编与逆向分析 - 函数">
+      <i class="fa fa-chevron-left"></i> C++反汇编与逆向分析 - 函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/14/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E6%95%B0%E7%BB%84/" rel="next" title="C++反汇编与逆向分析 - 数组">
+      C++反汇编与逆向分析 - 数组 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%AF%86%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">变量识别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">全局变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">全局代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">静态局部变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86"><span class="nav-number">3.</span> <span class="nav-text">堆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E7%89%B9%E6%80%A7"><span class="nav-number">3.1.</span> <span class="nav-text">地址特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">3.2.</span> <span class="nav-text">堆反调试</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"systemk1t.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在学习 APUE，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习APUE的童鞋们提供一份参考。 本系列博文均根据学习《UNIX环境高级编程》一书总结而来； 运行环境：  操作系统： ubutnu 16.04 编译器：QtCreator  CLion 2020.3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unix环境高级编程 - 文件目录">
+<meta property="og:url" content="http://systemk1t.github.io/2021/07/26/unix%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B-%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/index.html">
+<meta property="og:site_name" content="sYstemk1t&#39;s blog">
+<meta property="og:description" content="最近在学习 APUE，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习APUE的童鞋们提供一份参考。 本系列博文均根据学习《UNIX环境高级编程》一书总结而来； 运行环境：  操作系统： ubutnu 16.04 编译器：QtCreator  CLion 2020.3">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-25T17:39:16.000Z">
+<meta property="article:modified_time" content="2021-07-26T06:16:46.887Z">
+<meta property="article:author" content="sYstemk1t">
+<meta property="article:tag" content="linux编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://systemk1t.github.io/2021/07/26/unix%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B-%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>unix环境高级编程 - 文件目录 | sYstemk1t's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">sYstemk1t's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://systemk1t.github.io/2021/07/26/unix%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B-%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sYstemk1t">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="sYstemk1t's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unix环境高级编程 - 文件目录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-26 01:39:16 / 修改时间：14:16:46" itemprop="dateCreated datePublished" datetime="2021-07-26T01:39:16+08:00">2021-07-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">linux编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在学习 APUE，所以顺便将每日所学记录下来，一方面为了巩固学习的知识，另一方面也为同样在学习APUE的童鞋们提供一份参考。</p>
+<p>本系列博文均根据学习《UNIX环境高级编程》一书总结而来；</p>
+<p>运行环境：</p>
+<ul>
+<li>操作系统： ubutnu 16.04</li>
+<li>编译器：QtCreator  CLion 2020.3</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="文件属性"><a href="#文件属性" class="headerlink" title="文件属性"></a>文件属性</h2><h3 id="stat"><a href="#stat" class="headerlink" title="stat"></a>stat</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">stat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, struct stat *statbuf)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fstat</span><span class="params">(<span class="keyword">int</span> fd, struct stat *statbuf)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lstat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, struct stat *statbuf)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stat</span> &#123;</span></span><br><span class="line">               <span class="keyword">dev_t</span>     st_dev;     <span class="comment">/* ID of device containing file */</span></span><br><span class="line">               <span class="keyword">ino_t</span>     st_ino;     <span class="comment">/* inode number */</span></span><br><span class="line">               <span class="keyword">mode_t</span>    st_mode;    <span class="comment">/* protection */</span>	<span class="comment">//文件权限</span></span><br><span class="line">               <span class="keyword">nlink_t</span>   st_nlink;   <span class="comment">/* number of hard links */</span>	</span><br><span class="line">               <span class="keyword">uid_t</span>     st_uid;     <span class="comment">/* user ID of owner */</span>	<span class="comment">//用户ID</span></span><br><span class="line">               <span class="keyword">gid_t</span>     st_gid;     <span class="comment">/* group ID of owner */</span>	<span class="comment">//组ID</span></span><br><span class="line">               <span class="keyword">dev_t</span>     st_rdev;    <span class="comment">/* device ID (if special file) */</span></span><br><span class="line">               <span class="keyword">off_t</span>     st_size;    <span class="comment">/* total size, in bytes */</span></span><br><span class="line">               <span class="keyword">blksize_t</span> st_blksize; <span class="comment">/* blocksize for file system I/O */</span></span><br><span class="line">               <span class="keyword">blkcnt_t</span>  st_blocks;  <span class="comment">/* number of 512B blocks allocated */</span></span><br><span class="line">               <span class="keyword">time_t</span>    st_atime;   <span class="comment">/* time of last access */</span></span><br><span class="line">               <span class="keyword">time_t</span>    st_mtime;   <span class="comment">/* time of last modification */</span>	<span class="comment">//最后一次修改时间</span></span><br><span class="line">               <span class="keyword">time_t</span>    st_ctime;   <span class="comment">/* time of last status change */</span></span><br><span class="line">           &#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="st-mode"><a href="#st-mode" class="headerlink" title="st_mode"></a>st_mode</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">目前，st_mode使用了其低<span class="number">19b</span>it. <span class="number">0170000</span> =&gt; <span class="number">1</span>+ <span class="number">3</span>*<span class="number">5</span> = <span class="number">16.</span></span><br><span class="line">其中，最低的<span class="number">9</span>位(<span class="number">0</span><span class="number">-8</span>)是权限，<span class="number">9</span><span class="number">-11</span>是id，<span class="number">12</span><span class="number">-15</span>是类型。</span><br><span class="line">具体定义如下：</span><br><span class="line">S_IFMT     <span class="number">0170000</span>   bitmask <span class="keyword">for</span> the file type bitfields</span><br><span class="line">S_IFSOCK   <span class="number">0140000</span>   socket</span><br><span class="line">S_IFLNK    <span class="number">0120000</span>   symbolic link</span><br><span class="line">S_IFREG    <span class="number">0100000</span>   regular file</span><br><span class="line">S_IFBLK    <span class="number">0060000</span>   block device</span><br><span class="line">       S_IFDIR    <span class="number">0040000</span>   directory</span><br><span class="line">S_IFCHR    <span class="number">0020000</span>   character device</span><br><span class="line">S_IFIFO    <span class="number">0010000</span>   fifo</span><br><span class="line">S_ISUID    <span class="number">0004000</span>   <span class="built_in">set</span> UID bit</span><br><span class="line">S_ISGID    <span class="number">0002000</span>   <span class="built_in">set</span> GID bit (see below)</span><br><span class="line">S_ISVTX    <span class="number">0001000</span>   sticky bit (see below)</span><br><span class="line">S_IRWXU    <span class="number">00700</span>     mask <span class="keyword">for</span> file owner permissions</span><br><span class="line">S_IRUSR    <span class="number">00400</span>     owner has read permission</span><br><span class="line">S_IWUSR    <span class="number">00200</span>     owner has write permission</span><br><span class="line">S_IXUSR    <span class="number">00100</span>     owner has execute permission</span><br><span class="line">S_IRWXG    <span class="number">00070</span>     mask <span class="keyword">for</span> group permissions</span><br><span class="line">S_IRGRP    <span class="number">00040</span>     group has read permission</span><br><span class="line">S_IWGRP    <span class="number">00020</span>     group has write permission</span><br><span class="line">S_IXGRP    <span class="number">00010</span>     group has execute permission</span><br><span class="line">S_IRWXO    <span class="number">00007</span>     mask <span class="keyword">for</span> permissions <span class="keyword">for</span> others (<span class="keyword">not</span> in group)</span><br><span class="line">S_IROTH    <span class="number">00004</span>     others have read permission</span><br><span class="line">S_IWOTH    <span class="number">00002</span>     others have write permisson</span><br><span class="line">S_IXOTH    <span class="number">00001</span>     others have execute permission</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="comment">//使用宏快速判断文件类型</span></span><br><span class="line">S_ISREG(m)  is it a regular file?</span><br><span class="line"></span><br><span class="line">S_ISDIR(m)  directory?</span><br><span class="line"></span><br><span class="line">S_ISCHR(m)  character device?</span><br><span class="line"></span><br><span class="line">S_ISBLK(m)  block device?</span><br><span class="line"></span><br><span class="line">S_ISFIFO(m) FIFO (named pipe)?</span><br><span class="line"></span><br><span class="line">S_ISLNK(m)  symbolic link? (Not in POSIX<span class="number">.1</span><span class="number">-1996.</span>)</span><br><span class="line"></span><br><span class="line">S_ISSOCK(m) socket? (Not in POSIX<span class="number">.1</span><span class="number">-1996.</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* args[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//int stat(const char *path, struct stat *buf);</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">st</span>;</span></span><br><span class="line">    stat(args[<span class="number">1</span>],&amp;st);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    //获取文件类型</span></span><br><span class="line"><span class="comment">    if((st.st_mode &amp; S_IFMT) == S_IFREG)</span></span><br><span class="line"><span class="comment">    &#123;</span></span><br><span class="line"><span class="comment">        printf(&quot;普通文件\n&quot;);</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">    else if((st.st_mode &amp; S_IFMT) == S_ISDIR)</span></span><br><span class="line"><span class="comment">    &#123;</span></span><br><span class="line"><span class="comment">        printf(&quot;目录文件\n&quot;);</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">    else if((st.st_mode &amp; S_IFMT) == S_ISLNK)</span></span><br><span class="line"><span class="comment">    &#123;</span></span><br><span class="line"><span class="comment">        printf(&quot;链接文件\n&quot;);</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"> <span class="keyword">switch</span> (st.st_mode &amp; S_IFMT) &#123;</span><br><span class="line">           <span class="keyword">case</span> S_IFBLK:  <span class="built_in">printf</span>(<span class="string">&quot;block device\n&quot;</span>);            <span class="keyword">break</span>;</span><br><span class="line">           <span class="keyword">case</span> S_IFCHR:  <span class="built_in">printf</span>(<span class="string">&quot;character device\n&quot;</span>);        <span class="keyword">break</span>;</span><br><span class="line">           <span class="keyword">case</span> S_IFDIR:  <span class="built_in">printf</span>(<span class="string">&quot;directory\n&quot;</span>);               <span class="keyword">break</span>;</span><br><span class="line">           <span class="keyword">case</span> S_IFIFO:  <span class="built_in">printf</span>(<span class="string">&quot;FIFO/pipe\n&quot;</span>);               <span class="keyword">break</span>;</span><br><span class="line">           <span class="keyword">case</span> S_IFLNK:  <span class="built_in">printf</span>(<span class="string">&quot;symlink\n&quot;</span>);                 <span class="keyword">break</span>;</span><br><span class="line">           <span class="keyword">case</span> S_IFREG:  <span class="built_in">printf</span>(<span class="string">&quot;regular file\n&quot;</span>);            <span class="keyword">break</span>;</span><br><span class="line">           <span class="keyword">case</span> S_IFSOCK: <span class="built_in">printf</span>(<span class="string">&quot;socket\n&quot;</span>);                  <span class="keyword">break</span>;</span><br><span class="line">           <span class="keyword">default</span>:       <span class="built_in">printf</span>(<span class="string">&quot;unknown?\n&quot;</span>);                <span class="keyword">break</span>;</span><br><span class="line">           &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="lstat"><a href="#lstat" class="headerlink" title="lstat"></a>lstat</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//lstat函数详解</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* args[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//int lstat(const char *path, struct stat *buf);</span></span><br><span class="line">    <span class="keyword">int</span> fd = open(args[<span class="number">1</span>],O_RDONLY);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">st</span>;</span></span><br><span class="line">    <span class="keyword">int</span> n = lstat(args[<span class="number">1</span>],&amp;st);</span><br><span class="line">    <span class="keyword">if</span>(n&lt;<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">&quot;open file&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d %d %d \n&quot;</span>,st.st_uid,st.st_gid,st.st_size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>stat  函数与 lstat 函数的区别： 当一个文件是符号链接时，lstat 函数返回的是该符号链接本身的信息；而 stat 函数返回的是该链接指向文件的信息。</strong></p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><h3 id="opendir"><a href="#opendir" class="headerlink" title="opendir"></a>opendir</h3><p>打开一个目录，打开成功返回指向目录的指针;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DIR *<span class="title">opendir</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="closedir"><a href="#closedir" class="headerlink" title="closedir"></a>closedir</h3><p>关闭目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">closedir</span><span class="params">(DIR *dirp)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>成功返回0，错误返回-1</p>
+<h3 id="readdir"><a href="#readdir" class="headerlink" title="readdir"></a>readdir</h3><p>读取目录内容–目录项</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="function">struct dirent *<span class="title">readdir</span><span class="params">(DIR *dirp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">readdir_r</span><span class="params">(DIR *dirp, struct dirent *entry, struct dirent **result)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">readdir</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> fd, struct old_linux_dirent *dirp,<span class="keyword">unsigned</span> <span class="keyword">int</span> count)</span></span>;</span><br><span class="line"></span><br><span class="line"> <span class="class"><span class="keyword">struct</span> <span class="title">old_linux_dirent</span> &#123;</span></span><br><span class="line">               <span class="keyword">long</span>  d_ino;              <span class="comment">/* inode number */</span></span><br><span class="line">               <span class="keyword">off_t</span> d_off;              <span class="comment">/* offset to this old_linux_dirent */</span></span><br><span class="line">               <span class="keyword">unsigned</span> <span class="keyword">short</span> d_reclen;  <span class="comment">/* length of this d_name */</span></span><br><span class="line">               <span class="keyword">char</span>  d_name[NAME_MAX+<span class="number">1</span>]; <span class="comment">/* filename (null-terminated) */</span></span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>demo:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* args[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//DIR *opendir(const char *name);</span></span><br><span class="line">    DIR *pDir = opendir(args[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">if</span>(pDir==<span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">&quot;opendir error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//struct dirent *readdir(DIR *dirp);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);</span></span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> *<span class="title">pDent</span> = <span class="title">NULL</span>;</span></span><br><span class="line">    <span class="keyword">while</span>((pDent=readdir(pDir))!=<span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">strcmp</span>(pDent-&gt;d_name,<span class="string">&quot;.&quot;</span>)==<span class="number">0</span> || <span class="built_in">strcmp</span>(pDent-&gt;d_name,<span class="string">&quot;..&quot;</span>)==<span class="number">0</span>)		<span class="comment">//去除.文件</span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s-&gt;&quot;</span>,pDent-&gt;d_name);</span><br><span class="line">        <span class="keyword">switch</span>(pDent-&gt;d_type)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> DT_REG:</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;普通文件\n&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> DT_DIR:</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;目录文件\n&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> DT_LNK:</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;链接文件\n&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="access"><a href="#access" class="headerlink" title="access"></a>access</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">access</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">int</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>access修改文件权限；</p>
+<h3 id="truncate"><a href="#truncate" class="headerlink" title="truncate"></a>truncate</h3><p>文件截断</p>
+<h3 id="dup"><a href="#dup" class="headerlink" title="dup"></a>dup</h3><p>复制一个文件描述符</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> oldfd)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p> oldfd -要复制的文件描述符;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* args[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> fd = open(args[<span class="number">1</span>],O_RDWR);		<span class="comment">//旧文件描述符</span></span><br><span class="line">        <span class="keyword">if</span>(fd&lt;<span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">                perror(<span class="string">&quot;open error&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> newfd = dup(fd);			<span class="comment">//新文件描述符</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;fd = %d newfd = %d\n&quot;</span>,fd,newfd);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">        <span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="keyword">sizeof</span>(buf));</span><br><span class="line">        write(fd,<span class="string">&quot;hello,world\n&quot;</span>,<span class="keyword">sizeof</span>(<span class="string">&quot;hello,world\n&quot;</span>));	<span class="comment">//使用旧的文件描述符写入文件</span></span><br><span class="line">        <span class="comment">//SEEK_SET</span></span><br><span class="line">        lseek(fd,<span class="number">0</span>,SEEK_SET);					<span class="comment">//移动文件指针到最开始</span></span><br><span class="line">        <span class="keyword">int</span> n = read(newfd,buf,<span class="keyword">sizeof</span>(buf));	<span class="comment">//使用新的文件描述符读</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;read over:%d %s\n&quot;</span>,n,buf);</span><br><span class="line">        close(fd);</span><br><span class="line">        close(newfd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="dup2"><a href="#dup2" class="headerlink" title="dup2"></a>dup2</h3><p><strong>如果调用dup2的时候，旧的文件描述符如果打开了一个文件，那么先关闭旧的文件描述符，然后指向新的文件描述符，如果旧的未指向，则全部指向新的文件描述符</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* args[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> fd = open(args[<span class="number">1</span>],O_RDWR);</span><br><span class="line">    <span class="keyword">int</span> fd1 = open(args[<span class="number">2</span>],O_RDWR);</span><br><span class="line">    <span class="keyword">if</span>(fd&lt;<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">&quot;open error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">    <span class="keyword">if</span>(fd1&lt;<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">&quot;open error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">        dup2(fd,fd1);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;fd = %d fd1 = %d\n&quot;</span>,fd,fd1);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">        <span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="keyword">sizeof</span>(buf));</span><br><span class="line">        write(fd,<span class="string">&quot;hello,world\n&quot;</span>,<span class="keyword">sizeof</span>(<span class="string">&quot;hello,world\n&quot;</span>));</span><br><span class="line">        <span class="comment">//SEEK_SET</span></span><br><span class="line">        lseek(fd1,<span class="number">0</span>,SEEK_SET);</span><br><span class="line">        <span class="keyword">int</span> n = read(fd1,buf,<span class="keyword">sizeof</span>(buf));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;read over:%d %s\n&quot;</span>,n,buf);</span><br><span class="line">        close(fd);</span><br><span class="line">        close(fd1);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>sYstemk1t
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://systemk1t.github.io/2021/07/26/unix%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B-%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95/" title="unix环境高级编程 - 文件目录">http://systemk1t.github.io/2021/07/26/unix环境高级编程-文件目录/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux%E7%BC%96%E7%A8%8B/" rel="tag"># linux编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/20/C-%E5%8F%8D%E6%B1%87%E7%BC%96%E4%B8%8E%E9%80%86%E5%90%91%E5%88%86%E6%9E%90-%E7%BB%A7%E6%89%BF/" rel="prev" title="C++反汇编与逆向分析 - 继承">
+      <i class="fa fa-chevron-left"></i> C++反汇编与逆向分析 - 继承
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/26/unix%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B-%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6/" rel="next" title="unix环境高级编程 - 进程控制">
+      unix环境高级编程 - 进程控制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+
+
+
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">文件属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stat"><span class="nav-number">1.1.</span> <span class="nav-text">stat</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#st-mode"><span class="nav-number">1.1.1.</span> <span class="nav-text">st_mode</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lstat"><span class="nav-number">1.2.</span> <span class="nav-text">lstat</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">目录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#opendir"><span class="nav-number">2.1.</span> <span class="nav-text">opendir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#closedir"><span class="nav-number">2.2.</span> <span class="nav-text">closedir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#readdir"><span class="nav-number">2.3.</span> <span class="nav-text">readdir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#access"><span class="nav-number">2.4.</span> <span class="nav-text">access</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#truncate"><span class="nav-number">2.5.</span> <span class="nav-text">truncate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dup"><span class="nav-number">2.6.</span> <span class="nav-text">dup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dup2"><span class="nav-number">2.7.</span> <span class="nav-text">dup2</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="sYstemk1t"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">sYstemk1t</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sYstemk1t" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sYstemk1t" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sYstemk1t@126.com" title="E-Mail → mailto:sYstemk1t@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.baidu.com/" title="https:&#x2F;&#x2F;www.baidu.com&#x2F;" rel="noopener" target="_blank">Baidu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sYstemk1t</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">390k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
